@@ -52,19 +52,23 @@ for hh in $(seq -w 0 23); do
     for mm in $(seq -w 0 59); do
         hhmm="${hh}${mm}"
 
-        # Prefer underscored file
-        file=$(ls "$in_dir"/*_"$hhmm"_* 2>/dev/null | grep -v '\.trig' | head -n1)
-
-        # If no underscored, try spaced file
-        if [ -z "$file" ]; then
-            file=$(ls "$in_dir"/*\ "$hhmm"\ * 2>/dev/null | grep -v '\.trig' | head -n1)
+        # Check if any underscored files exist for this HHMM
+        if find "$in_dir" -maxdepth 1 -type f -name "*_${hhmm}_*" ! -name "*.trig*" -print -quit | grep -q .; then
+            # Copy all underscored files safely
+            find "$in_dir" -maxdepth 1 -type f -name "*_${hhmm}_*" ! -name "*.trig*" -print0 2>/dev/null | \
+            while IFS= read -r -d '' file; do
+                cp "$file" "$out_dir/"
+                echo "Copied underscored: $file"
+            done
+        else
+            # Copy all spaced files safely if no underscored files exist
+            find "$in_dir" -maxdepth 1 -type f -name "* $hhmm *" ! -name "*.trig*" -print0 2>/dev/null | \
+            while IFS= read -r -d '' file; do
+                cp "$file" "$out_dir/"
+                echo "Copied spaced: $file"
+            done
         fi
 
-        # Copy if a file exists
-        if [ -n "$file" ]; then
-            cp "$file" "$out_dir/"
-            echo "Copied: $file"
-        fi
     done
 done
 ```
