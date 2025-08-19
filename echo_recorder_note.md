@@ -10,9 +10,18 @@
 
 ## SUDS Data in EqServer
 
-In the EqServer Continuous Archive 
-* you can both telemetered and locally saved files
+In the EqServer Continuous Archive you may findL
+* both telemetered and locally saved files
+* multiple underscored (or spaced - probably) files for a given HHMM
 * sometimes you also get triggered files, which look like `...trig.dmx.gz`
+
+
+e.g:
+
+```
+2023-10-23_2358_19_ABM2Y.dmx
+2023-10-23_2358_31_ABM2Y.dmx
+``
 
 ## Use of EqConvert on SUDS datya
 
