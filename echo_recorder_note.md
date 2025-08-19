@@ -21,14 +21,14 @@ e.g:
 ```
 2023-10-23_2358_19_ABM2Y.dmx
 2023-10-23_2358_31_ABM2Y.dmx
-``
+```
 
 ## Use of EqConvert on SUDS datya
 
 
 ## Copying data for conversion
 
-The following loop tries to copy across a file for each HHMM combination, taking the underscored file by preferebce (when both types of file are present). 
+The script loops over every hour and minute of the day, constructing an HHMM string for each, and for each HHMM it copies all matching underscored .dmx or .dmx.gz files from the input directory to the output directory, skipping any .trig files; if no underscored files exist for that HHMM, it copies all matching spaced files instead, ensuring every available minute file is captured while preferring underscored files and handling multiple files per minute.
 
 ```
 #!/bin/bash
