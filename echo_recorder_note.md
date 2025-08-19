@@ -31,6 +31,8 @@ e.g:
 
 The script loops over every hour and minute of the day, constructing an HHMM string for each, and for each HHMM it copies all matching underscored .dmx or .dmx.gz files from the input directory to the output directory, skipping any .trig files; if no underscored files exist for that HHMM, it copies all matching spaced files instead, ensuring every available minute file is captured while preferring underscored files and handling multiple files per minute.
 
+This has been through several iterations, as it broke on different cases. Best to keep it as a standalone script.
+
 ```
 #!/bin/bash
 # Usage: ./copy_minute_files.sh input_dir output_dir
