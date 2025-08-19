@@ -12,8 +12,9 @@
 
 In the EqServer Continuous Archive you may findL
 * both telemetered and locally saved files
-* multiple underscored (or spaced - probably) files for a given HHMM
-* sometimes you also get triggered files, which look like `...trig.dmx.gz`
+* multiple underscored (or spaced files - probably) files for a given HHMM seems relatively commo
+  * this means you  never want to assume that 24x60 files should be present. 
+* sometimes you also get triggered files in the continuous , these files look like `...trig.dmx.gz`
 
 
 e.g:
