@@ -32,6 +32,15 @@ The following script copies over file on order to take either the underscored fi
 ```                                                                                                    
 #!/bin/bash
 
+# Default verbose off
+VERBOSE=0
+
+# Check for verbose flag
+if [[ "$1" == "-v" || "$1" == "--verbose" ]]; then
+    VERBOSE=1
+    shift
+fi
+
 in_dir="$1"
 out_dir="$2"
 
@@ -48,7 +57,7 @@ for file in "$in_dir"/*.ms*; do
     if [[ "$base" =~ ([0-2][0-9][0-5][0-9]) ]]; then
         hhmm="${BASH_REMATCH[1]}"
     else
-        echo "Cannot extract HHMM from $base"
+        [[ $VERBOSE -eq 1 ]] && echo "Cannot extract HHMM from $base"
         continue
     fi
 
@@ -56,16 +65,17 @@ for file in "$in_dir"/*.ms*; do
         # Underscored file: copy and mark HHMM
         cp "$file" "$out_dir/"
         underscored_exists["$hhmm"]=1
-        echo "Copied underscored: $file"
+        [[ $VERBOSE -eq 1 ]] && echo "Copied underscored: $file"
     else
         # Spaced file: only copy if no underscored for this HHMM
         if [[ -z "${underscored_exists[$hhmm]}" ]]; then
             cp "$file" "$out_dir/"
-            echo "Copied spaced: $file"
+            [[ $VERBOSE -eq 1 ]] && echo "Copied spaced: $file"
         fi
     fi
 done
 ```
+
 ## Example
 
 `mseed_day_test` contains a range of underscored and scpaced files files
