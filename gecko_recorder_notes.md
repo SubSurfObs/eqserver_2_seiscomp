@@ -84,7 +84,9 @@ scart -I temp_day_dir/sorted.mseed       --with-filecheck       --rename "VW.-.-
 project/
 ├── scripts/
 │   ├── process_day_gecko.sh
+│   ├── process_month_gecko.sh
 │   ├── process_year_gecko.sh
+│   ├── process_archive_gecko.sh
 │   └── copy_minute_files_gecko.sh
 ├── temp_processing/
 └── sds_test_archive/
@@ -102,11 +104,5 @@ total 32180
 -rw-rw-r-- 1 seiscomp seiscomp 32929280 Oct  6 16:04 VW.ABM1Y.00.CHZ.D.2023.297
 ```
 
-This is still not working =>
-
-```
-./scripts/process_month_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10 \
-                           sds_test_archive \
-                           temp_processing
-```
+I think this probably occurs because the EqServer files spill over. This is not necessarily a problem. 
 
