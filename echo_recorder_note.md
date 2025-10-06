@@ -8,9 +8,21 @@
 * Locally saved files have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx`
 
 
+## Unzipping
+
+e.g., 
+
+```
+#-d decompress, k keep oroginal file
+gzip -dk 2024-01-01\ 0000\ 52\ FRTM.dmx.gz
+```
+
+This results in a single PC-SUDS file, eg *.FRTM.dmx
+
 ## SUDS Data in EqServer
 
-In the EqServer Continuous Archive you may findL
+In the EqServer Continuous Archive you may find:
+
 * both telemetered and locally saved files
 * multiple underscored (or spaced files - probably) files for a given HHMM seems relatively commo
   * this means you  never want to assume that 24x60 files should be present. 
