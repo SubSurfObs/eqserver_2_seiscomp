@@ -25,4 +25,44 @@ Archive:  /data/repository/archive/ABM1Y/continuous/2023/10/29/20231029_0001_ABM
 
 So, the underscored zip file (USB/Local file) contains multiple files
 
-How to deal with this. 
+## Copying files
+
+The following script copies over file on order to take either the underscored file (firts preference(, or the spaced file. It's been tested on a directre with a mix of file types
+
+```                                                                                                    
+#!/bin/bash
+
+in_dir="$1"
+out_dir="$2"
+
+mkdir -p "$out_dir"
+
+# Keep track of which minutes already have an underscored file
+declare -A underscored_exists
+
+for file in "$in_dir"/*.ms*; do
+    [ -e "$file" ] || continue
+    base=$(basename "$file")
+
+    # Extract HHMM from underscored (e.g., 20231029_0001_ABM1Y.ms) or spaced (2023-10-29 0001 00 ABM1Y.ms)
+    if [[ "$base" =~ ([0-2][0-9][0-5][0-9]) ]]; then
+        hhmm="${BASH_REMATCH[1]}"
+    else
+        echo "Cannot extract HHMM from $base"
+        continue
+    fi
+
+    if [[ "$base" == *_*_* ]]; then
+        # Underscored file: copy and mark HHMM
+        cp "$file" "$out_dir/"
+        underscored_exists["$hhmm"]=1
+        echo "Copied underscored: $file"
+    else
+        # Spaced file: only copy if no underscored for this HHMM
+        if [[ -z "${underscored_exists[$hhmm]}" ]]; then
+            cp "$file" "$out_dir/"
+            echo "Copied spaced: $file"
+        fi
+    fi
+done
+```
