@@ -66,3 +66,16 @@ for file in "$in_dir"/*.ms*; do
     fi
 done
 ```
+## Example
+
+`mseed_day_test` contains a range of underscored and scpaced files files
+`ms_minute_clean` should contain a unique set up files 
+
+```
+./scripts/copy_minute_files.sh mseed_day_test/ ms_minute_clean
+#unzip them
+find ms_minute_clean -maxdepth 1 -type f -name "*.ms" -print0 | sort -z | xargs -0 cat > ms_day_cat/full.ms
+
+
+```
+
