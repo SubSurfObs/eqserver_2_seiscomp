@@ -81,18 +81,27 @@ scart -I temp_day_dir/sorted.mseed       --with-filecheck       --rename "VW.-.-
 ```
 
 ```
-project/
-├── scripts/
-│   ├── process_day_gecko.sh
-│   ├── process_month_gecko.sh
-│   ├── process_year_gecko.sh
-│   ├── process_archive_gecko.sh
-│   └── copy_minute_files_gecko.sh
-├── temp_processing/
-└── sds_test_archive/
+
 
 
 ```
+
+## Process days/months/year
+
+
+Day-level wrapper: `process_day_gecko.sh`
+Purpose: Process one day of data.
+What it does:
+- Copies all files from the day directory to a temp folder.
+- Calls copy_minute_files_gecko.sh to handle duplicates.
+- Unzips any .zip files.
+- Concatenates .ms files safely.
+- Sorts and merges MiniSEED headers.
+- Imports into the SDS archive, renaming network to VW.
+- Cleans up temp files.
+
+Test case:
+`./scripts/process_day_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10/23 sds_test_archive temp_processing`
 
 Running this on one day results in 2 files ( a big one and a small one). Big file seems good. 
 
@@ -106,36 +115,35 @@ total 32180
 
 I think this probably occurs because the EqServer files spill over. This is not necessarily a problem. 
 
-Day-level wrapper: process_day_gecko.sh
-Purpose: Process one day of data.
-What it does:
-- Copies all files from the day directory to a temp folder.
-- Calls copy_minute_files_gecko.sh to handle duplicates.
-- Unzips any .zip files.
-- Concatenates .ms files safely.
-- Sorts and merges MiniSEED headers.
-- Imports into the SDS archive, renaming network to VW.
-- Cleans up temp files.
-Test case:
-./scripts/process_day_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10/23 sds_test_archive temp_processing
-
-Month-level wrapper: process_month_gecko.sh
+Month-level wrapper: `process_month_gecko.sh`
 Purpose: Process all days in a month.
 What it does:
 - Loops over numeric day subdirectories inside the month folder.
 - Skips empty days.
 - Calls process_day_gecko.sh for each day.
+- 
 Test case:
-./scripts/process_month_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10 sds_test_archive temp_processing
+`./scripts/process_month_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10 sds_test_archive temp_processing`
 
-Year-level wrapper: process_year_gecko.sh
+Year-level wrapper: `process_year_gecko.sh`
+
 Purpose: Process all months in a year.
 What it does:
 - Loops over numeric month subdirectories (01–12).
 - Skips empty months.
 - Calls process_month_gecko.sh for each month.
 Test case:
-./scripts/process_year_gecko.sh /data/repository/archive/ABM1Y/continuous/2023 sds_test_archive temp_processing
+`./scripts/process_year_gecko.sh /data/repository/archive/ABM1Y/continuous/2023 sds_test_archive temp_processing`
 
 Key idea: Each wrapper delegates work to the next lower level, allowing you to process a day, month, or year with the same underlying day-processing logic, while handling temp directories and avoiding spillover between days.
+
+project/
+├── scripts/
+│   ├── process_day_gecko.sh
+│   ├── process_month_gecko.sh
+│   ├── process_year_gecko.sh
+│   ├── process_archive_gecko.sh
+│   └── copy_minute_files_gecko.sh
+├── temp_processing/
+└── sds_test_archive/
 
