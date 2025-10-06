@@ -72,11 +72,41 @@ done
 `ms_minute_clean` should contain a unique set up files 
 
 ```
-./scripts/copy_minute_files_gecko.sh mseed_day_test/ ms_minute_clean
+./scripts/copy_minute_files_gecko.sh mseed_day_test/ temp_day_dir
 #unzip them
-find ms_minute_clean -maxdepth 1 -type f -name "*.ms" -print0 | sort -z | xargs -0 cat > ms_day_cat/full.ms
-scmssort -u -E ms_day_cat/full.ms > ms_day_cat/sorted.mseed
-scart -I ms_day_cat/sorted.mseed       --with-filecheck       --rename "VW.-.-.-"       sds_test_archive/
+find temp_day_dir -maxdepth 1 -type f -name "*.ms" -print0 | sort -z | xargs -0 cat > temp_day_dir/full.ms
+scmssort -u -E temp_day_dir/full.ms > temp_day_dir/sorted.mseed
+scart -I temp_day_dir/sorted.mseed       --with-filecheck       --rename "VW.-.-.-"       sds_test_archive/
 
+```
+
+```
+project/
+├── scripts/
+│   ├── process_day_gecko.sh
+│   ├── process_year_gecko.sh
+│   └── copy_minute_files_gecko.sh
+├── temp_processing/
+└── sds_test_archive/
+
+
+```
+
+Running this on one day results in 2 files ( a big one and a small one). Big file seems good. 
+
+```
+./scripts/process_day_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10/24 sds_test_archive temp_processing
+ls -lrt sds_test_archive/2023/VW/ABM1Y/CHZ.D/
+total 32180
+-rw-rw-r-- 1 seiscomp seiscomp    19968 Oct  6 16:04 VW.ABM1Y.00.CHZ.D.2023.298
+-rw-rw-r-- 1 seiscomp seiscomp 32929280 Oct  6 16:04 VW.ABM1Y.00.CHZ.D.2023.297
+```
+
+This is still not working =>
+
+```
+./scripts/process_month_gecko.sh /data/repository/archive/ABM1Y/continuous/2023/10 \
+                           sds_test_archive \
+                           temp_processing
 ```
 
