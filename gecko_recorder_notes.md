@@ -27,7 +27,9 @@ So, the underscored zip file (USB/Local file) contains multiple files
 
 ## Copying files
 
-The following script copies over file on order to take either the underscored file (firts preference(, or the spaced file. It's been tested on a directre with a mix of file types
+The following script copies over file on order to take either the underscored file (firts preference), or the spaced file. It's been tested on a directory with a mix of file types (spaces and underscores)
+
+This is slow, however - need to work on ways to make this faster, or have it work in place - i.e. build up a file list. 
 
 ```                                                                                                    
 #!/bin/bash
