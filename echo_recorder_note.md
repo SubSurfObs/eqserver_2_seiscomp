@@ -24,19 +24,13 @@ This results in a single PC-SUDS file, eg *.FRTM.dmx
 In the EqServer Continuous Archive you may find:
 
 * both telemetered and locally saved files
-* multiple underscored (or spaced files - probably) files for a given HHMM seems relatively commo
-  * this means you  never want to assume that 24x60 files should be present. 
+* Telemetered files have spaces: `2024 2024-01-01 2359 02 ABM5Y.dmx`
+* Locally saved files have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx`
+
 * sometimes you also get triggered files in the continuous , these files look like `...trig.dmx.gz`
+* sometimes you get accelerometer files that are triggered and do not have trig in the name e.g., `2023-11-24_0317_55_ABM5Y.dmx`. this is harder to deal with. 
 
-
-e.g:
-
-```
-2023-10-23_2358_19_ABM2Y.dmx
-2023-10-23_2358_31_ABM2Y.dmx
-```
-
-## Use of EqConvert on SUDS datya
+## Use of EqConvert on SUDS data
 
 
 ## Copying data for conversion
