@@ -70,8 +70,19 @@ done
 
 ```
 
+## timing
 
+Copying a day directy, with both telemetered and non-telemetered files takes between 3-4 seconds. Marginally faster with rsync. 
 
+```
+time cp -r /data/repository/archive/ABM5Y/continuous/2023/11/24/* ./copy_time_test/
+time rsync -a --progress /data/repository/archive/ABM5Y/continuous/2023/11/24/ ./copy_time_test/
+```
+
+The time taken to copy the unique file set over is about double (7 seconds)
+```
+time ./scripts/copy_minute_files.sh suds_day_test/ suds_minute_clean/
+```
 
 
 
