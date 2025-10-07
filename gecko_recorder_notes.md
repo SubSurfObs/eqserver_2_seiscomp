@@ -25,66 +25,16 @@ Archive:  /data/repository/archive/ABM1Y/continuous/2023/10/29/20231029_0001_ABM
 
 So, the underscored zip file (USB/Local file) contains multiple files
 
-## Copying files
 
-The following script copies over file on order to take either the underscored file (firts preference), or the spaced file. It's been tested on a directory with a mix of file types (spaces and underscores)
-
-This is slow, however - need to work on ways to make this faster, or have it work in place - i.e. build up a file list. 
-
-```                                                                                                    
-#!/bin/bash
-
-# Default verbose off
-VERBOSE=0
-
-# Check for verbose flag
-if [[ "$1" == "-v" || "$1" == "--verbose" ]]; then
-    VERBOSE=1
-    shift
-fi
-
-in_dir="$1"
-out_dir="$2"
-
-mkdir -p "$out_dir"
-
-# Keep track of which minutes already have an underscored file
-declare -A underscored_exists
-
-for file in "$in_dir"/*.ms*; do
-    [ -e "$file" ] || continue
-    base=$(basename "$file")
-
-    # Extract HHMM from underscored (e.g., 20231029_0001_ABM1Y.ms) or spaced (2023-10-29 0001 00 ABM1Y.ms)
-    if [[ "$base" =~ ([0-2][0-9][0-5][0-9]) ]]; then
-        hhmm="${BASH_REMATCH[1]}"
-    else
-        [[ $VERBOSE -eq 1 ]] && echo "Cannot extract HHMM from $base"
-        continue
-    fi
-
-    if [[ "$base" == *_*_* ]]; then
-        # Underscored file: copy and mark HHMM
-        cp "$file" "$out_dir/"
-        underscored_exists["$hhmm"]=1
-        [[ $VERBOSE -eq 1 ]] && echo "Copied underscored: $file"
-    else
-        # Spaced file: only copy if no underscored for this HHMM
-        if [[ -z "${underscored_exists[$hhmm]}" ]]; then
-            cp "$file" "$out_dir/"
-            [[ $VERBOSE -eq 1 ]] && echo "Copied spaced: $file"
-        fi
-    fi
-done
-```
-
-## Example
-
+### Example copy files 
 `mseed_day_test` contains a range of underscored and scpaced files files
 `ms_minute_clean` should contain a unique set up files 
 
 ```
-./scripts/copy_minute_files_gecko.sh mseed_day_test/ temp_day_dir
+./scripts/copy_minute_files.sh mseed_day_test/ ms_minute_clean
+
+### Unzip and cat miniseed files
+
 #unzip them
 find temp_day_dir -maxdepth 1 -type f -name "*.ms" -print0 | sort -z | xargs -0 cat > temp_day_dir/full.ms
 scmssort -u -E temp_day_dir/full.ms > temp_day_dir/sorted.mseed
