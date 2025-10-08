@@ -33,7 +33,16 @@ Caveats / anomalies
 * sometimes you also get triggered files in the continuous , these files look like `...trig.dmx.gz`
 * sometimes you get a few errant mseed files (??) that have single underscore, like '2023-10-24 0836 49 MARD_DHZ.mseed.zip' (this is one of about 50 such files in a day that otherwise has only telemetered data)
 * sometimes you get accelerometer files that are triggered and do not have trig in the name e.g., `2023-11-24_0317_55_ABM5Y.dmx`. this is harder to deal with.
-* sometimes, it seems like an underscred files genuainely replaces a spaced file, as in '2023-12-12 2009 27 ABM2Y.dmx',  2023-12-12_2010_27_ABM2Y.dmx, '2023-12-12 2011 27 ABM2Y.dmx'. This is in a directory that has 95 percrent spaced files. 
+* sometimes, it seems like an underscred files genuainely replaces a spaced file, as in '2023-12-12 2009 27 ABM2Y.dmx',  2023-12-12_2010_27_ABM2Y.dmx, '2023-12-12 2011 27 ABM2Y.dmx'. This is in a directory that has 95 percrent spaced files.
+* Don't assume that file size difference sare alway different componets.
+
+
+This directory has spaces and non-spaced files, both 3 component. Note size difference.. 
+```
+ls -lh *0003*.dmx
+-rw-rw-r-- 1 seiscomp seiscomp 144K Oct  9 10:47 '2016-12-01 0003 35 OUTU.dmx'
+-rw-r--r-- 1 seiscomp seiscomp  73K Oct  9 10:47  2016-12-01_0003_35_OUTU.dmx
+``
 
 
 ## filtering correct files:
