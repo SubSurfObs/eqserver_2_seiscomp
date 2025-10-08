@@ -26,10 +26,15 @@ In the EqServer Continuous Archive you may find:
 
 * both telemetered and locally saved files
 * Telemetered files have spaces: `2024 2024-01-01 2359 02 ABM5Y.dmx`
-* Locally saved files have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx
+* Locally saved files generalyy have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx
+
+Caveats / anomalies
+  
 * sometimes you also get triggered files in the continuous , these files look like `...trig.dmx.gz`
 * sometimes you get a few errant mseed files (??) that have single underscore, like '2023-10-24 0836 49 MARD_DHZ.mseed.zip' (this is one of about 50 such files in a day that otherwise has only telemetered data)
 * sometimes you get accelerometer files that are triggered and do not have trig in the name e.g., `2023-11-24_0317_55_ABM5Y.dmx`. this is harder to deal with.
+* sometimes, it seems like an underscred files genuainely replaces a spaced file, as in '2023-12-12 2009 27 ABM2Y.dmx',  2023-12-12_2010_27_ABM2Y.dmx, '2023-12-12 2011 27 ABM2Y.dmx'. This is in a directory that has 95 percrent spaced files. 
+
 
 ## filtering correct files:
 
@@ -40,7 +45,13 @@ seiscomp@rd-l-y9d9pt:~/sds_conversion_tests$ ls /data/repository/archive/ABM5Y/c
 1480
 ```
 
-One way of dealing with this is to check for files that have a uniform timestamp. My hope is that this cover something like 80-90% of cases, i.e. recorder functioning and 1440 files present. So this is the first check to perform - look for a full (or near full) complement of files. 
+One way of dealing with this is to check for files that have a uniform timestamp. My hope is that this cover something like 80-90% of cases, i.e. recorder functioning and 1440 files present. So this is the first check to perform - look for a full (or near full) complement of files.
+
+This one-liner loops over all day directories in the specified month and runs report_echo_day.sh on each, producing a report of the most frequent timestamps for underscored and spaced files per day.
+
+```
+for d in /data/repository/archive/ABM2Y/continuous/2023/12/*; do ./report_echo_day.sh "$d"; done
+```
 
 If this returns less that 1440, there are a few options. We could copy over the files that have a unique pattern and are abouve a threshold number of files. This should get the continuous files even when the recorder was switching on and off. 
 
