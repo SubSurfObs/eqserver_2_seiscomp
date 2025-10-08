@@ -161,6 +161,15 @@ All together this is bit problematic
 
 Another possibility is to force eqconvert to do file-by-file
 
+
+```
+outdir="ms_convert_indiv"
+mkdir -p "$outdir"
+for file in *.dmx*; do
+  java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar "$file" -f miniseed -w "$outdir/${file%.dmx*}.ms"
+done
+```
+
 ## Copying data for conversion
 
 The script loops over every hour and minute of the day, constructing an HHMM string for each, and for each HHMM it copies all matching underscored .dmx or .dmx.gz files from the input directory to the output directory, skipping any .trig files; if no underscored files exist for that HHMM, it copies all matching spaced files instead, ensuring every available minute file is captured while preferring underscored files and handling multiple files per minute.
