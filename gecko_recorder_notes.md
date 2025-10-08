@@ -2,8 +2,13 @@
 
 Gecko data on EqServer uses the same convention for telemetered / local files. 
 
-'/data/repository/archive/ABM1Y/continuous/2023/10/29/2023-10-29 0001 00 ABM1Y.ms.zip'
-/data/repository/archive/ABM1Y/continuous/2023/10/29/20231029_0001_ABM1Y.ms.zip
+
+
+Examples:
+
+* 2023-10-29 0001 00 ABM1Y.ms.zip
+* 2023-11-01 1020 00 BRTH.ms.zip'
+* 20231029_0001_ABM1Y.ms.zip
 
 You sometime see triggered files with a dmx suffix (which is similar to occasionally seeing mseed files for Echo staations. 
 
@@ -12,6 +17,8 @@ You sometime see triggered files with a dmx suffix (which is similar to occasion
 
 
 ## Zipped files
+
+Are Gecko files always zipped on Eqserver?
 
 Here is an example where we have a telemetered and non-telemetered file:
 
