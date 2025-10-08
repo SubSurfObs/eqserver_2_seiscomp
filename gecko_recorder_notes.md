@@ -10,9 +10,12 @@ Examples:
 * 2023-11-01 1020 00 BRTH.ms.zip'
 * 20231029_0001_ABM1Y.ms.zip
 
+Files to watch out for, exclude
+
 You sometime see triggered files with a dmx suffix (which is similar to occasionally seeing mseed files for Echo staations. 
 
 * '2023-11-01 1009 59 BRTH.trig.dmx'
+* '2018-10-25 2000 00 BRTH.ss' 
 
 
 
