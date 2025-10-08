@@ -22,3 +22,7 @@ The goal is to convert this to a Seiscomp / SDS archive.
 * tailor the scripts if necessary to deal with the nuances and edge case.
 
 **Progress**
+
+* at this stage I have succesfully converted Apollo Bay Gecko data, relying on 2 key scripts: process_day_gecko.sh, copy_files.sh
+* copy_files wil probablt by chnages to a series of more robust scritps for Geckos and Echos
+* all of the "iter: count scripts are about trying to effciently isolate the continuous files in day directories. 
