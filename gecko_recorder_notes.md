@@ -22,13 +22,11 @@ Caveats
 
 DDNE data from early looks very different - NOTE not zipped. 
 
-* '2017-10-05 0000 58 DDNE_CHE.mseed' (note mseed and CHE)
+* '2017-10-05 0000 58 DDNE_CHE.mseed' (note mseed and CHE, but not mseed.zip)
 
 By 2018, it has a more regular file structre:
 
 * '2018-10-05 0000 DDNE.ms.zip,  20181005_0000_DDNE.ms.zip
-
-  
 
 This day for FORG has 2 types of spaced file (2905 files in total): 
 
@@ -49,6 +47,7 @@ You sometime see triggered files with a dmx suffix (which is similar to occasion
 * '2023-11-01 1009 59 BRTH.trig.dmx'
 * '2018-10-25 2000 00 BRTH.ss'
 * '2018-10-25 1542 03 BRTH_CHZ.mseed.zip' (possible a triggered vertical file, but note that early 2017 DDNE data has this format. except not zipped )
+* In this case, '2023-10-24 2004 11 DDSW_CHZ.mseed.zip' all files with this format have a differetn second stamp - consistent with triggered data. 
 
 Files to watch out for, exclude:
 
