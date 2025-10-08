@@ -25,10 +25,41 @@ In the EqServer Continuous Archive you may find:
 
 * both telemetered and locally saved files
 * Telemetered files have spaces: `2024 2024-01-01 2359 02 ABM5Y.dmx`
-* Locally saved files have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx`
-
+* Locally saved files have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx
 * sometimes you also get triggered files in the continuous , these files look like `...trig.dmx.gz`
-* sometimes you get accelerometer files that are triggered and do not have trig in the name e.g., `2023-11-24_0317_55_ABM5Y.dmx`. this is harder to deal with. 
+* sometimes you get a few errant mseed files (??) that have single underscore, like '2023-10-24 0836 49 MARD_DHZ.mseed.zip' (this is one of about 50 such files in a day that otherwise has only telemetered data)
+* sometimes you get accelerometer files that are triggered and do not have trig in the name e.g., `2023-11-24_0317_55_ABM5Y.dmx`. this is harder to deal with.
+
+## filtering correct files:
+
+sometimes you get accelerometer files that are triggered and do not have trig in the name e.g., `2023-11-24_0317_55_ABM5Y.dmx`. this is harder to deal with. Howverm because these are triggered , they do not have a common time stamp (as in seconds). 
+
+```
+seiscomp@rd-l-y9d9pt:~/sds_conversion_tests$ ls /data/repository/archive/ABM5Y/continuous/2023/11/24  | awk -F'_' 'NF==4' | wc -l
+1480
+```
+
+One way of dealing with this is to check for files that have a uniform timestamp. My hope is that this cover something like 80% of cases, ie recorder functioning and 1440 files present. So this is the first check to perform - look for a full (or near full) complement of files. 
+
+scripts/count_underscored.sh /data/repository/archive/ABM5Y/continuous/2023/11/24
+
+```
+seiscomp@rd-l-y9d9pt:~/sds_conversion_tests$ scripts/count_underscored.sh /data/repository/archive/ABM5Y/continuous/2023/11/24
+Directory: /data/repository/archive/ABM5Y/continuous/2023/11/24
+Most common timestamp: 02
+Number of files with this timestamp and 3 underscores: 1440
+```
+
+If this returns less that 1440, there are a few options. We could copy over the files that have a unique pattern and are abouve a threshold number of files. This should get the continuous files even when the recorder was switching on and off. 
+
+So the logic might be. 
+* Check total undercored and spaced files, excluding known files like "trig", "mseed". etc/
+* if 1440 spaced files copy over.
+* if more than 1440 get unique time stamps and frequence. copy over those above a threshold.
+* if less that 1440 repeat process for spaced files
+
+The limitation will be if triggered accelerometer files with the same pattern overwrite the seismometer files, and coincidently have the same file time stamp.  
+
 
 ## Use of EqConvert on SUDS data
 
