@@ -1,4 +1,15 @@
-## Miniseed data from Geckos
+## Miniseed data from Geckos on EQserver
+
+Gecko data on EqServer uses the same convention for telemetered / local files. 
+
+'/data/repository/archive/ABM1Y/continuous/2023/10/29/2023-10-29 0001 00 ABM1Y.ms.zip'
+/data/repository/archive/ABM1Y/continuous/2023/10/29/20231029_0001_ABM1Y.ms.zip
+
+You sometime see triggered files with a dmx suffix (which is similar to occasionally seeing mseed files for Echo staations. 
+
+* '2023-11-01 1009 59 BRTH.trig.dmx'
+
+
 
 ## Zipped files
 
