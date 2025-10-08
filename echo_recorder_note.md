@@ -110,6 +110,32 @@ Tests:
 
 ## Use of EqConvert on SUDS data
 
+Here is a test with 3 files. The spaced file "02" is telemetered 1 componenent, the underscored file "02" is local 3 componet, the other files is a triggered accelerometer file. 
+
+```
+$ ls -lrt
+-rwxr-xr-x 1 seiscomp seiscomp 31207 Oct  8 21:45 '2023-11-24 2057 02 ABM5Y.dmx'
+-rwxr-xr-x 1 seiscomp seiscomp 93546 Oct  8 21:45  2023-11-24_2057_48_ABM5Y.dmx
+-rwxr-xr-x 1 seiscomp seiscomp 91915 Oct  8 21:45  2023-11-24_2057_02_ABM5Y.dmx
+```
+Runningf this, results in 2 output files:
+
+```
+seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps$ java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar ./ -f miniseed -d ms_convert
+2023-11-24_2057_48_ABM5Y.dmx->/home/seiscomp/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert/2023-11-24 2057 48 ABM5Y.ms
+2023-11-24_2057_02_ABM5Y.dmx->/home/seiscomp/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert/2023-11-24 2057 02 ABM5Y.ms
+2023-11-24 2057 02 ABM5Y.ms->/home/seiscomp/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert/2023-11-24 2057 02 ABM5Y.ms
+2023-11-24 2057 48 ABM5Y.ms->/home/seiscomp/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert/2023-11-24 2057 48 ABM5Y.ms
+2023-11-24 2057 02 ABM5Y.dmx->/home/seiscomp/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert/2023-11-24 2057 02 ABM5Y.ms
+```
+However, when I concatentaed these files, then used scart to push them into SDS, I found:
+
+```
+seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert$ ls test_sds/2023/AB/ABM5Y/
+DLZ.D  DNE.D  DNN.D  DNZ.D
+``
+It appears that the 3 component data was lost. 
+
 
 ## Copying data for conversion
 
