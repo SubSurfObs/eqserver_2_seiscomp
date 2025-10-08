@@ -147,6 +147,13 @@ However, when I wrote all three SUDS files to a single miniseed file, all channe
 java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar ./ -f miniseed -w ms_convert/single.ms
 ```
 
+The next problem though, is that whenever I use eqconvert to merge minseed files, I then find that the network mapping in scart is difficult. I have got this working;
+
+```
+cat *.ms | scmssort -uE > outputs/sorted.mseed
+scart -I outputs/sorted.mseed --with-filecheck test_sds2/ -c "DL?" --rename "VW.-.-.-"
+```
+
 ## Copying data for conversion
 
 The script loops over every hour and minute of the day, constructing an HHMM string for each, and for each HHMM it copies all matching underscored .dmx or .dmx.gz files from the input directory to the output directory, skipping any .trig files; if no underscored files exist for that HHMM, it copies all matching spaced files instead, ensuring every available minute file is captured while preferring underscored files and handling multiple files per minute.
