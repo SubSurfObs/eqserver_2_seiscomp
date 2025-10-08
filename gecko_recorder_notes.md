@@ -6,16 +6,17 @@ It's not as homogenous as I hoped.
 
 More recent data seems to use the same space/underscore convention for telemetered / local files. 
 
-Examples:
+Some Examples:
 
 * 2023-10-29 0001 00 ABM1Y.ms.zip
 * 2023-11-01 1020 00 BRTH.ms.zip'
 * 20231029_0001_ABM1Y.ms.zip
+* '2020-11-08 0001 DDSW.ms.zip'
 
-* Some important differences to EchoData
+Some important differences to EchoData
 
-Gecko underscored files have 2 underscores whereas EchoPro's have 3.
-They don;t contain a "second" timestamp
+* Gecko underscored files have 2 underscores whereas EchoPro's have 3. They don't contain a "second" timestamp
+* Gecko spaced files sometimes have a seconds field, but not always, and example is 2020-11-08 0001 DDSW.ms.zip'
 
 Caveats 
 
@@ -81,7 +82,7 @@ Archive:  /data/repository/archive/ABM1Y/continuous/2023/10/29/20231029_0001_ABM
   inflating: test_unzip_formats/ABM1Y.02000236.station.xml
 ```
 
-So, the underscored zip file (USB/Local file) contains multiple files
+So, the underscored zip file (USB/Local file) contains multiple files, the spaced file contains a sinle file
 
 
 ### Example copy files 
