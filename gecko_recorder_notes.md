@@ -1,8 +1,6 @@
 ## Miniseed data from Geckos on EQserver
 
-Gecko data on EqServer uses the same convention for telemetered / local files. 
-
-
+Gecko data on EqServer seems to use the same convention for telemetered / local files. 
 
 Examples:
 
@@ -10,12 +8,28 @@ Examples:
 * 2023-11-01 1020 00 BRTH.ms.zip'
 * 20231029_0001_ABM1Y.ms.zip
 
+Some important differences:
+
+Gecko underscored files have 2 underscores whereas EchoPro's have 3.
+They don;t contain a "second" timestamp
+
+Some caveats, this day for FORF has 2 types of spaced file (2905 files in total): 
+
+* '2021-11-03 0001 00 FORG.ms.zip'
+* '2021-11-03 0001 FORG.ms.zip'
+
+Is this an earlier version, where underscores were not used for local files, but instead the absence of a seconds in the timestamp is indicative?
+
+* 20211103_0000_LRSH.ms.zip
+* '2021-11-03 0001 LRSH.ms.zip'
+
 Files to watch out for, exclude
 
 You sometime see triggered files with a dmx suffix (which is similar to occasionally seeing mseed files for Echo staations. 
 
 * '2023-11-01 1009 59 BRTH.trig.dmx'
-* '2018-10-25 2000 00 BRTH.ss' 
+* '2018-10-25 2000 00 BRTH.ss'
+* '2018-10-25 1542 03 BRTH_CHZ.mseed.zip' (possible a triggered vertical file) 
 
 
 
