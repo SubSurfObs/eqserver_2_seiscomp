@@ -6,6 +6,7 @@
 * Recorder has an option to compress, which gives`.dmx.gz`
 * Telemetered files have spaces: `2024 2024-01-01 2359 02 ABM5Y.dmx`
 * Locally saved files have underscores: `2024 2024-01-01_2359_02_ABM5Y.dmx`
+* Because EchoPros are 6 channels, there are potential complications relative to Geckos. This is mainly related to triggered files that don;t have a "trig" in the file name
 
 
 ## Unzipping
