@@ -71,6 +71,24 @@ Most common timestamp: 24
 Number of files matching this timestamp: 311
 ```
 
+```
+$ ./scripts/iter_count_spaced.sh  /data/repository/archive/ABM2Y/continuous/2023/12/01
+Directory: /data/repository/archive/ABM2Y/continuous/2023/12/01
+Total files considered: 1439
+Most common timestamp: 34
+Number of files matching this timestamp: 1439
+```
+
+
+
+Tests:
+
+```
+=>mainly underscored files
+/data/repository/archive/ABM2Y/continuous/2023/11/01
+=>mainly spaced files
+/data/repository/archive/ABM2Y/continuous/2023/12/01
+```
 
 
 ## Use of EqConvert on SUDS data
