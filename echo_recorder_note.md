@@ -118,7 +118,7 @@ $ ls -lrt
 -rwxr-xr-x 1 seiscomp seiscomp 93546 Oct  8 21:45  2023-11-24_2057_48_ABM5Y.dmx
 -rwxr-xr-x 1 seiscomp seiscomp 91915 Oct  8 21:45  2023-11-24_2057_02_ABM5Y.dmx
 ```
-Runningf this, results in 2 output files:
+Runningg this in output directory mode, results in 2 output files:
 
 ```
 seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps$ java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar ./ -f miniseed -d ms_convert
@@ -140,6 +140,11 @@ It appears that the 3 component data was lost, as a result of including the sing
 ```
 seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert$ ls test_sds/2023/AB/ABM5Y/
 DLE.D  DLN.D  DLZ.D  DNE.D  DNN.D  DNZ.D
+```
+
+However, when I wrote all three SUDS files to a single miniseed file, all channels were retained!
+```
+java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar ./ -f miniseed -w ms_convert/single.ms
 ```
 
 ## Copying data for conversion
