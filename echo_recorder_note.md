@@ -170,6 +170,24 @@ for file in *.dmx*; do
 done
 ```
 
+Progress - I can remap the location code now
+
+```
+cat *.ms | scmssort -uE > outputs/sorted.mseed
+scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DL?" --rename "VW.-.00.-"
+```
+
+This works
+
+```
+scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DLZ" --rename "AB.ABM5Y.60.DLZ:VW.ABM5Y.00.CHZ"
+
+scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DL?" --rename "AB.ABM5Y.60.DLZ:VW.ABM5Y.00.CHZ,"AB.ABM5Y.60.DLE:VW.ABM5Y.00.CHE,"AB.ABM5Y.60.DLN:VW.ABM5Y.00.CHN"
+
+``
+
+
+
 ## Copying data for conversion
 
 The script loops over every hour and minute of the day, constructing an HHMM string for each, and for each HHMM it copies all matching underscored .dmx or .dmx.gz files from the input directory to the output directory, skipping any .trig files; if no underscored files exist for that HHMM, it copies all matching spaced files instead, ensuring every available minute file is captured while preferring underscored files and handling multiple files per minute.
