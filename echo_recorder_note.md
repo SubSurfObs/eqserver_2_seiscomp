@@ -154,6 +154,13 @@ cat *.ms | scmssort -uE > outputs/sorted.mseed
 scart -I outputs/sorted.mseed --with-filecheck test_sds2/ -c "DL?" --rename "VW.-.-.-"
 ```
 
+All together this is bit problematic
+
+* you run eqconvert in directoty mode, you get individial ms files, but you loose data.
+* you run it in merge mode, you get a good output file, but you can't do channel remapping
+
+Another possibility is to force eqconvert to do file-by-file
+
 ## Copying data for conversion
 
 The script loops over every hour and minute of the day, constructing an HHMM string for each, and for each HHMM it copies all matching underscored .dmx or .dmx.gz files from the input directory to the output directory, skipping any .trig files; if no underscored files exist for that HHMM, it copies all matching spaced files instead, ensuring every available minute file is captured while preferring underscored files and handling multiple files per minute.
