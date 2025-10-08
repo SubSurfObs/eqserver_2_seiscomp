@@ -4,7 +4,7 @@
 
 It's not as homogenous as I hoped. 
 
-More recent dats seems to use the same convention for telemetered / local files. 
+More recent data seems to use the same space/underscore convention for telemetered / local files. 
 
 Examples:
 
@@ -19,10 +19,15 @@ They don;t contain a "second" timestamp
 
 Caveats 
 
-DDNE data looks very differenc. 
+DDNE data from early looks very different - NOTE not zipped. 
 
 * '2017-10-05 0000 58 DDNE_CHE.mseed' (note mseed and CHE)
 
+By 2018, it has a more regular file structre:
+
+* '2018-10-05 0000 DDNE.ms.zip,  20181005_0000_DDNE.ms.zip
+
+  
 
 This day for FORG has 2 types of spaced file (2905 files in total): 
 
@@ -42,10 +47,14 @@ You sometime see triggered files with a dmx suffix (which is similar to occasion
 
 * '2023-11-01 1009 59 BRTH.trig.dmx'
 * '2018-10-25 2000 00 BRTH.ss'
-* '2018-10-25 1542 03 BRTH_CHZ.mseed.zip' (possible a triggered vertical file, but note that early DDNE data has this format )
+* '2018-10-25 1542 03 BRTH_CHZ.mseed.zip' (possible a triggered vertical file, but note that early 2017 DDNE data has this format. except not zipped )
 
+Files to watch out for, exclude:
 
-
+* trig
+* dmx
+* mseed.zip
+* ss
 
 ## Zipped files
 
