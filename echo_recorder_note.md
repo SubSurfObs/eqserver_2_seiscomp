@@ -58,10 +58,15 @@ If this returns less that 1440, there are a few options. We could copy over the 
 So the logic might be:
 
 * Check total underscored and spaced files, excluding known file patterns like "trig", "mseed". etc/
-* if there are 1440 spaced files copy over.
-* if there are more than 1440 get unique time stamps and frequence, copy over those above a threshold.
-* if less that 1440 repeat process for spaced files
-* if more underscored files than spaced files, revert to copying underscored above a threshold
+* check if underscored > spaced files
+* if there are ~1440 underscored files copy over, break
+* if there are ~1440 spaced files, and underscored files  below threshold, copy over spaced files, break
+* if there are more than 1440 underscored files this might imply additional channels.
+* get unique time stamps and frequency on underscored files
+* check if one of these combnations has ~1440, if so copy these,break
+* if not, count those above a threshold to get a total. 
+* if this is less than copy over, 1440, break
+* if there are less than 1440 files, try to patch in spaced files
 
 The limitation in this logic will be if triggered accelerometer files with the same pattern overwrite the seismometer files, and coincidently have the same file time stamp.  In that case, we may still see case where 6 channels appear. 
 
