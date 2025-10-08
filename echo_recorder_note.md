@@ -38,11 +38,12 @@ Caveats / anomalies
 
 
 This directory has spaces and non-spaced files, both 3 component. Note size difference.. 
+
 ```
 ls -lh *0003*.dmx
 -rw-rw-r-- 1 seiscomp seiscomp 144K Oct  9 10:47 '2016-12-01 0003 35 OUTU.dmx'
 -rw-r--r-- 1 seiscomp seiscomp  73K Oct  9 10:47  2016-12-01_0003_35_OUTU.dmx
-``
+```
 
 
 ## filtering correct files:
@@ -87,6 +88,7 @@ Directory: /data/repository/archive/ABM5Y/continuous/2023/11/24
 Most common timestamp: 02
 Number of files with this timestamp and 3 underscores: 1440
 ```
+
 ```
 $ ./scripts/iter_count_underscored.sh /data/repository/archive/NARR/continuous/2018/10/01
 Directory: /data/repository/archive/NARR/continuous/2018/10/01
