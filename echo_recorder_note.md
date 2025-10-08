@@ -39,26 +39,38 @@ seiscomp@rd-l-y9d9pt:~/sds_conversion_tests$ ls /data/repository/archive/ABM5Y/c
 1480
 ```
 
-One way of dealing with this is to check for files that have a uniform timestamp. My hope is that this cover something like 80% of cases, ie recorder functioning and 1440 files present. So this is the first check to perform - look for a full (or near full) complement of files. 
+One way of dealing with this is to check for files that have a uniform timestamp. My hope is that this cover something like 80-90% of cases, i.e. recorder functioning and 1440 files present. So this is the first check to perform - look for a full (or near full) complement of files. 
 
-scripts/count_underscored.sh /data/repository/archive/ABM5Y/continuous/2023/11/24
+If this returns less that 1440, there are a few options. We could copy over the files that have a unique pattern and are abouve a threshold number of files. This should get the continuous files even when the recorder was switching on and off. 
+
+So the logic might be:
+
+* Check total underscored and spaced files, excluding known file patterns like "trig", "mseed". etc/
+* if there are 1440 spaced files copy over.
+* if there are more than 1440 get unique time stamps and frequence, copy over those above a threshold.
+* if less that 1440 repeat process for spaced files
+* if more underscored files than spaced files, revert to copying underscored above a threshold
+
+The limitation in this logic will be if triggered accelerometer files with the same pattern overwrite the seismometer files, and coincidently have the same file time stamp.  In that case, we may still see case where 6 channels appear. 
+
+Of course, you could screen for these by using a temporary directory for the output of `scart`. You use this to check for more than 3 streams. If found, you could remove. 
 
 ```
-seiscomp@rd-l-y9d9pt:~/sds_conversion_tests$ scripts/count_underscored.sh /data/repository/archive/ABM5Y/continuous/2023/11/24
+$ scripts/count_underscored.sh /data/repository/archive/ABM5Y/continuous/2023/11/24
 Directory: /data/repository/archive/ABM5Y/continuous/2023/11/24
 Most common timestamp: 02
 Number of files with this timestamp and 3 underscores: 1440
 ```
+```
+$ ./scripts/iter_count_underscored.sh /data/repository/archive/NARR/continuous/2018/10/01
+Directory: /data/repository/archive/NARR/continuous/2018/10/01
+Total underscored files: 1440
+Most common timestamp: 49
+Number of files matching this timestamp: 1129
+Most common timestamp: 24
+Number of files matching this timestamp: 311
+```
 
-If this returns less that 1440, there are a few options. We could copy over the files that have a unique pattern and are abouve a threshold number of files. This should get the continuous files even when the recorder was switching on and off. 
-
-So the logic might be. 
-* Check total undercored and spaced files, excluding known files like "trig", "mseed". etc/
-* if 1440 spaced files copy over.
-* if more than 1440 get unique time stamps and frequence. copy over those above a threshold.
-* if less that 1440 repeat process for spaced files
-
-The limitation will be if triggered accelerometer files with the same pattern overwrite the seismometer files, and coincidently have the same file time stamp.  
 
 
 ## Use of EqConvert on SUDS data
