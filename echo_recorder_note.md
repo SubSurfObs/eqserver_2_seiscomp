@@ -131,11 +131,16 @@ seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps$ java -
 However, when I concatentaed these files, then used scart to push them into SDS, I found:
 
 ```
-seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert$ ls test_sds/2023/AB/ABM5Y/
+$ ls test_sds/2023/AB/ABM5Y/
 DLZ.D  DNE.D  DNN.D  DNZ.D
-``
-It appears that the 3 component data was lost. 
+```
 
+It appears that the 3 component data was lost, as a result of including the single component file. Not good. I tested this by running the same workflow withut the single channel data, and I got:
+
+```
+seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps/ms_convert$ ls test_sds/2023/AB/ABM5Y/
+DLE.D  DLN.D  DLZ.D  DNE.D  DNN.D  DNZ.D
+```
 
 ## Copying data for conversion
 
