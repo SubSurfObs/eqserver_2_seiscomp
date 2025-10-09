@@ -220,7 +220,13 @@ I then ran this on a a subset (200 files) with 8 procs (on a 4 proc machine) and
 * Next I boosted my VM to 16 procs and re-ran this test with 16 and 32 threads, with 16 I got this down to about 1 minute. But not much advantage to usign 32 procs. 
 
 
+The AIs suggested batch processing: reducing the overhead of starting a new Java process for each file. You can experiment with different batch sizes (e.g., 10, 50, or 100 files per batch). E.g:
 
+```
+find . -name "*.dmx" -print0 | xargs -0 -n 50 -P 16 sh -c 'for file in "$@"; do java -jar ~/software/eqconvert.jar "$file" -f miniseed -w "'"$outdir"'/${file##*/}.ms"; done' _
+```
+
+The time taken was about the same (1 minute), for batch sizes of -n 50 -n 100
 
 ## Copying data for conversion
 
