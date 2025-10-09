@@ -1,8 +1,10 @@
 #!/bin/bash
 # ================================================================
-# process_archive_echo.sh
-# Master driver: recursively process a station's archive (year/month/day)
-# Applies process_day_echo.sh or process_day_gecko.sh as needed.
+# process_archive_echo_log.sh
+# Recursively process an EQServer archive (year/month/day)
+# using the appropriate day-level converter (Echo or Gecko).
+# Logs are written in flat structure with unique YYYY-MM-DD filenames.
+# Each day now gets its own separate log file.
 # ================================================================
 
 set -euo pipefail
@@ -28,12 +30,10 @@ CONFIG_FILE="$SCRIPT_DIR/config.txt"
 [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
 
 # ------------- Determine station name -------------
-# Try from path: /archive/STATION/YYYY/MM/DD
 station=$(basename "$(dirname "$(dirname "$(dirname "$input_dir")")")")
-# Fallback: parse from filename if not in a standard path
 if [[ ! "$station" =~ ^[A-Z0-9]{4,5}$ ]]; then
-  first_file=$(find "$input_dir" -type f -print -quit)
-  station=$(basename "$first_file" | grep -oE '[A-Z0-9]{4,5}(?=\.)')
+  first_file=$(find "$input_dir" -type f -print -quit 2>/dev/null || true)
+  station=$(basename "$first_file" | grep -oE '[A-Z0-9]{4,5}(?=\.)' || echo "UNKNOWN")
 fi
 station=${station:-UNKNOWN}
 
@@ -41,16 +41,18 @@ station=${station:-UNKNOWN}
 LOG_BASE="$SCRIPT_DIR/logs/$station"
 mkdir -p "$LOG_BASE/crash_reports"
 master_log="$LOG_BASE/master.log"
-
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$master_log" >&2; }
 
 # ------------- Crash trap -------------
+current_day_dir=""
+current_log_file=""
 trap '{
   err_code=$?;
-  echo "ERROR: Crash under $current_day_dir (exit $err_code)" >> "$LOG_BASE/crash_reports/crash_$(date -Iseconds).log";
+  crash_file="$LOG_BASE/crash_reports/crash_$(date -Iseconds).log"
+  echo "ERROR: Crash under ${current_day_dir:-N/A} (exit $err_code)" >> "$crash_file"
   if [ -n "${current_log_file:-}" ] && [ -f "$current_log_file" ]; then
-    echo "--- Last 30 lines of $current_log_file ---" >> "$LOG_BASE/crash_reports/crash_$(date -Iseconds).log";
-    tail -n 30 "$current_log_file" >> "$LOG_BASE/crash_reports/crash_$(date -Iseconds).log";
+    echo "--- Last 30 lines of $current_log_file ---" >> "$crash_file"
+    tail -n 30 "$current_log_file" >> "$crash_file"
   fi
   exit $err_code;
 }' ERR
@@ -58,19 +60,38 @@ trap '{
 # ------------- Detect level (YEAR/MONTH/DAY) -------------
 detect_level() {
   local dir="$1"
-  local files=$(find "$dir" -maxdepth 1 -type f \( -name "*.dmx" -o -name "*.dmx.gz" -o -name "*.ms" -o -name "*.ms.zip" \) | wc -l)
-  if [ "$files" -gt 0 ]; then
-    echo "DAY"; return
+  local dir_name parent_name
+  dir_name=$(basename "$dir")
+  parent_name=$(basename "$(dirname "$dir")")
+
+  local file_count
+  file_count=$(find "$dir" -maxdepth 1 -type f \
+    \( -name "*.dmx" -o -name "*.dmx.gz" -o -name "*.ms" -o -name "*.ms.zip" \) \
+    | wc -l)
+
+  if [ "$file_count" -gt 0 ]; then
+    echo "DAY"
+    return
   fi
-  local subdirs=$(find "$dir" -mindepth 1 -maxdepth 1 -type d | wc -l)
-  local two_digit=$(find "$dir" -mindepth 1 -maxdepth 1 -type d | grep -E '/[0-9]{2}$' | wc -l)
-  if [ "$two_digit" -ge 28 ]; then
+
+  local subdirs subdir_count two_digit_count
+  subdirs=$(find "$dir" -mindepth 1 -maxdepth 1 -type d)
+  subdir_count=$(echo "$subdirs" | wc -l)
+  two_digit_count=$(echo "$subdirs" | grep -E '/[0-9]{2}$' | wc -l)
+
+  # --- Smart detection ---
+  if [[ "$parent_name" =~ ^[0-9]{4}$ ]] && [[ "$dir_name" =~ ^(0[1-9]|1[0-2])$ ]]; then
     echo "MONTH"
-  elif [ "$two_digit" -le 12 ] && [ "$subdirs" -gt 0 ]; then
-    echo "YEAR"
-  else
-    echo "UNKNOWN"
+    return
   fi
+  if [ "$two_digit_count" -ge 28 ]; then
+    echo "MONTH"; return
+  fi
+  if [ "$two_digit_count" -le 12 ] && [ "$subdir_count" -gt 0 ]; then
+    echo "YEAR"; return
+  fi
+
+  echo "UNKNOWN"
 }
 
 level=$(detect_level "$input_dir")
@@ -86,23 +107,33 @@ if [ "$level" == "YEAR" ]; then
 elif [ "$level" == "MONTH" ]; then
   log "Detected MONTH level: $(basename "$input_dir")"
   prev_type="echo"
+  year_name=$(basename "$(dirname "$input_dir")")
+  month_name=$(basename "$input_dir")
+
+  # Save original stdout/stderr
+  exec 3>&1 4>&2
+
   for day_dir in "$input_dir"/*/; do
     [ -d "$day_dir" ] || continue
     current_day_dir="$day_dir"
     day_name=$(basename "$day_dir")
-    current_log_file="$LOG_BASE/${day_name}_day.log"
 
+    # Unique per-day log file
+    current_log_file="$LOG_BASE/${station}_${year_name}-${month_name}-${day_name}_day.log"
+
+    # Redirect output for this day only
     exec > >(stdbuf -oL tee -a "$current_log_file") 2>&1
 
     log "Processing day: $day_name"
 
-    recorder_type=$("$SCRIPT_DIR/checkRecorderType.sh" "$day_dir" "$prev_type")
+    recorder_type=$("$SCRIPT_DIR/check_recorder_type.sh" "$day_dir" "$prev_type")
     prev_type="$recorder_type"
-    log "Recorder type: $recorder_type"
+    log "Detected recorder type: $recorder_type"
 
-    # Skip if already processed in SDS
     if find "$sds_archive" -type f -name "*${day_name}*" | grep -q .; then
       log "Skipping $day_name — already present in SDS."
+      # Restore stdout/stderr
+      exec >&3 2>&4
       continue
     fi
 
@@ -112,20 +143,26 @@ elif [ "$level" == "MONTH" ]; then
       "$SCRIPT_DIR/process_day_gecko.sh" "$day_dir" "$sds_archive" "$temp_base"
     fi
 
-    log "Finished day: $day_name"
-    echo "$(date -Iseconds) | $day_name | $recorder_type | Status: OK" >> "$master_log"
+    log "Finished processing day: $day_name"
+    echo "$(date -Iseconds) | ${year_name}-${month_name}-${day_name} | $recorder_type | Status: OK" >> "$master_log"
+
+    # Restore stdout/stderr before next day
+    exec >&3 2>&4
   done
 
 elif [ "$level" == "DAY" ]; then
-  # Direct day-level call
   current_day_dir="$input_dir"
   day_name=$(basename "$input_dir")
-  current_log_file="$LOG_BASE/${day_name}_day.log"
-  exec > >(stdbuf -oL tee -a "$current_log_file") 2>&1
+  year_name=$(basename "$(dirname "$(dirname "$input_dir")")")
+  month_name=$(basename "$(dirname "$input_dir")")
+  current_log_file="$LOG_BASE/${station}_${year_name}-${month_name}-${day_name}_day.log"
 
+  # Redirect only for this day
+  exec > >(stdbuf -oL tee -a "$current_log_file") 2>&1
   log "Detected single DAY directory"
-  recorder_type=$("$SCRIPT_DIR/checkRecorderType.sh" "$input_dir")
-  log "Recorder type: $recorder_type"
+
+  recorder_type=$("$SCRIPT_DIR/check_recorder_type.sh" "$input_dir")
+  log "Detected recorder type: $recorder_type"
 
   if [ "$recorder_type" == "echo" ]; then
     "$SCRIPT_DIR/process_day_echo.sh" "$input_dir" "$sds_archive" "$temp_base"

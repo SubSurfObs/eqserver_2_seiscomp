@@ -26,18 +26,44 @@ prev_type=""
 
 log() { [ $VERBOSE -eq 1 ] && echo "$@" >&2; }
 
+#process_day_dir() {
+#  local day_dir="$1"
+#  log "Checking recorder type in $day_dir"
+#  rec_type=$("$SCRIPT_DIR/check_recorder_type.sh" "$day_dir" "$prev_type")
+#  log "Detected recorder type: $rec_type"#
+#
+#  case "$rec_type" in
+#    echo)
+#      "$SCRIPT_DIR/process_day_echo.sh" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$day_dir" "$sds_archive" "$temp_base"
+#      ;;
+#    gecko)
+#      "$SCRIPT_DIR/process_day_gecko.sh" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$day_dir" "$sds_archive" "$temp_base"
+#      ;;
+#    *)
+#      echo "Warning: Unknown recorder type for $day_dir, skipping" >&2
+#      return
+#      ;;
+#  esac#
+
+#  prev_type="$rec_type"
+#}
+
 process_day_dir() {
   local day_dir="$1"
   log "Checking recorder type in $day_dir"
+
+  # Detect recorder type (echo or gecko)
+  local rec_type
   rec_type=$("$SCRIPT_DIR/check_recorder_type.sh" "$day_dir" "$prev_type")
   log "Detected recorder type: $rec_type"
 
+  # Dispatch to correct processing script
   case "$rec_type" in
     echo)
-      "$SCRIPT_DIR/process_day_echo.sh" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$day_dir" "$sds_archive" "$temp_base"
+      "$SCRIPT_DIR/process_day_echo.sh" "$day_dir" "$sds_archive" "$temp_base" $([ $VERBOSE -eq 1 ] && echo "--verbose")
       ;;
     gecko)
-      "$SCRIPT_DIR/process_day_gecko.sh" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$day_dir" "$sds_archive" "$temp_base"
+      "$SCRIPT_DIR/process_day_gecko.sh" "$day_dir" "$sds_archive" "$temp_base" $([ $VERBOSE -eq 1 ] && echo "--verbose")
       ;;
     *)
       echo "Warning: Unknown recorder type for $day_dir, skipping" >&2
@@ -45,6 +71,7 @@ process_day_dir() {
       ;;
   esac
 
+  # Remember last successful recorder type
   prev_type="$rec_type"
 }
 

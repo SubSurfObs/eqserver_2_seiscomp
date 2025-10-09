@@ -3,13 +3,15 @@ EQCONVERT_PATH="java -jar /home/seiscomp/software/eqconvert.jar"
 
 
 # Strings to ignore in file names
-IGNORE_STRINGS="trig|\.ss|\.xml|\mseed."
+IGNORE_STRINGS_ECHO="trig|\.ss|\.xml|\mseed."
+# Strings to ignore in file names
+IGNORE_STRINGS_GECKO="trig|\.dmx|\.suds|\mseed."
 
 
 # File completeness threshold (missing minutes)
 THRESHOLD_MISSING_FILES=60
 
 # Parameters for generate_remap_string.sh
-NET="VW"
+NET="VX"
 LOC="00"
 CH="CH"
