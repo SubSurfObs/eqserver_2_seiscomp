@@ -209,11 +209,13 @@ scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DL?" --rename "AB.A
 
 The price you pay is a **massive overhead on time**. So if we want to go this way we need to focus on how to speed this up. It also plays less well with the concept of copying all files over (underscored and spaced).
 
-For a single processor, it took 17 minutes to process a day of files in the local directory:
+For a single processor, it took 17 minutes to process a day of files (~3000 files) in the local directory:
 
 ```
 time for file in *.dmx*; do   java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar "$file" -f miniseed -w "$outdir/${file%.dmx*}.ms"; done
 ``
+
+I then ran this on a a subset (200 files) with 4 procs, and this went down to 15 seconds, and with 8 procs, down to 13 seconds. This is still in the range of days per year. I want to get that down by 10. 
 
 
 ## Copying data for conversion
