@@ -205,7 +205,7 @@ scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DLZ" --rename "AB.A
 
 scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DL?" --rename "AB.ABM5Y.60.DLZ:VW.ABM5Y.00.CHZ,"AB.ABM5Y.60.DLE:VW.ABM5Y.00.CHE,"AB.ABM5Y.60.DLN:VW.ABM5Y.00.CHN"
 
-``
+```
 
 The price you pay is a **massive overhead on time**. So if we want to go this way we need to focus on how to speed this up. It also plays less well with the concept of copying all files over (underscored and spaced).
 
@@ -217,7 +217,11 @@ time for file in *.dmx*; do   java -jar /home/sysop/mnt/software/eqconvert.7/eqc
 
 I then ran this on a a subset (200 files) with 8 procs (on a 4 proc machine) and this went down to 3 minutes. However, this is still in the range of days per year. I want to get that down by 10. 
 
-* Next I boosted my VM to 16 procs and re-ran this test with 16 and 32 threads, with 16 I got this down to about 1 minute. But not much advantage to usign 32 procs. 
+* Next I boosted my VM to 16 procs and re-ran this test with 16 and 32 threads, with 16 I got this down to about 1 minute. But not much advantage to usign 32 procs.
+
+```
+time parallel -j 16 java -jar ~/software/eqconvert.jar {} -f miniseed -w "$outdir/{/.}.ms" ::: *.dmx*
+```
 
 
 The AIs suggested batch processing: reducing the overhead of starting a new Java process for each file. You can experiment with different batch sizes (e.g., 10, 50, or 100 files per batch). E.g:
