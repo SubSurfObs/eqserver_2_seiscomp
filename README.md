@@ -44,5 +44,20 @@ Then I’ll add reporting metrics to capture edge cases, so we can identify when
 Once stable, the goal is to parallelize the workflow — ideally processing one station per day.
 
 
+## Naming conventions
 
+The 1st letter BAND code in SEED convention is: 
+
+D ... ≥ 250 to < 1000 < 10 sec
+C ... ≥ 250 to < 1000 ≥ 10 sec
+E Extremely Short Period ≥ 80 to < 250 < 10 sec
+
+Our EQServer archive consists of all 3, but not necessarily correctlt applied. For intance, Gecko;s don;t atttempt to knwo about the Naturual period, and just apply "C" for a seismometer (our 2 Hz geophones as well as out 60 Sec BBSs). EchoPro data, aftern conversion to Miniseed results in mainly "D", some "E".
+
+The plan is to convert all seismomter data to "C". This 
+
+Instrument Code
+
+H High Gain Seismometer
+L Low Gain Seismometer
 
