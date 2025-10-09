@@ -2,16 +2,21 @@
 
 Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) archived. Relies on a Java tool, EqConvert to convert PC-SUDS to miniseed, and scart to manage stream name mappings
 
+## Quickstart
 
-## Overview
+```
+~/eqserver_2_seiscomp/workflow/process_archive_echo.sh --verbose  /data/repository/archive/ABM2Y/continuous/2023/10/ test_sds/
+```
 
-An existing UoM seismic server has archived waveform data from 2012-2025, the archive is related to the EqServer sofware created by SRC. 
+## Background
+
+An existing UoM seismic server has archived waveform data from 2012-2025, the archive is part of the EqServer sofrware created by SRC (now unsupported)
 
 The file structure of the data archive is miniute long files in day directories, eg.g 
 
-* `/data/repository/archive/DDSW/continuous/2020/11/08 `
+* `/data/repository/archive/DDSW/continuous/2020/11/08`
 
-A variety of file formats are present, from different recorders as well different pipilines, e.g. telemetered vs uploaded. The archive also contains a variery of ancillary files, and trigered files often appear in the "continuous" archive folders. There have probablyt been some bugs that have contrubted to thsi. 
+A variety of file formats are present, from different recorders as well different pipelines, e.g. telemetered vs uploaded. The archive also contains a variery of ancillary files, and trigered files often appear in the "continuous" archive folders. There have probablyt been some bugs that have contrubted to thsi. 
 
 The goal is to convert this to a Seiscomp / SDS archive.
 
@@ -20,12 +25,13 @@ The goal is to convert this to a Seiscomp / SDS archive.
 Process one station’s raw archive (years → months → days) and import it into an SDS archive, choosing the right per-day workflow (Echo vs Gecko), while staying robust, restart-safe, and well-logged.
 
 The moving parts (workflow/)
-	•	process_archive_echo.sh – the top-level driver. You point this at a year, month, or a single day.
-	•	checkRecorderType.sh – decides Echo vs Gecko for a day (fast, single directory scan).
-	•	process_day_echo.sh – handles Echo days (DMX → MiniSEED → SDS).
-	•	process_day_gecko.sh – handles Gecko days (MS/MS.ZIP → sorted MiniSEED → SDS).
-	•	find_files_echo.sh – for Echo, picks the best DMX set (prefers underscore files if “near complete”).
-	•	generate_remap_string.sh – inspects the sorted MiniSEED and makes the SCART mapping strings.
+
+* process_archive_echo.sh – the top-level driver. You point this at a year, month, or a single day.
+* check_recorder_type.sh – decides Echo vs Gecko for a day (fast, single directory scan).
+* process_day_echo.sh – handles Echo days (DMX → MiniSEED → SDS).
+* process_day_gecko.sh – handles Gecko days (MS/MS.ZIP → sorted MiniSEED → SDS).
+* find_files_echo.sh – for Echo, picks the best DMX set (prefers underscore files if “near complete”).
+* generate_remap_string.sh – inspects the sorted MiniSEED and makes the SCART mapping strings.
 
 Configuration knobs (config.txt)
 
@@ -38,103 +44,69 @@ Some key settings you can tweak without touching code:
 * NET, LOC, CH – target network/location/channel base for remapping (e.g., VX, 00, CH).
 
 How the top-level driver works (process_archive_echo.sh)
-	1.	You run it on a station subtree (year/month/day all OK):
+
+1.	You run it on a station subtree (year/month/day all OK):
 
 ```
 ./process_archive_echo.sh [--verbose] /path/to/ABM1Y/ /path/to/SDS/ [optional_temp_base]
 ```
 
-	2.	It figures out what you gave it:
-	•	If it sees data files → DAY.
-	•	If it sees ~28–31 two-digit subdirs → MONTH.
-	•	If it sees ≤12 two-digit subdirs → YEAR.
-	3.	It recedes down to day level and for each day:
-	•	Sets up station-scoped logging (logs/ABM1Y/…).
-	•	Calls checkRecorderType.sh to pick Echo or Gecko (with the “previous day” fallback for tiny days).
-	•	Skips the day if it appears already present in SDS (simple idempotency guard).
-	•	Runs the right per-day script.
-	•	Appends a compact line to the station’s master.log.
+2.	It figures out what you gave it:
+
+* If it sees data files → DAY.
+* If it sees ~28–31 two-digit subdirs → MONTH.
+* If it sees ≤12 two-digit subdirs → YEAR.
+* It recedes down to day level and for each day:
+* sets up station-scoped logging (logs/ABM1Y/…).
+* Calls checkRecorderType.sh to pick Echo or Gecko (with the “previous day” fallback for tiny days).
+* Skips the day if it appears already present in SDS (simple idempotency guard).
+* Runs the right per-day script.
+* Appends a compact line to the station’s master.log.
 
 How recorder type is chosen (checkRecorderType.sh)
-	•	Scans once and counts:
-	•	Echo files: *.dmx, *.dmx.gz
-	•	Gecko files: *.ms, *.ms.zip
-	•	Rules:
-	•	If only Echo patterns exist → Echo (regardless of count).
-	•	If only Gecko patterns exist → Gecko (regardless of count).
-	•	If both exist:
-	•	If total ≥ MIN_FILE_THRESHOLD → pick the higher count.
-	•	If total < MIN_FILE_THRESHOLD → fallback to previous day’s type (passed in).
 
-This keeps small/strange days from misclassifying the whole month.
 
 What a per-day Echo run does (process_day_echo.sh)
-	1.	Temp workspace: creates a unique dir under $TMPDIR or /tmp by default; if you pass a temp_base, it uses that (and keeps it for debugging).
-	2.	Pick DMX files: find_files_echo.sh:
-	•	Groups by underscore (local) vs space (telemetered).
-	•	If underscore files are “near complete” (≥ 1440 − threshold), uses only those; otherwise uses all.
-	3.	Convert in parallel: uses nproc to set threads and runs eqconvert.jar with GNU Parallel.
-	4.	Sort/merge: scmssort -u -E → one sorted.mseed.
-	5.	Map channels: generate_remap_string.sh walks streams, builds:
-	•	--rename map like AB.ABM2Y.60.DLZ:VX.ABM2Y.00.CHZ,...
-	•	-c selector like DL?
-	6.	Import to SDS: scart -I sorted.mseed --with-filecheck "$SDS" -c "$spec" --rename "$map".
-	7.	Cleanup: temp dir auto-deleted (unless you explicitly provided temp_base).
+
+1.	Temp workspace: creates a unique dir under $TMPDIR or /tmp by default; if you pass a temp_base, it uses that (and keeps it for debugging).
+2.	Pick DMX files: find_files_echo.sh:
+* Groups by underscore (local) vs space (telemetered).
+* If underscore files are “near complete” (≥ 1440 − threshold), uses only those; otherwise uses all.
+3.	Convert in parallel: uses nproc to set threads and runs eqconvert.jar with GNU Parallel.
+4.	Sort/merge: scmssort -u -E → one sorted.mseed.
+5.	Map channels: generate_remap_string.sh walks streams, builds:
+* --rename map like AB.ABM2Y.60.DLZ:VX.ABM2Y.00.CHZ,...
+* -c selector like DL?
+6.	Import to SDS: scart -I sorted.mseed --with-filecheck "$SDS" -c "$spec" --rename "$map".
+7.	Cleanup: temp dir auto-deleted (unless you explicitly provided temp_base).
 
 What a per-day Gecko run does (process_day_gecko.sh)
-	•	Unzips any *.ms.zip (quiet), concatenates minutes in order into full.ms.
-	•	Sort/merge with scmssort → sorted.mseed.
-	•	scart import (no remap, unless you add one).
-	•	Cleans up the temp workspace.
+* Unzips any *.ms.zip (quiet), concatenates minutes in order into full.ms.
+* Sort/merge with scmssort → sorted.mseed.
+* scart import (no remap, unless you add one).
+* Cleans up the temp workspace.
 
 Logging & crash reporting (station-aware)
-	•	Logs are under logs/<STATION>/…
-	•	master.log: one summary line per day (status, date, type).
-	•	YYYY/MM/DD_day.log (or flat DD_day.log if you prefer): full per-day console output via tee.
-	•	crash_reports/: if anything throws, a trap writes a crash file with the day path and last lines of the day log.
-	•	Old logs can be compressed/rotated periodically to prevent bloat.
+* Logs are under logs/<STATION>/…
+* master.log: one summary line per day (status, date, type).
+* YYYY/MM/DD_day.log (or flat DD_day.log if you prefer): full per-day console output via tee.
+* crash_reports/: if anything throws, a trap writes a crash file with the day path and last lines of the day log.
+* Old logs can be compressed/rotated periodically to prevent bloat.
 
 Restarts & duplicates
-	•	Safe to re-run: days already present in SDS are skipped.
-	•	--with-filecheck in scart helps avoid writing duplicates.
-	•	If you want a hard rebuild of a day, add an overwrite behaviour later (simple flag to bypass the skip).
+* Safe to re-run: days already present in SDS are skipped.
+* --with-filecheck in scart helps avoid writing duplicates.
+* If you want a hard rebuild of a day, add an overwrite behaviour later (simple flag to bypass the skip).
 
 Verbosity & noise control
-	•	Top-level --verbose turns on chatty logs; otherwise it’s quiet, printing only important info/errors.
-	•	VERBOSE_MODE is exported, so helpers (find_files_echo.sh, generate_remap_string.sh, checkRecorderType.sh) follow the same noise level.
+* Top-level --verbose turns on chatty logs; otherwise it’s quiet, printing only important info/errors
+* VERBOSE_MODE is exported, so helpers (find_files_echo.sh, generate_remap_string.sh, checkRecorderType.sh) follow the same noise level.
 
 Where thresholds live (and why)
-	•	Echo completeness (underscored files): THRESHOLD_MISSING_FILES (e.g., 60) → prefer locals if “near complete”.
-	•	Recorder decision minimum: MIN_FILE_THRESHOLD (e.g., 100) → don’t trust mixed ratios on tiny days.
-	•	Both are in config.txt, override-able per run if you add params.
+* Echo completeness (underscored files): THRESHOLD_MISSING_FILES (e.g., 60) → prefer locals if “near complete”.
+* Recorder decision minimum: MIN_FILE_THRESHOLD (e.g., 100) → don’t trust mixed ratios on tiny days.
+* Both are in config.txt, override-able per run if you add params.
 
-**Plan/progress**
-
-Summary – EQ Server to Syscomp Conversion Workflow
-
-I’ve made some progress on the data conversion workflow, particularly using Seiscomp's scmssort and scart. 
-
-scmssort handles duplicate files effectively — which is important since the EQ Server archive contains both telemetered and locally stored files that often share identical timestamps. scmssort identifies these as duplicates, allowing us to copy entire batches of files and let it clean up automatically, avoiding the need for complex manual filtering.
-
-To simplify further, I suggest copying all channel types (including accelerometer and seismometer files) and then running a test SCART output (Syscomp Archive Tool). 
-
-Since scart reports the number of channels, we can filter based on that (e.g., retaining only six-channel sets).
-
-Next, I’ll set this up using configuration files — one for Geckos and one for Echoes. 
-
-The workflow logic would be:
-
-	1.	Identify whether the station data is Gecko or Echo (straightforward).
-	2.	Load the corresponding config file, which defines files/patterns to ignore and expected file formats and remapping paramters.
-	3.	Prioritize common cases by checking which file formats are most prevalent (underscore vs. space-separated).
-	4.	If enough underscored files exist (most common case), copy only these and process directly; otherwise, include both underscore and spaced versions and let scmssort reconcile duplicates automatically. WHY NOT JUST SIMPLIFY and copy all files all of the time. 
-  5.  use scart to determin the original channels and names (3 or 6); pares this output to determine channel remapping string, and a channle exclusion string.  
-
-I’ll first implement a minimal working version before expanding with configuration logic.
-
-Then I’ll add reporting metrics to capture edge cases, so we can identify when custom configs are needed.
-
-Once stable, the goal is to parallelize the workflow — ideally processing one station per day.
 
 
 ## Naming conventions
