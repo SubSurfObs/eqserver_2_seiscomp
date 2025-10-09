@@ -48,16 +48,24 @@ Once stable, the goal is to parallelize the workflow — ideally processing one 
 
 The 1st letter BAND code in SEED convention is: 
 
-D ... ≥ 250 to < 1000 < 10 sec
-C ... ≥ 250 to < 1000 ≥ 10 sec
-E Extremely Short Period ≥ 80 to < 250 < 10 sec
+| Code | Description               | Frequency (Hz)       | Duration   |
+|------|---------------------------|--------------------|-----------|
+| D    | …                         | ≥ 250 to < 1000    | < 10 sec  |
+| C    | …                         | ≥ 250 to < 1000    | ≥ 10 sec  |
+| E    | Extremely Short Period    | ≥ 80               | < 10 sec  |
+| S    | Short Period              | 10 to < 80         | < 10 sec  |
+| H    | High Broad Band           | ≥ 80               | ≥ 10 sec  |
+| B    | Broad Band                | >=	10 < 80         | ≥ 10 sec  |
 
-Our EQServer archive consists of all 3, but not necessarily correctlt applied. For intance, Gecko;s don;t atttempt to knwo about the Naturual period, and just apply "C" for a seismometer (our 2 Hz geophones as well as out 60 Sec BBSs). EchoPro data, aftern conversion to Miniseed results in mainly "D", some "E".
 
-The plan is to convert all seismomter data to "C". This 
 
-Instrument Code
+The 2nd letter: Instrument Code
 
 H High Gain Seismometer
 L Low Gain Seismometer
+N Accelerometer
+
+Our EQServer archive consists of at least (D,C,E)(H,L,N) but not necessarily correctly applied. For intance, Geckos don't attempt to knwo about the Naturual period, and just apply "C" for a seismometer (our 2 Hz geophones as well as out 60 Sec BBSs). EchoPro data, aftern conversion to Miniseed results in mainly "D", some "E".
+
+The plan is to convert all seismomter data to "C". This simplifies channel names and allows consistency across chnages in instrument - focus on metadata epochs. 
 
