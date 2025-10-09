@@ -219,6 +219,9 @@ I then ran this on a a subset (200 files) with 8 procs (on a 4 proc machine) and
 
 * running on > 16 procs. and noting that the majority of most directories have 1440 files, should enable us to do this. 
 
+Next I boosted my VM to 16 procs and re-ran this test with 16 and 32 threads
+
+
 
 ## Copying data for conversion
 
