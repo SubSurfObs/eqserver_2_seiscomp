@@ -1,0 +1,15 @@
+# Path to eqconvert
+EQCONVERT_PATH="java -jar /home/seiscomp/software/eqconvert.jar"
+
+
+# Strings to ignore in file names
+IGNORE_STRINGS="trig|\.ss|\.xml|\mseed."
+
+
+# File completeness threshold (missing minutes)
+THRESHOLD_MISSING_FILES=60
+
+# Parameters for generate_remap_string.sh
+NET="VW"
+LOC="00"
+CH="CH"
