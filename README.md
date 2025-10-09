@@ -2,6 +2,11 @@
 
 Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) archived. Relies on a Java tool, EqConvert to convert PC-SUDS to miniseed, and scart to manage stream name mappings
 
+## TO DO
+
+* STATION name is not explicity defined in the process_archive_echo, sometimes errant stations end up in the wrong folder. Having the station name ENV set (dynamically) would allow this problem to be solved. 
+
+
 ## Quickstart
 
 ```
