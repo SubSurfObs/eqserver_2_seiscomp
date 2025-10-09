@@ -13,12 +13,15 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 find "$temp_day_dir" -name "*.zip" | parallel -j 8 '
   echo "Unzipping: {/.}"
   unzip -o -q {} -d '"$temp_day_dir"' && rm {}
-``
+```
 
 
 ## Quickstart
 
 ```
+./process_day_echo.sh --verbose /data/repository/archive/HOLS/continuous/2022/05/10 test_sds/
+./process_day_gecko.sh /data/repository/archive/DDSW/continuous/2022/05/10 test_sds/ --verbose
+
 ~/eqserver_2_seiscomp/workflow/process_archive_echo.sh --verbose  /data/repository/archive/ABM2Y/continuous/2023/10/ test_sds/
 ```
 
