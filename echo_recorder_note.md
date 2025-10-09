@@ -180,7 +180,7 @@ All together this is bit problematic
 * you run eqconvert in directoty mode, you get individial ms files, but you loose data.
 * you run it in merge mode, you get a good output file, but you can't do channel remapping
 
-Another possibility is to force eqconvert to do file-by-file
+**Another possibility is to force eqconvert to do file-by-file**
 
 
 ```
@@ -191,14 +191,14 @@ for file in *.dmx*; do
 done
 ```
 
-Progress - I can remap the location code now
+THis is promising, - I can now remap the location code:
 
 ```
 cat *.ms | scmssort -uE > outputs/sorted.mseed
 scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DL?" --rename "VW.-.00.-"
 ```
 
-This works
+This also works
 
 ```
 scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DLZ" --rename "AB.ABM5Y.60.DLZ:VW.ABM5Y.00.CHZ"
@@ -207,6 +207,13 @@ scart -I outputs/sorted.mseed --with-filecheck test_sds/ -c "DL?" --rename "AB.A
 
 ``
 
+The price you pay is a **massive overhead on time**. So if we want to go this way we need to focus on how to speed this up. It also plays less well with the concept of copying all files over (underscored and spaced).
+
+For a single processor, it took 17 minutes to process a day of files in the local directory:
+
+```
+time for file in *.dmx*; do   java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar "$file" -f miniseed -w "$outdir/${file%.dmx*}.ms"; done
+``
 
 
 ## Copying data for conversion
