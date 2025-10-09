@@ -7,6 +7,13 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 * STATION name is not explicity defined in the process_archive_echo, sometimes errant stations end up in the wrong folder. Having the station name ENV set (dynamically) would allow this problem to be solved.
 * Test/implement existing data (should skip if sufficnet data already in SDS archive...)
 * Add a trap to ensure cleanup even if the script exits early: `trap 'rm -rf "$temp_day_dir"' EXIT INT TERM`
+* use parallel unzip
+
+```
+find "$temp_day_dir" -name "*.zip" | parallel -j 8 '
+  echo "Unzipping: {/.}"
+  unzip -o -q {} -d '"$temp_day_dir"' && rm {}
+``
 
 
 ## Quickstart
