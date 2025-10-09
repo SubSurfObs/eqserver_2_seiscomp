@@ -217,9 +217,8 @@ time for file in *.dmx*; do   java -jar /home/sysop/mnt/software/eqconvert.7/eqc
 
 I then ran this on a a subset (200 files) with 8 procs (on a 4 proc machine) and this went down to 3 minutes. However, this is still in the range of days per year. I want to get that down by 10. 
 
-* running on > 16 procs. and noting that the majority of most directories have 1440 files, should enable us to do this. 
+* Next I boosted my VM to 16 procs and re-ran this test with 16 and 32 threads, with 16 I got this down to about 1 minute. But not much advantage to usign 32 procs. 
 
-Next I boosted my VM to 16 procs and re-ran this test with 16 and 32 threads
 
 
 
