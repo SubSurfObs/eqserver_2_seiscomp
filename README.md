@@ -8,6 +8,7 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 * Test/implement what to do for existing data (should skip if sufficient data already in SDS archive...)
 * Add a trap to ensure cleanup even if the script exits early: `trap 'rm -rf "$temp_day_dir"' EXIT INT TERM`
 * reconcile the verbose flag in `process_day_` scripts so they can be passed to `process_archive.sh`
+* reconcile the KEEP flag for temp dirs (this was implmented but broken in process_day_echo)
 
 
 ## Quickstart
@@ -17,7 +18,6 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 ./process_day_echo.sh --verbose /data/repository/archive/HOLS/continuous/2022/05/10 test_sds/
 ./process_day_gecko.sh /data/repository/archive/DDSW/continuous/2022/05/10 test_sds/ --verbose
 
-~/eqserver_2_seiscomp/workflow/process_archive_echo.sh --verbose  /data/repository/archive/ABM2Y/continuous/2023/10/ test_sds/
 ```
 
 ## Background
@@ -38,7 +38,7 @@ Process one station’s raw archive (years → months → days) and import it in
 
 The moving parts (workflow/)
 
-* process_archive_echo.sh – the top-level driver. You point this at a year, month, or a single day.
+* process_archive.sh – the top-level driver. You point this at a year, month, or a single day.
 * check_recorder_type.sh – decides Echo vs Gecko for a day (fast, single directory scan).
 * process_day_echo.sh – handles Echo days (DMX → MiniSEED → SDS).
 * process_day_gecko.sh – handles Gecko days (MS/MS.ZIP → sorted MiniSEED → SDS).
@@ -55,12 +55,12 @@ Some key settings you can tweak without touching code:
 * MIN_FILE_THRESHOLD – day must have at least this many files to trust a mixed-type classification (e.g., 100).
 * NET, LOC, CH – target network/location/channel base for remapping (e.g., VX, 00, CH).
 
-How the top-level driver works (process_archive_echo.sh)
+How the top-level driver works (process_archive.sh)
 
 1.	You run it on a station subtree (year/month/day all OK):
 
 ```
-./process_archive_echo.sh [--verbose] /path/to/ABM1Y/ /path/to/SDS/ [optional_temp_base]
+./process_archive.sh [--verbose] /path/to/ABM1Y/ /path/to/SDS/ [optional_temp_base]
 ```
 
 2.	It figures out what you gave it:
@@ -70,10 +70,10 @@ How the top-level driver works (process_archive_echo.sh)
 * If it sees ≤12 two-digit subdirs → YEAR.
 * It recedes down to day level and for each day:
 * sets up station-scoped logging (logs/ABM1Y/…).
-* Calls checkRecorderType.sh to pick Echo or Gecko (with the “previous day” fallback for tiny days).
+* Calls check_recorder_type.sh to pick Echo or Gecko (with the “previous day” fallback for tiny days).
 * Skips the day if it appears already present in SDS (simple idempotency guard).
 * Runs the right per-day script.
-* Appends a compact line to the station’s master.log.
+
 
 How recorder type is chosen (checkRecorderType.sh)
 
