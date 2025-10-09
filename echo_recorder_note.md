@@ -217,6 +217,8 @@ time for file in *.dmx*; do   java -jar /home/sysop/mnt/software/eqconvert.7/eqc
 
 I then ran this on a a subset (200 files) with 4 procs, and this went down to 15 seconds, and with 8 procs, down to 13 seconds. This is still in the range of days per year. I want to get that down by 10. 
 
+* running on > 16 procs. and noting that the majority of most directories have 1440 files, should enable us to do this. 
+
 
 ## Copying data for conversion
 
