@@ -45,6 +45,10 @@ ls -lh *0003*.dmx
 -rw-r--r-- 1 seiscomp seiscomp  73K Oct  9 10:47  2016-12-01_0003_35_OUTU.dmx
 ```
 
+## Originaal Stream names
+
+AB.OUTU.60.ELE
+
 
 ## filtering correct files:
 
