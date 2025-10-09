@@ -30,11 +30,12 @@ The moving parts (workflow/)
 Configuration knobs (config.txt)
 
 Some key settings you can tweak without touching code:
-	•	EQCONVERT_PATH – how to run eqconvert.jar.
-	•	IGNORE_STRINGS – file name patterns to skip.
-	•	THRESHOLD_MISSING_FILES – for Echo: how many missing underscore files are still “near complete” (e.g., 60).
-	•	MIN_FILE_THRESHOLD – day must have at least this many files to trust a mixed-type classification (e.g., 100).
-	•	NET, LOC, CH – target network/location/channel base for remapping (e.g., VX, 00, CH).
+
+* EQCONVERT_PATH – how to run eqconvert.jar.
+* IGNORE_STRINGS – file name patterns to skip.
+* THRESHOLD_MISSING_FILES – for Echo: how many missing underscore files are still “near complete” (e.g., 60).
+* MIN_FILE_THRESHOLD – day must have at least this many files to trust a mixed-type classification (e.g., 100).
+* NET, LOC, CH – target network/location/channel base for remapping (e.g., VX, 00, CH).
 
 How the top-level driver works (process_archive_echo.sh)
 	1.	You run it on a station subtree (year/month/day all OK):
