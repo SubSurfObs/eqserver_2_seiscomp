@@ -139,7 +139,7 @@ $ ls -lrt
 -rwxr-xr-x 1 seiscomp seiscomp 93546 Oct  8 21:45  2023-11-24_2057_48_ABM5Y.dmx
 -rwxr-xr-x 1 seiscomp seiscomp 91915 Oct  8 21:45  2023-11-24_2057_02_ABM5Y.dmx
 ```
-Runningg this in output directory mode, results in 2 output files:
+Running this in output directory mode, results in 2 output files:
 
 ```
 seiscomp@rd-l-y9d9pt:~/sds_conversion_tests/scmssort_tests/echo_overlaps$ java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar ./ -f miniseed -d ms_convert
@@ -213,7 +213,7 @@ For a single processor, it took 17 minutes to process a day of files (~3000 file
 
 ```
 time for file in *.dmx*; do   java -jar /home/sysop/mnt/software/eqconvert.7/eqconvert.jar "$file" -f miniseed -w "$outdir/${file%.dmx*}.ms"; done
-``
+```
 
 I then ran this on a a subset (200 files) with 8 procs (on a 4 proc machine) and this went down to 3 minutes. However, this is still in the range of days per year. I want to get that down by 10. 
 
