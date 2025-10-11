@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==========================================
-# process_day.sh
+# process_day_echo.sh
 # Converts daily DMX files to MiniSEED and imports into an SDS archive
 # ==========================================
 
