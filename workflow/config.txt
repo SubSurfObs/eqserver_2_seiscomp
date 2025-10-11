@@ -12,6 +12,6 @@ IGNORE_STRINGS_GECKO="trig|\.dmx|\.suds|\mseed."
 THRESHOLD_MISSING_FILES=60
 
 # Parameters for generate_remap_string.sh
-NET="VX"
+NET="VW"
 LOC="00"
 CH="CH"

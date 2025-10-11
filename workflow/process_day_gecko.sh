@@ -66,16 +66,16 @@ log "Temporary working directory: $temp_day_dir"
 done
 
 # --- Simple parallel unzip (quiet and forgiving) ---
-zip_files=($(find "$temp_day_dir" -maxdepth 1 -type f -name "*.zip"))
-zip_count=${#zip_files[@]}
+#zip_files=($(find "$temp_day_dir" -maxdepth 1 -type f -name "*.zip"))
+#zip_count=${#zip_files[@]}
+
+# --- Safe parallel unzip with spaces handled correctly ---
+zip_count=$(find "$temp_day_dir" -maxdepth 1 -type f -name "*.zip" | wc -l)
 
 if [ "$zip_count" -gt 0 ]; then
     log "Unzipping $zip_count files in parallel..."
-    export temp_day_dir
-    printf "%s\n" "${zip_files[@]}" | parallel -j 4 --no-notice '
-        unzip -o -q "{}" -d "$temp_day_dir" >/dev/null 2>&1 || true
-        rm -f "{}"
-    '
+    find "$temp_day_dir" -maxdepth 1 -type f -name "*.zip" -print0 | \
+        parallel -0 -j 4 --no-notice unzip -o -q '{}' -d "$temp_day_dir" '&&' rm -f '{}'
 else
     log "No ZIP files to extract."
 fi

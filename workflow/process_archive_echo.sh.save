@@ -1,0 +1,90 @@
+#!/bin/bash
+# ==========================================
+# process_archive_echo.sh
+# Recursively processes an archive by year, month, or day.
+# Determines recorder type (Echo or Gecko) and applies the correct process script.
+# ==========================================
+
+VERBOSE=0
+if [ "$1" == "--verbose" ] || [ "$1" == "-v" ]; then
+  VERBOSE=1
+  shift
+fi
+export VERBOSE_MODE=$VERBOSE
+
+input_dir="$1"
+sds_archive="$2"
+temp_base="$3"
+
+if [ -z "$input_dir" ] || [ -z "$sds_archive" ]; then
+  echo "Usage: $0 [--verbose|-v] /path/to/archive /path/to/sds_archive [temp_base]" >&2
+  exit 1
+fi
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+prev_type=""
+
+log() { [ $VERBOSE -eq 1 ] && echo "$@" >&2; }
+
+process_day_dir() {
+  local day_dir="$1"
+  log "Checking recorder type in $day_dir"
+  rec_type=$("$SCRIPT_DIR/check_recorder_type.sh" "$day_dir" "$prev_type")
+  log "Detected recorder type: $rec_type"
+case "$rec_type" in
+  echo)
+    "$SCRIPT_DIR/process_day_echo.sh" "$day_dir" "$sds_archive" "$temp_base" $([ $VERBOSE -eq 1 ] && echo "--verbose")
+    ;;
+  gecko)
+    "$SCRIPT_DIR/process_day_gecko.sh" "$day_dir" "$sds_archive" "$temp_base" $([ $VERBOSE -eq 1 ] && echo "--verbose")
+    ;;
+  *)
+    echo "Warning: Unknown recorder type for $day_dir, skipping" >&2
+    return
+    ;;
+esac
+
+#  case "$rec_type" in
+#    echo)
+#      "$SCRIPT_DIR/process_day_echo.sh" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$day_dir" "$sds_archive" "$temp_base"
+#      ;;
+#    gecko)
+#      "$SCRIPT_DIR/process_day_gecko.sh" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$day_dir" "$sds_archive" "$temp_base"
+#      ;;
+#    *)
+#      echo "Warning: Unknown recorder type for $day_dir, skipping" >&2
+#      return
+#      ;;
+#  esac
+
+case "$rec_type" in
+  echo)
+    "$SCRIPT_DIR/process_day_echo.sh" "$day_dir" "$sds_archive" "$temp_base" $([ $VERBOSE -eq 1 ] && echo "--verbose")
+    ;;
+  gecko)
+    "$SCRIPT_DIR/process_day_gecko.sh" "$day_dir" "$sds_archive" "$temp_base" $([ $VERBOSE -eq 1 ] && echo "--verbose")
+    ;;
+  *)
+    echo "Warning: Unknown recorder type for $day_dir, skipping" >&2
+    return
+    ;;
+esac
+
+  prev_type="$rec_type"
+}
+
+# --- Determine level ---
+if find "$input_dir" -maxdepth 1 -type f \( -name "*.dmx" -o -name "*.ms" \) | grep -q .; then
+  # Day-level folder
+  process_day_dir "$input_dir"
+else
+  # Month or year folder → recurse into subdirs
+  subdirs=$(find "$input_dir" -mindepth 1 -maxdepth 1 -type d | sort)
+  for sub in $subdirs; do
+    if find "$sub" -maxdepth 1 -type f \( -name "*.dmx" -o -name "*.ms" \) | grep -q .; then
+      process_day_dir "$sub"
+    else
+      "$0" $([ $VERBOSE -eq 1 ] && echo "--verbose") "$sub" "$sds_archive" "$temp_base"
+    fi
+  done
+fi

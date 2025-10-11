@@ -38,7 +38,8 @@ if [ -z "$day_dir" ] || [ -z "$sds_archive" ]; then
   exit 1
 fi
 
-# --- Helper for logging ---
+# --- Helper for l
+ogging ---
 log() { [ $VERBOSE -eq 1 ] && echo "$@" >&2; }
 
 # --- Validate day directory ---
@@ -72,17 +73,8 @@ log "Processing day: $(basename "$day_dir")"
 log "Temporary working directory: $temp_day_dir"
 
 # --- Ensure cleanup always runs on exit ---
-#cleanup() {
-#  if [ $KEEP_TEMP -eq 0 ] &&
-
-# --- Ensure cleanup always runs on exit ---
 cleanup() {
-  if [ $KEEP_TEMP -eq 0 ] && [ -n "$temp_day_dir" ] && [ -d "$temp_day_dir" ]; then
-    rm -rf "$temp_day_dir"
-    [ $VERBOSE -eq 1 ] && echo "Temporary directory cleaned automatically: $temp_day_dir"
-  fi
-}
-trap cleanup EXIT
+  if [ $KEEP_TEMP -eq 0 ] &&
 
 # --- Find DMX files using external helper ---
 dmx_files=$("$SCRIPT_DIR/find_files_echo.sh" "$day_dir")
@@ -150,8 +142,14 @@ fi
 log "Finished processing day: $(basename "$day_dir")"
 
 # --- Cleanup ---
+#rm -rf "$temp_day_dir
 
 # --- Cleanup ---
-if [ $KEEP_TEMP -eq 0 ]; then
+if [ $KEEP_TEMP -eq 1 ]; then
+  log "Preserving temporary directory: $temp_day_dir"
+else
   rm -rf "$temp_day_dir"
+  log "Temporary directory cleaned automatically."
 fi
+
+[ $VERBOSE -eq 1 ] && echo "Finished processing day: $(basename "$day_dir")"
