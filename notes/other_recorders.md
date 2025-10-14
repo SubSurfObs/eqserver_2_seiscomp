@@ -1,8 +1,10 @@
 # Centaur recorders
 
-Data from GA RDK for Woods Point is stored as statiosn: RDK[1,2,3,6]
+Examples:
 
-Data consists of both *mseed.zip and ms.zip, with the former being more frquent, but both seeming to be important (sometimes the *.ms.zip files fill a gap in a sequence of 1 minute .mseed.zip files
+* Data from GA RDK stations near Woods Points (2021): stations RDK[1,2,3,6]
+
+Day directories consist of both *mseed.zip and ms.zip, with the former being more frequent, but both seeming to be important (sometimes the *.ms.zip files fill a gap in a sequence of 1 minute .mseed.zip files
 
 files are stored per channel.., at least 9 channels seem to be present. 
 
