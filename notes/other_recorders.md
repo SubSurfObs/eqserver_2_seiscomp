@@ -1,4 +1,4 @@
-# Centaur digitizers
+# Centaur recorders
 
 Data from GA RDK for Woods Point is stored as statiosn: RDK[1,2,3,6]
 
@@ -15,9 +15,13 @@ Caveats/edge cases
 -rw-r--r-- 1 5001 5001 47499 Feb  9  2022 2021-09-26 0004_RDK1.ms.zip
 ```
 
+.ms.zip files unzip to a multi-channel stream
+
 ```
 unzip "/data/repository/archive/RDK1/continuous/2021/09/26/2021-09-26 0004_RDK1.ms.zip" -d .
+Archive:  /data/repository/archive/RDK1/continuous/2021/09/26/2021-09-26 0004_RDK1.ms.zip
 ...
+
 scart --print-streams -I 2021-09-26\ 0004_RDK1.ms --test
 Test mode: Found errors were stated above, if any
 # streamID       start                       end                         records samples samplingRate
@@ -32,6 +36,14 @@ AU.RDK1.00.HNE   2021-09-26T00:04:08.225Z    2021-09-26T00:05:13.855Z    32 1312
 #   streams:    4
 #   records:    128
 #   samples:    52288
+```
+
+[HHE].mseed.zip streams unzip to a file without the specifier, but contain a single stream, 
+
+```
+unzip "/data/repository/archive/RDK1/continuous/2021/09/26/2021-09-26 0005 06 RDK1_HHE.mseed.zip" -d .
+Archive:  /data/repository/archive/RDK1/continuous/2021/09/26/2021-09-26 0005 06 RDK1_HHE.mseed.zip
+  inflating: ./2021-09-26 0005_RDK1.ms
 ```
 
 # Guralp Radian 
