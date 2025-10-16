@@ -2,13 +2,14 @@
 
 Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) archived. Relies on a Java tool, EqConvert to convert PC-SUDS to miniseed, and scart to manage stream name mappings
 
-## TO DO
+## TO DO /issues
 
 * STATION name is not explicity defined in the `process_archive.sh`, sometimes errant stations end up in the wrong folder. Having the station name ENV set (dynamically) would allow this problem to be solved.
 * Test/implement what to do for existing data (should skip if sufficient data already in SDS archive...)
 * Add a trap to ensure cleanup even if the script exits early: `trap 'rm -rf "$temp_day_dir"' EXIT INT TERM`
 * reconcile the verbose flag in `process_day_` scripts so they can be passed to `process_archive.sh`
 * reconcile the KEEP flag for temp dirs (this was implmented but broken in process_day_echo)
+* When I removed MSEED IGNORE_STRINGS_GECKO="trig|\.dmx|\.suds|\mseed." it failed for site ABM7Y (Gecko site) Not sure why, and this is not intended 
 
 
 ## Quickstart
