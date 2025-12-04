@@ -13,6 +13,7 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 * STATION name is not explicity defined in the `process_archive.sh`, sometimes errant stations end up in the wrong folder. However -  this is generally easy to clean up later. Having the station name ENV set (dynamically) would allow this problem to be solved. There is a detect_station_name script which could be integrated. 
 
 
+
 ## Quickstart
 
 ```
@@ -20,6 +21,19 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 ./process_day_echo.sh --verbose /data/repository/archive/HOLS/continuous/2022/05/10 test_sds/
 ./process_day_gecko.sh /data/repository/archive/DDSW/continuous/2022/05/10 test_sds/ --verbose
 
+```
+
+## scart examples
+
+Some useful scart examples
+
+Change network name
+
+```
+cat ~/mnt/seismic_data_shared/apollo_bay_sds/2023/VW/ABM6Y/*/*.D.* \
+| scmssort -u -E \
+| scart -I - --rename "VW.*.*.*:VX.-.-.-" \
+    ~/mnt/seismic_data_shared/apollo_bay_sds_vx_test
 ```
 
 ## Background
