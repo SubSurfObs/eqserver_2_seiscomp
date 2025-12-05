@@ -4,13 +4,11 @@ Some tools to help convert an Eqserver waveform archive into a seiscomp (SDS) ar
 
 ## TO DO /issues
 
-* Only works for Gecko and EchoPro recorders (the vast majority of our UoM archive).
-* Test/implement what to do for existing data (should skip if sufficient data already in SDS archive...)
-* Add a trap to ensure cleanup even if the script exits early: `trap 'rm -rf "$temp_day_dir"' EXIT INT TERM`
 * reconcile the verbose flag in `process_day_` scripts so they can be passed to `process_archive.sh`
-* reconcile the KEEP flag for temp dirs (this was implmented but broken in process_day_echo)
+* reconcile the KEEP flag for temp dirs (this was implemented but is broken in process_day_echo)
 * When I removed MSEED IGNORE_STRINGS_GECKO="trig|\.dmx|\.suds|\mseed." it failed for site ABM7Y (Gecko site) Not sure why, and this is not intended
 * STATION name is not explicity defined in the `process_archive.sh`, sometimes errant stations end up in the wrong folder. However -  this is generally easy to clean up later. Having the station name ENV set (dynamically) would allow this problem to be solved. There is a detect_station_name script which could be integrated. 
+* Add a trap to ensure cleanup even if the script exits early: `trap 'rm -rf "$temp_day_dir"' EXIT INT TERM`
 
 
 
@@ -105,13 +103,15 @@ How the top-level driver works (process_archive.sh)
 6.	Import to SDS: scart -I sorted.mseed --with-filecheck "$SDS" -c "$spec" --rename "$map".
 7.	Cleanup: temp dir auto-deleted (unless you explicitly provided temp_base).
 
-What a per-day Gecko run does (process_day_gecko.sh)
+**What a per-day Gecko run does (process_day_gecko.sh)**
+
 * Unzips any *.ms.zip (quiet), concatenates minutes in order into full.ms.
 * Sort/merge with scmssort → sorted.mseed.
 * scart import (no remap, unless you add one).
 * Cleans up the temp workspace.
 
 Logging & crash reporting (station-aware)
+
 * Logs are under logs/<STATION>/…
 * master.log: one summary line per day (status, date, type).
 * YYYY/MM/DD_day.log (or flat DD_day.log if you prefer): full per-day console output via tee.
