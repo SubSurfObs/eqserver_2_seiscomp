@@ -40,7 +40,7 @@ cat ~/mnt/seismic_data_shared/apollo_bay_sds/2023/VW/ABM6Y/*/*.D.* \
 
 An existing UoM seismic server has archived waveform data from 2012-2025, the archive is associated with the EqServer software created by SRC (now unsupported)
 
-The file structure of the data archive is miniute long files in day directories, eg.g 
+The file structure of the data archive is miniute long files in day directories, e.g.: 
 
 * `/data/repository/archive/DDSW/continuous/2020/11/08`
 
@@ -67,7 +67,7 @@ Some key settings you can tweak without touching code:
 
 * EQCONVERT_PATH – how to run eqconvert.jar.
 * IGNORE_STRINGS – file name patterns to skip.
-* THRESHOLD_MISSING_FILES – for Echo: how many missing underscore files are still “near complete” (e.g., 60).
+* THRESHOLD_MISSING_FILES – for Echo: how many missing underscore files are still “complete” (e.g., 60).
 * MIN_FILE_THRESHOLD – day must have at least this many files to trust a mixed-type classification (e.g., 100).
 * NET, LOC, CH – target network/location/channel base for remapping (e.g., VX, 00, CH).
 
@@ -84,23 +84,20 @@ How the top-level driver works (process_archive.sh)
 * If it sees data files → DAY.
 * If it sees ~28–31 two-digit subdirs → MONTH.
 * If it sees ≤12 two-digit subdirs → YEAR.
-* It recedes down to day level and for each day:
-* sets up station-scoped logging (logs/ABM1Y/…).
+* It procedes down to day level and for each day:
 * Calls check_recorder_type.sh to pick Echo or Gecko (with the “previous day” fallback for tiny days).
 * Skips the day if it appears already present in SDS (simple idempotency guard).
 * Runs the right per-day script.
 
 
-How recorder type is chosen (checkRecorderType.sh)
 
-
-What a per-day Echo run does (process_day_echo.sh)
+**What a per-day Echo run does (process_day_echo.sh)**
 
 1.	Temp workspace: creates a unique dir under $TMPDIR or /tmp by default; if you pass a temp_base, it uses that (and keeps it for debugging).
 2.	Pick DMX files: find_files_echo.sh:
 * Groups by underscore (local) vs space (telemetered).
 * If underscore files are “near complete” (≥ 1440 − threshold), uses only those; otherwise uses all.
-3.	Convert in parallel: uses nproc to set threads and runs eqconvert.jar with GNU Parallel.
+3.	Convert in parallel: uses nproc to set threads and runs eqconvert.jar with GNU Parallel, converting each minite-long SUDS file into miniseed
 4.	Sort/merge: scmssort -u -E → one sorted.mseed.
 5.	Map channels: generate_remap_string.sh walks streams, builds:
 * --rename map like AB.ABM2Y.60.DLZ:VX.ABM2Y.00.CHZ,...
