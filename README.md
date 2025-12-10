@@ -33,14 +33,17 @@ cat ~/mnt/seismic_data_shared/apollo_bay_sds/2023/VW/ABM6Y/*/*.D.* \
 | scart -I - --rename "VW.*.*.*:VX.-.-.-" \
     ~/mnt/seismic_data_shared/apollo_bay_sds_vx_test
 ```
-or dayt by day
+or day by day
 
+```
 for day in ~/mnt/seismic_data_shared/apollo_bay_sds/2023/VW/ABM3Y/*; do
     cat "$day"/*.D.* \
     | scmssort -u -E \
     | scart -I - --rename "VW.*.*.*:VX.-.-.-" \
         ~/mnt/seismic_data_shared/apollo_bay_sds_vx_test
 done
+```
+
 
 ## Background
 
