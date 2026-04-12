@@ -93,7 +93,7 @@ ARMA:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2004
+  coverage_start: 2000
   coverage_end: 2026
 ARPS:
   include: false
@@ -102,7 +102,7 @@ ARPS:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2000
+  coverage_start: 2015
   coverage_end: 2026
 BBOO:
   include: false
@@ -111,7 +111,7 @@ BBOO:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2004
+  coverage_start: 2000
   coverage_end: 2026
 BRAT:
   include: false
@@ -120,7 +120,7 @@ BRAT:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2013
+  coverage_start: 2015
   coverage_end: 2020
 BRS:
   include: false
@@ -138,7 +138,7 @@ CMSA:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2001
+  coverage_start: 2018
   coverage_end: 2026
 EIDS:
   include: false
@@ -147,7 +147,7 @@ EIDS:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2003
+  coverage_start: 2017
   coverage_end: 2026
 FORT:
   include: false
@@ -156,7 +156,7 @@ FORT:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 1994
+  coverage_start: 2000
   coverage_end: 2019
 GVL:
   include: false
@@ -165,7 +165,7 @@ GVL:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2013
+  coverage_start: 2015
   coverage_end: 2020
 HTT:
   include: false
@@ -183,7 +183,7 @@ INKA:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2013
+  coverage_start: 2020
   coverage_end: 2026
 KELC:
   include: false
@@ -201,7 +201,7 @@ LCRK:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2013
+  coverage_start: 2017
   coverage_end: 2026
 MGBR:
   include: false
@@ -228,7 +228,7 @@ MULG:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2013
+  coverage_start: 2017
   coverage_end: 2025
 NAPP:
   include: false
@@ -237,7 +237,7 @@ NAPP:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2009
+  coverage_start: 2017
   coverage_end: 2024
 OKDL:
   include: false
@@ -246,7 +246,7 @@ OKDL:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2017
+  coverage_start: 2025
   coverage_end: 2026
 OOD:
   include: false
@@ -255,7 +255,7 @@ OOD:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2013
+  coverage_start: 2017
   coverage_end: 2024
 SDAN:
   include: false
@@ -273,7 +273,7 @@ STKA:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 1994
+  coverage_start: 2015
   coverage_end: 2026
 WRKA:
   include: false
@@ -300,7 +300,7 @@ YAPP:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2018
+  coverage_start: 2020
   coverage_end: 2026
 YNG:
   include: false
@@ -309,7 +309,7 @@ YNG:
   network_basis: registry
   source_network_code: AU
   recorder_types: null
-  coverage_start: 2004
+  coverage_start: 2018
   coverage_end: 2020
 RDK1:
   include: false
@@ -361,8 +361,8 @@ AUAPY:
   include: false
   reason: "S1 / AUSiS network — Ernabella Anangu School"
   source_network_code: S1
-  coverage_start: 2019
-  coverage_end: 2019
+  coverage_start: 2018
+  coverage_end: 2018
 
 AUHPC:
   include: false
@@ -442,7 +442,7 @@ HODL:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2002
   coverage_end: 2018
   notes: "1970 artefact"
 HOGN:
@@ -460,7 +460,7 @@ KRAN:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2012
   coverage_end: 2014
   notes: ""
 LOYU:
@@ -496,7 +496,7 @@ MRDN:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2012
   coverage_end: 2019
   notes: ""
 WILU:
@@ -515,7 +515,7 @@ BEST:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2025
   notes: "BEST_AB in Januka XMLs"
 
@@ -525,7 +525,7 @@ BRIG:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2001
   coverage_end: 2024
   notes: "BRIG_AB in Januka XMLs; 1970 year likely artefact"
 
@@ -535,7 +535,7 @@ BRTH:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2018
   coverage_end: 2024
   notes: "BRTH_UM in Januka XMLs; 1900 year likely artefact"
 
@@ -545,7 +545,7 @@ CLIF:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2024
   notes: "CLIF_AB in Januka XMLs; 1970 year likely artefact"
 
@@ -565,7 +565,7 @@ DDNE:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2017
   coverage_end: 2024
   notes: "DDNE_UM in Januka XMLs; 1900 year likely artefact"
 
@@ -575,7 +575,7 @@ DDSW:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2017
   coverage_end: 2024
   notes: "DDSW_UM in Januka XMLs; mentioned in WoodsPoint notes; 1900 likely artefact"
 
@@ -595,7 +595,7 @@ DDWK:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2017
   coverage_end: 2024
   notes: "DDWK_UM in Januka XMLs; 1900 likely artefact"
 
@@ -615,7 +615,7 @@ FORG:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2017
   coverage_end: 2024
   notes: "FORG_UM in Januka XMLs; 1900 likely artefact"
 
@@ -625,7 +625,7 @@ HDDL:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2025
   notes: "In vw.xml; 1900 likely artefact"
 
@@ -645,7 +645,7 @@ LOCU:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2001
   coverage_end: 2025
   notes: "In vw.xml"
 
@@ -665,7 +665,7 @@ LRSE:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2019
   coverage_end: 2023
   notes: "LRSE_UM in Januka XMLs; 1900 likely artefact"
 
@@ -675,7 +675,7 @@ LRSH:
   network_basis: notes
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2019
   coverage_end: 2024
   notes: "Mentioned as VW in WoodsPoint notes; UM source code inferred; confirm"
 
@@ -685,7 +685,7 @@ MARD:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2025
   notes: "In vw.xml; 1970 likely artefact"
 
@@ -695,7 +695,7 @@ NARR:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2025
   notes: "In vw.xml; 1970 likely artefact"
 
@@ -705,7 +705,7 @@ OUTU:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2001
   coverage_end: 2025
   notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
 
@@ -715,7 +715,7 @@ SCMB:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2019
   coverage_end: 2023
   notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm; 1970 likely artefact"
 
@@ -745,7 +745,7 @@ STBK:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2012
   coverage_end: 2024
   notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
 
@@ -765,7 +765,7 @@ TRPU:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2000
   coverage_end: 2022
   notes: "In vw.xml"
 
@@ -785,7 +785,7 @@ WDSD:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2018
   coverage_end: 2025
   notes: "In vw.xml and LatestXMLS_2021; 1900 likely artefact"
 
@@ -795,7 +795,7 @@ WLSH:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2018
   coverage_end: 2024
   notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
 
@@ -805,7 +805,7 @@ WPNH:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2018
   coverage_end: 2023
   notes: "WPNH_AB in Januka XMLs"
 
@@ -815,7 +815,7 @@ WPSH:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2024
   notes: "WPSH_AB in Januka XMLs; 1970 likely artefact"
 
@@ -1192,7 +1192,7 @@ S88U:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2011
   coverage_end: 2021
   notes: ""
 TPSO:
@@ -1201,7 +1201,7 @@ TPSO:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: null
+  coverage_start: 2017
   coverage_end: 2026
   notes: ""
 TPSOP:
@@ -1301,7 +1301,7 @@ HKER:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1998
   coverage_end: 2026
   notes: "Hawker SA; 1970 year artefact"
 
@@ -1311,7 +1311,7 @@ HML1:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2025
   notes: "Pinkerton Plains SA; 1989 year likely artefact"
 
@@ -1403,7 +1403,7 @@ RNDA:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2026
   notes: "Aranda ACT; 1970 year artefact"
 
@@ -1441,7 +1441,7 @@ WKA:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: null
+  coverage_start: 1999
   coverage_end: 2026
   notes: "Willalooka SA; 1989 year likely artefact"
 
