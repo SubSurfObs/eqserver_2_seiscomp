@@ -87,60 +87,74 @@ TEST9:
 # =============================================================================
 
 RDK1:
-  include: false
-  reason: "GA / AU network — Petermann aftershock deployment"
-  target_network: null
-  source_network_code: AU
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2021
   coverage_end: 2021
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 RDK2:
-  include: false
-  reason: "GA / AU network — Petermann aftershock deployment"
-  target_network: null
-  source_network_code: AU
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2021
   coverage_end: 2021
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 RDK3:
-  include: false
-  reason: "GA / AU network — Petermann aftershock deployment"
-  target_network: null
-  source_network_code: AU
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2021
   coverage_end: 2021
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 RDK6:
-  include: false
-  reason: "GA / AU network — Petermann aftershock deployment"
-  target_network: null
-  source_network_code: AU
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2021
   coverage_end: 2021
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 RDK01:
-  include: false
-  reason: "Likely GA / AU network variant — Petermann-related; confirm"
-  target_network: null
-  source_network_code: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2023
   coverage_end: 2023
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 RDK04:
-  include: false
-  reason: "Likely GA / AU network variant — Petermann-related; confirm"
-  target_network: null
-  source_network_code: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2023
   coverage_end: 2023
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 RDK06:
-  include: false
-  reason: "Likely GA / AU network variant — Petermann-related; confirm"
-  target_network: null
-  source_network_code: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2023
   coverage_end: 2023
+  notes: "Woods Point aftershock deployment (not Petermann)"
 
 # =============================================================================
 # EXCLUDE — S1 network (AUSiS — Australian Seismometers in Schools, ANU)
@@ -859,6 +873,7 @@ S88P:
   recorder_types: null
   coverage_start: 2024
   coverage_end: 2026
+  notes: ""
 
 USYD:
   include: true
@@ -1466,32 +1481,44 @@ INKA:
   coverage_end: 2026
 
 JMS2:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2024
   coverage_end: 2024
+  notes: ""
 
 JMS3:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2024
   coverage_end: 2024
+  notes: ""
 
 JMS4:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2024
   coverage_end: 2024
+  notes: ""
 
 JMS5:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2024
   coverage_end: 2024
+  notes: ""
 
 KELC:
   include: false
@@ -1504,12 +1531,14 @@ KELC:
   coverage_end: 2026
 
 KRAN:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 1970
   coverage_end: 2014
-  notes: "1970 artefact"
+  notes: ""
 
 LCRK:
   include: false
@@ -1530,18 +1559,24 @@ LILH:
   notes: "Long-running (8yr); 1970 artefact"
 
 LILL:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2013
+  notes: "aftershock deployment"
 
 LKHRT:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2021
   coverage_end: 2026
+  notes: ""
 
 LMT:
   include: unknown
@@ -1551,11 +1586,14 @@ LMT:
   coverage_end: 2017
 
 LOYU:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2014
   coverage_end: 2019
+  notes: ""
 
 LRWS:
   include: unknown
@@ -1607,47 +1645,64 @@ MILA:
   coverage_end: 2026
 
 MOE3:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
-  notes: "Numbered suffix array (MOE3-8) — possible VX aftershock deployment"
+  notes: "aftershock deployment"
 
 MOE4:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 MOE5:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 MOE6:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 MOE8:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 MOSU:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2014
   coverage_end: 2016
+  notes: ""
 
 MPTV:
   include: unknown
@@ -1665,12 +1720,14 @@ MRAT:
   notes: "Long-running (18yr) — likely VW permanent"
 
 MRDN:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 1970
   coverage_end: 2019
-  notes: "Long-running (10yr); 1970 artefact"
+  notes: ""
 
 MTON:
   include: unknown
@@ -1791,11 +1848,14 @@ PLMR:
   notes: "Long-running (14yr)"
 
 PURV:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 R2737:
   include: unknown
@@ -1812,11 +1872,14 @@ RGWU:
   coverage_end: 2021
 
 RICA:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 RND2:
   include: unknown
@@ -1834,19 +1897,24 @@ ROBE:
   notes: "Long-running (13yr)"
 
 S88M:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2011
   coverage_end: 2011
+  notes: ""
 
 S88U:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 1970
   coverage_end: 2021
-  notes: "Long-running (12yr); 1970 artefact; S88P is DU — S88U possibly same site?"
+  notes: ""
 
 SCH2:
   include: unknown
@@ -1887,11 +1955,14 @@ SG_U:
   coverage_end: 2021
 
 STGU:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 STKA:
   include: false
@@ -1926,26 +1997,34 @@ THS:
   coverage_end: 2020
 
 THOR1:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
-  notes: "Numbered suffix array THOR1/3/4 — possible VX deployment"
+  notes: "aftershock deployment"
 
 THOR3:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 THOR4:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: "aftershock deployment"
 
 TOOL:
   include: unknown
@@ -1962,19 +2041,24 @@ TORR:
   coverage_end: 2017
 
 TPSO:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 1989
   coverage_end: 2026
-  notes: "Long-running (11yr)"
+  notes: ""
 
 TPSOP:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
   coverage_start: 2017
   coverage_end: 2018
+  notes: ""
 
 UTT:
   include: unknown
@@ -2029,11 +2113,14 @@ WILM:
   notes: "Long-running (7yr)"
 
 WILU:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2014
   coverage_end: 2017
+  notes: ""
 
 WOOD:
   include: unknown
