@@ -1,0 +1,5 @@
+.DS_Store
+**/.DS_Store
+
+# Nested git repo — exclude entirely (contents extracted into station_registry.yaml)
+metadata/uploaded/VW/Metadata/

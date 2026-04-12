@@ -1,0 +1,2043 @@
+# Station Registry
+# Authoritative per-station mapping for the EqServer → SDS conversion pipeline.
+#
+# Fields:
+#   include:           true | false | unknown
+#   reason:            (if include: false) why excluded
+#   target_network:    VW | VX | DU | null
+#   network_basis:     registry | passthrough | heuristic | notes | unknown
+#                        registry   = explicit in FDSN StationXML for that network
+#                        passthrough= source MiniSEED already carries DU code
+#                        heuristic  = inferred from naming pattern (numbered suffix etc.)
+#                        notes      = inferred from field notes / secondary sources
+#                        unknown    = not yet determined
+#   source_network_code: network code in source MiniSEED files; null for EchoPro/SUDS
+#   recorder_types:    list of recorder types (echopro | gecko | guralp | reftek | piesmo)
+#                      ordered chronologically if changed; null = not yet confirmed
+#   coverage_start:    approximate first year (from archive scan; 1900/1970 = bogus artifact)
+#   coverage_end:      approximate last year
+#   notes:             free text
+#
+# Sources used to build this file (2026-04-12):
+#   metadata/uploaded/VW/vw.xml              (FDSN StationXML, VW network)
+#   metadata/uploaded/VX/vx.xml              (FDSN StationXML, VX network)
+#   metadata/uploaded/DU/du.xml              (FDSN StationXML, DU network)
+#   metadata/uploaded/AU_S1/au.xml           (FDSN StationXML, AU/GA network — exclude)
+#   metadata/uploaded/AU_S1/s1.xml           (FDSN StationXML, S1/AUSiS network — exclude)
+#   metadata/uploaded/VW/Metadata/Januka_XMLS/   (individual UM/AB station XMLs → VW)
+#   metadata/uploaded/VW/Metadata/LatestXMLS_2021/
+#   metadata/uploaded/VX/WoodsPoint.md
+#   metadata/uploaded/VX/Apollo Bay Eq.md
+#   Archive directory scan (2026-04-12): 251 station directories
+
+# =============================================================================
+# NON-STATION DIRECTORIES (archive artefacts — always exclude)
+# =============================================================================
+
+continuous:
+  include: false
+  reason: "Archive artefact directory, not a station"
+
+DDNEnetwork:
+  include: false
+  reason: "Archive artefact directory, not a station"
+
+ECHO:
+  include: false
+  reason: "Archive artefact / test directory"
+
+ECHOP:
+  include: false
+  reason: "Archive artefact / test directory"
+
+ERROR:
+  include: false
+  reason: "Archive artefact directory"
+
+GECKO:
+  include: false
+  reason: "Archive artefact directory, not a station"
+
+histogram:
+  include: false
+  reason: "Archive artefact directory"
+
+nosite:
+  include: false
+  reason: "Archive artefact directory"
+
+response:
+  include: false
+  reason: "Archive artefact directory"
+
+TEST:
+  include: false
+  reason: "Test data directory"
+
+TEST2:
+  include: false
+  reason: "Test data directory"
+
+TEST9:
+  include: false
+  reason: "Test data directory; only bogus year 1900 present"
+
+# =============================================================================
+# EXCLUDE — AU network (Geoscience Australia / Petermann deployment)
+# =============================================================================
+
+RDK1:
+  include: false
+  reason: "GA / AU network — Petermann aftershock deployment"
+  target_network: null
+  source_network_code: AU
+  coverage_start: 2021
+  coverage_end: 2021
+
+RDK2:
+  include: false
+  reason: "GA / AU network — Petermann aftershock deployment"
+  target_network: null
+  source_network_code: AU
+  coverage_start: 2021
+  coverage_end: 2021
+
+RDK3:
+  include: false
+  reason: "GA / AU network — Petermann aftershock deployment"
+  target_network: null
+  source_network_code: AU
+  coverage_start: 2021
+  coverage_end: 2021
+
+RDK6:
+  include: false
+  reason: "GA / AU network — Petermann aftershock deployment"
+  target_network: null
+  source_network_code: AU
+  coverage_start: 2021
+  coverage_end: 2021
+
+RDK01:
+  include: false
+  reason: "Likely GA / AU network variant — Petermann-related; confirm"
+  target_network: null
+  source_network_code: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+RDK04:
+  include: false
+  reason: "Likely GA / AU network variant — Petermann-related; confirm"
+  target_network: null
+  source_network_code: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+RDK06:
+  include: false
+  reason: "Likely GA / AU network variant — Petermann-related; confirm"
+  target_network: null
+  source_network_code: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+# =============================================================================
+# EXCLUDE — S1 network (AUSiS — Australian Seismometers in Schools, ANU)
+# Only listing stations that have directories in the archive.
+# =============================================================================
+
+AUAPY:
+  include: false
+  reason: "S1 / AUSiS network — Ernabella Anangu School"
+  source_network_code: S1
+  coverage_start: 2019
+  coverage_end: 2019
+
+AUHPC:
+  include: false
+  reason: "S1 / AUSiS network — Hawkesdale P12 School"
+  source_network_code: S1
+  coverage_start: 2019
+  coverage_end: 2026
+
+AUJCS:
+  include: false
+  reason: "S1 / AUSiS network — Jamestown Community School"
+  source_network_code: S1
+  coverage_start: 2004
+  coverage_end: 2025
+
+AUKSC:
+  include: false
+  reason: "S1 / AUSiS network — Keysborough Secondary College"
+  source_network_code: S1
+  coverage_start: 2019
+  coverage_end: 2026
+
+AUMAG:
+  include: false
+  reason: "S1 / AUSiS network — Moama Anglican Grammar"
+  source_network_code: S1
+  coverage_start: 2019
+  coverage_end: 2019
+
+AUMBR:
+  include: false
+  reason: "S1 / AUSiS network — Murray Bridge High School"
+  source_network_code: S1
+  coverage_start: 2019
+  coverage_end: 2025
+
+AUMTC:
+  include: false
+  reason: "S1 / AUSiS network — Mt Clear College"
+  source_network_code: S1
+  coverage_start: 2019
+  coverage_end: 2026
+
+AUSSC:
+  include: false
+  reason: "S1 / AUSiS network — Sale College (AUSSС in s1.xml)"
+  source_network_code: S1
+  coverage_start: 2017
+  coverage_end: 2026
+
+# =============================================================================
+# VW — University of Melbourne permanent network (VICWAVE)
+# Source network codes in files: UM or AB (both remap to VW)
+# =============================================================================
+
+BEST:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: AB
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2025
+  notes: "BEST_AB in Januka XMLs"
+
+BRIG:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: AB
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2024
+  notes: "BRIG_AB in Januka XMLs; 1970 year likely artefact"
+
+BRTH:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "BRTH_UM in Januka XMLs; 1900 year likely artefact"
+
+CLIF:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: AB
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2024
+  notes: "CLIF_AB in Januka XMLs; 1970 year likely artefact"
+
+CRJN:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2024
+  notes: "In vw.xml"
+
+DDNE:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "DDNE_UM in Januka XMLs; 1900 year likely artefact"
+
+DDSW:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "DDSW_UM in Januka XMLs; mentioned in WoodsPoint notes; 1900 likely artefact"
+
+DDWB:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2024
+  notes: "In vw.xml"
+
+DDWK:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "DDWK_UM in Januka XMLs; 1900 likely artefact"
+
+DEAL:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 2018
+  coverage_end: 2022
+  notes: "DEAL_UM in Januka XMLs"
+
+FORG:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "FORG_UM in Januka XMLs; 1900 likely artefact"
+
+HDDL:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2025
+  notes: "In vw.xml; 1900 likely artefact"
+
+HOLS:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2024
+  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
+
+LOCU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2025
+  notes: "In vw.xml"
+
+LRNW:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2021
+  notes: "LRNW_UM in Januka XMLs"
+
+LRSE:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2023
+  notes: "LRSE_UM in Januka XMLs; 1900 likely artefact"
+
+LRSH:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "Mentioned as VW in WoodsPoint notes; UM source code inferred; confirm"
+
+MARD:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2025
+  notes: "In vw.xml; 1970 likely artefact"
+
+NARR:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2025
+  notes: "In vw.xml; 1970 likely artefact"
+
+OUTU:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2001
+  coverage_end: 2025
+  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
+
+SCMB:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2023
+  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm; 1970 likely artefact"
+
+SGWU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2014
+  coverage_end: 2023
+  notes: "In vw.xml"
+
+SOMU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2014
+  coverage_end: 2019
+  notes: "In vw.xml"
+
+STBK:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
+
+TOO:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2000
+  coverage_end: 2026
+  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
+
+TRPU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2000
+  coverage_end: 2022
+  notes: "In vw.xml"
+
+TYHS:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2024
+  notes: "In LatestXMLS_2021; TYHS_UM"
+
+WDSD:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2025
+  notes: "In vw.xml and LatestXMLS_2021; 1900 likely artefact"
+
+WLSH:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: UM
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
+
+WPNH:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: AB
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2023
+  notes: "WPNH_AB in Januka XMLs"
+
+WPSH:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: AB
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2024
+  notes: "WPSH_AB in Januka XMLs; 1970 likely artefact"
+
+# =============================================================================
+# VX — University of Melbourne temporary / aftershock deployments
+# =============================================================================
+
+ABM1Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2025
+  notes: "Apollo Bay aftershock Oct 2023; first real data ~06:00 UTC 23 Oct 2023; 1900 artefact"
+
+ABM2Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2024
+  notes: "Apollo Bay aftershock; equipment damage (modem, battery); 1989 artefact"
+
+ABM3Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2025
+  notes: "Apollo Bay aftershock; tarp site; 1900 artefact"
+
+ABM4Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "Apollo Bay aftershock; tarp site, marginal condition; 1900 artefact"
+
+ABM5Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2025
+  notes: "Apollo Bay aftershock; hut site, good condition; 1989 artefact"
+
+ABM6Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2023
+  coverage_end: 2023
+  notes: "Apollo Bay aftershock; only 2 days operation (2023-10-24 to 2023-10-26)"
+
+ABM7Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1900
+  coverage_end: 2024
+  notes: "Apollo Bay aftershock; SD card filled; CMG-6T found on its side; 1900 artefact"
+
+WPM1Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2022
+  notes: "Woods Point aftershock deployment, Sep 2021"
+
+WPM2Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Woods Point aftershock deployment, Sep 2021"
+
+WPM3Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Woods Point aftershock deployment, Sep 2021"
+
+WPM4Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2024
+  notes: "Woods Point aftershock deployment, Sep 2021; 1970 year is artefact"
+
+WPM5Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2023
+  notes: "Woods Point aftershock deployment, Sep 2021"
+
+WPM6Y:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2023
+  notes: "Woods Point aftershock deployment, Sep 2021"
+
+# =============================================================================
+# DU — Citizen / volunteer seismograph network
+# Source MiniSEED files should carry DU network code (passthrough).
+# Stations with UM source code need explicit override.
+# =============================================================================
+
+ABRY:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+BAMB:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2026
+
+BRON:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+CLIL:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2026
+
+DAMM:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2026
+
+DJO:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+ERIKA:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+HAZO:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+HELEN:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+HKER:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2026
+  notes: "Hawker SA; 1970 year artefact"
+
+HML1:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2025
+  notes: "Pinkerton Plains SA; 1989 year likely artefact"
+
+KBRI:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+KENT:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+NNP1:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2026
+
+NNP2:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2026
+
+NSTM:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+OAT:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+PENW:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2001
+  coverage_end: 2026
+  notes: "Penwortham SA"
+
+PFLO:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2026
+
+PLYP:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2026
+
+RNDA:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2026
+  notes: "Aranda ACT; 1970 year artefact"
+
+S88P:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2026
+
+USYD:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+WEPH:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2025
+
+WKA:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Willalooka SA; 1989 year likely artefact"
+
+# Likely DU variants (same base code as confirmed DU stations; not in du.xml)
+NNP3:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "NNP1/NNP2 are DU; NNP3 likely same deployment — confirm"
+  coverage_start: 2025
+  coverage_end: 2026
+
+PLYP2:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "PLYP is DU; PLYP2 likely same site — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+RNDA2:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "RNDA is DU; RNDA2 likely same site — confirm"
+  coverage_start: 2025
+  coverage_end: 2026
+
+RNDA3:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "RNDA is DU; RNDA3 likely same site — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "SYD01-08 array all in Sydney area; likely DU citizen stations — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD01:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD02:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD03:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD04:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD05:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD06:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD07:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+SYD08:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "Sydney area; likely DU — confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+PLY3:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "PLYP is DU Plympton Park SA; PLY3 may be same site — confirm"
+  coverage_start: 2026
+  coverage_end: 2026
+
+PLYPD:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "PLYP is DU; PLYPD likely variant — confirm"
+  coverage_start: 2026
+  coverage_end: 2026
+
+PLYPT:
+  include: unknown
+  target_network: DU
+  network_basis: heuristic
+  source_network_code: null
+  notes: "PLYP is DU; PLYPT likely variant — confirm"
+  coverage_start: 2026
+  coverage_end: 2026
+
+# =============================================================================
+# UNKNOWN — In archive; network and scope not yet determined
+# Needs manual classification or verbal confirmation.
+# =============================================================================
+
+3KENT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  notes: "Unusual station code prefix; possible DU (KENT is DU); confirm"
+  coverage_start: 2025
+  coverage_end: 2025
+
+ADE:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  notes: "Adelaide? Short-lived 2014-2015"
+  coverage_start: 2014
+  coverage_end: 2015
+
+ADE2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+ALLA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+ARKL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2024
+  notes: "Long-running station (12yr) — likely VW or similar permanent network"
+
+ARMA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2000
+  coverage_end: 2026
+  notes: "Long-running (11yr); Ararat area? — likely VW permanent"
+
+ARPS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2026
+  notes: "Most day dirs in archive (6913); long-running permanent — likely VW"
+
+BBOO:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2000
+  coverage_end: 2026
+  notes: "Booborowie SA; likely GA/AU-operated station — probably exclude"
+
+BD70:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2017
+
+BD91:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2016
+  coverage_end: 2017
+
+BD92:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2016
+  coverage_end: 2019
+
+BDBO:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2020
+  coverage_end: 2022
+
+BEGA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1999
+  coverage_end: 2026
+  notes: "Bega NSW; long-running — possible DU or other"
+
+BLAT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+BNDL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2026
+
+BRAD:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2013
+  coverage_end: 2021
+
+BRAT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2020
+
+BRS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2026
+
+BRSA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1999
+  coverage_end: 2019
+
+BRT2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2022
+  coverage_end: 2022
+
+BRTS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Long-running (12yr) — likely VW permanent"
+
+CLV2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2004
+  coverage_end: 2026
+  notes: "Long-running (11yr)"
+
+CMSA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2018
+  coverage_end: 2026
+
+CREM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+DD02:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+DD03:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+DDBE:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2019
+  coverage_end: 2020
+
+DNL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2026
+  notes: "Long-running (14yr); 1970 artefact"
+
+DNL2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1980
+  coverage_end: 2026
+  notes: "Long-running (12yr)"
+
+DNL3:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2022
+  coverage_end: 2025
+
+DNL4:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2025
+
+DNL44:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2025
+
+DPSH:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2022
+  coverage_end: 2022
+
+DR01:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2019
+
+DR02:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2019
+
+DR03:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2019
+
+DR04:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2016
+  coverage_end: 2017
+
+EIDS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2026
+  notes: "Long-running (10yr)"
+
+FBNK:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2013
+  coverage_end: 2014
+
+FORH:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2022
+  coverage_end: 2022
+
+FORT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2000
+  coverage_end: 2019
+
+FRTM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2024
+
+FSHM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+FTZM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+G1053:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+GLDS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2018
+
+GLN:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+GLNLG:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2026
+  coverage_end: 2026
+
+GVL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2020
+
+HELIX:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+HODL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2018
+  notes: "Long-running (9yr); 1970 artefact"
+
+HOGM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2019
+  coverage_end: 2019
+
+HOGN:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2018
+  coverage_end: 2020
+
+HTT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2000
+  coverage_end: 2026
+  notes: "Long-running (11yr)"
+
+INKA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2020
+  coverage_end: 2026
+
+JMS2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2024
+
+JMS3:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2024
+
+JMS4:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2024
+
+JMS5:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2024
+
+KELC:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2026
+  notes: "Long-running (10yr)"
+
+KRAN:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2014
+  notes: "1970 artefact"
+
+LCRK:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2026
+  notes: "Long-running (10yr)"
+
+LILH:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2024
+  notes: "Long-running (8yr); 1970 artefact"
+
+LILL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2013
+
+LKHRT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2021
+  coverage_end: 2026
+
+LMT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+LOYU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2014
+  coverage_end: 2019
+
+LRWS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2019
+  coverage_end: 2021
+
+MELU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2025
+  notes: "1970 artefact; Melbourne?"
+
+MELU2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2024
+
+MGBR:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2026
+  notes: "Long-running (10yr)"
+
+MHIL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2018
+  coverage_end: 2018
+
+MILA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2026
+
+MOE3:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "Numbered suffix array (MOE3-8) — possible VX aftershock deployment"
+
+MOE4:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+MOE5:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+MOE6:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+MOE8:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+MOSU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2014
+  coverage_end: 2016
+
+MPTV:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2018
+
+MRAT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1999
+  coverage_end: 2026
+  notes: "Long-running (18yr) — likely VW permanent"
+
+MRDN:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2019
+  notes: "Long-running (10yr); 1970 artefact"
+
+MTON:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2025
+
+MULG:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2025
+  notes: "Long-running (9yr)"
+
+MVM1Y:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2021
+  coverage_end: 2021
+
+MYP:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2014
+  coverage_end: 2014
+
+NAME:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2024
+  coverage_end: 2026
+
+NAPP:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2024
+
+NBK:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2004
+  coverage_end: 2017
+
+NHILO:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2021
+  coverage_end: 2021
+
+OKDL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2026
+
+OOD:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2024
+
+PEGM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2013
+  coverage_end: 2014
+
+PEGU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2014
+  coverage_end: 2022
+
+PI17:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2025
+
+PI6:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2025
+
+PLMR:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Long-running (14yr)"
+
+PURV:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+R2737:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2020
+  coverage_end: 2021
+
+RGWU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2021
+  coverage_end: 2021
+
+RICA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+RND2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2025
+
+ROBE:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Long-running (13yr)"
+
+S88M:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2011
+  coverage_end: 2011
+
+S88U:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2021
+  notes: "Long-running (12yr); 1970 artefact; S88P is DU — S88U possibly same site?"
+
+SCH2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+SCH8:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2023
+  coverage_end: 2023
+
+SCM2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2019
+  coverage_end: 2021
+
+SDAN:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2026
+  notes: "Long-running (10yr)"
+
+SG_U:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2021
+  coverage_end: 2021
+
+STGU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+STKA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2015
+  coverage_end: 2026
+  notes: "Long-running (12yr) — likely VW permanent"
+
+STR2:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2026
+  notes: "Long-running (15yr); 1970 artefact"
+
+SUND:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2020
+  coverage_end: 2026
+
+THS:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2020
+
+THOR1:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "Numbered suffix array THOR1/3/4 — possible VX deployment"
+
+THOR3:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+THOR4:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+TOOL:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+TORR:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2017
+
+TPSO:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Long-running (11yr)"
+
+TPSOP:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2018
+
+UTT:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1970
+  coverage_end: 2026
+  notes: "Long-running (13yr); 1970 artefact"
+
+WAL1:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2022
+
+WALM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2013
+  coverage_end: 2021
+
+WALR:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Long-running (12yr)"
+
+WECKO:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2019
+  coverage_end: 2019
+
+WGWU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2021
+  coverage_end: 2021
+
+WILM:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: "Long-running (7yr)"
+
+WILU:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2014
+  coverage_end: 2017
+
+WOOD:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2018
+  coverage_end: 2018
+
+WPC:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2012
+  coverage_end: 2012
+
+WPSG:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2018
+  coverage_end: 2018
+  notes: "WP prefix similar to WPNH/WPSH (VW) — confirm"
+
+WRKA:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2017
+  coverage_end: 2026
+  notes: "Long-running (10yr)"
+
+WTPK:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2025
+  coverage_end: 2026
+
+XXX1:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2019
+  coverage_end: 2019
+  notes: "Placeholder station code?"
+
+YAPP:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2020
+  coverage_end: 2026
+
+YNG:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  coverage_start: 2018
+  coverage_end: 2020

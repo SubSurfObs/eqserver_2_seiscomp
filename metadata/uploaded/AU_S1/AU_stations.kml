@@ -1,0 +1,1475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+    <Document id="1">
+        <Placemark id="3">
+            <name>AU.ARMA</name>
+            <description>Elevation: 1112.0 m</description>
+            <Point id="2">
+                <coordinates>151.628006,-30.4198,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="5">
+            <name>AU.ARPS</name>
+            <description>Elevation: 250.0 m</description>
+            <Point id="4">
+                <coordinates>141.838303,-36.769901,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="7">
+            <name>AU.AS01</name>
+            <description>Elevation: 605.0 m</description>
+            <Point id="6">
+                <coordinates>133.950806,-23.6647,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="9">
+            <name>AU.AS02</name>
+            <description>Elevation: 649.0 m</description>
+            <Point id="8">
+                <coordinates>133.936905,-23.679199,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="11">
+            <name>AU.AS03</name>
+            <description>Elevation: 643.3 m</description>
+            <Point id="10">
+                <coordinates>133.919693,-23.677401,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="13">
+            <name>AU.AS04</name>
+            <description>Elevation: 666.3 m</description>
+            <Point id="12">
+                <coordinates>133.929199,-23.6597,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="15">
+            <name>AU.AS05</name>
+            <description>Elevation: 683.2 m</description>
+            <Point id="14">
+                <coordinates>133.947495,-23.6492,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="17">
+            <name>AU.AS06</name>
+            <description>Elevation: 663.2 m</description>
+            <Point id="16">
+                <coordinates>133.971405,-23.647499,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="19">
+            <name>AU.AS07</name>
+            <description>Elevation: 613.7 m</description>
+            <Point id="18">
+                <coordinates>133.969696,-23.6656,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="21">
+            <name>AU.AS08</name>
+            <description>Elevation: 594.3 m</description>
+            <Point id="20">
+                <coordinates>133.960007,-23.6814,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="23">
+            <name>AU.AS09</name>
+            <description>Elevation: 591.2 m</description>
+            <Point id="22">
+                <coordinates>133.941406,-23.6994,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="25">
+            <name>AU.AS10</name>
+            <description>Elevation: 607.4 m</description>
+            <Point id="24">
+                <coordinates>133.913895,-23.696899,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="27">
+            <name>AU.AS11</name>
+            <description>Elevation: 608.3 m</description>
+            <Point id="26">
+                <coordinates>133.897797,-23.678301,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="29">
+            <name>AU.AS12</name>
+            <description>Elevation: 607.4 m</description>
+            <Point id="28">
+                <coordinates>133.904404,-23.666401,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="31">
+            <name>AU.AS13</name>
+            <description>Elevation: 603.9 m</description>
+            <Point id="30">
+                <coordinates>133.894394,-23.651899,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="33">
+            <name>AU.AS14</name>
+            <description>Elevation: 619.6 m</description>
+            <Point id="32">
+                <coordinates>133.910294,-23.651699,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="35">
+            <name>AU.AS15</name>
+            <description>Elevation: 668.7 m</description>
+            <Point id="34">
+                <coordinates>133.912201,-23.635599,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="37">
+            <name>AU.AS16</name>
+            <description>Elevation: 675.8 m</description>
+            <Point id="36">
+                <coordinates>133.929993,-23.6369,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="39">
+            <name>AU.AS17</name>
+            <description>Elevation: 614.6 m</description>
+            <Point id="38">
+                <coordinates>133.991699,-23.6644,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="41">
+            <name>AU.AS18</name>
+            <description>Elevation: 591.7 m</description>
+            <Point id="40">
+                <coordinates>133.980804,-23.690001,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="43">
+            <name>AU.AS19</name>
+            <description>Elevation: 576.7 m</description>
+            <Point id="42">
+                <coordinates>133.962494,-23.704399,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="45">
+            <name>AU.AS31</name>
+            <description>Elevation: 607.0 m</description>
+            <Point id="44">
+                <coordinates>133.904007,-23.666,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="47">
+            <name>AU.BBOO</name>
+            <description>Elevation: 321.0 m</description>
+            <Point id="46">
+                <coordinates>136.058807,-32.8102,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="49">
+            <name>AU.BCON</name>
+            <description>Elevation: 386.0 m</description>
+            <Point id="48">
+                <coordinates>117.7649,-30.33585,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="51">
+            <name>AU.BLDU</name>
+            <description>Elevation: 280.0 m</description>
+            <Point id="50">
+                <coordinates>116.709099,-30.6147,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="53">
+            <name>AU.BMEBF</name>
+            <description>Elevation: 62.3 m</description>
+            <Point id="52">
+                <coordinates>122.309427,-17.86832,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="55">
+            <name>AU.BN2S</name>
+            <description>Elevation: 8.0 m</description>
+            <Point id="54">
+                <coordinates>153.047699,-27.3293,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="57">
+            <name>AU.BRAT</name>
+            <description>Elevation: 503.0 m</description>
+            <Point id="56">
+                <coordinates>143.932999,-37.548901,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="59">
+            <name>AU.BRS</name>
+            <description>Elevation: 580.0 m</description>
+            <Point id="58">
+                <coordinates>152.77398,-27.39132,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="61">
+            <name>AU.BW1H</name>
+            <description>Elevation: 63.0 m</description>
+            <Point id="60">
+                <coordinates>148.236099,-20.004499,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="63">
+            <name>AU.BW2S</name>
+            <description>Elevation: 7.0 m</description>
+            <Point id="62">
+                <coordinates>148.223206,-19.9984,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="65">
+            <name>AU.CAAN</name>
+            <description>Elevation: 20.0 m</description>
+            <Point id="64">
+                <coordinates>121.512901,-19.264299,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="67">
+            <name>AU.CARL</name>
+            <description>Elevation: 2.0 m</description>
+            <Point id="66">
+                <coordinates>115.926697,-31.9835,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="69">
+            <name>AU.CMSA</name>
+            <description>Elevation: 220.0 m</description>
+            <Point id="68">
+                <coordinates>145.691605,-31.5375,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="71">
+            <name>AU.CN1H</name>
+            <description>Elevation: 149.0 m</description>
+            <Point id="70">
+                <coordinates>145.710602,-16.910999,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="73">
+            <name>AU.CN2S</name>
+            <description>Elevation: 56.0 m</description>
+            <Point id="72">
+                <coordinates>145.723801,-17.0215,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="75">
+            <name>AU.CNB</name>
+            <description>Elevation: 853.0 m</description>
+            <Point id="74">
+                <coordinates>149.363297,-35.314999,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="77">
+            <name>AU.COEN</name>
+            <description>Elevation: 285.4 m</description>
+            <Point id="76">
+                <coordinates>143.174896,-13.9574,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="79">
+            <name>AU.COOLG</name>
+            <description>Elevation: 415.0 m</description>
+            <Point id="78">
+                <coordinates>121.17585,-30.95974,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="81">
+            <name>AU.CORO</name>
+            <description>Elevation: 0.0 m</description>
+            <Point id="80">
+                <coordinates>147.145004,-41.452202,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="83">
+            <name>AU.CTA</name>
+            <description>Elevation: 426.0 m</description>
+            <Point id="82">
+                <coordinates>146.25,-20.0876,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="85">
+            <name>AU.DERBY</name>
+            <description>Elevation: 51.0 m</description>
+            <Point id="84">
+                <coordinates>123.648882,-17.314443,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="87">
+            <name>AU.DLN</name>
+            <description>Elevation: 565.0 m</description>
+            <Point id="86">
+                <coordinates>149.178894,-34.723301,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="89">
+            <name>AU.DPH</name>
+            <description>Elevation: 45.0 m</description>
+            <Point id="88">
+                <coordinates>130.8423,-12.4667,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="91">
+            <name>AU.DRS</name>
+            <description>Elevation: 44.0 m</description>
+            <Point id="90">
+                <coordinates>130.899307,-12.4313,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="93">
+            <name>AU.EIDS</name>
+            <description>Elevation: 216.0 m</description>
+            <Point id="92">
+                <coordinates>151.081696,-25.369101,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="95">
+            <name>AU.FITZ</name>
+            <description>Elevation: 110.0 m</description>
+            <Point id="94">
+                <coordinates>125.640297,-18.0982,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="97">
+            <name>AU.FORT</name>
+            <description>Elevation: 165.0 m</description>
+            <Point id="96">
+                <coordinates>128.059,-30.779,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="99">
+            <name>AU.GC2F</name>
+            <description>Elevation: 12.0 m</description>
+            <Point id="98">
+                <coordinates>153.395798,-27.912201,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="101">
+            <name>AU.GD1S</name>
+            <description>Elevation: 5.0 m</description>
+            <Point id="100">
+                <coordinates>151.169006,-23.8421,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="103">
+            <name>AU.GEXS</name>
+            <description>Elevation: 10.0 m</description>
+            <Point id="102">
+                <coordinates>144.289993,-38.200802,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="105">
+            <name>AU.GHSS</name>
+            <description>Elevation: 42.0 m</description>
+            <Point id="104">
+                <coordinates>138.6017,-34.919399,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="107">
+            <name>AU.GIRL</name>
+            <description>Elevation: 111.0 m</description>
+            <Point id="106">
+                <coordinates>114.234001,-22.643,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="109">
+            <name>AU.GLAD</name>
+            <description>Elevation: 0.0 m</description>
+            <Point id="108">
+                <coordinates>148.009995,-40.982498,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="111">
+            <name>AU.GNGN</name>
+            <description>Elevation: 20.0 m</description>
+            <Point id="110">
+                <coordinates>115.71467,-31.35787,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="113">
+            <name>AU.GVL</name>
+            <description>Elevation: 185.0 m</description>
+            <Point id="112">
+                <coordinates>144.899002,-37.621399,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="115">
+            <name>AU.H01W1</name>
+            <description>Elevation: -1063.0 m</description>
+            <Point id="114">
+                <coordinates>114.1539,-34.892899,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="117">
+            <name>AU.H01W2</name>
+            <description>Elevation: -1046.0 m</description>
+            <Point id="116">
+                <coordinates>114.134033,-34.897079,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="119">
+            <name>AU.H01W3</name>
+            <description>Elevation: -1056.0 m</description>
+            <Point id="118">
+                <coordinates>114.139977,-34.880932,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="121">
+            <name>AU.HTT</name>
+            <description>Elevation: 708.0 m</description>
+            <Point id="120">
+                <coordinates>138.9217,-33.4306,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="123">
+            <name>AU.I03H1</name>
+            <description>Elevation: 640.0 m</description>
+            <Point id="122">
+                <coordinates>78.068504,-68.583931,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="125">
+            <name>AU.I03H2</name>
+            <description>Elevation: 680.0 m</description>
+            <Point id="124">
+                <coordinates>78.072044,-68.586571,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="127">
+            <name>AU.I03H3</name>
+            <description>Elevation: 664.0 m</description>
+            <Point id="126">
+                <coordinates>78.071152,-68.588661,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="129">
+            <name>AU.I03H4</name>
+            <description>Elevation: 629.0 m</description>
+            <Point id="128">
+                <coordinates>78.062332,-68.587509,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="131">
+            <name>AU.I03H5</name>
+            <description>Elevation: 740.0 m</description>
+            <Point id="130">
+                <coordinates>78.081757,-68.580765,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="133">
+            <name>AU.I03H6</name>
+            <description>Elevation: 816.0 m</description>
+            <Point id="132">
+                <coordinates>78.072746,-68.592712,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="135">
+            <name>AU.I03H7</name>
+            <description>Elevation: 847.0 m</description>
+            <Point id="134">
+                <coordinates>78.04937,-68.585075,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="137">
+            <name>AU.I04H1</name>
+            <description>Elevation: 167.1 m</description>
+            <Point id="136">
+                <coordinates>116.356689,-34.59761,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="139">
+            <name>AU.I04H2</name>
+            <description>Elevation: 155.7 m</description>
+            <Point id="138">
+                <coordinates>116.367142,-34.596169,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="141">
+            <name>AU.I04H3</name>
+            <description>Elevation: 123.2 m</description>
+            <Point id="140">
+                <coordinates>116.351547,-34.607571,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="143">
+            <name>AU.I04H4</name>
+            <description>Elevation: 154.7 m</description>
+            <Point id="142">
+                <coordinates>116.344582,-34.594002,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="145">
+            <name>AU.I04H5</name>
+            <description>Elevation: 147.7 m</description>
+            <Point id="144">
+                <coordinates>116.341087,-34.594711,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="147">
+            <name>AU.I04H6</name>
+            <description>Elevation: 146.8 m</description>
+            <Point id="146">
+                <coordinates>116.341042,-34.593121,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="149">
+            <name>AU.I04H7</name>
+            <description>Elevation: 143.2 m</description>
+            <Point id="148">
+                <coordinates>116.343163,-34.591122,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="151">
+            <name>AU.I04H8</name>
+            <description>Elevation: 148.7 m</description>
+            <Point id="150">
+                <coordinates>116.34639,-34.592918,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="153">
+            <name>AU.I05H1</name>
+            <description>Elevation: 350.0 m</description>
+            <Point id="152">
+                <coordinates>147.68063,-42.490798,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="155">
+            <name>AU.I05H2</name>
+            <description>Elevation: 310.0 m</description>
+            <Point id="154">
+                <coordinates>147.6743,-42.487193,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="157">
+            <name>AU.I05H3</name>
+            <description>Elevation: 314.0 m</description>
+            <Point id="156">
+                <coordinates>147.67762,-42.482285,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="159">
+            <name>AU.I05H4</name>
+            <description>Elevation: 316.0 m</description>
+            <Point id="158">
+                <coordinates>147.68978,-42.480752,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="161">
+            <name>AU.I05H5</name>
+            <description>Elevation: 316.0 m</description>
+            <Point id="160">
+                <coordinates>147.69105,-42.48847,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="163">
+            <name>AU.I05H6</name>
+            <description>Elevation: 308.0 m</description>
+            <Point id="162">
+                <coordinates>147.68299,-42.496572,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="165">
+            <name>AU.I05H7</name>
+            <description>Elevation: 306.0 m</description>
+            <Point id="164">
+                <coordinates>147.68433,-42.50046,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="167">
+            <name>AU.I05H8</name>
+            <description>Elevation: 304.0 m</description>
+            <Point id="166">
+                <coordinates>147.68092,-42.499768,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="169">
+            <name>AU.I06H1</name>
+            <description>Elevation: 16.8 m</description>
+            <Point id="168">
+                <coordinates>96.82032,-12.14645,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="171">
+            <name>AU.I06H2</name>
+            <description>Elevation: 17.6 m</description>
+            <Point id="170">
+                <coordinates>96.81855,-12.14752,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="173">
+            <name>AU.I06H3</name>
+            <description>Elevation: 20.8 m</description>
+            <Point id="172">
+                <coordinates>96.817741,-12.14509,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="175">
+            <name>AU.I06H4</name>
+            <description>Elevation: 16.0 m</description>
+            <Point id="174">
+                <coordinates>96.818489,-12.14354,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="177">
+            <name>AU.I06H5</name>
+            <description>Elevation: 19.3 m</description>
+            <Point id="176">
+                <coordinates>96.820847,-12.1447,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="179">
+            <name>AU.I06H6</name>
+            <description>Elevation: 29.2 m</description>
+            <Point id="178">
+                <coordinates>96.82428,-12.14585,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="181">
+            <name>AU.I06H7</name>
+            <description>Elevation: 14.0 m</description>
+            <Point id="180">
+                <coordinates>96.826881,-12.15422,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="183">
+            <name>AU.I06H8</name>
+            <description>Elevation: 11.9 m</description>
+            <Point id="182">
+                <coordinates>96.821693,-12.15724,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="185">
+            <name>AU.I07H1</name>
+            <description>Elevation: 385.5 m</description>
+            <Point id="184">
+                <coordinates>134.329544,-19.934851,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="187">
+            <name>AU.I07H2</name>
+            <description>Elevation: 387.6 m</description>
+            <Point id="186">
+                <coordinates>134.330933,-19.933411,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="189">
+            <name>AU.I07H3</name>
+            <description>Elevation: 392.0 m</description>
+            <Point id="188">
+                <coordinates>134.330734,-19.93659,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="191">
+            <name>AU.I07H4</name>
+            <description>Elevation: 383.0 m</description>
+            <Point id="190">
+                <coordinates>134.327698,-19.93502,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="193">
+            <name>AU.I07H5</name>
+            <description>Elevation: 387.3 m</description>
+            <Point id="192">
+                <coordinates>134.32579,-19.924549,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="195">
+            <name>AU.I07H6</name>
+            <description>Elevation: 387.5 m</description>
+            <Point id="194">
+                <coordinates>134.338852,-19.932699,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="197">
+            <name>AU.I07H7</name>
+            <description>Elevation: 387.7 m</description>
+            <Point id="196">
+                <coordinates>134.33963,-19.94022,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="199">
+            <name>AU.I07H8</name>
+            <description>Elevation: 388.4 m</description>
+            <Point id="198">
+                <coordinates>134.322906,-19.943291,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="201">
+            <name>AU.INKA</name>
+            <description>Elevation: 112.0 m</description>
+            <Point id="200">
+                <coordinates>140.745605,-27.740999,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="203">
+            <name>AU.KDU</name>
+            <description>Elevation: 46.0 m</description>
+            <Point id="202">
+                <coordinates>132.472702,-12.6869,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="205">
+            <name>AU.KELC</name>
+            <description>Elevation: 60.0 m</description>
+            <Point id="204">
+                <coordinates>136.907806,-35.979099,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="207">
+            <name>AU.KIM01</name>
+            <description>Elevation: 314.0 m</description>
+            <Point id="206">
+                <coordinates>126.86368,-18.62346,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="209">
+            <name>AU.KIM02</name>
+            <description>Elevation: 150.0 m</description>
+            <Point id="208">
+                <coordinates>125.52719,-18.91608,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="211">
+            <name>AU.KIM03</name>
+            <description>Elevation: 90.0 m</description>
+            <Point id="210">
+                <coordinates>124.69036,-18.54578,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="213">
+            <name>AU.KIM04</name>
+            <description>Elevation: 133.0 m</description>
+            <Point id="212">
+                <coordinates>124.81043,-17.92817,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="215">
+            <name>AU.KIM05</name>
+            <description>Elevation: 70.0 m</description>
+            <Point id="214">
+                <coordinates>124.18922,-17.99156,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="217">
+            <name>AU.KIM06</name>
+            <description>Elevation: 134.0 m</description>
+            <Point id="216">
+                <coordinates>123.4563,-18.50626,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="219">
+            <name>AU.KIM07</name>
+            <description>Elevation: 79.0 m</description>
+            <Point id="218">
+                <coordinates>123.1646,-17.9336,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="221">
+            <name>AU.KIM08</name>
+            <description>Elevation: 120.0 m</description>
+            <Point id="220">
+                <coordinates>124.80778,-17.32295,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="223">
+            <name>AU.KIM09</name>
+            <description>Elevation: 131.0 m</description>
+            <Point id="222">
+                <coordinates>123.0323,-17.4795,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="225">
+            <name>AU.KIM10</name>
+            <description>Elevation: 312.0 m</description>
+            <Point id="224">
+                <coordinates>125.70432,-17.05028,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="227">
+            <name>AU.KLBR</name>
+            <description>Elevation: 320.0 m</description>
+            <Point id="226">
+                <coordinates>117.754601,-31.591499,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="229">
+            <name>AU.KLGGI</name>
+            <description>Elevation: 385.0 m</description>
+            <Point id="228">
+                <coordinates>121.761033,-30.283214,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="231">
+            <name>AU.KLGHH</name>
+            <description>Elevation: 386.0 m</description>
+            <Point id="230">
+                <coordinates>121.752683,-30.750014,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="233">
+            <name>AU.KLGHS</name>
+            <description>Elevation: 386.0 m</description>
+            <Point id="232">
+                <coordinates>121.473347,-30.746267,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="235">
+            <name>AU.KMBL</name>
+            <description>Elevation: 370.0 m</description>
+            <Point id="234">
+                <coordinates>121.8821,-31.3669,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="237">
+            <name>AU.KNRA</name>
+            <description>Elevation: 126.0 m</description>
+            <Point id="236">
+                <coordinates>128.762802,-15.6769,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="239">
+            <name>AU.LCRK</name>
+            <description>Elevation: 207.0 m</description>
+            <Point id="238">
+                <coordinates>138.216202,-30.447201,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="241">
+            <name>AU.LHI</name>
+            <description>Elevation: 73.7 m</description>
+            <Point id="240">
+                <coordinates>159.061295,-31.52,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="243">
+            <name>AU.MABG</name>
+            <description>Elevation: 132.0 m</description>
+            <Point id="242">
+                <coordinates>150.7601,-34.0721,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="245">
+            <name>AU.MANU</name>
+            <description>Elevation: 141.5 m</description>
+            <Point id="244">
+                <coordinates>147.366196,-2.0432,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="247">
+            <name>AU.MAW</name>
+            <description>Elevation: 12.0 m</description>
+            <Point id="246">
+                <coordinates>62.870998,-67.603996,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="249">
+            <name>AU.MCQ</name>
+            <description>Elevation: 14.0 m</description>
+            <Point id="248">
+                <coordinates>158.9403,-54.4983,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="251">
+            <name>AU.MEEK</name>
+            <description>Elevation: 530.0 m</description>
+            <Point id="250">
+                <coordinates>118.614998,-26.638,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="253">
+            <name>AU.MENZ</name>
+            <description>Elevation: 430.0 m</description>
+            <Point id="252">
+                <coordinates>121.02942,-29.69411,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="255">
+            <name>AU.MGBR</name>
+            <description>Elevation: 186.0 m</description>
+            <Point id="254">
+                <coordinates>140.5728,-37.726299,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="257">
+            <name>AU.MGCD</name>
+            <description>Elevation: 285.0 m</description>
+            <Point id="256">
+                <coordinates>151.1092,-33.2096,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="259">
+            <name>AU.MILA</name>
+            <description>Elevation: 785.0 m</description>
+            <Point id="258">
+                <coordinates>149.155,-37.0547,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="261">
+            <name>AU.MLBS</name>
+            <description>Elevation: 9.0 m</description>
+            <Point id="260">
+                <coordinates>144.89437,-37.82915,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="263">
+            <name>AU.MOO</name>
+            <description>Elevation: 325.0 m</description>
+            <Point id="262">
+                <coordinates>147.190308,-42.4417,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="265">
+            <name>AU.MORW</name>
+            <description>Elevation: 300.0 m</description>
+            <Point id="264">
+                <coordinates>116.038803,-29.0683,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="267">
+            <name>AU.MTKN</name>
+            <description>Elevation: 57.0 m</description>
+            <Point id="266">
+                <coordinates>115.773697,-31.9333,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="269">
+            <name>AU.MTN</name>
+            <description>Elevation: 137.39999389648438 m</description>
+            <Point id="268">
+                <coordinates>131.132706,-12.8436,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="271">
+            <name>AU.MTSU</name>
+            <description>Elevation: 460.0 m</description>
+            <Point id="270">
+                <coordinates>144.319504,-18.148199,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="273">
+            <name>AU.MULG</name>
+            <description>Elevation: 254.7 m</description>
+            <Point id="272">
+                <coordinates>134.058502,-30.281799,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="275">
+            <name>AU.MUN</name>
+            <description>Elevation: 253.0 m</description>
+            <Point id="274">
+                <coordinates>116.208298,-31.9783,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="277">
+            <name>AU.NAPP</name>
+            <description>Elevation: 181.0 m</description>
+            <Point id="276">
+                <coordinates>138.147797,-33.1828,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="279">
+            <name>AU.NFK</name>
+            <description>Elevation: 203.0 m</description>
+            <Point id="278">
+                <coordinates>167.938904,-29.043301,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="281">
+            <name>AU.NIUE</name>
+            <description>Elevation: 108.8 m</description>
+            <Point id="280">
+                <coordinates>-169.9272,-19.0763,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="283">
+            <name>AU.NTLH</name>
+            <description>Elevation: 64.0 m</description>
+            <Point id="282">
+                <coordinates>151.703003,-32.8983,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="285">
+            <name>AU.NTLS</name>
+            <description>Elevation: 13.0 m</description>
+            <Point id="284">
+                <coordinates>151.762497,-32.931999,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="287">
+            <name>AU.NWAO</name>
+            <description>Elevation: 265.0 m</description>
+            <Point id="286">
+                <coordinates>117.239,-32.9277,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="289">
+            <name>AU.OKDL</name>
+            <description>Elevation: 508.0 m</description>
+            <Point id="288">
+                <coordinates>150.4805,-34.0707,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="291">
+            <name>AU.OOD</name>
+            <description>Elevation: 162.2 m</description>
+            <Point id="290">
+                <coordinates>135.688004,-27.794399,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="293">
+            <name>AU.PHB</name>
+            <description>Elevation: 609.0 m</description>
+            <Point id="292">
+                <coordinates>149.1241,-35.306999,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="295">
+            <name>AU.PSA00</name>
+            <description>Elevation: 305.0 m</description>
+            <Point id="294">
+                <coordinates>119.845802,-21.5725,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="297">
+            <name>AU.PSAA1</name>
+            <description>Elevation: 325.0 m</description>
+            <Point id="296">
+                <coordinates>119.836227,-21.576689,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="299">
+            <name>AU.PSAA2</name>
+            <description>Elevation: 330.0 m</description>
+            <Point id="298">
+                <coordinates>119.846695,-21.562828,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="301">
+            <name>AU.PSAA3</name>
+            <description>Elevation: 315.0 m</description>
+            <Point id="300">
+                <coordinates>119.854874,-21.578085,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="303">
+            <name>AU.PSAB1</name>
+            <description>Elevation: 317.0 m</description>
+            <Point id="302">
+                <coordinates>119.821869,-21.568909,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="305">
+            <name>AU.PSAB2</name>
+            <description>Elevation: 302.0 m</description>
+            <Point id="304">
+                <coordinates>119.861053,-21.55485,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="307">
+            <name>AU.PSAB3</name>
+            <description>Elevation: 327.0 m</description>
+            <Point id="306">
+                <coordinates>119.854675,-21.593241,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="309">
+            <name>AU.PSAC1</name>
+            <description>Elevation: 303.0 m</description>
+            <Point id="308">
+                <coordinates>119.809319,-21.533709,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="311">
+            <name>AU.PSAC2</name>
+            <description>Elevation: 330.0 m</description>
+            <Point id="310">
+                <coordinates>119.900436,-21.562519,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="313">
+            <name>AU.PSAC3</name>
+            <description>Elevation: 352.0 m</description>
+            <Point id="312">
+                <coordinates>119.827744,-21.621359,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="315">
+            <name>AU.PSAD1</name>
+            <description>Elevation: 280.0 m</description>
+            <Point id="314">
+                <coordinates>119.830154,-21.455038,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="317">
+            <name>AU.PSAD2</name>
+            <description>Elevation: 366.0 m</description>
+            <Point id="316">
+                <coordinates>119.962402,-21.61713,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="319">
+            <name>AU.PSAD3</name>
+            <description>Elevation: 327.0 m</description>
+            <Point id="318">
+                <coordinates>119.779861,-21.642984,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="321">
+            <name>AU.PTPS</name>
+            <description>Elevation: 9.0 m</description>
+            <Point id="320">
+                <coordinates>137.994293,-33.172501,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="323">
+            <name>AU.QIS</name>
+            <description>Elevation: 450.0 m</description>
+            <Point id="322">
+                <coordinates>139.605194,-20.557699,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="325">
+            <name>AU.QLP</name>
+            <description>Elevation: 210.0 m</description>
+            <Point id="324">
+                <coordinates>144.235001,-26.5837,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="327">
+            <name>AU.RABL</name>
+            <description>Elevation: 277.0 m</description>
+            <Point id="326">
+                <coordinates>152.163696,-4.1912,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="329">
+            <name>AU.RIV</name>
+            <description>Elevation: 25.0 m</description>
+            <Point id="328">
+                <coordinates>151.158295,-33.829399,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="331">
+            <name>AU.RK1H</name>
+            <description>Elevation: 66.0 m</description>
+            <Point id="330">
+                <coordinates>150.493896,-23.3876,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="333">
+            <name>AU.RK2S</name>
+            <description>Elevation: 36.0 m</description>
+            <Point id="332">
+                <coordinates>150.521606,-23.3102,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="335">
+            <name>AU.RKGY</name>
+            <description>Elevation: 30.0 m</description>
+            <Point id="334">
+                <coordinates>116.9773,-34.6094,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="337">
+            <name>AU.RMQ</name>
+            <description>Elevation: 360.0 m</description>
+            <Point id="336">
+                <coordinates>148.755005,-26.489,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="339">
+            <name>AU.SDAN</name>
+            <description>Elevation: 585.0 m</description>
+            <Point id="338">
+                <coordinates>139.337997,-34.5073,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="341">
+            <name>AU.STKA</name>
+            <description>Elevation: 230.0 m</description>
+            <Point id="340">
+                <coordinates>141.596405,-31.8757,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="343">
+            <name>AU.SYDS</name>
+            <description>Elevation: 27.0 m</description>
+            <Point id="342">
+                <coordinates>151.2243,-33.9297,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="345">
+            <name>AU.TOO</name>
+            <description>Elevation: 604.0 m</description>
+            <Point id="344">
+                <coordinates>145.490601,-37.5714,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="347">
+            <name>AU.TROP</name>
+            <description>Elevation: 343.0 m</description>
+            <Point id="346">
+                <coordinates>124.4794,-29.2151,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="349">
+            <name>AU.TV1H</name>
+            <description>Elevation: 65.0 m</description>
+            <Point id="348">
+                <coordinates>146.795395,-19.2614,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="351">
+            <name>AU.TW1H</name>
+            <description>Elevation: 730.0 m</description>
+            <Point id="350">
+                <coordinates>151.972,-27.544201,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="353">
+            <name>AU.TWOA</name>
+            <description>Elevation: 168.0 m</description>
+            <Point id="352">
+                <coordinates>138.5793,-35.0313,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="355">
+            <name>AU.WB0</name>
+            <description>Elevation: 392.0 m</description>
+            <Point id="354">
+                <coordinates>134.3927,-19.767099,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="357">
+            <name>AU.WB1</name>
+            <description>Elevation: 393.5 m</description>
+            <Point id="356">
+                <coordinates>134.34642,-19.959444,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="359">
+            <name>AU.WB10</name>
+            <description>Elevation: 362.1 m</description>
+            <Point id="358">
+                <coordinates>134.392838,-19.767141,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="361">
+            <name>AU.WB2</name>
+            <description>Elevation: 388.0 m</description>
+            <Point id="360">
+                <coordinates>134.35112,-19.942753,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="363">
+            <name>AU.WB3</name>
+            <description>Elevation: 384.2 m</description>
+            <Point id="362">
+                <coordinates>134.355453,-19.923019,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="365">
+            <name>AU.WB4</name>
+            <description>Elevation: 380.6 m</description>
+            <Point id="364">
+                <coordinates>134.358932,-19.903646,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="367">
+            <name>AU.WB5</name>
+            <description>Elevation: 370.9 m</description>
+            <Point id="366">
+                <coordinates>134.366196,-19.878218,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="369">
+            <name>AU.WB6</name>
+            <description>Elevation: 364.8 m</description>
+            <Point id="368">
+                <coordinates>134.367172,-19.854958,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="371">
+            <name>AU.WB7</name>
+            <description>Elevation: 353.2 m</description>
+            <Point id="370">
+                <coordinates>134.379456,-19.840809,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="373">
+            <name>AU.WB8</name>
+            <description>Elevation: 356.1 m</description>
+            <Point id="372">
+                <coordinates>134.380783,-19.813942,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="375">
+            <name>AU.WB9</name>
+            <description>Elevation: 360.0 m</description>
+            <Point id="374">
+                <coordinates>134.383972,-19.791389,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="377">
+            <name>AU.WC1</name>
+            <description>Elevation: 392.0 m</description>
+            <Point id="376">
+                <coordinates>134.33905,-19.924335,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="379">
+            <name>AU.WC2</name>
+            <description>Elevation: 375.0 m</description>
+            <Point id="378">
+                <coordinates>134.365448,-19.925379,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="381">
+            <name>AU.WC3</name>
+            <description>Elevation: 382.1 m</description>
+            <Point id="380">
+                <coordinates>134.371933,-19.958742,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="383">
+            <name>AU.WC4</name>
+            <description>Elevation: 387.5 m</description>
+            <Point id="382">
+                <coordinates>134.339737,-19.961927,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="385">
+            <name>AU.WOLH</name>
+            <description>Elevation: 91.0 m</description>
+            <Point id="384">
+                <coordinates>150.874,-34.407,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="387">
+            <name>AU.WR0</name>
+            <description>Elevation: 375.0 m</description>
+            <Point id="386">
+                <coordinates>134.540405,-19.9597,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="389">
+            <name>AU.WR1</name>
+            <description>Elevation: 388.8 m</description>
+            <Point id="388">
+                <coordinates>134.339508,-19.942589,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="391">
+            <name>AU.WR10</name>
+            <description>Elevation: 353.0 m</description>
+            <Point id="390">
+                <coordinates>134.540527,-19.959661,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="393">
+            <name>AU.WR2</name>
+            <description>Elevation: 385.4 m</description>
+            <Point id="392">
+                <coordinates>134.362381,-19.946861,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="395">
+            <name>AU.WR3</name>
+            <description>Elevation: 376.5 m</description>
+            <Point id="394">
+                <coordinates>134.386917,-19.948503,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="397">
+            <name>AU.WR4</name>
+            <description>Elevation: 374.4 m</description>
+            <Point id="396">
+                <coordinates>134.406616,-19.950317,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="399">
+            <name>AU.WR5</name>
+            <description>Elevation: 364.2 m</description>
+            <Point id="398">
+                <coordinates>134.430374,-19.952171,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="401">
+            <name>AU.WR6</name>
+            <description>Elevation: 356.5 m</description>
+            <Point id="400">
+                <coordinates>134.453049,-19.954227,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="403">
+            <name>AU.WR7</name>
+            <description>Elevation: 354.8 m</description>
+            <Point id="402">
+                <coordinates>134.476013,-19.955193,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="405">
+            <name>AU.WR8</name>
+            <description>Elevation: 367.1 m</description>
+            <Point id="404">
+                <coordinates>134.500504,-19.955793,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="407">
+            <name>AU.WR9</name>
+            <description>Elevation: 360.2 m</description>
+            <Point id="406">
+                <coordinates>134.514923,-19.957653,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="409">
+            <name>AU.WRKA</name>
+            <description>Elevation: 622.0 m</description>
+            <Point id="408">
+                <coordinates>128.296097,-25.0375,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="411">
+            <name>AU.WTPK</name>
+            <description>Elevation: 199.0 m</description>
+            <Point id="410">
+                <coordinates>150.6389,-34.2217,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="413">
+            <name>AU.XMI</name>
+            <description>Elevation: 252.0 m</description>
+            <Point id="412">
+                <coordinates>105.6884,-10.4501,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="415">
+            <name>AU.XMIS</name>
+            <description>Elevation: 210.0 m</description>
+            <Point id="414">
+                <coordinates>105.652,-10.4807,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="417">
+            <name>AU.YAPP</name>
+            <description>Elevation: 267.0 m</description>
+            <Point id="416">
+                <coordinates>138.311905,-31.866301,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="419">
+            <name>AU.YARR</name>
+            <description>Elevation: 19.0 m</description>
+            <Point id="418">
+                <coordinates>150.6877,-33.6174,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="421">
+            <name>AU.YNG</name>
+            <description>Elevation: 460.0 m</description>
+            <Point id="420">
+                <coordinates>148.3963,-34.298,0.0</coordinates>
+            </Point>
+        </Placemark>
+    </Document>
+</kml>
