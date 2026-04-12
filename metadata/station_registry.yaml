@@ -83,78 +83,235 @@ TEST9:
   reason: "Test data directory; only bogus year 1900 present"
 
 # =============================================================================
-# EXCLUDE — AU network (Geoscience Australia / Petermann deployment)
+# EXCLUDE — AU network (Geoscience Australia / ANSN)
 # =============================================================================
 
-RDK1:
-  include: true
-  target_network: VX
+ARMA:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Armidale, New South Wales"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Woods Point aftershock deployment (not Petermann)"
-
-RDK2:
-  include: true
-  target_network: VX
+  coverage_start: 2004
+  coverage_end: 2026
+ARPS:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mt Arapiles, VIC"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Woods Point aftershock deployment (not Petermann)"
-
-RDK3:
-  include: true
-  target_network: VX
+  coverage_start: 2000
+  coverage_end: 2026
+BBOO:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Buckleboo, South Australia"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Woods Point aftershock deployment (not Petermann)"
-
-RDK6:
-  include: true
-  target_network: VX
+  coverage_start: 2004
+  coverage_end: 2026
+BRAT:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Ballarat"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Woods Point aftershock deployment (not Petermann)"
-
-RDK01:
-  include: true
-  target_network: VX
+  coverage_start: 2013
+  coverage_end: 2020
+BRS:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Brisbane Mt Nebo, QLD"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
   coverage_start: 2023
-  coverage_end: 2023
-  notes: "Woods Point aftershock deployment (not Petermann)"
-
-RDK04:
-  include: true
-  target_network: VX
+  coverage_end: 2026
+CMSA:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Cobar, NSW"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
-  coverage_start: 2023
-  coverage_end: 2023
-  notes: "Woods Point aftershock deployment (not Petermann)"
-
-RDK06:
-  include: true
-  target_network: VX
+  coverage_start: 2001
+  coverage_end: 2026
+EIDS:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Eidsvold, QLD"
+  target_network: null
   network_basis: registry
-  source_network_code: null
+  source_network_code: AU
   recorder_types: null
-  coverage_start: 2023
-  coverage_end: 2023
-  notes: "Woods Point aftershock deployment (not Petermann)"
+  coverage_start: 2003
+  coverage_end: 2026
+FORT:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Forrest, WA"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 1994
+  coverage_end: 2019
+GVL:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Greenvale Reservoir, VIC"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
+  coverage_end: 2020
+HTT:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Hallett, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2000
+  coverage_end: 2026
+INKA:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Innamincka, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
+  coverage_end: 2026
+KELC:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Kangaroo Island"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2017
+  coverage_end: 2026
+LCRK:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Leigh Creek, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
+  coverage_end: 2026
+MGBR:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mount Gambier SA"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2017
+  coverage_end: 2026
+MILA:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mila, NSW"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2025
+  coverage_end: 2026
+MULG:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mulgathing, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
+  coverage_end: 2025
+NAPP:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Napperby, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2009
+  coverage_end: 2024
+OKDL:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Oakdale, Sydney, NSW"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2017
+  coverage_end: 2026
+OOD:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Oodnadatta, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
+  coverage_end: 2024
+SDAN:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Sedan SA"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2017
+  coverage_end: 2026
+STKA:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Stephens Creek, NSW"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 1994
+  coverage_end: 2026
+WRKA:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Warrakurna, Western Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2017
+  coverage_end: 2026
+WTPK:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Wilton Park, Sydney, NSW"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2016
+  coverage_end: 2026
+YAPP:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Yappala Station, SA"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2018
+  coverage_end: 2026
+YNG:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Young, NSW"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2004
+  coverage_end: 2020
+
 
 # =============================================================================
 # EXCLUDE — S1 network (AUSiS — Australian Seismometers in Schools, ANU)
@@ -536,135 +693,229 @@ WPSH:
 # VX — University of Melbourne temporary / aftershock deployments
 # =============================================================================
 
+RDK1:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
+RDK2:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
+RDK3:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
+RDK6:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
+RDK01:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2023
+  coverage_end: 2023
+  notes: "Network unknown; year range does not confirm any specific deployment"
+RDK04:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2023
+  coverage_end: 2023
+  notes: "Network unknown; year range does not confirm any specific deployment"
+RDK06:
+  include: unknown
+  target_network: null
+  network_basis: unknown
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2023
+  coverage_end: 2023
+  notes: "Network unknown; year range does not confirm any specific deployment"
+
 ABM1Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1900
   coverage_end: 2025
-  notes: "Apollo Bay aftershock Oct 2023; first real data ~06:00 UTC 23 Oct 2023; 1900 artefact"
+  notes: "Apollo Bay aftershock Oct 2023; already converted to VX SDS; 1900 artefact"
+
 
 ABM2Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1989
   coverage_end: 2024
-  notes: "Apollo Bay aftershock; equipment damage (modem, battery); 1989 artefact"
+  notes: "Apollo Bay aftershock; already converted to VX SDS; 1989 artefact"
+
 
 ABM3Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1900
   coverage_end: 2025
-  notes: "Apollo Bay aftershock; tarp site; 1900 artefact"
+  notes: "Apollo Bay aftershock; already converted to VX SDS; 1900 artefact"
+
 
 ABM4Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1900
   coverage_end: 2024
-  notes: "Apollo Bay aftershock; tarp site, marginal condition; 1900 artefact"
+  notes: "Apollo Bay aftershock; already converted to VX SDS; 1900 artefact"
+
 
 ABM5Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1989
   coverage_end: 2025
-  notes: "Apollo Bay aftershock; hut site, good condition; 1989 artefact"
+  notes: "Apollo Bay aftershock; already converted to VX SDS; 1989 artefact"
+
 
 ABM6Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 2023
   coverage_end: 2023
-  notes: "Apollo Bay aftershock; only 2 days operation (2023-10-24 to 2023-10-26)"
+  notes: "Apollo Bay aftershock Oct 2023; already converted to VX SDS"
+
 
 ABM7Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1900
   coverage_end: 2024
-  notes: "Apollo Bay aftershock; SD card filled; CMG-6T found on its side; 1900 artefact"
+  notes: "Apollo Bay aftershock; already converted to VX SDS; 1900 artefact"
+
 
 WPM1Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 2021
   coverage_end: 2022
-  notes: "Woods Point aftershock deployment, Sep 2021"
+  notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS"
+
 
 WPM2Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 2021
   coverage_end: 2021
-  notes: "Woods Point aftershock deployment, Sep 2021"
+  notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS"
+
 
 WPM3Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 2021
   coverage_end: 2021
-  notes: "Woods Point aftershock deployment, Sep 2021"
+  notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS"
+
 
 WPM4Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 1970
   coverage_end: 2024
-  notes: "Woods Point aftershock deployment, Sep 2021; 1970 year is artefact"
+  notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS; 1970 artefact"
+
 
 WPM5Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 2021
   coverage_end: 2023
-  notes: "Woods Point aftershock deployment, Sep 2021"
+  notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS"
+
 
 WPM6Y:
-  include: true
+  include: false
+  reason: "Already converted to VX SDS"
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: 2021
   coverage_end: 2023
-  notes: "Woods Point aftershock deployment, Sep 2021"
+  notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS"
+
 
 # =============================================================================
 # DU — Citizen / volunteer seismograph network
@@ -1091,36 +1342,6 @@ ARKL:
   coverage_end: 2024
   notes: "Long-running station (12yr) — likely VW or similar permanent network"
 
-ARMA:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Armidale, New South Wales"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2004
-  coverage_end: 2026
-
-ARPS:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mt Arapiles, VIC"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2000
-  coverage_end: 2026
-
-BBOO:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Buckleboo, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2004
-  coverage_end: 2026
-
 BD70:
   include: unknown
   target_network: null
@@ -1178,26 +1399,6 @@ BRAD:
   coverage_start: 2013
   coverage_end: 2021
 
-BRAT:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Ballarat"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2020
-
-BRS:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Brisbane Mt Nebo, QLD"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2023
-  coverage_end: 2026
-
 BRSA:
   include: unknown
   target_network: null
@@ -1228,22 +1429,16 @@ CLV2:
   coverage_end: 2026
   notes: "Long-running (11yr)"
 
-CMSA:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Cobar, NSW"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2001
-  coverage_end: 2026
-
 CREM:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VX
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2012
   coverage_end: 2012
+  notes: ""
+
 
 DD02:
   include: unknown
@@ -1260,48 +1455,70 @@ DD03:
   coverage_end: 2017
 
 DDBE:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2019
   coverage_end: 2020
+  notes: ""
+
 
 DNL:
   include: unknown
-  target_network: null
-  network_basis: unknown
+  target_network: DU
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 1970
   coverage_end: 2026
-  notes: "Long-running (14yr); 1970 artefact"
+  notes: "DU citizen network; Long-running (14yr); 1970 artefact; possible test station"
+
 
 DNL2:
   include: unknown
-  target_network: null
-  network_basis: unknown
+  target_network: DU
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 1980
   coverage_end: 2026
-  notes: "Long-running (12yr)"
+  notes: "DU citizen network; Long-running (12yr); possible test station"
+
 
 DNL3:
   include: unknown
-  target_network: null
-  network_basis: unknown
+  target_network: DU
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2022
   coverage_end: 2025
+  notes: "DU citizen network; Possible test station"
+
 
 DNL4:
   include: unknown
-  target_network: null
-  network_basis: unknown
+  target_network: DU
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2024
   coverage_end: 2025
+  notes: "DU citizen network; Possible test station"
+
 
 DNL44:
   include: unknown
-  target_network: null
-  network_basis: unknown
+  target_network: DU
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2025
   coverage_end: 2025
+  notes: "DU citizen network; Possible test station"
+
 
 DPSH:
   include: unknown
@@ -1338,22 +1555,16 @@ DR04:
   coverage_start: 2016
   coverage_end: 2017
 
-EIDS:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Eidsvold, QLD"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2003
-  coverage_end: 2026
-
 FBNK:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2013
   coverage_end: 2014
+  notes: ""
+
 
 FORH:
   include: unknown
@@ -1361,16 +1572,6 @@ FORH:
   network_basis: unknown
   coverage_start: 2022
   coverage_end: 2022
-
-FORT:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Forrest, WA"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 1994
-  coverage_end: 2019
 
 FRTM:
   include: unknown
@@ -1421,16 +1622,6 @@ GLNLG:
   coverage_start: 2026
   coverage_end: 2026
 
-GVL:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Greenvale Reservoir, VIC"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2020
-
 HELIX:
   include: unknown
   target_network: null
@@ -1439,12 +1630,15 @@ HELIX:
   coverage_end: 2017
 
 HODL:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 1970
   coverage_end: 2018
-  notes: "Long-running (9yr); 1970 artefact"
+  notes: "1970 artefact"
+
 
 HOGM:
   include: unknown
@@ -1454,31 +1648,15 @@ HOGM:
   coverage_end: 2019
 
 HOGN:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2018
   coverage_end: 2020
+  notes: ""
 
-HTT:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Hallett, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2000
-  coverage_end: 2026
-
-INKA:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Innamincka, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2026
 
 JMS2:
   include: true
@@ -1520,16 +1698,6 @@ JMS5:
   coverage_end: 2024
   notes: ""
 
-KELC:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Kangaroo Island"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2017
-  coverage_end: 2026
-
 KRAN:
   include: true
   target_network: VW
@@ -1539,16 +1707,6 @@ KRAN:
   coverage_start: 1970
   coverage_end: 2014
   notes: ""
-
-LCRK:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Leigh Creek, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2026
 
 LILH:
   include: unknown
@@ -1596,11 +1754,15 @@ LOYU:
   notes: ""
 
 LRWS:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
   coverage_start: 2019
   coverage_end: 2021
+  notes: ""
+
 
 MELU:
   include: unknown
@@ -1617,32 +1779,12 @@ MELU2:
   coverage_start: 2024
   coverage_end: 2024
 
-MGBR:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mount Gambier SA"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2017
-  coverage_end: 2026
-
 MHIL:
   include: unknown
   target_network: null
   network_basis: unknown
   coverage_start: 2018
   coverage_end: 2018
-
-MILA:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mila, NSW"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2025
-  coverage_end: 2026
 
 MOE3:
   include: true
@@ -1736,16 +1878,6 @@ MTON:
   coverage_start: 2025
   coverage_end: 2025
 
-MULG:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mulgathing, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2025
-
 MVM1Y:
   include: unknown
   target_network: null
@@ -1767,16 +1899,6 @@ NAME:
   coverage_start: 2024
   coverage_end: 2026
 
-NAPP:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Napperby, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2009
-  coverage_end: 2024
-
 NBK:
   include: unknown
   target_network: null
@@ -1790,26 +1912,6 @@ NHILO:
   network_basis: unknown
   coverage_start: 2021
   coverage_end: 2021
-
-OKDL:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Oakdale, Sydney, NSW"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2017
-  coverage_end: 2026
-
-OOD:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Oodnadatta, South Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2024
 
 PEGM:
   include: unknown
@@ -1937,16 +2039,6 @@ SCM2:
   coverage_start: 2019
   coverage_end: 2021
 
-SDAN:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Sedan SA"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2017
-  coverage_end: 2026
-
 SG_U:
   include: unknown
   target_network: null
@@ -1963,16 +2055,6 @@ STGU:
   coverage_start: 2012
   coverage_end: 2012
   notes: "aftershock deployment"
-
-STKA:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Stephens Creek, NSW"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 1994
-  coverage_end: 2026
 
 STR2:
   include: unknown
@@ -2144,26 +2226,6 @@ WPSG:
   coverage_end: 2018
   notes: "WP prefix similar to WPNH/WPSH (VW) — confirm"
 
-WRKA:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Warrakurna, Western Australia"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2017
-  coverage_end: 2026
-
-WTPK:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Wilton Park, Sydney, NSW"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2016
-  coverage_end: 2026
-
 XXX1:
   include: unknown
   target_network: null
@@ -2172,22 +2234,3 @@ XXX1:
   coverage_end: 2019
   notes: "Placeholder station code?"
 
-YAPP:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Yappala Station, SA"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2018
-  coverage_end: 2026
-
-YNG:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Young, NSW"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2004
-  coverage_end: 2020
