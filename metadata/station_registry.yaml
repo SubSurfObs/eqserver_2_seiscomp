@@ -275,6 +275,15 @@ STKA:
   recorder_types: null
   coverage_start: 2015
   coverage_end: 2026
+TOO:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Toolangi, VIC — NOTE: wrongly marked VW from WoodsPoint notes; is GA ANSN"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2000
+  coverage_end: 2026
 WRKA:
   include: false
   reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Warrakurna, Western Australia"
@@ -452,7 +461,7 @@ HODL:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 2002
+  coverage_start: 2012
   coverage_end: 2018
   notes: "1970 artefact"
 HOGN:
@@ -525,7 +534,7 @@ BEST:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1999
+  coverage_start: 2017
   coverage_end: 2025
   notes: "BEST_AB in Januka XMLs"
 
@@ -535,7 +544,7 @@ BRIG:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 2001
+  coverage_start: 2017
   coverage_end: 2024
   notes: "BRIG_AB in Januka XMLs; 1970 year likely artefact"
 
@@ -555,7 +564,7 @@ CLIF:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1999
+  coverage_start: 2013
   coverage_end: 2024
   notes: "CLIF_AB in Januka XMLs; 1970 year likely artefact"
 
@@ -635,7 +644,7 @@ HDDL:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1999
+  coverage_start: 2018
   coverage_end: 2025
   notes: "In vw.xml; 1900 likely artefact"
 
@@ -655,7 +664,7 @@ LOCU:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 2001
+  coverage_start: 2014
   coverage_end: 2025
   notes: "In vw.xml"
 
@@ -695,7 +704,7 @@ MARD:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1999
+  coverage_start: 2018
   coverage_end: 2025
   notes: "In vw.xml; 1970 likely artefact"
 
@@ -715,7 +724,7 @@ OUTU:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 2001
+  coverage_start: 2014
   coverage_end: 2025
   notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
 
@@ -759,15 +768,7 @@ STBK:
   coverage_end: 2024
   notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
 
-TOO:
-  include: false
-  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Toolangi, VIC — NOTE: wrongly marked VW from WoodsPoint notes; is GA ANSN"
-  target_network: null
-  network_basis: registry
-  source_network_code: AU
-  recorder_types: null
-  coverage_start: 2000
-  coverage_end: 2026
+
 
 TRPU:
   include: true
