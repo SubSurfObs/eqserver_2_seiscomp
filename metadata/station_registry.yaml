@@ -418,6 +418,16 @@ AUSSC:
 # Source network codes in files: UM or AB (both remap to VW)
 # =============================================================================
 
+SCM2:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2021
+  notes: ""
+
 DDBE:
   include: true
   target_network: VW
@@ -2072,13 +2082,6 @@ SCH8:
   network_basis: unknown
   coverage_start: 2023
   coverage_end: 2023
-
-SCM2:
-  include: unknown
-  target_network: null
-  network_basis: unknown
-  coverage_start: 2019
-  coverage_end: 2021
 
 SG_U:
   include: unknown
