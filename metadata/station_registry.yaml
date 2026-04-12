@@ -311,7 +311,46 @@ YNG:
   recorder_types: null
   coverage_start: 2004
   coverage_end: 2020
-
+RDK1:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: AU
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed AU aftershock deployment 2021; already converted to VX SDS"
+RDK2:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: AU
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed AU aftershock deployment 2021; already converted to VX SDS"
+RDK3:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: AU
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed AU aftershock deployment 2021; already converted to VX SDS"
+RDK6:
+  include: false
+  reason: "Already converted to VX SDS"
+  target_network: AU
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2021
+  notes: "Confirmed U aftershock deployment 2021; already converted to VX SDS"
 
 # =============================================================================
 # EXCLUDE — S1 network (AUSiS — Australian Seismometers in Schools, ANU)
@@ -378,6 +417,97 @@ AUSSC:
 # VW — University of Melbourne permanent network (VICWAVE)
 # Source network codes in files: UM or AB (both remap to VW)
 # =============================================================================
+
+DDBE:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2020
+  notes: ""
+FBNK:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2013
+  coverage_end: 2014
+  notes: ""
+HODL:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2018
+  notes: "1970 artefact"
+HOGN:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2018
+  coverage_end: 2020
+  notes: ""
+KRAN:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2014
+  notes: ""
+LOYU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2014
+  coverage_end: 2019
+  notes: ""
+LRWS:
+  include: true
+  target_network: VW
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2019
+  coverage_end: 2021
+  notes: ""
+MOSU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2014
+  coverage_end: 2016
+  notes: ""
+MRDN:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2019
+  notes: ""
+WILU:
+  include: true
+  target_network: VW
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2014
+  coverage_end: 2017
+  notes: ""
 
 BEST:
   include: true
@@ -693,46 +823,125 @@ WPSH:
 # VX — University of Melbourne temporary / aftershock deployments
 # =============================================================================
 
-RDK1:
-  include: false
-  reason: "Already converted to VX SDS"
+CREM:
+  include: true
+  target_network: VX
+  network_basis: notes
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: ""
+LILL:
+  include: true
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
-RDK2:
-  include: false
-  reason: "Already converted to VX SDS"
+  coverage_start: 2012
+  coverage_end: 2013
+  notes: "aftershock deployment"
+MOE3:
+  include: true
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
-RDK3:
-  include: false
-  reason: "Already converted to VX SDS"
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+MOE4:
+  include: true
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
-RDK6:
-  include: false
-  reason: "Already converted to VX SDS"
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+MOE5:
+  include: true
   target_network: VX
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2021
-  notes: "Confirmed VX aftershock deployment 2021; already converted to VX SDS"
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+MOE6:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+MOE8:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+PURV:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+RICA:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+STGU:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+THOR1:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+THOR3:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+THOR4:
+  include: true
+  target_network: VX
+  network_basis: registry
+  source_network_code: null
+  recorder_types: null
+  coverage_start: 2012
+  coverage_end: 2012
+  notes: "aftershock deployment"
+
+
 RDK01:
   include: unknown
   target_network: null
@@ -922,6 +1131,88 @@ WPM6Y:
 # Source MiniSEED files should carry DU network code (passthrough).
 # Stations with UM source code need explicit override.
 # =============================================================================
+
+JMS2:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2024
+  notes: ""
+JMS3:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2024
+  notes: ""
+JMS4:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2024
+  notes: ""
+JMS5:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2024
+  coverage_end: 2024
+  notes: ""
+LKHRT:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2021
+  coverage_end: 2026
+  notes: ""
+S88M:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2011
+  coverage_end: 2011
+  notes: ""
+S88U:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 1970
+  coverage_end: 2021
+  notes: ""
+TPSO:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 1989
+  coverage_end: 2026
+  notes: ""
+TPSOP:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: 2017
+  coverage_end: 2018
+  notes: ""
 
 ABRY:
   include: true
@@ -1429,16 +1720,6 @@ CLV2:
   coverage_end: 2026
   notes: "Long-running (11yr)"
 
-CREM:
-  include: true
-  target_network: VX
-  network_basis: notes
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: ""
-
 
 DD02:
   include: unknown
@@ -1453,16 +1734,6 @@ DD03:
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2017
-
-DDBE:
-  include: true
-  target_network: VW
-  network_basis: notes
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2019
-  coverage_end: 2020
-  notes: ""
 
 
 DNL:
@@ -1555,16 +1826,6 @@ DR04:
   coverage_start: 2016
   coverage_end: 2017
 
-FBNK:
-  include: true
-  target_network: VW
-  network_basis: notes
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2013
-  coverage_end: 2014
-  notes: ""
-
 
 FORH:
   include: unknown
@@ -1629,16 +1890,6 @@ HELIX:
   coverage_start: 2017
   coverage_end: 2017
 
-HODL:
-  include: true
-  target_network: VW
-  network_basis: notes
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 1970
-  coverage_end: 2018
-  notes: "1970 artefact"
-
 
 HOGM:
   include: unknown
@@ -1647,66 +1898,6 @@ HOGM:
   coverage_start: 2019
   coverage_end: 2019
 
-HOGN:
-  include: true
-  target_network: VW
-  network_basis: notes
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2018
-  coverage_end: 2020
-  notes: ""
-
-
-JMS2:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2024
-  coverage_end: 2024
-  notes: ""
-
-JMS3:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2024
-  coverage_end: 2024
-  notes: ""
-
-JMS4:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2024
-  coverage_end: 2024
-  notes: ""
-
-JMS5:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2024
-  coverage_end: 2024
-  notes: ""
-
-KRAN:
-  include: true
-  target_network: VW
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 1970
-  coverage_end: 2014
-  notes: ""
 
 LILH:
   include: unknown
@@ -1716,52 +1907,12 @@ LILH:
   coverage_end: 2024
   notes: "Long-running (8yr); 1970 artefact"
 
-LILL:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2013
-  notes: "aftershock deployment"
-
-LKHRT:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2021
-  coverage_end: 2026
-  notes: ""
-
 LMT:
   include: unknown
   target_network: null
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2017
-
-LOYU:
-  include: true
-  target_network: VW
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2014
-  coverage_end: 2019
-  notes: ""
-
-LRWS:
-  include: true
-  target_network: VW
-  network_basis: notes
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2019
-  coverage_end: 2021
-  notes: ""
 
 
 MELU:
@@ -1786,66 +1937,6 @@ MHIL:
   coverage_start: 2018
   coverage_end: 2018
 
-MOE3:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-MOE4:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-MOE5:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-MOE6:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-MOE8:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-MOSU:
-  include: true
-  target_network: VW
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2014
-  coverage_end: 2016
-  notes: ""
-
 MPTV:
   include: unknown
   target_network: null
@@ -1860,16 +1951,6 @@ MRAT:
   coverage_start: 1999
   coverage_end: 2026
   notes: "Long-running (18yr) — likely VW permanent"
-
-MRDN:
-  include: true
-  target_network: VW
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 1970
-  coverage_end: 2019
-  notes: ""
 
 MTON:
   include: unknown
@@ -1949,16 +2030,6 @@ PLMR:
   coverage_end: 2026
   notes: "Long-running (14yr)"
 
-PURV:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
 R2737:
   include: unknown
   target_network: null
@@ -1972,16 +2043,6 @@ RGWU:
   network_basis: unknown
   coverage_start: 2021
   coverage_end: 2021
-
-RICA:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
 
 RND2:
   include: unknown
@@ -1997,26 +2058,6 @@ ROBE:
   coverage_start: 1989
   coverage_end: 2026
   notes: "Long-running (13yr)"
-
-S88M:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2011
-  coverage_end: 2011
-  notes: ""
-
-S88U:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 1970
-  coverage_end: 2021
-  notes: ""
 
 SCH2:
   include: unknown
@@ -2046,16 +2087,6 @@ SG_U:
   coverage_start: 2021
   coverage_end: 2021
 
-STGU:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
 STR2:
   include: unknown
   target_network: null
@@ -2078,36 +2109,6 @@ THS:
   coverage_start: 2017
   coverage_end: 2020
 
-THOR1:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-THOR3:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
-THOR4:
-  include: true
-  target_network: VX
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2012
-  coverage_end: 2012
-  notes: "aftershock deployment"
-
 TOOL:
   include: unknown
   target_network: null
@@ -2121,26 +2122,6 @@ TORR:
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2017
-
-TPSO:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 1989
-  coverage_end: 2026
-  notes: ""
-
-TPSOP:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: 2017
-  coverage_end: 2018
-  notes: ""
 
 UTT:
   include: unknown
@@ -2193,16 +2174,6 @@ WILM:
   coverage_start: 1989
   coverage_end: 2026
   notes: "Long-running (7yr)"
-
-WILU:
-  include: true
-  target_network: VW
-  network_basis: registry
-  source_network_code: null
-  recorder_types: null
-  coverage_start: 2014
-  coverage_end: 2017
-  notes: ""
 
 WOOD:
   include: unknown
