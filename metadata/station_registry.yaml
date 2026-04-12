@@ -449,14 +449,14 @@ STBK:
   notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
 
 TOO:
-  include: true
-  target_network: VW
-  network_basis: notes
-  source_network_code: null
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Toolangi, VIC — NOTE: wrongly marked VW from WoodsPoint notes; is GA ANSN"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
   recorder_types: null
   coverage_start: 2000
   coverage_end: 2026
-  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
 
 TRPU:
   include: true
@@ -1077,28 +1077,34 @@ ARKL:
   notes: "Long-running station (12yr) — likely VW or similar permanent network"
 
 ARMA:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Armidale, New South Wales"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2000
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2004
   coverage_end: 2026
-  notes: "Long-running (11yr); Ararat area? — likely VW permanent"
 
 ARPS:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mt Arapiles, VIC"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2015
-  coverage_end: 2026
-  notes: "Most day dirs in archive (6913); long-running permanent — likely VW"
-
-BBOO:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2000
   coverage_end: 2026
-  notes: "Booborowie SA; likely GA/AU-operated station — probably exclude"
+
+BBOO:
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Buckleboo, South Australia"
+  target_network: null
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2004
+  coverage_end: 2026
 
 BD70:
   include: unknown
@@ -1158,16 +1164,22 @@ BRAD:
   coverage_end: 2021
 
 BRAT:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Ballarat"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2015
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
   coverage_end: 2020
 
 BRS:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Brisbane Mt Nebo, QLD"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2023
   coverage_end: 2026
 
@@ -1202,10 +1214,13 @@ CLV2:
   notes: "Long-running (11yr)"
 
 CMSA:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Cobar, NSW"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2018
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2001
   coverage_end: 2026
 
 CREM:
@@ -1309,12 +1324,14 @@ DR04:
   coverage_end: 2017
 
 EIDS:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Eidsvold, QLD"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2017
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2003
   coverage_end: 2026
-  notes: "Long-running (10yr)"
 
 FBNK:
   include: unknown
@@ -1331,10 +1348,13 @@ FORH:
   coverage_end: 2022
 
 FORT:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Forrest, WA"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2000
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 1994
   coverage_end: 2019
 
 FRTM:
@@ -1387,10 +1407,13 @@ GLNLG:
   coverage_end: 2026
 
 GVL:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Greenvale Reservoir, VIC"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2015
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
   coverage_end: 2020
 
 HELIX:
@@ -1423,18 +1446,23 @@ HOGN:
   coverage_end: 2020
 
 HTT:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Hallett, South Australia"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2000
   coverage_end: 2026
-  notes: "Long-running (11yr)"
 
 INKA:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Innamincka, South Australia"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2020
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
   coverage_end: 2026
 
 JMS2:
@@ -1466,12 +1494,14 @@ JMS5:
   coverage_end: 2024
 
 KELC:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Kangaroo Island"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2017
   coverage_end: 2026
-  notes: "Long-running (10yr)"
 
 KRAN:
   include: unknown
@@ -1482,12 +1512,14 @@ KRAN:
   notes: "1970 artefact"
 
 LCRK:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Leigh Creek, South Australia"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2017
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
   coverage_end: 2026
-  notes: "Long-running (10yr)"
 
 LILH:
   include: unknown
@@ -1548,12 +1580,14 @@ MELU2:
   coverage_end: 2024
 
 MGBR:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mount Gambier SA"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2017
   coverage_end: 2026
-  notes: "Long-running (10yr)"
 
 MHIL:
   include: unknown
@@ -1563,9 +1597,12 @@ MHIL:
   coverage_end: 2018
 
 MILA:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mila, NSW"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2025
   coverage_end: 2026
 
@@ -1643,12 +1680,14 @@ MTON:
   coverage_end: 2025
 
 MULG:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Mulgathing, South Australia"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2017
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
   coverage_end: 2025
-  notes: "Long-running (9yr)"
 
 MVM1Y:
   include: unknown
@@ -1672,10 +1711,13 @@ NAME:
   coverage_end: 2026
 
 NAPP:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Napperby, South Australia"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2017
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2009
   coverage_end: 2024
 
 NBK:
@@ -1693,17 +1735,23 @@ NHILO:
   coverage_end: 2021
 
 OKDL:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Oakdale, Sydney, NSW"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2025
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2017
   coverage_end: 2026
 
 OOD:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Oodnadatta, South Australia"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2017
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2013
   coverage_end: 2024
 
 PEGM:
@@ -1822,12 +1870,14 @@ SCM2:
   coverage_end: 2021
 
 SDAN:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Sedan SA"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2017
   coverage_end: 2026
-  notes: "Long-running (10yr)"
 
 SG_U:
   include: unknown
@@ -1844,12 +1894,14 @@ STGU:
   coverage_end: 2012
 
 STKA:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Stephens Creek, NSW"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2015
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 1994
   coverage_end: 2026
-  notes: "Long-running (12yr) — likely VW permanent"
 
 STR2:
   include: unknown
@@ -2006,18 +2058,23 @@ WPSG:
   notes: "WP prefix similar to WPNH/WPSH (VW) — confirm"
 
 WRKA:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Warrakurna, Western Australia"
   target_network: null
-  network_basis: unknown
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
   coverage_start: 2017
   coverage_end: 2026
-  notes: "Long-running (10yr)"
 
 WTPK:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Wilton Park, Sydney, NSW"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2025
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2016
   coverage_end: 2026
 
 XXX1:
@@ -2029,15 +2086,21 @@ XXX1:
   notes: "Placeholder station code?"
 
 YAPP:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Yappala Station, SA"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2020
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2018
   coverage_end: 2026
 
 YNG:
-  include: unknown
+  include: false
+  reason: "GA / AU network (ANSN) — confirmed via IRIS FDSN: Young, NSW"
   target_network: null
-  network_basis: unknown
-  coverage_start: 2018
+  network_basis: registry
+  source_network_code: AU
+  recorder_types: null
+  coverage_start: 2004
   coverage_end: 2020
