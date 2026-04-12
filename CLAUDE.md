@@ -8,6 +8,96 @@ Replace the legacy bash + Java EqConvert pipeline (in `legacy/`) with a Python p
 
 ---
 
+## Station scope and target networks
+
+**Not all 251 stations in the archive are targets for this pipeline.** Many have already been converted, or belong to other agencies with their own FDSN servers. The pipeline only processes stations explicitly listed as `include` in the station registry (see below).
+
+### Target networks
+
+Three SEED networks are the destination for stations in scope:
+
+| Network | Description |
+|---|---|
+| `VW` | Permanent UoM network |
+| `VX` | Temporary / aftershock deployment network |
+| `DU` | Third network (passes through from source for DU-coded MiniSEED stations) |
+
+Each station maps to exactly one target network. Determining the correct mapping is a prerequisite before any station can be processed.
+
+### Network code rules
+
+**PC-SUDS (EchoPro) files have no network code.** The SUDS format does not carry a network field. All three networks (VW, VX, DU) use EchoPros, so there is no way to infer target network from the file itself. The network assignment for every EchoPro station MUST come from `station_registry.yaml`.
+
+**MiniSEED (Gecko, Piesmo, etc.) files carry a network code**, but it may not be the correct target:
+
+| Source network code | Action |
+|---|---|
+| `DU` | Valid — pass through to `DU` unchanged |
+| `UM` | Invalid placeholder — must be explicitly assigned to `VW` or `VX` in registry |
+| Other | Review case by case; record in registry |
+
+**Assignment heuristics** (use as a starting point; always confirm against metadata):
+
+- `VX` — temporary and aftershock deployments:
+  - Stations with a numbered-suffix naming pattern where multiple stations share a base name (e.g. `ABM1Y`–`ABM7Y`, `WPM1Y`–`WPM6Y`, `MOE3`–`MOE8`, `SYD01`–`SYD08`) — these indicate aftershock arrays
+  - Woods Point stations: `WPM*` → `VX`
+- `DU` — if source MiniSEED already carries `DU` network code
+- `VW` — permanent single-station deployments not matching the above patterns
+
+These heuristics narrow the problem but are not definitive. Explicit registry entries override any heuristic.
+
+### Station registry
+
+Station-level metadata is maintained in `station_registry.yaml` in this repository. This is a living document built up progressively as metadata is gathered. It is the authoritative source for:
+- Whether a station is in scope (`include: true/false`)
+- Target network (`VW`, `VX`, or `DU`)
+- Recorder type(s) over time (may have changed — e.g. EchoPro → Gecko)
+- Approximate coverage (first and last year with data)
+- Notes (known anomalies, station renames, instrument changes)
+
+The registry is hierarchical: high-level per-station facts are captured first, with day-level detail deferred to the SQLite manifest built during pre-scan.
+
+**Schema** (one entry per station):
+```yaml
+ABM5Y:
+  include: true
+  target_network: VW               # VW, VX, or DU
+  network_basis: registry          # how determined: 'registry' | 'passthrough' | 'heuristic'
+  recorder_types: [echopro]        # list; if changed over time, order chronologically
+  source_network_code: null        # network code in source MiniSEED files (null for EchoPro/SUDS)
+  coverage_start: 2016             # approximate year, from archive scan
+  coverage_end: 2024
+  notes: ""
+
+ABM1Y:
+  include: true
+  target_network: VX               # aftershock array — numbered suffix pattern
+  network_basis: heuristic
+  recorder_types: [gecko]
+  source_network_code: UM          # UM = invalid placeholder, overridden by registry
+  coverage_start: 2018
+  coverage_end: 2024
+  notes: "Apollo Bay aftershock deployment"
+
+SOMEOTHER:
+  include: false
+  reason: "Already converted / external agency"
+```
+
+Key fields:
+- `network_basis: registry` — explicitly set from metadata; highest confidence
+- `network_basis: passthrough` — source code is `DU`, passed through directly
+- `network_basis: heuristic` — inferred from naming pattern; should be confirmed
+
+### How the network mapping will be determined
+
+1. User provides links to existing metadata sources (SeisComP inventories, FDSN station XML, spreadsheets)
+2. Claude reads those and populates `station_registry.yaml` as far as possible
+3. Remaining unknowns resolved by archive scan (recorder type from file extensions) and user questions
+4. Registry is committed and treated as ground truth for all downstream pipeline decisions
+
+---
+
 ## How to use this document
 
 **This file is a living document, not a specification.** The archive spans more than a decade; file naming conventions, recorder firmware, telemetry pipelines, and station configurations have all changed over that time. Information recorded here — including anything from `legacy/` notes — reflects what was observed at a specific point in time on a subset of the data. It should be treated as a starting hypothesis, not ground truth.
