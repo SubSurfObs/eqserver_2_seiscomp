@@ -442,7 +442,7 @@ HODL:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2018
   notes: "1970 artefact"
 HOGN:
@@ -460,7 +460,7 @@ KRAN:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2014
   notes: ""
 LOYU:
@@ -496,7 +496,7 @@ MRDN:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2019
   notes: ""
 WILU:
@@ -515,7 +515,7 @@ BEST:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2025
   notes: "BEST_AB in Januka XMLs"
 
@@ -525,7 +525,7 @@ BRIG:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2024
   notes: "BRIG_AB in Januka XMLs; 1970 year likely artefact"
 
@@ -535,7 +535,7 @@ BRTH:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "BRTH_UM in Januka XMLs; 1900 year likely artefact"
 
@@ -545,7 +545,7 @@ CLIF:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2024
   notes: "CLIF_AB in Januka XMLs; 1970 year likely artefact"
 
@@ -565,7 +565,7 @@ DDNE:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "DDNE_UM in Januka XMLs; 1900 year likely artefact"
 
@@ -575,7 +575,7 @@ DDSW:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "DDSW_UM in Januka XMLs; mentioned in WoodsPoint notes; 1900 likely artefact"
 
@@ -595,7 +595,7 @@ DDWK:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "DDWK_UM in Januka XMLs; 1900 likely artefact"
 
@@ -615,7 +615,7 @@ FORG:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "FORG_UM in Januka XMLs; 1900 likely artefact"
 
@@ -625,7 +625,7 @@ HDDL:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2025
   notes: "In vw.xml; 1900 likely artefact"
 
@@ -645,7 +645,7 @@ LOCU:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2025
   notes: "In vw.xml"
 
@@ -665,7 +665,7 @@ LRSE:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2023
   notes: "LRSE_UM in Januka XMLs; 1900 likely artefact"
 
@@ -675,7 +675,7 @@ LRSH:
   network_basis: notes
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "Mentioned as VW in WoodsPoint notes; UM source code inferred; confirm"
 
@@ -685,7 +685,7 @@ MARD:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2025
   notes: "In vw.xml; 1970 likely artefact"
 
@@ -695,7 +695,7 @@ NARR:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2025
   notes: "In vw.xml; 1970 likely artefact"
 
@@ -705,7 +705,7 @@ OUTU:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 2001
+  coverage_start: null
   coverage_end: 2025
   notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm"
 
@@ -715,7 +715,7 @@ SCMB:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2023
   notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm; 1970 likely artefact"
 
@@ -745,7 +745,7 @@ STBK:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
 
@@ -765,7 +765,7 @@ TRPU:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 2000
+  coverage_start: null
   coverage_end: 2022
   notes: "In vw.xml"
 
@@ -785,7 +785,7 @@ WDSD:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2025
   notes: "In vw.xml and LatestXMLS_2021; 1900 likely artefact"
 
@@ -795,7 +795,7 @@ WLSH:
   network_basis: registry
   source_network_code: UM
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "In vw.xml and Januka XMLs; 1900 likely artefact"
 
@@ -805,7 +805,7 @@ WPNH:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2023
   notes: "WPNH_AB in Januka XMLs"
 
@@ -815,7 +815,7 @@ WPSH:
   network_basis: registry
   source_network_code: AB
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2024
   notes: "WPSH_AB in Januka XMLs; 1970 likely artefact"
 
@@ -977,7 +977,7 @@ ABM1Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2025
   notes: "Apollo Bay aftershock Oct 2023; already converted to VX SDS; 1900 artefact"
 
@@ -989,7 +989,7 @@ ABM2Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2024
   notes: "Apollo Bay aftershock; already converted to VX SDS; 1989 artefact"
 
@@ -1001,7 +1001,7 @@ ABM3Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2025
   notes: "Apollo Bay aftershock; already converted to VX SDS; 1900 artefact"
 
@@ -1013,7 +1013,7 @@ ABM4Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "Apollo Bay aftershock; already converted to VX SDS; 1900 artefact"
 
@@ -1025,7 +1025,7 @@ ABM5Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2025
   notes: "Apollo Bay aftershock; already converted to VX SDS; 1989 artefact"
 
@@ -1049,7 +1049,7 @@ ABM7Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1900
+  coverage_start: null
   coverage_end: 2024
   notes: "Apollo Bay aftershock; already converted to VX SDS; 1900 artefact"
 
@@ -1097,7 +1097,7 @@ WPM4Y:
   network_basis: registry
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2024
   notes: "Woods Point aftershock deployment Sep 2021; already converted to VX SDS; 1970 artefact"
 
@@ -1192,7 +1192,7 @@ S88U:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2021
   notes: ""
 TPSO:
@@ -1201,7 +1201,7 @@ TPSO:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: ""
 TPSOP:
@@ -1301,7 +1301,7 @@ HKER:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2026
   notes: "Hawker SA; 1970 year artefact"
 
@@ -1311,7 +1311,7 @@ HML1:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2025
   notes: "Pinkerton Plains SA; 1989 year likely artefact"
 
@@ -1403,7 +1403,7 @@ RNDA:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2026
   notes: "Aranda ACT; 1970 year artefact"
 
@@ -1441,7 +1441,7 @@ WKA:
   network_basis: registry
   source_network_code: DU
   recorder_types: null
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: "Willalooka SA; 1989 year likely artefact"
 
@@ -1629,7 +1629,7 @@ ARKL:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2024
   notes: "Long-running station (12yr) — likely VW or similar permanent network"
 
@@ -1708,7 +1708,7 @@ BRTS:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (12yr) — likely VW permanent"
 
@@ -1742,7 +1742,7 @@ DNL:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2026
   notes: "DU citizen network; Long-running (14yr); 1970 artefact; possible test station"
 
@@ -1753,7 +1753,7 @@ DNL2:
   network_basis: notes
   source_network_code: null
   recorder_types: null
-  coverage_start: 1980
+  coverage_start: null
   coverage_end: 2026
   notes: "DU citizen network; Long-running (12yr); possible test station"
 
@@ -1903,7 +1903,7 @@ LILH:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2024
   notes: "Long-running (8yr); 1970 artefact"
 
@@ -1919,7 +1919,7 @@ MELU:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2025
   notes: "1970 artefact; Melbourne?"
 
@@ -2026,7 +2026,7 @@ PLMR:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (14yr)"
 
@@ -2055,7 +2055,7 @@ ROBE:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (13yr)"
 
@@ -2091,7 +2091,7 @@ STR2:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (15yr); 1970 artefact"
 
@@ -2127,7 +2127,7 @@ UTT:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1970
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (13yr); 1970 artefact"
 
@@ -2135,7 +2135,7 @@ WAL1:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2022
 
 WALM:
@@ -2149,7 +2149,7 @@ WALR:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (12yr)"
 
@@ -2171,7 +2171,7 @@ WILM:
   include: unknown
   target_network: null
   network_basis: unknown
-  coverage_start: 1989
+  coverage_start: null
   coverage_end: 2026
   notes: "Long-running (7yr)"
 
