@@ -8,6 +8,79 @@ Replace the legacy bash + Java EqConvert pipeline (in `legacy/`) with a Python p
 
 ---
 
+## Shared infrastructure & sibling project (added 2026-05)
+
+This project no longer stands alone. It shares a VM, a staging SMB mount, the
+staging SDS skeleton, and (ultimately) a manifest ledger with a sibling project,
+**`sdcard_to_sds`** (`/Users/DSAND/projects/SubSurfObs/sdcard_to_sds`), which
+ingests Gecko SD cards into the same long-term SeisComP archive. EqServer
+conversion and SD-card ingest are two **sources** feeding one destination.
+**The "Storage architecture" and "VM access" sections further down predate this
+and are partly superseded — this section is current.**
+
+### The staging VM
+
+A dedicated VM now hosts staging/analysis for both pipelines:
+
+- Host `rs-l-0ezd3a.desktop.cloud.unimelb.edu.au` — **`172.26.144.41`**, user `dsand` (passwordless sudo).
+- It is an **`rs-` type VM, but NFS access HAS been granted** to `research-nfs.unimelb.edu.au:/6000/6250-mei` (the rd-/rs- caveat in the VM-access section is resolved for this host).
+
+Three mounts, all in `/etc/fstab` (reboot-robust):
+
+| Mount | Source | Mode | Role |
+|---|---|---|---|
+| `/mnt/eqserver_archive` | `research-nfs.unimelb.edu.au:/6000/6250-mei` (NFS v4) | **ro** | origin EqServer archive — this project's input |
+| `/mnt/seiscomp_staging` | `//mediaflux…/proj-6700_seiscomp_staging-1128.4.1649` (CIFS) | **rw** | shared staging SDS — both pipelines write here |
+| `/mnt/seiscomp_archive` | `//mediaflux…/proj-6700_earth_sciences_seismology-1128.4.1237` (CIFS) | **ro** | long-term SeisComP archive — read for comparison/availability, never written from here |
+
+Origin archive path: `/mnt/eqserver_archive/shared/data/repository/archive/<STATION>/continuous/<YEAR>/<MONTH>/<DAY>/`.
+SMB creds for the mediaflux mounts are in `/etc/fstab-creds-mediaflux` (root-owned, central UoM password). NFS is `sec=sys` (IP-whitelisted, no creds).
+
+### Shared staging SDS skeleton
+
+Both pipelines write SDS into the **same** staging tree:
+`/mnt/seiscomp_staging/seiscomp_archive/<YEAR>/<NET>/<STA>/<CHA>.D/…`. EqServer
+conversion fills it station-by-station; SD-card ingest fills it card-by-card.
+Long-term archive = common destination; staging = common intermediate.
+
+### Shared ledger (manifest) — `sds_staging_ledger`
+
+The repo **`sds_staging_ledger`** (cloned on the staging VM at
+`~/projects/SubSurfObs/sds_staging_ledger` and on the Mac) is the system of
+record for what reaches the long-term archive and how. It already tracks
+SD-card uploads; **EqServer conversion should append to the same ledger** so one
+provenance record covers both the old-archive conversion and SD-card ingests.
+Reuse its model rather than re-implementing:
+
+- `apply.py` — staging → LT writes, **atomic** (`cp` → `.partial` → size-verify
+  → `rename`), **dry-run by default** (`--commit` to write), decision logic
+  `write | skip | override`, never deletes. The EqServer write-to-LT step
+  should follow this pattern.
+- Manifests: `seiscomp_archive/<YYYY>/<NET>/<STA>.events.jsonl` (one line per
+  write/override) + per-card/per-operation dirs. **NEVER delete from
+  `/mnt/seiscomp_archive`** — only write/override; the local rolling buffer on
+  the SeisComP servers is the only thing routinely deleted.
+
+### Shared diagnostic: duration ratio
+
+`sds_staging_ledger/plot_card.py` (and `sdcard_to_sds/plotting/`) compute a
+**duration ratio** = (in-record sample-time) / 86400 — ~1.0 clean, ~2.0
+duplicated, <1.0 gap. Same QC lens this project should use to validate converted
+output; it's exactly what surfaced the upstream seedlink doubling in the live VW
+feed. **File size is too noisy (±30–50% from compression) for completeness —
+use the duration ratio.**
+
+### Station registry = shared station→network truth
+
+`metadata/station_registry.yaml` is the authoritative VW/VX/DU network
+assignment per station. EchoPro/PC-SUDS files carry **no network code**, so the
+registry is mandatory for network patching here. Several registry stations (e.g.
+MARD, TRPU) ALSO arrive as Gecko SD cards in `sdcard_to_sds` — the registry is
+the common reference for "which network does this station belong to," even
+though Gecko miniSEED already carries correct codes.
+
+---
+
 ## Station scope and target networks
 
 **Not all 251 stations in the archive are targets for this pipeline.** Many have already been converted, or belong to other agencies with their own FDSN servers. The pipeline only processes stations explicitly listed as `include` in the station registry (see below).
@@ -298,10 +371,11 @@ Level 1 filename scan can itself be parallelised: split the station list across 
 ```yaml
 # config.yaml
 
-# Storage paths
-archive_path: "/data/repository/archive"
-staging_sds_path: "/mnt/staging_sds"
-manifest_db: "/home/seiscomp/eqserver_manifest.db"  # local disk, not SMB
+# Storage paths (current staging VM — see Shared infrastructure section)
+archive_path: "/mnt/eqserver_archive/shared/data/repository/archive"
+staging_sds_path: "/mnt/seiscomp_staging/seiscomp_archive"   # shared with sdcard_to_sds
+lt_archive_path: "/mnt/seiscomp_archive"                      # read-only; never delete
+manifest_db: "/home/dsand/eqserver_manifest.db"  # local disk, not SMB
 
 # Parallelism
 workers_outer: 16       # station-day level; tune to available cores
@@ -371,14 +445,21 @@ The new Python pipeline addresses all of these at the design level.
 
 ## Storage architecture
 
-The pipeline operates across three tiers of storage, all accessed from the EqServer VM:
+> **Superseded specifics — see "Shared infrastructure & sibling project" above
+> for current mounts.** The three-tier model still holds; the concrete paths/
+> shares below are updated there (origin = NFS `/mnt/eqserver_archive`, staging
+> = shared CIFS `/mnt/seiscomp_staging/seiscomp_archive`, long-term = CIFS
+> `/mnt/seiscomp_archive`). The staging mount is now **shared with
+> `sdcard_to_sds`**, not a per-project share.
+
+The pipeline operates across three tiers of storage, all accessed from the staging VM:
 
 ```
-[Origin archive]          [Staging SDS]             [Long-term SDS]
-SMB mount (~25 TB)   →   SMB mount (per-station)  →  Mediaflux (SMB)
-/data/repository/        /mnt/staging_sds/            /mnt/mediaflux/
-archive/<STA>/...        <NET>/<STA>/...               <NET>/<STA>/...
-  READ ONLY                WRITE (pipeline)             WRITE (rsync only)
+[Origin archive]               [Staging SDS]                    [Long-term SDS]
+NFS /mnt/eqserver_archive  →   CIFS /mnt/seiscomp_staging   →   CIFS /mnt/seiscomp_archive
+shared/data/repository/        seiscomp_archive/                 <YEAR>/<NET>/<STA>/...
+archive/<STA>/...              <YEAR>/<NET>/<STA>/...
+  READ ONLY                     WRITE (both pipelines)            WRITE via ledger apply (rsync/cp)
 ```
 
 **Origin archive** (`/data/repository/archive/`)
@@ -410,6 +491,12 @@ archive/<STA>/...        <NET>/<STA>/...               <NET>/<STA>/...
 ---
 
 ## VM access and origin archive navigation
+
+> **Current host is the shared staging VM `rs-l-0ezd3a` (`172.26.144.41`) — see
+> "Shared infrastructure" above.** It is an `rs-` VM but NFS access to
+> `research-nfs:/6000/6250-mei` HAS been granted and is mounted ro at
+> `/mnt/eqserver_archive` (in fstab). The `rd-`/`rs-` guidance below is retained
+> for context / future VM requests but is already resolved for this host.
 
 The origin archive lives on a remote Linux VM (EqServer host). Claude Code has direct SSH/connection access to this machine. Key points:
 
