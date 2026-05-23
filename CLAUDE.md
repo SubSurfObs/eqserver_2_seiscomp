@@ -12,7 +12,7 @@ Replace the legacy bash + Java EqConvert pipeline (in `legacy/`) with a Python p
 
 This project no longer stands alone. It shares a VM, a staging SMB mount, the
 staging SDS skeleton, and (ultimately) a manifest ledger with a sibling project,
-**`sdcard_to_sds`** (`/Users/DSAND/projects/SubSurfObs/sdcard_to_sds`), which
+**`disk_to_sds`** (`/Users/DSAND/projects/SubSurfObs/disk_to_sds`, formerly `sdcard_to_sds`), which
 ingests Gecko SD cards into the same long-term SeisComP archive. EqServer
 conversion and SD-card ingest are two **sources** feeding one destination.
 **The "Storage architecture" and "VM access" sections further down predate this
@@ -63,7 +63,7 @@ Reuse its model rather than re-implementing:
 
 ### Shared diagnostic: duration ratio
 
-`sds_staging_ledger/plot_card.py` (and `sdcard_to_sds/plotting/`) compute a
+`sds_staging_ledger/plot_card.py` computes a
 **duration ratio** = (in-record sample-time) / 86400 — ~1.0 clean, ~2.0
 duplicated, <1.0 gap. Same QC lens this project should use to validate converted
 output; it's exactly what surfaced the upstream seedlink doubling in the live VW
@@ -75,7 +75,7 @@ use the duration ratio.**
 `metadata/station_registry.yaml` is the authoritative VW/VX/DU network
 assignment per station. EchoPro/PC-SUDS files carry **no network code**, so the
 registry is mandatory for network patching here. Several registry stations (e.g.
-MARD, TRPU) ALSO arrive as Gecko SD cards in `sdcard_to_sds` — the registry is
+MARD, TRPU) ALSO arrive as Gecko SD cards in `disk_to_sds` — the registry is
 the common reference for "which network does this station belong to," even
 though Gecko miniSEED already carries correct codes.
 
@@ -373,7 +373,7 @@ Level 1 filename scan can itself be parallelised: split the station list across 
 
 # Storage paths (current staging VM — see Shared infrastructure section)
 archive_path: "/mnt/eqserver_archive/shared/data/repository/archive"
-staging_sds_path: "/mnt/seiscomp_staging/seiscomp_archive"   # shared with sdcard_to_sds
+staging_sds_path: "/mnt/seiscomp_staging/seiscomp_archive"   # shared with disk_to_sds
 lt_archive_path: "/mnt/seiscomp_archive"                      # read-only; never delete
 manifest_db: "/home/dsand/eqserver_manifest.db"  # local disk, not SMB
 
@@ -450,7 +450,7 @@ The new Python pipeline addresses all of these at the design level.
 > shares below are updated there (origin = NFS `/mnt/eqserver_archive`, staging
 > = shared CIFS `/mnt/seiscomp_staging/seiscomp_archive`, long-term = CIFS
 > `/mnt/seiscomp_archive`). The staging mount is now **shared with
-> `sdcard_to_sds`**, not a per-project share.
+> `disk_to_sds`**, not a per-project share.
 
 The pipeline operates across three tiers of storage, all accessed from the staging VM:
 
