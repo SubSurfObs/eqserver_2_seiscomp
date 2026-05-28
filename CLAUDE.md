@@ -36,6 +36,17 @@ Three mounts, all in `/etc/fstab` (reboot-robust):
 Origin archive path: `/mnt/eqserver_archive/shared/data/repository/archive/<STATION>/continuous/<YEAR>/<MONTH>/<DAY>/`.
 SMB creds for the mediaflux mounts are in `/etc/fstab-creds-mediaflux` (root-owned, central UoM password). NFS is `sec=sys` (IP-whitelisted, no creds).
 
+**Mount status (verified 2026-05-25 on `rs-l-0ezd3a`):** all three mounts live
+and in `/etc/fstab` with `nofail`/`_netdev` (reboot-safe). Origin NFS ≈ 16 TB,
+**98% full** (~420 GB free), ro; 251 station dirs under the archive root. Staging
+confirmed writable. LT holds real data — years 2012 + 2021–2026; nets
+VW/VX/DU/**AU/Z1/OZ**; plus `Queries/`, `Restricted/`, and stale `sync_test*/`
+dirs (leftover sync trials; do not rely on them).
+**Caveat — `df` is unreliable on the two mediaflux CIFS mounts:** it reports
+~1.9 GB total on staging and *0 bytes used* on LT, both wrong. Do **not** use
+`df` to gauge staging headroom — size per-station output from the manifest and
+confirm against the actual mediaflux share quota.
+
 ### Shared staging SDS skeleton
 
 Both pipelines write SDS into the **same** staging tree:
@@ -60,6 +71,24 @@ Reuse its model rather than re-implementing:
   write/override) + per-card/per-operation dirs. **NEVER delete from
   `/mnt/seiscomp_archive`** — only write/override; the local rolling buffer on
   the SeisComP servers is the only thing routinely deleted.
+
+### Shared conversion core: `disk_to_sds/scripts/suds_convert.py`
+
+A **working, validated** SUDS→miniSEED+SDS engine now exists in
+`disk_to_sds/scripts/suds_convert.py` (built + tested on a real 2024 OUTU EchoPro
+day) — reuse it here for Stage 3 instead of reimplementing:
+- `convert_suds_files()` — read SUDS (sudspy) → remap to SEED ids: registry
+  network, `c01→CHN / c02→CHE / c03→CHZ` (Kelunji manual), drop `c04+` aux/mic,
+  loc `00`, band code by sample rate; per-file read-error capture for QC.
+- `write_sds()` — atomic per-channel day-file write, **STEIM2** (int32 cast).
+- `network_for_station()` — registry lookup.
+
+`disk_to_sds/scripts/echopro_usb_to_sds.py` is the per-day **driver** to mirror:
+discover days → date-window filter → convert → write SDS → QC-flag,
+**resume-by-default** (skip a day only when all components are already in the SDS
+— the SDS is the bookmark; survives hard kills). The legacy driver differs only
+in source layout (day-dirs + the SQLite manifest) and the disk/telemetry
+selection; the conversion core is identical.
 
 ### Shared diagnostic: duration ratio
 
@@ -136,6 +165,10 @@ ABM5Y:
   include: true
   target_network: VW               # VW, VX, or DU
   network_basis: registry          # how determined: 'registry' | 'passthrough' | 'heuristic'
+  target_location: "00"            # SDS location code; default "00" if omitted (VW/VX convention).
+                                   # Source mseed has empty location (Gecko/RT130/Minimus all write ''),
+                                   # so the driver REPLACES the source value with this on every trace.
+                                   # Set per-station to override (rare; mostly DU-network exceptions).
   recorder_types: [echopro]        # list; if changed over time, order chronologically
   source_network_code: null        # network code in source MiniSEED files (null for EchoPro/SUDS)
   coverage_start: 2016             # approximate year, from archive scan
@@ -213,31 +246,176 @@ The exact file naming conventions, extensions, and archiving quirks for the non-
 - Disk files (2 underscores, no seconds): `20231029_0001_ABM1Y.ms.zip`
 - Telemetry files (spaces): `2023-10-29 0001 00 ABM1Y.ms.zip`
 - Local zip contains multiple files (MiniSEED + metadata); telemetry zip is single MiniSEED
-- Triggered/exclude patterns: `.trig.dmx`, `.ss`, `_CHZ.mseed.zip`
-- Note: older Gecko data (pre-~2018) uses different naming conventions — see Open Questions
+- Waveform-exclude patterns: `.trig.dmx`, `_CHZ.mseed.zip`
+- **`.ss` = metadata-INCLUDE, not a discard.** Gecko `kelunjimeta` sidecar
+  (plain text) — the Gecko analog of the PC-SUDS header. Record it
+  (`role=metadata`), don't treat it as waveform. Verified across 8+ stations
+  (2026-05-26):
+  - **Event-driven, NOT periodic.** Each `.ss` is a point-in-time configuration
+    snapshot written on recorder boot / settings change. The filename `HHMM`
+    is the recorder `settings_time` (e.g. STBK shows clusters like
+    `2022-07-24 0200/0300/0400/0500/0600 STBK.ss` — a sequence of reboots that
+    morning, not an hourly status ping). STBK = 4,831 `.ss` across 2018–2024.
+  - **Always filed under `continuous/1900/01/01/`** (bogus path date) — the
+    real date is in the filename. Real day dirs hold only `.ms*` waveform
+    files. Scan derives true date from filename and flags `date_mismatch`.
+  - **Fields per `.ss`:** `format=kelunjimeta`, `serial` (datalogger),
+    `cpv` (counts/V — recorder sensitivity), `current_gain`, `sampling_rate`,
+    `sitename`, `network_code` (often invalid `UM` — registry overrides),
+    `location_id`, `storing_chan[0..3]`, `tele_chan[0..3]`, `gain_A_0..2`
+    (per-channel cal), firmware/build. Older firmware (≤5.0) has occasional
+    line-format quirks (e.g. a mashed `"gain"=…settings_time…"` line) —
+    parser should be tolerant.
+  - **Highly variable presence — not every Gecko station has `.ss`.** Of 8
+    stations sampled, STBK / ABM1Y / ABM3Y / ABM4Y / ABM7Y have thousands;
+    ABM2Y / ABM5Y / ABM6Y have **zero** despite being Gecko (the Gecko
+    apparently wasn't configured to telemetry the `.ss` to EqServer — kept
+    only on the SD card). MARD / OUTU / HOLS / JMS2 have zero because they
+    are EchoPro-dominant (`.ss` only appears when Gecko is the actual data
+    source). The Level-1 manifest's per-station metadata count IS the map
+    of who has them.
+  - **For metadata harvest:** dedup the snapshots per station — typical
+    output is a small number of *distinct* configurations over the station's
+    lifetime, and the **transitions between them are epoch-boundary
+    candidates** for `uom_seismic_metadata` (serial change → new datalogger,
+    sample_rate change → band code, gain change → recompute sensitivity,
+    firmware bump → noted). Where `.ss` is absent, fall back to Gecko mseed
+    blockettes + external sources.
+- **Filename grammar may have evolved over the Gecko lifetime.** Geckos were
+  introduced to the UoM network ~2016–2017; **early-era (pre-~2018) deployments
+  may use different naming conventions** to the current one. The parser should
+  be tolerant of variants and flag rather than misclassify anything that doesn't
+  match the documented grammar. (User-confirmed 2026-05-26.)
+- **`_CHAN.mseed.zip` (single-channel mseed) IS produced by Gecko stations** —
+  verified 2026-05-26 across a Gecko mini-batch (BRTH / SGWU / STBK / TRPU /
+  WDSD / WLSH × Q1 2020): 246 such files across 4 of 6 stations (WDSD 152,
+  WLSH 65, STBK 28, BRTH 1), sporadic (often <5/day). Examples:
+  `WDSD_CHZ.mseed.zip`, `BRTH_CHN.mseed.zip`. Look like emergency/fallback
+  single-channel telemetry stubs when the full `.ms.zip` path wasn't available.
+  Treating them as `exclude_reason=single_channel` is **correct for Gecko and
+  EchoPro stations**.
+- **For Guralp Radian/Minimus stations (DDBE / DDWB / SCM2 — see below), the
+  same exclude rule is WRONG** — their per-channel mseed IS the data. A
+  recorder-aware override is needed for that class (pending per-station Guralp
+  annotation in the registry).
 
-**Guralp Radian** (MiniSEED — details unverified)
-- Broadband recorder; data either written natively as MiniSEED or pre-converted before archive ingestion
-- File naming conventions, extensions, and station associations: **to be confirmed by archive scan**
+**Guralp Radian + Minimus** (MiniSEED, manual-upload — partly observed)
+- Combined system: Radian = digital-output borehole sensor; Minimus = mseed
+  passthrough recorder. Output is **one mseed file per channel per minute**
+  (typically `Z/N/E`), so a complete day = ~4,320 files (3 × 1,440) — the "3.0×"
+  pattern in the 2020-01-01 diagnostic.
+- **Definitive Minimus cohort per `vw_reconciliation.yaml` historical reconciliation
+  (sourced 2026-05-27): DDBE, DDWB, SCM2 — *and only these three.*** Serials in
+  `station_registry.yaml`. Pattern matches in the archive scan: per-channel mseed,
+  ~4,320 files/day, all three stations score 0% under the default classifier and
+  flip to 97–99% clean with the Minimus per-station override (now implemented in
+  `check_manifest.py`).
+- **DDNE / SCMB are NOT Minimus** despite the cluster naming — the scan and the
+  reconciliation agree. DDNE is dominated by Gecko-format files (97%+ clean by the
+  default classifier); SCMB is `.dmx` EchoPro (Minimus was *stolen* — Radian
+  recovered from the borehole per the 2024 handover PDF).
+- **Source caveat:** the Layer-A reconciliation is a best-effort historical harvest
+  from wiki + PDF + site visits (NOT field-verified). Treat as the most reliable
+  current record, not ground truth.
+- **NOT telemetered.** The Guralp Radian outputs too much data to be telemetered
+  reliably, so Challenger (the operator) never set up telemetry for these
+  stations. The space-separated filenames our parser would label "telemetry"
+  are actually **manually-uploaded mseed files** with operator-inserted spaces
+  in the names. **For Guralp/Minimus, treat `source_type=telemetry` as
+  effectively disk** — there is only one source, no dedup decision to make.
+  (User-confirmed 2026-05-26.)
+- File naming convention: `YYYY-MM-DD HHMM 00 STA_CHAN.mseed.zip` (where
+  `CHAN ∈ {DHZ, DHN, DHE}` or similar 3-letter channel code).
+- The classifier's `exclude_reason=single_channel` rule must NOT fire for
+  Guralp/Minimus stations — these per-channel mseed files ARE the data.
 
-**Reftek** (MiniSEED — details unverified)
-- Data either written natively as MiniSEED or pre-converted before archive ingestion
-- File naming conventions, extensions, and station associations: **to be confirmed by archive scan**
+**Reftek RT130** (IESE-cluster — per `vw_reconciliation.yaml`, source-tagged)
 
-**Piesmo** (MiniSEED — details unverified)
-- Data either written natively as MiniSEED or pre-converted before archive ingestion
-- File naming conventions, extensions, and station associations: **to be confirmed by archive scan**
+> **Provenance note.** Recorder-cohort assignments and operational windows quoted
+> below are sourced from `uom_seismic_metadata/reference/history/vw_reconciliation.yaml`
+> (Layer A — a best-effort *historical reconciliation* harvested from wiki + 2024
+> handover PDF + site-visit notes). They represent the most reliable centralised
+> record currently available, **NOT field-verified ground truth**. Treat as the
+> best-available starting hypothesis; revise per-station when the EqServer scan +
+> mseed headers + operator confirmation say otherwise.
+
+- **Cohort (5 stations per Layer A):** LOYU, MOSU, SGWU, TRPU, WILU. All Reftek RT130
+  digitisers, 200 Hz, IESE S10g sensor (LOYU is the exception — OYO Geospace HS-1
+  deep+surface). Per-station serials + operational windows in `station_registry.yaml`.
+- **Filename grammar (`YYYY-MM-DD_HHMM_STA.ms.zip`)** is **indistinguishable from
+  Gecko at the parser level** — both produce dashed-date `.ms.zip` files with the
+  same token shape. The Level-1 manifest tags these as `recorder=gecko` because
+  extension is the only signal; the *actual* recorder identity must come from the
+  registry's `recorder_types` field (sourced from `uom_seismic_metadata` Layer A) or
+  from an mseed header probe (RT130-specific blockettes).
+- **Mini-batch validated (11.6 M files, 5 stations, all years):** 69% headline-clean,
+  cleanest stations 73–86%; zero failing-recorder days. Day-classification is correct
+  — only the *recorder label* is misleading without registry input.
+- **Transitions:** SGWU and TRPU transitioned to Gecko + s21g, 250 Hz on 2024-12-12
+  (per Layer-B user_direct overlay in `vw_reconciliation.yaml`). LOYU / MOSU / WILU
+  decommissioned before transition.
+- **WNRO 1024-week timestamp correction — NOT active in the EqServer archive**
+  (verified 2026-05-27, 5 stations × 4 years sampled: LOYU 2014/2016/2018,
+  SGWU 2018, TRPU 2018). All header timestamps matched their path dates exactly.
+  CLAUDE.md previously claimed WNRO was required for SGWU pre-2024-12 and LOYU
+  2014-2024 — that claim referred to *raw* RT130 data before ingest. By the
+  time data lands in EqServer, the correction has already been applied (the
+  predecessor's ingest pipeline handled it; that's why files are sorted into
+  correct year-dirs in the first place). **No Phase 3 WNRO converter needed.**
+  If a future scan turns up RT130 data with mismatched header/path dates, then
+  this assumption must be revisited.
+
+**Piesmo** (DU-network mseed, telemetry-stub on EqServer)
+
+> Source: SAA operator spreadsheet (`SAA-Stations/build/SAA_stations DanS Apr 2026.xlsx`,
+> `datalogger="Peismo"`) + 2026-05-27 mini-batch scan against the EqServer archive.
+> Spreadsheet is the operator's current-state record (single point in time), not a
+> historical timeline. Treat as a starting hypothesis subject to per-station verification.
+
+- **Cohort (15 SAA stations per spreadsheet; 11 present in EqServer archive):** ABRY, BRON,
+  DJO, ERIKA, HAZO, HELEN, KENT, NSTM, OAT, USYD, WEPH (present); ALEX, LEU, LGMA,
+  WAH (registered but no EqServer dir). All deployed Mar–Jul 2025.
+- **Filename grammar on EqServer: `YYYY-MM-DD HHMM SS STA_HHZ.mseed.zip`** — single-
+  channel telemetry-stub format, the *exact same shape* as Gecko single-channel
+  emergency stubs. Default parser flags these as `exclude_reason=single_channel`.
+- **HHZ only on EqServer — N and E components never land here.** ~250–300 files/day
+  per station (one every ~5 min). Each file contains short snippets (~55 s + 240 s
+  traces, NOT a full minute of continuous data).
+- **Mseed header content: `DU.{STATION}.0.HHZ @ 200 Hz`** (location code is single-
+  char `0`). WEPH's mseed header says `AU.WEPH.0.HHZ` — direct disagreement with the
+  SAA spreadsheet (which lists WEPH as DU). Operator misconfig at deployment, worth
+  flagging.
+- **Implication: the bulk PiesMo data bypasses EqServer entirely.** Real 3-component
+  data presumably reaches the SeisComP archive via direct seedlink or SD-card upload
+  through the `disk_to_sds` path. The EqServer presence is a small sporadic dribble
+  of single-channel telemetry stubs, ~hour or two of data per day per station.
+- **For Phase 2b, PiesMo will need a recorder-aware override** similar to Minimus —
+  for stations annotated `recorder_class: piesmo`, the `_HHZ.mseed.zip` exclude
+  becomes "keep as Z-only data, flag missing N/E". Pending registry annotation pass
+  for the 11 present PiesMo stations.
 
 ### Recorder detection strategy
 
 Recorder type is detected per day directory at Level 1 scan (filename/extension only):
 - Presence of `.dmx` or `.dmx.gz` → EchoPro
-- Presence of `.ms.zip` or `.ms` (without `.mseed`) → likely Gecko
-- Presence of `.mseed.zip` or `.mseed` → likely Centaur/Guralp/Reftek/Piesmo
+- Presence of `.ms.zip` or `.ms` (without `.mseed`) → labelled `gecko` in the manifest,
+  but **NOT necessarily Gecko** — verified 2026-05-27 that **Reftek RT130 files also
+  use the `.ms.zip` extension** with the same dashed-date filename grammar
+  (`YYYY-MM-DD_HHMM_STA.ms.zip`). The extension alone CANNOT distinguish Reftek
+  from Gecko; the only reliable disambiguation is the registry's `recorder_types`
+  field (sourced from `vw_reconciliation.yaml` Layer A) or an mseed header probe
+  (RT130 blockettes vs Gecko's signatures).
+- Presence of `.mseed.zip` or `.mseed` → mixed bucket: Guralp/Minimus per-channel
+  (DDBE/DDWB/SCM2 — annotated in registry), or Piesmo single-channel telemetry stub
+  (`_HHZ.mseed.zip`), or Gecko emergency single-channel stub, or older single-channel
+  exports. Default parser tags these `exclude_reason=single_channel`; recorder-aware
+  override per station (registry `recorder_types: [minimus]` etc.) revives them as
+  data when appropriate.
 - Mixed extensions in one day directory → flag as `edge_case`; may indicate recorder transition or archive ingestion anomaly
 - Unknown extension → flag as `unknown`; log for investigation
 
-These heuristics should be validated against the archive before being treated as reliable.
+These heuristics should be validated against the archive before being treated as reliable;
+where the registry `recorder_types` field is populated, prefer that over filename inference.
 
 ### File naming: EchoPro detail
 
@@ -258,8 +436,10 @@ Three-stage pipeline per station-day. See `sudspy` CLAUDE.md for full detail.
 
 ### Stage 1 — Filename scan (no file opens)
 
-- Parse all filenames: extract `HHMM`, `SS`, station code
-- Discard: `.trig`, `.ss`, `.mseed.zip` patterns
+- Parse all filenames: extract `HHMM`, `SS`, station code, **date (the filename
+  date is authoritative — NOT the directory path; see scan findings below)**
+- Discard for conversion: `.trig`, single-channel `*_CHAN.mseed.zip` patterns
+  (but `.ss` is retained as `role=metadata`, not discarded)
 - Discard: wrong station (filename station ≠ directory station)
 - Classify: disk (underscore) vs telemetry (space)
 - Group by `SS` value → identifies recording sessions and session boundaries
@@ -281,15 +461,19 @@ Three-stage pipeline per station-day. See `sudspy` CLAUDE.md for full detail.
 
 - Call `read_suds_stream()` (sudspy) on selected files
 - Group traces into contiguous segments: new group if `start[i] > end[i-1] + 0.5 * delta`
-- Write per-channel day MiniSEED: `Stream.write(path, format="MSEED", reclen=4096)`
+- Write per-channel day MiniSEED with **`encoding="STEIM2"`** and **cast samples to int32 first** (SUDS counts are integers): `Stream.write(path, format="MSEED", encoding="STEIM2", reclen=4096)`. obspy's default encoding writes **uncompressed INT32 (~3.4× bloat, verified)**; STEIM2 gives the ~23–26 MB/day-channel that matches Gecko output. Sanity-check `reclen` against the existing staging/LT SDS (Gecko/staging use 512).
 - No gap filling — gaps preserved as separate traces within the day file (standard SDS)
 
 ### Channel remapping
 
-After producing day MiniSEED, remap to target SEED codes:
-- All seismometer channels → band code `CH` (consistent across instrument changes)
-- Target network, location from config
-- Example: `AB.ABM5Y.60.DLZ → VW.ABM5Y.00.CHZ`
+After producing day MiniSEED, remap to target SEED codes per the decision tree
+in "Network and channel code remapping" (FDSN inventory first; Gecko convention
+by sample rate as fallback — NOT blanket `CH`):
+- Network from `station_registry.yaml`, location from config (`00`)
+- Channel: FDSN code verbatim when the station is live and the rate matches;
+  otherwise band-by-sample-rate (`CH` @ 250, `FH` @ ≥1000, `HH` @ 100/200)
+- Example (250 sps EchoPro velocity, VW): `AB.ABM5Y.60.c03 → VW.ABM5Y.00.CHZ`
+  (orientation `Z` from the Kelunji `c03→Z` component, not Gecko ch-number)
 - **Implementation open**: can be done via `scart --rename` (legacy approach) or in pure Python by editing ObsPy `Trace.stats` fields before writing. Python approach is preferred if it avoids a subprocess call per day; scart is acceptable as a fallback. See Toolchain section.
 
 ---
@@ -317,7 +501,7 @@ After producing day MiniSEED, remap to target SEED codes:
 ### Processing unit: one station at a time
 
 **The pipeline processes one station at a time.** All parallelism is within that station's workload. Reasons:
-- Matches the staging architecture: one station fills staging → verify → rsync → clear → next
+- Matches the staging architecture: one station fills staging → verify → apply via ledger → clear → next
 - Simpler progress tracking, logging, and restart recovery
 - Avoids SMB read contention across multiple stations' directory trees simultaneously
 - Easier to reason about memory and disk space budgets
@@ -360,6 +544,21 @@ Design mitigations:
 - If SMB read becomes the bottleneck, consider batching workers by station to improve locality (all workers reading the same station's mount path at once)
 - SQLite in WAL mode supports concurrent reads from multiple workers without blocking; writers serialise per-table but writes are infrequent (progress updates only during conversion)
 
+### Decompression is the dominant per-file cost
+
+Most EchoPro files are `.gz`, so gzip inflate dominates per-file CPU:
+- **No C/C++/Fortran rewrite is warranted** — the hotspots are already C (zlib for
+  gzip, libmseed for the MiniSEED write, numpy for arrays); the pure-Python SUDS
+  parse is negligible (a clean day *decodes* in ~0.4 s, measured on the OUTU day).
+  The high-ROI change is **`python-isal` (igzip): a drop-in ~2–3× faster inflate**
+  than stdlib zlib — route sudspy's `.gz` open through it.
+- **`scan_suds_file(skip_data=True)` does NOT avoid decompression for `.gz`** — you
+  can't seek a gzip stream, so it must inflate the whole file to walk the blocks (it
+  only skips the numpy sample *decode*). So (a) isal speeds the scan too, and
+  (b) **scan selectively**: trust disk/underscore files as the full `c01–c03`
+  complement and header-scan only the *telemetry* files (where the single-channel
+  legacy lives), rather than inflating every file just to count channels.
+
 ### Pre-scan parallelism
 
 Level 1 filename scan can itself be parallelised: split the station list across workers, each walking one station's directory tree independently. SQLite WAL mode handles concurrent inserts safely if each worker uses its own connection.
@@ -388,10 +587,15 @@ min_file_threshold: 100          # min files before trusting source classificati
 channel_exclude: ["BN*"]         # accelerometer channels to discard
 
 # SEED remapping
-target_network: "VW"
-target_location: "00"
-target_channel_base: "CH"        # seismometer band code
-mseed_record_length: 4096
+target_network: "VW"             # per-station from station_registry.yaml; this is only a default
+target_location: "00"            # global default; per-station override via station_registry.yaml `target_location`
+# NO fixed band code — channel is resolved per station-day (FDSN inventory first,
+# else Gecko convention by sample rate: CH@250, FH@>=1000, HH@100/200). See
+# "Network and channel code remapping".
+fdsn_base_url: "https://subsurface.science.unimelb.edu.au"   # fdsnws-station at /fdsnws/station/1/query; source of truth for live stations
+fdsn_inventory_dir: "metadata/uploaded"   # committed StationXML snapshots, per network
+mseed_record_length: 4096        # sanity-check vs existing staging/LT SDS (Gecko used 512)
+mseed_encoding: "STEIM2"         # NOT obspy's default (uncompressed int32, ~3.4x bloat)
 
 station_map:                     # optional: rename stations
   OLD_STA: NEW_STA
@@ -445,89 +649,67 @@ The new Python pipeline addresses all of these at the design level.
 
 ## Storage architecture
 
-> **Superseded specifics — see "Shared infrastructure & sibling project" above
-> for current mounts.** The three-tier model still holds; the concrete paths/
-> shares below are updated there (origin = NFS `/mnt/eqserver_archive`, staging
-> = shared CIFS `/mnt/seiscomp_staging/seiscomp_archive`, long-term = CIFS
-> `/mnt/seiscomp_archive`). The staging mount is now **shared with
-> `disk_to_sds`**, not a per-project share.
+> **Mounts, shares, creds, and verified status are authoritative in "Shared
+> infrastructure & sibling project" above** — this section keeps only the
+> three-tier *model* and the per-stage *design implications*, not the concrete
+> paths.
 
-The pipeline operates across three tiers of storage, all accessed from the staging VM:
+The pipeline operates across three tiers of storage, all from the staging VM:
 
 ```
 [Origin archive]               [Staging SDS]                    [Long-term SDS]
 NFS /mnt/eqserver_archive  →   CIFS /mnt/seiscomp_staging   →   CIFS /mnt/seiscomp_archive
 shared/data/repository/        seiscomp_archive/                 <YEAR>/<NET>/<STA>/...
 archive/<STA>/...              <YEAR>/<NET>/<STA>/...
-  READ ONLY                     WRITE (both pipelines)            WRITE via ledger apply (rsync/cp)
+  READ ONLY                     WRITE (both pipelines)            WRITE via ledger apply.py (atomic cp)
 ```
 
-**Origin archive** (`/data/repository/archive/`)
-- ~25 TB SMB mount on the EqServer VM
-- Read-only for this pipeline — never modify files in place
-- I/O is the dominant bottleneck for large scans; minimise redundant reads (manifest caching, fast paths)
-
-**Staging / test SDS** (Mediaflux, CIFS/SMB)
-- Mounted at `~/mnt` on the processing VM
-- Share: `//mediaflux.researchsoftware.unimelb.edu.au/proj-6700_uom_seismic_data-1128.4.1143`
-- Credentials in `/etc/cifs-mediaflux` (root-readable only); mount command requires credentials file — password contains special characters that break inline `-o password=` parsing
-- Used as the write target while processing one station at a time; also used for day-to-day testing
-- Pipeline writes complete per-station SDS output here first
-- Allows verification before committing to the long-term archive
-- Can be wiped and reused between stations to manage space
-
-**Long-term archive** (Mediaflux, SMB)
-- Final destination SeisComP SDS archive
-- Populated via `rsync` from staging, not written directly by the pipeline
-- rsync is run manually (or scripted) after per-station output is verified
+- **Origin** — read-only; never modify in place. I/O is the dominant scan
+  bottleneck (minimise redundant reads via manifest caching + fast paths).
+- **Staging** — per-station write/verify scratch, shared with `disk_to_sds`;
+  wipe and reuse between stations.
+- **Long-term** — written **only** through `sds_staging_ledger/apply.py`
+  (dry-run by default, `--commit` to write; atomic `cp`→`.partial`→verify→
+  `rename`; `write | skip | override`; never deletes), after per-station verify.
 
 ### Implications for pipeline design
 
-- **Processing unit is one station**: complete one station fully (all years) → verify → rsync → clear staging → next station. This is a deliberate design choice, not a constraint — see Parallelism section.
-- **Staging space budget**: estimate one station's full SDS output size from the manifest before starting (total compressed source size × expansion factor); confirm staging has headroom
-- **rsync**: `rsync -av --checksum` to avoid overwriting already-correct files; always `--dry-run` first
+- **EqServer→SeisComP is just another SDS source.** Conceptually identical to
+  `disk_to_sds` (SD-card ingest) — both create SDS into the shared staging tree
+  and promote to LT through the **same ledger**; this source just has a much
+  larger, more heterogeneous origin disk. So this project's job at the LT
+  boundary is simply to **write the correct records into the ledger**, mirroring
+  what `disk_to_sds` does — not to invent its own promotion path.
+- **Processing unit is one station**: complete one station fully (all years) →
+  verify → **apply via ledger** → clear staging → next station. This is a
+  deliberate design choice, not a constraint — see Parallelism section.
+- **Staging space budget**: estimate one station's full SDS output size from the manifest before starting (total compressed source size × expansion factor); confirm staging has headroom — but **not via `df`** (unreliable on this CIFS mount, see verified note above); check the mediaflux share quota directly
+- **LT promotion**: via `sds_staging_ledger/apply.py` (atomic, dry-run by
+  default, write/skip/override, never deletes); always run the default dry-run
+  first and review before `--commit`.
 - **Manifest lives on VM local disk**, not on any SMB mount, to avoid I/O overhead on frequent reads/writes during scanning
 
 ---
 
 ## VM access and origin archive navigation
 
-> **Current host is the shared staging VM `rs-l-0ezd3a` (`172.26.144.41`) — see
-> "Shared infrastructure" above.** It is an `rs-` VM but NFS access to
-> `research-nfs:/6000/6250-mei` HAS been granted and is mounted ro at
-> `/mnt/eqserver_archive` (in fstab). The `rd-`/`rs-` guidance below is retained
-> for context / future VM requests but is already resolved for this host.
+> **Host, mounts, and creds are authoritative in "Shared infrastructure" above**
+> (current host: staging VM `rs-l-0ezd3a` / `172.26.144.41`, user `dsand`,
+> passwordless sudo; origin NFS mounted ro via fstab). This section keeps only
+> the reusable context for provisioning a *future* VM and the origin-safety rule.
 
-The origin archive lives on a remote Linux VM (EqServer host). Claude Code has direct SSH/connection access to this machine. Key points:
-
-### VM type matters for NFS access
-
-UoM Research IT provisions two VM flavours with different network policies:
-
-- **`rd-` prefix** (Research Desktop, e.g. `rd-l-y9d9pt`) — has NFS mount access to `research-nfs.unimelb.edu.au` granted by default
-- **`rs-` prefix** (Research Server, e.g. `rs-l-pg2zyo`) — does **not** have NFS mount access by default; requires IT to explicitly grant it
-
-The working VM for this project was `rd-l-y9d9pt` (now decommissioned). If setting up a new VM, request an `rd-` type or ask IT to grant NFS access to `research-nfs.unimelb.edu.au:/6000/6250-mei` for the new VM's IP.
-
-### NFS mount command (once access is granted)
-
-```bash
-sudo mkdir -p /mnt/eqserver_archive
-sudo mount -t nfs -o ro,noatime,nodiratime,vers=4.0,rsize=1048576,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,local_lock=none,actimeo=600 research-nfs.unimelb.edu.au:/6000/6250-mei /mnt/eqserver_archive
-sudo ln -s /mnt/eqserver_archive/shared/data/repository /data/repository
-```
-
-Add to `/etc/fstab` for persistence:
-```
-research-nfs.unimelb.edu.au:/6000/6250-mei  /mnt/eqserver_archive  nfs  ro,noatime,nodiratime,vers=4.0,rsize=1048576,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,local_lock=none,actimeo=600  0  0
-```
-
-- Archive root: `/data/repository/archive/<STATION>/continuous/<YEAR>/<MONTH>/<DAY>/`
-- The VM runs as user `seiscomp`; tools like `scart`, `scmssort` are available on PATH
-- Legacy Java tool `eqconvert.jar` is at `~/software/eqconvert.jar` (or `/home/sysop/mnt/software/eqconvert.7/eqconvert.jar`)
-- **Do not modify files in place** on the VM — the EqServer archive must remain intact; all reads are safe, all writes go to a separate output path or temp dir
-
-When scanning or testing directly against the VM, navigate using absolute paths. File listing via `ls` or `find` is safe; writing test SDS output to a scratch directory on the VM (e.g. `~/sds_conversion_tests/`) is acceptable during development.
+- **VM type & NFS access (for a future VM):** UoM Research IT provisions `rd-`
+  (Research Desktop — NFS to `research-nfs.unimelb.edu.au` granted by default)
+  and `rs-` (Research Server — NFS *not* granted by default; must be requested).
+  The current `rs-l-0ezd3a` is an `rs-` host that had NFS to
+  `research-nfs:/6000/6250-mei` granted explicitly. If setting up a new VM,
+  request `rd-`, or ask IT to grant NFS for the new VM's IP. The exact verified
+  mount/fstab lines live in "Shared infrastructure".
+- **Origin is sacrosanct:** read-only; never modify EqServer archive files in
+  place. Reads (`ls`/`find`/open) are safe; all writes go to staging or a scratch
+  dir (e.g. `~/sds_conversion_tests/` on the VM) during development.
+- SeisComP CLI tools (`scart`, `scmssort`) and the legacy `eqconvert.jar` are
+  **not required** by the rewrite — see Toolchain and the `legacy/` section.
 
 ---
 
@@ -562,19 +744,117 @@ A key design difference from the legacy pipeline: **the new pipeline performs a 
 **Level 1 — Filename scan (no file opens, fast)**
 
 Walks the full directory tree. From path and filename alone:
-- Station, year, month, day (from directory path)
-- Recorder type classification (EchoPro / Gecko / Centaur / unknown) — from file extension
+- Station, year, month, day (from directory path) AND the date parsed from the
+  filename — keep both and flag `date_mismatch` (the filename is authoritative)
+- Recorder type classification (EchoPro / Gecko / mseed / unknown) — from file extension
 - Source type: disk (underscore) vs telemetry (space)
-- `HHMM` and `SS` fields parsed from filename
-- Exclude flags: `.trig`, `.ss`, wrong extension, wrong station in filename
+- `HHMM` and `SS` fields parsed from filename; `channel_suffix` (e.g. `_DHZ`)
+- `role`: waveform | metadata (`.ss`) | unknown
+- Exclude flags (waveform): `.trig`, single-channel `*_CHAN.mseed.zip`, wrong
+  extension, wrong station in filename (`.ss` is `role=metadata`, not excluded)
 - File size and mtime (from `stat`)
 
 Output: the `files` table fully populated. Enables all flow-control decisions that don't require opening files.
 
+**Implemented:** `scan/level1.py` (stdlib only) — parallel across stations
+(per-station part-DBs merged at end, no SQLite writer contention), `--no-db`
+mode to isolate NFS walk cost.
+
+**Verified scan findings (2026-05-26, current 16-proc VM):**
+- **Throughput:** ~4,500 files/s per worker (NFS stat-walk bound). 7 workers run
+  concurrently without NFS collapsing — per-worker rate holds (~3.1k–5.6k f/s).
+- **Load-balancing matters more than raw concurrency:** with #stations==#workers
+  the wall is set by the largest station (a 7-station run was capped at the 834k
+  ABM3Y straggler → 16k f/s aggregate, not the ~31k the workers could sustain).
+  → drive a worker POOL with stations QUEUED largest-first; consider splitting a
+  giant 2-decade EchoPro station into per-year sub-units so the tail parallelises.
+- **Scale:** aftershock Gecko stations are ~0.1–0.8 M files each; full 251-station
+  archive likely ~10^8 files. Manifest must be indexed; batched inserts.
+- **Date authority:** thousands of files per station have `date_mismatch=1` (esp.
+  `.ss` under `1900/01/01`); trust the filename date, not the path.
+- **Archive predates 2012:** real `2001` data (OUTU); `1900/1989/1999` dirs are
+  bogus-date artifacts (some genuine corrupt timestamps, e.g. `…wrno.dmx.gz`).
+- **`unknown`-extension and high per-station `excluded` counts** (e.g. ABM2Y 16k)
+  remain to be characterised — surfaced by the scan, not yet explained.
+
+**Phase 2b classifier validation — mini-batch results (2026-05-26):**
+
+Built `scan/check_manifest.py` to verify the manifest can answer Phase 2b's
+per-day classification questions and to measure the share of days that need no
+human review. Categories starred ★ below are *first-class CLEAN*: the day-plan
+can be emitted directly from the manifest with no further NFS reads and no
+manual review.
+
+- **EchoPro Jan 2020 (10 stations, 302 station-days):** strict-1440-1-SS = 49%;
+  **all CLEAN = 92.6%**. Headline target met.
+- **EchoPro full-year 2020 (10 stations, 3,140 station-days):** strict = 41.2%;
+  **all CLEAN = 77.8%**. Drop from Q1 is *not* worse data — it surfaces two known
+  classifier blind-spots at scale: (a) FORG transitioned EchoPro→Gecko on
+  2020-03-19 and its Gecko-clean days fall through the EchoPro `ssd==1` test
+  (FORG dropped 96.8% → 15%); (b) BRIG has *intermittent* failing-recorder days
+  scattered Apr–Jul (~9 episodes, same signature as CRJN's Jan–Feb week but not
+  contiguous). The Gecko-aware classifier branch alone should lift FORG back to
+  ≥95%, restoring the headline.
+
+**Classifier v2 (in `scan/check_manifest.py`, ready for next run):**
+
+- ★ **Gecko-aware branch.** Gecko disk filenames carry no SS, so the SS test
+  never fires for Gecko-clean days. New branch uses file count + HHMM coverage
+  only when the dominant recorder is Gecko (`clean_gecko_disk` /
+  `near_clean_gecko_disk` / `near_clean_gecko_threshold`).
+- ★ **`clean_disk_multi_ss`** for EchoPro power-cycling days (recorder restarts
+  → multiple SS → both sessions legit, recoverable as continuous data). Now
+  first-class clean per operator's normal-running profile.
+- ★ **`clean_telemetry_primary`** for "USB pending upload" pattern (tiny disk
+  count, near-complete tele; NARR-style).
+- ★ **`clean_cross_source_recovery`** for days where disk and tele each partial
+  but their HHMM union ≥ 1,380 of 1,440 — disk fills primary, tele fills gaps.
+- ★ **`clean_mseed_perchan`** provisional for Guralp/Minimus class
+  (one file per channel per minute ≈ 4,320/day total).
+- **Failing-recorder episode detector:** consecutive `ssd≥10` days (CRJN/BRIG
+  signature) are collapsed into single *episodes*, so 21 days might condense to
+  2–3 review items.
+- **Parser fix:** trailing `.N` event-index on `*.N.trig.dmx` triggered files
+  is now stripped before station-mismatch check (was producing false
+  `filename_station=LOCU.1` etc.).
+
+**Classifier v2.2 refinements (validated 2026-05-26 against EchoPro full-year 2020):**
+
+- **HOLS calibration finding (load-bearing).** v2 had a `MAX_NORMAL_SS=10` cap on
+  `clean_disk_multi_ss`, which threw HOLS from 99.7% → 44.2% (HOLS routinely
+  power-cycles 30-60 times/day). Investigation showed HOLS's noisy days have
+  `min_disk=1477` (i.e. `> 1440`) — the recorder writes a fresh session-boundary
+  minute each restart, so high-ssd days actually capture the full 1,440 minutes
+  with duplication, not less. **The right "failing recorder" signal is
+  `ssd > MAX_NORMAL_SS` AND coverage loss (`hhd < 1440 - PARTIAL`)** — multi-SS
+  alone is fine if `hhd` is full. v2.2 implements this.
+- **Failing-recorder episodes after fix:** EchoPro 2020 has 24 episodes
+  collapsing 137 days. Biggest by far: **BRIG had a 3-month failing recorder**
+  (Apr 1 → Jul 9 2020, three contiguous-ish episodes; field intervention
+  apparent around Jul 7 when telemetry returned and counts recovered). CRJN had
+  two shorter episodes in Jan-Feb. LOCU has 17 small (1–2 day) episodes
+  scattered through the year — borderline cases.
+- **EchoPro full-year 2020 headline (v2.2): 87.1% CLEAN** across 3,140 station-
+  days. Recovers from v2.1's over-correction (80.9%) once HOLS-style
+  noisy-but-complete days are properly classified.
+- **Gecko Q1 2020 headline: 100% CLEAN** across 546 station-days (6 stations:
+  BRTH / SGWU / STBK / TRPU / WDSD / WLSH). **Zero failing days.** Confirms the
+  operator hypothesis that Geckos are dramatically cleaner than EchoPros — no
+  power-cycle pattern, no untagged-triggered, no degradation.
+
+**Resolved caveats:**
+- `_CHAN.mseed.zip` Gecko association — **VERIFIED** (246 files on 4 of 6 Gecko
+  stations across Q1 2020). The exclude rule is correct for Gecko/EchoPro.
+
+**Open caveats:**
+- `clean_mseed_perchan` provisional pending per-station Guralp/Minimus
+  annotation in the registry — the source_type split is meaningless for that
+  class (operator-inserted spaces fake telemetry on manual mseed uploads).
+
 **Level 2 — Header scan (decompress headers, skip data payloads)**
 
 Runs `scan_suds_file()` (sudspy) or reads MiniSEED fixed header on files that survived Level 1. Adds per-file:
-- Channel names present in the file (e.g. `DLZ`, `DLE`, `DLN`, `DNZ`…)
+- Channel names present in the file (e.g.  'c01', `DL*`,  Need to confirm what variable options might be. C0*, [123] definitely confirmed.)
 - Sample rate(s)
 - Precise start and end times
 - Confirmed station identity from header (catches wrong-station files that passed filename check)
@@ -678,31 +958,364 @@ After Level 1 (and progressively enriched by Levels 2–4):
 
 ## Network and channel code remapping
 
-Remapping from EqServer/EqConvert stream codes to target SEED codes is required for every station. This is a non-trivial mapping: different stations have different instrument histories, and the source codes (network, location, channel band/instrument codes) vary.
+Every converted station needs its source stream codes mapped to target SEED
+codes (network, location, and the 3-char band/instrument/orientation). The
+decade-scale archive has varied instrument histories, so the mapping is resolved
+**per station-day from a single decision tree**, not from a hand-maintained
+per-station table.
 
-A **station/channel mapping resource** is required — likely a YAML or CSV config file — that specifies per-station:
+### Source of truth: FDSN inventory first, Gecko convention as fallback
 
-- Source network code (e.g. `AB`)
-- Source location code (e.g. `60`)
-- Source channel patterns (e.g. `DL?`, `EL?`, `DH?`)
-- Target network (e.g. `VW`)
-- Target location (e.g. `00`)
-- Target channel band (always `CH` for seismometers)
-- Whether to discard accelerometer channels (`BN*`, `DN*`)
-- Any station name remapping (e.g. old code → new code)
+One rule for all networks. Resolve each station-day's channel codes in order:
 
-This mapping table must be populated before conversion of any station. It should be versioned alongside the pipeline code. The `generate_remap_string.sh` script in the legacy pipeline inspects the actual MiniSEED stream names to build these strings dynamically — the Python pipeline should do the same but driven by the config table rather than runtime introspection where possible.
+1. **Station is in our FDSN/seedlink inventory AND the historical sample rate
+   matches the FDSN channel's rate** → copy the FDSN code verbatim (band +
+   instrument + orientation). Always **verify** the historical rate from the
+   manifest/header scan — don't assume it matches.
+2. **In FDSN, but the historical sample rate differs** (e.g. old EchoPro at
+   100/200 vs the station's current 250) → keep instrument + orientation,
+   **recompute the band code from the historical sample rate** via the Gecko
+   table below.
+3. **Not on the server at all** (never telemetered — this conversion is the
+   data's first appearance):
+   - **VW / VX** → **Gecko conventions**: build the full 3-char code from the
+     table below (band from sample rate, instrument from sensor type,
+     orientation from the physical component).
+   - **DU** → resolved by the **conversion-plan gate** (below). DU codes follow
+     the full SEED naming convention (see SEED band-code note below), of which
+     Gecko is only a simplified subset — so the pipeline must NOT guess a DU
+     code from sample rate alone. A DU station-day with no FDSN entry and no
+     metadata is written to the plan as `UNRESOLVED` / `status: BLOCKED`; the
+     run stops until you confirm or override the code in the plan YAML. No DU
+     data is ever converted with a guessed channel name.
 
-**Key SEED band code context** (from legacy notes):
+Network comes from `station_registry.yaml`; location is `00` (config). The FDSN
+inventory is **fetched by script and committed as a snapshot** under
+`metadata/uploaded/<NET>/*.xml` (the existing `du.xml` is the DU slice — an
+ObsPy-scripted FDSN pull) — re-run as stations migrate onto the server. **No
+hand-maintained CSV**; the FDSN inventory IS the channel map, and the
+conversion's channel codes must match it so fdsnws serves the streams.
 
-| Code | Instrument | Frequency |
-|------|-----------|-----------|
-| D/E  | EchoPro output (via EqConvert) | ≥80 Hz or 250 Hz |
-| C    | Target for all seismometers | consistent across instrument epochs |
-| H/L  | High/Low gain seismometer (instrument code) | — |
-| N    | Accelerometer (instrument code) — exclude | — |
+### Gecko channel naming convention (authoritative for VW/VX)
 
-The plan is to convert all seismometer channels to band code `C` (`CH?`) regardless of source, to maintain consistency across instrument changes over the decade-scale archive.
+The Gecko recorder builds the 3-char SEED channel code as a simplified subset of
+the SEED standard. This is the table the VW/VX fallback and the band-code
+recompute both use.
+
+**1st letter — band code, by sample rate:**
+
+| Letter | Sample rate (sps) |
+|---|---|
+| `B` | 50 |
+| `H` | 100, 200 |
+| `C` | 250, 400, 500, 800 |
+| `F` | 1000, 2000, 4000 |
+
+**2nd letter — instrument code, by sensor type:**
+
+| Letter | Sensor |
+|---|---|
+| `H` | Velocity seismometer |
+| `N` | Accelerometer |
+| `D` | Pressure sensor (e.g. microphone) |
+| `J` | Rotation sensor |
+| `Y` | Displacement sensor |
+| `Q` | Voltage |
+
+**3rd letter — orientation, by channel number:**
+
+| Letter | Channel | Typical use |
+|---|---|---|
+| `E` | 1 | East, Transverse, or X |
+| `N` | 2 | North, Radial, or Y |
+| `Z` | 3 | Up, Vertical, or Z |
+| `O` | 4 | Outdoor microphone or extra vertical sensor |
+
+So a 250 sps velocity seismometer → `CHZ/CHN/CHE` (the VW common case); 1000 sps
+→ `FH*`; **100/200 sps → `HH*`** (this resolves the previously-open historical
+row). Accelerometers carry instrument code `N` (`*N*`); discard per
+`channel_exclude` unless explicitly kept.
+
+> **⚠ Orientation caveat — do NOT apply the Gecko channel-number column to
+> EchoPro blindly.** The 3rd-letter table is by *Gecko* channel number. EchoPro
+> (Kelunji) numbers components differently: **`c01→N, c02→E, c03→Z`** (Kelunji
+> manual, as implemented in `disk_to_sds/scripts/suds_convert.py`), and `c04+`
+> are aux/mic. So when converting EchoPro, take the orientation from the source
+> component's physical identity, not from Gecko's channel-number mapping. Band
+> (sample rate) and instrument (sensor type) still come from the table above.
+
+**Legacy source codes (inputs, for reference):** EqConvert emitted `D`/`E` band
+with `H`/`L` gain instrument codes; these are *source* codes to be remapped, not
+targets.
+
+### Full SEED band code (the authority behind the Gecko subset)
+
+DU operators name channels by the **full SEED convention**
+(<https://ds.iris.edu/ds/nodes/dmc/data/formats/seed-channel-naming/>), where the
+band code depends on **both sample rate AND the sensor corner period**
+(broadband ≥10 s vs short-period <10 s):
+
+| Band | Sample rate (sps) | Corner period |
+|---|---|---|
+| `F` / `G` | ≥1000, <5000 | ≥10 s / <10 s |
+| `C` / `D` | ≥250, <1000  | ≥10 s / <10 s |
+| `H` / `E` | ≥80, <250    | ≥10 s / <10 s |
+| `B` / `S` | ≥10, <80     | ≥10 s / <10 s |
+
+**Gecko = the broadband (≥10 s) column, indexed by sample rate** (`B`@50,
+`H`@100/200, `C`@250–800, `F`@1000+). A *short-period* sensor at the same rate
+takes the sibling code — which is why DU has `SHZ` (short-period at 10–80 sps,
+where Gecko would say `B`). **Consequence:** band code cannot be derived from
+sample rate alone for short-period instruments — so for DU (and any short-period
+sensor) prefer the FDSN code, and never auto-guess. VW/VX are predominantly
+broadband velocity seismometers, so the Gecko-by-rate fallback is safe there; the
+plan gate catches any short-period exception.
+
+### Conversion plan (per-station review gate)
+
+Before converting a station, the pipeline materialises the decision tree above
+into a **per-station YAML plan that you review and approve** — so you see the
+exact intended channel mapping before any data is written, and never commit years
+of data to a wrong code.
+
+- **Generated, not hand-written.** Combines `station_registry.yaml` (network) +
+  FDSN inventory (live/snapshot) + the **pre-scan manifest** (sample rates and
+  components actually present in the data, per epoch) + the Gecko/SEED tables.
+- **Keyed by sample-rate epoch**, since a rate change shifts the band code. These
+  epochs are the same backbone as the `uom_seismic_metadata` epochs.
+- Each channel records: `target` SEED code, `basis`
+  (`fdsn_verbatim | fdsn_rate_recompute | gecko_fallback | UNRESOLVED`),
+  `confidence`, and a note.
+- **Hard gate:** top-level `status` is `ok | needs_review | BLOCKED`; the run
+  refuses to proceed unless `ok`. Any `UNRESOLVED`/low-confidence line blocks it
+  until you confirm or override the `target` in the YAML.
+- Lives at `plans/<NET>.<STA>.plan.yaml`, versioned in-repo; the approved plan is
+  also the per-run **provenance record** (pairs with the `sds_staging_ledger`).
+- **Flow:** pre-scan manifest → generate plan → you approve → convert.
+
+```yaml
+station: NSTM
+network: DU            # from registry
+location: "00"
+status: ok             # ok | needs_review | BLOCKED  <- run refuses unless 'ok'
+epochs:
+  - span: [2016, 2021]
+    sample_rate: 100
+    source: echopro
+    channels:
+      - component: c03            # Kelunji c03 = vertical
+        target: DU.NSTM.00.HHZ
+        basis: fdsn_verbatim      # matched live FDSN @ 100 sps
+        confidence: high
+# --- a blocked example ---
+station: SOMEDU
+network: DU
+status: BLOCKED
+epochs:
+  - span: [2014, 2019]
+    sample_rate: 100
+    channels:
+      - component: c03
+        target: null
+        basis: UNRESOLVED
+        suggestion: DU.SOMEDU.00.HHZ   # guess only, NOT applied
+        note: "no FDSN entry, no metadata — confirm or override before running"
+```
+
+---
+
+## Station metadata epochs → uom_seismic_metadata (the metadata handoff)
+
+This pipeline does two things in parallel: it converts *waveforms* (the main job), and as
+a side-effect it harvests an **empirical record of station history** — what the recorders
+themselves were emitting at every point in the archive. That empirical record is **one of
+two complementary versions of the metadata history** that `uom_seismic_metadata` then
+joins into a single canonical artifact.
+
+### Two distinct versions of metadata history (joined at synthesis)
+
+`uom_seismic_metadata` maintains two independent reconstructions of every station's
+instrument timeline. They are deliberately separate during collection — joined only at the
+synthesis step — so that disagreements stay visible rather than being silently merged.
+
+| Version | Source material | Layer in `uom_seismic_metadata` |
+|---|---|---|
+| **Documentary** | wiki + PDF handover + 2021 / Januka StationXMLs (+ direct user statements as an overlay) | `reference/history/<net>_reconciliation.yaml`<br>`reference/user_direct/<net>_user_notes.yaml` |
+| **Empirical** *(this project)* | PC-SUDS embedded headers + Gecko `.ss` (`kelunjimeta`) sidecars + SDS / MiniSEED inventory | future `reference/waveform_db/<net>_observations.yaml` |
+| **Synthesis** | curated join of the above | `source/stations/<net>.yaml` (-> SMP / FDSN) |
+
+Both versions speak the **same epoch schema** and are joined by station code + date. Where
+they agree, the canonical is high-confidence. Where they disagree, the disagreement is
+documented (not hidden); the **data archive itself is the ultimate arbiter** — which is
+why the empirical version exists.
+
+Open factual questions that no single layer can resolve are logged at
+`uom_seismic_metadata/reference/user_direct/open_questions.md`. Several of these (LRNW
+recorder type, DDBE data-end date, OUTU origin, a possible undocumented DDNE borehole)
+will be resolved by this project's archive scan.
+
+### Shared schema (single contract)
+
+Single shared epoch contract: `uom_seismic_metadata/schema/station_metadata.draft.yaml`,
+plus the layered architecture documented at `uom_seismic_metadata/reference/history/README.md`.
+**Don't invent a parallel metadata format** — emit in this schema so the join is mechanical.
+
+**Epoch boundary = a consequential change in recorder type, sensor type, OR sample rate.**
+NOT serial numbers (those are annotation). Coordinates never change within a station code
+(UoM always renames on a move, even a few hundred metres), so **coords live once at station
+level — no per-epoch coordinate overrides.** The response is **DERIVABLE from
+(recorder, sensor, sample_rate)** — constant sensitivity per MODEL.
+
+Per station: identity (net, code, lat/lon/elev) + an ordered `observations:` list (per-source
+captures, append-only) + a curated `reconciliation:` / `instruments:` list (the agreed
+timeline). The synthesis step in `uom_seismic_metadata` then promotes confident reconciled
+epochs into `source/stations/<net>.yaml`.
+
+### Source tagging (what every observation must carry)
+
+Each observation carries a `source:` string identifying both the version and the specific
+record. Use these stable prefixes so cross-repo greps work:
+
+| source prefix | version | meaning |
+|---|---|---|
+| `wiki/<page>` | documentary | DokuWiki page (incl. `site_visits/<sta>`) |
+| `pdf/Handover_notes:<ref>` | documentary | The 2024 handover PDF |
+| `xml21/<file>` | documentary | 2021 LatestXMLS StationXML |
+| `xml/<file>` | documentary | Pre-2021 (Januka) StationXML |
+| `user_direct/<YYYY-MM-DD>` | documentary (overlay) | Fact stated by the user in conversation |
+| `pcsuds/<file_or_ref>` | **empirical (you emit this)** | PC-SUDS header — sample one per station-day |
+| `gecko_ss/<ref>` | **empirical (you emit this)** | Gecko `.ss` kelunjimeta sidecar — one observation per dedup'd snapshot |
+| `sds_scan/<ref>` | **empirical (you emit this)** | MiniSEED blockette / SDS-tree-derived fact |
+
+### Authority: per-observation, with per-field overrides
+
+Each observation has an `authority:` qualifier; per-field exceptions via
+`authority_overrides:`. The **canonical use case for `authority_overrides:`** is the
+operator-input fields inside an otherwise authoritative file:
+
+| level | meaning |
+|---|---|
+| `authoritative` | machine-emitted by the recorder itself (PC-SUDS `recorder` / `gain` / `sample_rate`; `.ss` `recorder` / `cpv` / `firmware`) |
+| `primary` | direct human record at the time (wiki site_visit; install log) |
+| `reported` | secondary human description (PDF handover summary) |
+| `derived` | read from a metadata file (XML) produced later |
+| `operator_input` | picked from a list or typed by a human — **could be wrong**: PC-SUDS `sensor`, `.ss` `sensor_name` / `sens` / `sitename` |
+| `placeholder` | known back-date or generic value |
+
+Concrete: a PC-SUDS observation is `authority: authoritative` overall, with
+`authority_overrides: {sensor: operator_input, sensor_sensitivity: operator_input}` because
+the sensor was picked from a predefined list at deployment time and may be wrong.
+Downstream curation must scepticise operator-input fields even when the parent observation
+is "authoritative".
+
+### Representing unknowns while keeping epochs
+
+An epoch must exist for every time interval the station was recording, even when we don't
+know what was in it. Distinguish three "no value" states — they are NOT interchangeable:
+
+| value | semantic meaning |
+|---|---|
+| an actual value (`recorder: echopro`) | known and trusted |
+| `null` *(or omit the key)* | not applicable — e.g. `end: null` because the epoch is open |
+| `unknown` *(string sentinel)* | **we know there WAS a value but we can't determine it from this layer** — e.g. `recorder: unknown` when wiki + PDF disagree |
+
+`unknown` is the right choice whenever this project sees the recording-tree extends across
+some time interval but can't read the recorder/sensor identity from header bytes. Don't use
+`null` for that case — `null` would imply "no recorder existed", which is wrong.
+
+The synthesis-step generator must refuse to derive a response for an epoch whose core
+fields are `unknown` (the math can't run), but the **epoch boundary still stands** —
+downstream consumers know the time interval existed. The empirical-vs-documentary join is
+typically the path to resolving `unknown`s.
+
+### What this project emits (the empirical version)
+
+**PC-SUDS (EchoPro era):**
+- GPS **lat/lon/elev** — recorded accurately. Station-level; never per-epoch.
+- **Recorder type** (EchoPro), **datalogger cpv** (counts/V), **sample rate**, **gain** — always present. `authority: authoritative`.
+- **Sensor model + sensitivity** — present *when correctly entered*; `authority: operator_input`. When absent or implausible, emit `sensor: unknown` rather than guessing — let the documentary layer fill in.
+- ⇒ overall sensitivity = datalogger × sensor when both known.
+
+PC-SUDS embeds full metadata in **every** minute file — sampling one `.dmx` per station-day
+(or one per `SS`-session) gives the full metadata picture. **Metadata-harvest is orders of
+magnitude cheaper than waveform conversion.**
+
+**Gecko (`.ss` kelunjimeta sidecar):**
+The deduped sequence of `.ss` snapshots IS the epoch-boundary list — one observation per
+distinct settings_time. Each `.ss` carries:
+- Authoritative fields: recorder serial, recorder cpv (per unit!), firmware version,
+  gain setting, sample rate, GPS, settings_time.
+- Operator-input fields (via `authority_overrides`): sensor name, sens, sitename,
+  network_code.
+
+**Per-serial recorder calibration** — the `.ss` records cpv keyed by Gecko serial number.
+These populate `uom_seismic_metadata/source/recorder_units.yaml`, keyed by serial, with
+provenance back to the `.ss` file. The synthesis-step generator prefers per-serial cpv when
+known and falls back to the per-model catalogue.
+
+**SDS / MiniSEED scan:** sample rate + (gecko) band code (250 / 500 → `C`, 1000 → `F`)
+can be read directly from headers; where blockettes carry datalogger / sensor descriptions,
+record them as `source: sds_scan/...`, `authority: derived`.
+
+### Most stations are 1–2 epochs
+
+Most stations have ONE sensor for life — usually only the recorder (EchoPro→Gecko) or the
+sample rate changes, so most stations are just 1–2 epochs. Don't overthink it. New epoch
+only on a real recorder/sensor/rate change; serial swaps stay annotation on the existing
+epoch.
+
+### 2025 boundary
+
+EQ Server supplies the **historical, CLOSED** epochs, which *prepend* to the **current
+open** epoch already held in the canonical `source/stations/<net>.yaml` (the Gecko
+migration era). Never duplicate or overwrite the current open epoch.
+
+### Shared catalogue (one per recorder type / one per sensor type)
+
+`uom_seismic_metadata/source/recorders.yaml` (counts/V by preamp gain) +
+`uom_seismic_metadata/source/sensors.yaml` (V/unit, units, gain, NRL keys). overall
+sensitivity = `sensor.v_per_unit × recorder.counts_per_volt[gain]`; *simple* output is that
+sensitivity-only, *complex* is sensor NRL poles/zeros ⊗ recorder. Constant per MODEL (keep
+VW CMG-6T-1 = 2400 V/m/s distinct from the SAA-sheet's ~1006). Historical universe ≈ current
++ a few — recorders {Gecko, EchoPro, PiesMo, Reftek RT130, Guralp Minimus}; sensors
+{CMG-6T-1, CMG-3ESP, Trillium Compact 20 / 120, IESE S21g / S10g, OYO Geospace HS-1, Guralp
+Radian (borehole, digital-output), Willmore MK II/III, Mark L-4, Guralp 5T, Sercel L4C-3D,
+Kinemetrics SS-1, Sprengnether HSA3, Guralp Breve (OBS)}.
+
+**Borehole architecture caveat** (Guralp Radian + Minimus at DDWB / DDBE / SCM2):
+digitisation is in the sensor, the "recorder" is a passthrough. Doesn't fit the
+`cpv × v_per_unit` decomposition cleanly; modelling decision is deferred until per-serial
+Radian response is available (typically email Guralp with serial → poles/zeros).
+
+### RT130 WNRO bug — historical context only, NOT active in EqServer
+
+**The 1024-week GPS Week Number Rollover (WNRO) bug was a property of the *raw*
+Reftek RT130 stream**, not of what's sitting in the EqServer archive. By the time
+data lands under `archive/<STA>/continuous/<YEAR>/...`, the timestamps have
+already been corrected (otherwise files literally couldn't be sorted into the
+correct year dirs — the directory layout is itself a sanity check).
+
+**Empirical verification 2026-05-27**: sampled headers across the RT130 cohort
+(LOYU 2014/2016/2018, SGWU 2018, TRPU 2018) — all 5 files had mseed header
+timestamps matching their path dates exactly. No correction needed at Phase 3.
+
+Previous CLAUDE.md text claimed "SGWU pre-2024-12 and LOYU 2014-2024 are shifted
+by 1024 weeks" — that claim originated from Layer A (`vw_reconciliation.yaml`,
+best-effort historical reconciliation, not field-verified) and described the
+raw RT130 source, not the EqServer-archived files. The predecessor pipeline
+fixed it at ingest for all RT130 stations (TRPU was specifically called out,
+but the same applies to the cohort).
+
+**Caveat:** if a future scan turns up RT130 files with header/path mismatch,
+this assumption must be revisited. Until then, treat WNRO as a closed concern.
+
+### Granularities, one flow (not three competing truths)
+
+`station_registry.yaml` (station-level scope/network) → SQLite manifest Level 4 (recorder
+transitions, rates, spans — the raw material) → **empirical version** (per-station YAML,
+sources tagged `pcsuds/` / `gecko_ss/` / `sds_scan/`, the artifact `uom_seismic_metadata`
+ingests into its `reference/waveform_db/` layer) → joined with the documentary version
+→ canonical `source/stations/<net>.yaml`.
 
 ---
 

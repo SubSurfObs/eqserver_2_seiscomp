@@ -1,0 +1,176 @@
+# Cross-cohort smoke-test matrix.
+#
+# Curated counterpart to the random stress harness. Each entry is a specific
+# station-day chosen to exercise a SPECIFIC code path. After every Phase 3
+# converter change, run all entries through the pipeline and assert that
+# expectations still hold.
+#
+# Levels of assertion:
+#   - phase2_class:     Phase 2b classifier returns this category
+#   - phase2_recorder:  resolve_recorder_for_day returns this (via registry)
+#   - plan_status:      plan_generator marks the station this way
+#   - wnro_required:    Phase 3 must apply 1024-week timestamp correction
+#   - sds_output:       Phase 3 must produce these SDS files (set [] for defer)
+#
+# The matrix lives apart from the stress harness because random sampling
+# rarely hits the exact day that exercises a specific bug. Named entries
+# guarantee coverage of every known anomaly.
+
+entries:
+
+  # ===== By recorder cohort (catches "we forgot about X") =====
+
+  - id: echopro_clean_baseline
+    station: OUTU
+    date: 2020-01-01
+    purpose: "EchoPro pure, no transitions, single SS, full disk day"
+    phase2_class: clean_disk_1ss
+    phase2_recorder: echopro
+    plan_status: ok
+    sds_output: [VW.OUTU.00.CHZ.D.2020.001, VW.OUTU.00.CHN.D.2020.001, VW.OUTU.00.CHE.D.2020.001]
+    notes: "Clean baseline; if this breaks, the whole EchoPro path is broken."
+
+  - id: gecko_clean_baseline
+    station: STBK
+    date: 2020-01-01
+    purpose: "Gecko pure, dashed-date filenames, no SS field"
+    phase2_class: clean_gecko_disk
+    phase2_recorder: gecko
+    plan_status: ok
+    sds_output: [VW.STBK.00.CHZ.D.2020.001, VW.STBK.00.CHN.D.2020.001, VW.STBK.00.CHE.D.2020.001]
+    notes: "If this breaks, Gecko-aware classifier branch regressed (no SS to test)."
+
+  - id: reftek_rt130_no_wnro_needed
+    station: SGWU
+    date: 2018-06-15
+    purpose: "Reftek RT130 pre-2024-12 — header timestamps already correct on EqServer"
+    phase2_class: clean_gecko_disk    # filename-grammar indistinguishable from Gecko
+    phase2_recorder: reftek_rt130     # disambiguated by registry
+    plan_status: ok
+    wnro_required: false              # verified 2026-05-27: predecessor pipeline corrected at ingest
+    sds_output: [VW.SGWU.00.CHZ.D.2018.166]
+    notes: "Despite Layer A claiming WNRO needed, EqServer headers match path dates. If this entry ever fails because of timestamps, WNRO assumption broke."
+
+  - id: reftek_to_gecko_transition
+    station: SGWU
+    date: 2025-01-15
+    purpose: "SGWU post 2024-12-12 Gecko transition — no WNRO, new sensor"
+    phase2_class: clean_gecko_disk
+    phase2_recorder: gecko
+    plan_status: ok
+    wnro_required: false
+    sds_output: [VW.SGWU.00.CHZ.D.2025.015]
+    notes: "Validates the recorder-transition handling for SGWU's RT130→Gecko swap."
+
+  - id: minimus_perchan_clean
+    station: DDBE
+    date: 2020-01-01
+    purpose: "Guralp/Minimus per-channel mseed override (~4320 files/day)"
+    phase2_class: clean_minimus_perchan
+    phase2_recorder: minimus
+    plan_status: ok
+    sds_output: [VW.DDBE.00.CHZ.D.2020.001, VW.DDBE.00.CHN.D.2020.001, VW.DDBE.00.CHE.D.2020.001]
+    notes: "If override regresses, DDBE drops to 0% clean (default classifier)."
+
+  - id: piesmo_defer
+    station: WEPH
+    date: 2025-04-01
+    purpose: "PiesMo HHZ-only telemetry stub — must NOT be converted"
+    phase2_class: skip_empty          # parser excludes _HHZ.mseed.zip as single_channel
+    phase2_recorder: piesmo
+    plan_status: defer_conversion
+    sds_output: []                    # no SDS output expected — defer path
+    notes: "If this writes SDS, the defer gate regressed. Real data comes via disk_to_sds."
+
+  # ===== By known anomaly (catches "we re-broke a known case") =====
+
+  - id: forg_recorder_transition
+    station: FORG
+    date: 2020-03-19
+    purpose: "FORG EchoPro→Gecko transition day (mid-2020)"
+    phase2_class: __mixed__           # may be either depending on dominant; tolerate both
+    phase2_recorder: __any__          # registry may not pin a single value across transition
+    plan_status: needs_review         # or ok if transition is wholly captured
+    sds_output_min: 1                 # at least one channel present; both recorders contribute
+    notes: "Bisection refinement MUST emit two epochs (echopro before, gecko after) in observations YAML."
+
+  - id: hols_noisy_but_complete
+    station: HOLS
+    date: 2020-06-15
+    purpose: "Power-cycling: ssd>10 but hhd~1440 → clean_disk_multi_ss not failing_recorder_disk"
+    phase2_class: clean_disk_multi_ss
+    phase2_recorder: echopro
+    plan_status: ok
+    sds_output: [VW.HOLS.00.CHZ.D.2020.167]
+    notes: "HOLS calibration case — if this regresses, MAX_NORMAL_SS logic broke."
+
+  - id: brig_failing_recorder
+    station: BRIG
+    date: 2020-05-15
+    purpose: "BRIG mid-2020 failing-recorder episode (Apr-Jul 2020)"
+    phase2_class: failing_recorder_disk
+    phase2_recorder: echopro
+    plan_status: needs_review         # episode pushes pct_clean below threshold
+    sds_output: []                    # do NOT convert known-bad days
+    notes: "Acceptable to convert if recovery is possible; default is to flag, not write."
+
+  - id: sdan_handover_day
+    station: SDAN
+    date: 2018-06-20
+    purpose: "SAA→GA handover; network AD→AU, loc 5→00, channel EH→BH, rate 100→40"
+    phase2_class: __mixed__
+    phase2_recorder: __any__
+    plan_status: needs_review         # multi-network in one day → review
+    sds_output_networks: [AD, AU]     # both networks should appear in SDS
+    notes: "Observations YAML must capture two epochs separated by 2018-06-20."
+
+  - id: scmb_echopro_not_minimus
+    station: SCMB
+    date: 2020-01-01
+    purpose: "SCMB is EchoPro despite cluster naming (Minimus stolen, Radian recovered)"
+    phase2_class: clean_disk_1ss
+    phase2_recorder: echopro          # NOT minimus
+    plan_status: ok
+    sds_output: [VW.SCMB.00.CHZ.D.2020.001]
+    notes: "If recorder=minimus here, registry annotation overruled by stale heuristic."
+
+  - id: ddne_gecko_not_minimus
+    station: DDNE
+    date: 2020-01-01
+    purpose: "DDNE is Gecko despite cluster naming (NOT Minimus)"
+    phase2_class: clean_gecko_disk
+    phase2_recorder: gecko            # NOT minimus
+    plan_status: ok
+    sds_output: [VW.DDNE.00.CHZ.D.2020.001]
+    notes: "Layer A reconciliation confirmed DDNE/SCMB are NOT Minimus despite cluster name."
+
+  # ===== Temporal diversity (catches "broke on the old archive") =====
+
+  - id: earliest_echopro
+    station: OUTU
+    date: 2012-06-01           # placeholder; OUTU has 2001+ but pick a date with confirmed data
+    purpose: "Pre-2018 EchoPro: filename grammar may differ from modern conventions"
+    phase2_class: clean_disk_1ss   # tolerant: any clean category acceptable
+    phase2_recorder: echopro
+    plan_status: ok
+    notes: "Date is a hypothesis; runner should query manifest to find actual oldest day."
+
+  - id: latest_gecko
+    station: STBK
+    date: 2025-04-01
+    purpose: "Recent Gecko: current firmware, current SEED codes"
+    phase2_class: clean_gecko_disk
+    phase2_recorder: gecko
+    plan_status: ok
+    notes: "Pair with earliest_echopro to bracket grammar evolution."
+
+  # ===== Source-mismatch cases (catches "we trusted the filename") =====
+
+  - id: ss_file_under_1900
+    station: ABM7Y
+    date: 1900-01-01           # bogus path date, real date in filename
+    purpose: ".ss kelunjimeta with bogus path year — manifest must use filename date"
+    phase2_class: skip_empty   # .ss is metadata role, not waveform
+    phase2_recorder: gecko
+    plan_status: ok
+    notes: "Level-1 scan must flag date_mismatch=1 and trust the filename."

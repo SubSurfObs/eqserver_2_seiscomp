@@ -92,20 +92,20 @@ SCM2:
   target_network: VW
   network_basis: notes
   source_network_code: null
-  recorder_types: null
+  recorder_types: [minimus]
   coverage_start: 2019
   coverage_end: 2021
-  notes: ""
+  notes: "Guralp Radian TR1156 + Minimus MIN-2556 (borehole, passthrough). Decommissioned. Confirmed Minimus station per uom_seismic_metadata historical reconciliation (2026-05-27). NOTE: do NOT confuse with SCMB (different site, EchoPro only — Minimus stolen)."
 
 DDBE:
   include: true
   target_network: VW
   network_basis: notes
   source_network_code: null
-  recorder_types: null
+  recorder_types: [minimus]
   coverage_start: 2019
   coverage_end: 2020
-  notes: ""
+  notes: "Guralp Radian TR1159 + Minimus MIN-8156 (borehole, passthrough). Decommissioned ~Nov 2025 (borehole confirmed empty). EqServer archive only holds 2019-2020 data; later flow probably went direct to SeisComP. Confirmed Minimus station per uom_seismic_metadata historical reconciliation (2026-05-27)."
 FBNK:
   include: true
   target_network: VW
@@ -147,10 +147,10 @@ LOYU:
   target_network: VW
   network_basis: registry
   source_network_code: null
-  recorder_types: null
+  recorder_types: [reftek_rt130]
   coverage_start: 2014
   coverage_end: 2019
-  notes: ""
+  notes: "Reftek RT130 sn A346 + OYO Geospace HS-1 (deep+surface), 200 Hz, 2014-11-06 -> 2024-06-13 (decommissioned). Sensor differs from other IESE-cluster stations (which use IESE S10g). WNRO note from Layer A was about raw RT130 data; EqServer files have already-correct timestamps (verified 2014/2016/2018 samples, 2026-05-27)."
 LRWS:
   include: true
   target_network: VW
@@ -165,10 +165,10 @@ MOSU:
   target_network: VW
   network_basis: registry
   source_network_code: null
-  recorder_types: null
+  recorder_types: [reftek_rt130]
   coverage_start: 2014
   coverage_end: 2016
-  notes: ""
+  notes: "Reftek RT130 sn BD5E + IESE S10g, 200 Hz. Brief operational windows: 2014-10-07 -> 2014-10-17 (vandalised), then 2015-06-18 -> 2015-07-28 (vandalised again). Layer A flagged WNRO; verified non-issue across the cohort on EqServer (2026-05-27) — timestamps already corrected at ingest. Mini-batch scan: 49 station-days only."
 MRDN:
   include: true
   target_network: VW
@@ -183,10 +183,10 @@ WILU:
   target_network: VW
   network_basis: registry
   source_network_code: null
-  recorder_types: null
+  recorder_types: [reftek_rt130]
   coverage_start: 2014
   coverage_end: 2017
-  notes: ""
+  notes: "Reftek RT130 sn BD91 + IESE S10g, 200 Hz, 2014-10-08 -> 2017-12-19 (decommissioned). Layer A flagged WNRO; verified non-issue across the cohort on EqServer (2026-05-27) — timestamps already corrected at ingest."
 
 BEST:
   include: true
@@ -243,10 +243,10 @@ DDNE:
   target_network: VW
   network_basis: registry
   source_network_code: UM
-  recorder_types: null
+  recorder_types: [gecko]
   coverage_start: 2017
   coverage_end: 2024
-  notes: "DDNE_UM in Januka XMLs; 1900 year likely artefact"
+  notes: "DDNE_UM in Januka XMLs; 1900 year likely artefact. NOT a Minimus station despite the DD-cluster naming (confirmed Minimus stations: DDBE / DDWB / SCM2 only per uom_seismic_metadata historical reconciliation). Mini-batch scan: 98.3% clean, dominated by Gecko .ms.zip by 2024; earliest 2017 has some single-channel mseed of unknown origin worth a closer look."
 
 DDSW:
   include: true
@@ -263,10 +263,10 @@ DDWB:
   target_network: VW
   network_basis: registry
   source_network_code: null
-  recorder_types: null
+  recorder_types: [minimus]
   coverage_start: 2019
   coverage_end: 2024
-  notes: "In vw.xml"
+  notes: "In vw.xml. Guralp Radian TR1155 + Minimus MIN-2356 (borehole, passthrough). vw_active — the only DD-cluster site currently with power+recorder. Confirmed Minimus station per uom_seismic_metadata historical reconciliation (2026-05-27)."
 
 DDWK:
   include: true
@@ -393,20 +393,20 @@ SCMB:
   target_network: VW
   network_basis: notes
   source_network_code: null
-  recorder_types: null
+  recorder_types: [echopro]
   coverage_start: 2019
   coverage_end: 2023
-  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm; 1970 likely artefact"
+  notes: "Mentioned as VW in WoodsPoint notes; not in vw.xml — confirm; 1970 likely artefact. EchoPro only (.dmx) per Q1 2020 mini-batch scan: 90.3% clean. NOT Minimus despite the SCM/DD cluster naming — historical record: the SCMB Minimus was STOLEN (cabling cut); Radian was recovered from the borehole. Confirmed Minimus stations: DDBE / DDWB / SCM2 only."
 
 SGWU:
   include: true
   target_network: VW
   network_basis: registry
   source_network_code: null
-  recorder_types: null
+  recorder_types: [reftek_rt130, gecko]
   coverage_start: 2014
   coverage_end: 2023
-  notes: "In vw.xml"
+  notes: "In vw.xml. Reftek RT130 sn BD70 + IESE S10g, 200 Hz, 2014-10-09 -> 2024-12-12; then transitioned to Gecko + s21g, 250 Hz (2024-12-12 -> present, user_direct overlay). Layer A flagged WNRO for pre-2024-12 data; verified non-issue on EqServer (SGWU 2018 sample matches path date, 2026-05-27) — already corrected at ingest."
 
 SOMU:
   include: true
@@ -435,10 +435,10 @@ TRPU:
   target_network: VW
   network_basis: registry
   source_network_code: null
-  recorder_types: null
+  recorder_types: [reftek_rt130, gecko]
   coverage_start: 2000
   coverage_end: 2022
-  notes: "In vw.xml"
+  notes: "In vw.xml. Reftek RT130 sn BD92 + IESE S10g, 200 Hz, 2015-04-28 -> 2024-12-12; then transitioned to Gecko + s21g, 250 Hz (2024-12-12 -> present, user_direct overlay). Layer A flagged WNRO; verified non-issue on EqServer (TRPU 2018 sample matches path date, 2026-05-27) — already corrected at ingest. The 2000 coverage_start is likely a bogus-date artefact from a pre-deployment file."
 
 TYHS:
   include: true
@@ -890,9 +890,10 @@ ABRY:
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 BAMB:
   include: true
@@ -908,9 +909,10 @@ BRON:
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 CLIL:
   include: true
@@ -935,36 +937,40 @@ DJO:
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 ERIKA:
   include: true
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 HAZO:
   include: true
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 HELEN:
   include: true
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 HKER:
   include: true
@@ -1000,9 +1006,10 @@ KENT:
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 NNP1:
   include: true
@@ -1027,18 +1034,20 @@ NSTM:
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 OAT:
   include: true
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 PENW:
   include: true
@@ -1093,18 +1102,20 @@ USYD:
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path."
 
 WEPH:
   include: true
   target_network: DU
   network_basis: registry
   source_network_code: DU
-  recorder_types: null
+  recorder_types: [piesmo]
   coverage_start: 2025
   coverage_end: 2025
+  notes: "SAA PiesMo (Apr 2026 sheet). HHZ-only telemetry stub on EqServer; full 3-component data via separate path. WEPH mseed header says AU.WEPH.0.HHZ (operator misconfig at deployment) — registry overrides to DU per SAA sheet."
 
 WKA:
   include: true
@@ -1115,6 +1126,55 @@ WKA:
   coverage_start: 1999
   coverage_end: 2026
   notes: "Willalooka SA; 1989 year likely artefact"
+
+# Added from uom_seismic_metadata DU inventory (scml/du.xml + external/du) 2026-05-26.
+# Absent from the 2026-04-12 archive dir scan -> likely new-server-only (no EqServer
+# historical data); the Level-1 scan will confirm whether any data exists to convert.
+ALEX:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: null
+  coverage_end: null
+  notes: "Alexandria NSW (DU inventory)"
+HMV1:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: null
+  coverage_end: null
+  notes: "Hindmarsh Valley SA, Peters Seismological Observatory (DU inventory)"
+LEU:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: null
+  coverage_end: null
+  notes: "Leumeah NSW (DU inventory)"
+LGMA:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: null
+  coverage_end: null
+  notes: "Tuggerah NSW (DU inventory)"
+WAH:
+  include: true
+  target_network: DU
+  network_basis: registry
+  source_network_code: DU
+  recorder_types: null
+  coverage_start: null
+  coverage_end: null
+  notes: "Wahroonga NSW (DU inventory)"
 
 # Likely DU variants (same base code as confirmed DU stations; not in du.xml)
 NNP3:
@@ -1333,9 +1393,9 @@ BDBO:
   coverage_end: 2022
 
 BEGA:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
   coverage_start: 1999
   coverage_end: 2026
   notes: "Bega NSW; long-running — possible DU or other"
@@ -1384,9 +1444,9 @@ BRTS:
   notes: "Long-running (12yr) — likely VW permanent"
 
 CLV2:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
   coverage_start: 2004
   coverage_end: 2026
   notes: "Long-running (11yr)"
@@ -1408,9 +1468,9 @@ DD03:
 
 
 DNL:
-  include: unknown
+  include: true
   target_network: DU
-  network_basis: notes
+  network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: null
@@ -1419,9 +1479,9 @@ DNL:
 
 
 DNL2:
-  include: unknown
+  include: true
   target_network: DU
-  network_basis: notes
+  network_basis: registry
   source_network_code: null
   recorder_types: null
   coverage_start: null
@@ -1587,7 +1647,7 @@ LMT:
 
 
 MELU:
-  include: unknown
+  include: false
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1616,9 +1676,9 @@ MPTV:
   coverage_end: 2018
 
 MRAT:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
   coverage_start: 1999
   coverage_end: 2026
   notes: "Long-running (18yr) — likely VW permanent"
@@ -1788,9 +1848,9 @@ TORR:
   coverage_end: 2017
 
 UTT:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
   coverage_start: null
   coverage_end: 2026
   notes: "Long-running (13yr); 1970 artefact"
@@ -1810,9 +1870,9 @@ WALM:
   coverage_end: 2021
 
 WALR:
-  include: unknown
-  target_network: null
-  network_basis: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
   coverage_start: null
   coverage_end: 2026
   notes: "Long-running (12yr)"
