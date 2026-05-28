@@ -223,3 +223,37 @@ preliminary OUTU+STBK run).
 ⚠ Also: `scan/phase3_driver_v2.py` is recovered VM-only scratch (older than the
 live `phase3_driver.py`); `run_production.py` calls the **plain** driver. Decide
 whether to keep or delete v2 next session.
+
+### Reproducing the OUTU + STBK preliminary run
+
+The 2026-05-28 preliminary commit run (OUTU echopro + STBK gecko, `preliminary_run.log`:
+OUTU ~9,679 s, STBK ~22,466 s, 1.43× speedup) was driven by `scan/run_phase3_pool.py`
+→ `scan/phase3_driver.py`. The wrapper invocation was **not persisted to disk** (run
+inline via the agent's Bash tool, so not in `~/.bash_history`); only the `.log`
+survived and it does not echo the date window. Reconstructed command:
+
+```bash
+# on the VM, from ~/projects/SubSurfObs/eqserver_2_seiscomp
+/home/unimelb.edu.au/dsand/projects/SubSurfObs/disk_to_sds/.venv/bin/python3 \
+  scan/run_phase3_pool.py \
+    --station-dbs /home/unimelb.edu.au/dsand/station_dbs \
+    --plans /tmp/plans_vw \
+    --staging-sds /mnt/seiscomp_staging/seiscomp_archive \
+    --registry metadata/station_registry.yaml \
+    --stations OUTU,STBK \
+    --pool-size 2 --per-station-workers 4 --commit \
+    --start-date <YYYY-MM-DD> --end-date <YYYY-MM-DD>   # <-- the "five years"; exact dates UNKNOWN
+```
+
+- Everything except `--start-date/--end-date` is certain (from the script + log).
+- **`--start-date/--end-date` is the unknown** — the "~5 years" window. The plans
+  span full history (OUTU 2001→2025 / 2418 days; STBK epoch starts at the bogus
+  `1900-01-01` artifact → 2024-02-13 / 2150 days), so a window was required to clip
+  it. Confirm the years before re-running, else it converts full history.
+- Drop `--commit` for a dry-run (no SDS writes). Full-history at `pool-size 2` was
+  ~6 h wallclock; a 5-year window is proportionally less.
+- Prereqs all live: scripts (VM + git), `disk_to_sds/.venv`, `~/station_dbs` DBs,
+  `/tmp/plans_vw` (regenerate via `plan_generator.py` if `/tmp` was wiped), mounts.
+- NOTE the STBK plan's `1900-01-01` epoch start is a date artifact — worth clamping
+  to the real first-data year in `plan_generator.py` so unwindowed runs don't
+  iterate ~45k empty days.
