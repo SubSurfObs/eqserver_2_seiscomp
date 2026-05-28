@@ -559,6 +559,19 @@ Most EchoPro files are `.gz`, so gzip inflate dominates per-file CPU:
   complement and header-scan only the *telemetry* files (where the single-channel
   legacy lives), rather than inflating every file just to count channels.
 
+### Gecko/Minimus `.ms.zip` read: read-whole-file, seek-in-RAM (validated 2026-05-28)
+
+For the MiniSEED cohorts (Gecko, RT130-via-gecko, Minimus) the per-file cost is
+NOT decompression but **ZIP random-access seeks over NFS**. `zipfile.ZipFile(path)`
+opened directly on an NFS file handle must seek to the End-Of-Central-Directory at
+the tail, then back to the member — each seek is a network round-trip. The fix
+(implemented in `scan/phase3_driver.py:_concat_zip_members`, shared by the gecko
+and minimus branches): **read the whole (tiny, ~12–70 KB) `.ms.zip` in ONE
+sequential NFS read into a `BytesIO`, then open the ZIP from memory** so all seeks
+are in RAM. ~2× faster at workers=1 on cold NFS — matters most for exactly the
+slow cohorts. Benchmark harness: `scan/gecko_read_benchmark.py` (old direct-open
+vs new read-whole). No decode/recode; STEIM2 preserved end-to-end.
+
 ### Pre-scan parallelism
 
 Level 1 filename scan can itself be parallelised: split the station list across workers, each walking one station's directory tree independently. SQLite WAL mode handles concurrent inserts safely if each worker uses its own connection.
