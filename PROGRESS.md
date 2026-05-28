@@ -143,3 +143,83 @@ clean comparison; the optimization itself is already folded into the driver.
 4. **Re-run the Gecko benchmark** to capture the numbers (log was truncated).
 5. **Rotate the exposed credentials** (GitHub PAT + Mediaflux password) and scrub
    `~/.bash_history` on the VM — see security note in the handoff conversation.
+
+---
+
+## Phase 3 stress-testing handoff (next session)
+
+Goal next session: **stress-test `phase3_driver.py` on stations from any network.**
+State as of 2026-05-28 evening (verified on the VM):
+
+### Databases — `~/station_dbs/` (home dir → survives reboot)
+
+- **102 per-station DBs: 61 DU + 41 VW. No VX DBs exist yet** — so "any network"
+  today means VW and DU; build VX first (`level1.py` → `build_per_station_dbs.py`)
+  if VX is needed.
+- Each `.db` is a **single `files` table = the Level-1 filename manifest** (no
+  `station_days`/`station_intervals` tables — those are derived on the fly).
+  Big: `VW.STBK.db` alone is ~5.89 M rows. `phase3_driver.py` only needs the
+  `files` table, so Level-1 is sufficient to run Stage 3.
+- `files` columns: `path, station, dir_year, dir_month, dir_day, recorder_type,
+  source_type, role, file_year, file_month, file_day, date_mismatch, hhmm, ss,
+  channel_suffix, filename_station, station_mismatch, flags, size_bytes, mtime,
+  exclude_reason`.
+- Scratch DBs to ignore: `/tmp/test_per_station/*.db`, `/tmp/stress/run.db`.
+
+### Plans — all under `/tmp` (⚠ VOLATILE: a VM reboot wipes them)
+
+Plans are **regenerable** from `DB + registry + FDSN` via `plan_generator.py`, so
+if `/tmp` is empty next session, regenerate rather than panic. Current inventory:
+
+| Dir | Count | Network | Notes |
+|---|---|---|---|
+| `/tmp/plans_vw` | 41 | VW | main set — **19 ok / 15 needs_review / 7 BLOCKED** |
+| `/tmp/plans` | 11 | DU | |
+| `/tmp/plans_piesmo_v2` | 11 | DU | PiesMo cohort (HHZ-only stubs) |
+| `/tmp/plans_guralp` / `_v2` | 5 / 5 | VW | Minimus/Guralp cohort (DDBE/DDWB/SCM2) |
+| `/tmp/plans_gecko` | 1 | VW | gecko cohort test |
+| `/tmp/plans_mini_2020` | 1 | VW | |
+
+Plan schema: `station, network, location, status (ok|needs_review|BLOCKED|
+defer_conversion), summary{days_total,days_clean,days_flagged,pct_clean},
+epochs[]{id,start,end,recorder,days,classifications{}}, flagged_days[]`.
+Epochs are split on recorder/rate change (e.g. `VW.BEST` has 5 epochs 1989→2025,
+echopro→gecko→echopro). Recorder-diverse targets for stress testing:
+- **echopro:** most `plans_vw` `status: ok` stations
+- **gecko:** `plans_gecko`, plus gecko epochs inside `plans_vw`
+- **minimus:** `plans_guralp_v2` (DDBE/DDWB/SCM2)
+- **reftek (via gecko path):** LOYU/MOSU/SGWU/TRPU/WILU (inside `plans_vw`)
+
+### Stage 3 execution process
+
+**Single station** (`scan/phase3_driver.py`):
+```
+python3 scan/phase3_driver.py <db> <plan.yaml> \
+    --registry metadata/station_registry.yaml \
+    --staging-sds /mnt/seiscomp_staging/seiscomp_archive \
+    [--commit] [--workers N] [--start-date YYYY-MM-DD] [--end-date YYYY-MM-DD] [--limit-days N]
+```
+- **Dry-run by default**; `--commit` writes SDS. `--limit-days` is the stress knob.
+- Reads plan epochs → keeps SUPPORTED recorders `{echopro, gecko, minimus}`
+  (`reftek_rt130` aliases to the gecko read path); `defer_conversion` → no-op.
+- **Per-day gate, not per-station:** `flagged_days` skipped; `needs_review`/
+  `BLOCKED` stations still convert their CLEAN days. So a BLOCKED station is a
+  valid stress target — it just runs only its clean days.
+- Each day-job (parallel `multiprocessing.Pool`, `imap_unordered`): own DB conn →
+  `cross_source.select_files_for_day` (per-HHMM disk/tele dedup, disk preference
+  w/ `--disk-size-floor-ratio`) → recorder branch → atomic per-channel STEIM2
+  day-file to staging. `_write_sds_retry` handles soft-SMB `OSError` w/ backoff.
+- Gecko/minimus reads use `_concat_zip_members` (read-whole-file + in-RAM seeks).
+
+**Whole network** (`scan/run_production.py`): wraps phase3 one-station-at-a-time,
+resumable via `/tmp/production_state.json`, `--networks VW,DU`, optional
+`--promote` (calls ledger `apply.py` then clears staging). NOTE: it has **no
+date-window flag** — converts all epochs per plan.
+
+**Stress harness already present:** `scan/stress_harness.py`, `scan/smoke_matrix.yaml`,
+`scan/smoke_runner.py`, `scan/run_phase3_pool.py` (multi-station pool used for the
+preliminary OUTU+STBK run).
+
+⚠ Also: `scan/phase3_driver_v2.py` is recovered VM-only scratch (older than the
+live `phase3_driver.py`); `run_production.py` calls the **plain** driver. Decide
+whether to keep or delete v2 next session.
