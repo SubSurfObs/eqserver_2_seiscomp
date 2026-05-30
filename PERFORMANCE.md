@@ -180,32 +180,81 @@ Every experiment is structured as:
 
 ### 8. `python-isal` swap on echopro `.gz` decompression
 
-- **Date:** TBD (priority 1 after Round 1)
+- **Date:** Discovered 2026-05-31 to be **already in place**.
 - **Objective:** Quantify the wallclock impact of replacing stdlib `zlib`/`gzip`
   with `python-isal`'s `igzip` for sudspy's `.gz` open path. Claim: ~2–3× faster
   inflate. EchoPro is dominant cohort by data volume and gzip is on its critical path.
-- **Configuration:** Install `python-isal` into the disk_to_sds venv. Modify
-  sudspy's `.gz` open path to use `igzip.open` when available. Rerun the Exp 3
-  OUTU worker sweep at w=4 and w=8 to isolate the effect.
-- **Outcome:** **Not yet tested.** Open question: does 2-3× faster inflate
-  translate to a meaningful wallclock improvement in production, or is the gzip
-  step already amortised behind NFS read latency?
-- **Caveats:** Drop-in replacement at the import layer; semantics identical
-  (output bytes equal). Low integration risk; high upside potential.
+- **Configuration:** `sudspy/sudspy/blocks.py` line 9–12 already has the
+  conditional import:
+  ```python
+  try:
+      from isal import igzip as gzip   # 2-3x faster than stdlib zlib on AVX2 CPUs
+  except ImportError:
+      import gzip
+  ```
+  `python-isal` IS installed in the disk_to_sds venv on the staging VM. Runtime
+  check confirms `sudspy.blocks.gzip` resolves to
+  `.../isal/igzip.py`, NOT the stdlib `gzip`.
+- **Outcome:** **Already deployed — measurements above already reflect isal**.
+  Both the May 28 profile battery (Exp 3, 4, 5) and Round 1 (Exp 7) ran with
+  isal active. Echopro per-day rates (4–12 s/day) are the post-isal numbers.
+  This means **the 2–3× faster inflate is baked into the current production
+  throughput**, and we don't have a separate "with isal vs without isal" A/B
+  on the eqserver_2_seiscomp pipeline.
+- **Caveats:** A clean A/B would require either deliberately uninstalling isal
+  for a single comparison run or forcing the stdlib fallback via env var.
+  Not worth doing — we know the optimization is helping; what we *don't* know
+  is what the current bottleneck is (see Exp 9).
 
 ### 9. Single-day profile breakdown
 
-- **Date:** TBD
+- **Date:** 2026-05-31
+- **Cache regime:** Cold-cache (each sample day is a separate cold lookup).
 - **Objective:** Quantify where the per-day wallclock actually goes within
   phase3 — NFS read vs gzip inflate vs SUDS parse vs ObsPy merge vs STEIM2
   write. Determines which optimization lever is worth pulling next.
-- **Configuration:** Instrument one phase3 day-job with `cProfile` or
-  `time.perf_counter` around the four phases. Run on 5–10 representative days
-  across cohorts.
-- **Outcome:** **Not yet tested.** Open question: which phase dominates, and
-  is the dominant phase the same for echopro vs gecko vs minimus?
+- **Configuration:** `scan/profile_single_day.py` instruments
+  `time.perf_counter` around each phase: DB query → cross-source select →
+  NFS read → decode → merge/sort → SDS write. 8 sample days across cohorts
+  (2 echopro, 3 gecko, 1 rt130, 1 minimus; one echopro sample empty).
+- **Outcome:** **NFS read is overwhelmingly dominant — 94–98% of cold-cache
+  per-day wallclock across all cohorts.**
+
+  | Cohort | n | Mean total | NFS read | Decode | Merge/sort | SDS write |
+  |---|---|---|---|---|---|---|
+  | echopro | 2 | 20.6 s | 19.4 s (94%) — gzip folded in | — | 0.003 s | 0.67 s (3%) |
+  | gecko | 3 | 45.9 s | 43.8 s (95%) | 0.42 s (1%) | 1.0 s (2%) | 0.63 s (1%) |
+  | rt130 | 1 (SGWU) | 35.0 s | 18.0 s (52%) | 0.34 s | **16.2 s (46%)** | 0.34 s |
+  | minimus | 1 (DDWB) | 51.4 s | 50.3 s (98%) | 0.23 s | 0.04 s | 0.78 s |
+
+  - Decode is essentially free (isal already deployed; Exp 8 confirmed-active).
+  - SDS write is fast (~0.6 s, 1–3%) — CIFS write is not the bottleneck.
+  - The actual bottleneck is **per-file NFS round-trip latency × ~1,440 files
+    per day**. At workers=4, each worker serialises through ~360 file opens
+    × ~28–30 ms cold round-trip = ~10 s per worker = ~40 s aggregate wallclock.
+    Matches the gecko 43.8 s figure exactly.
+- **SGWU `merge_sort = 16.2 s` anomaly (recorded, deferred):**
+  - The RT130-cohort SGWU day showed merge_sort 16× higher than gecko mean.
+  - Initial hypothesis "RT130 writes per-channel files" was **REFUTED by direct
+    file inspection (2026-05-31)**: SGWU `.ms.zip` contains 1 inner mseed with
+    3 traces (HHZ/HH1/HH2 at 200 Hz), structurally identical to Gecko (which
+    contains 1 inner mseed + .ss + station.xml, with 3 traces CHN/CHZ/CHE at
+    250 Hz). 1,440 files per day in both cases; 3 channels per minute in both.
+  - True cause unknown. Plausible candidates: ObsPy `merge(method=1)` may handle
+    SGWU's exact-second-boundary alignments (12,001 samples at 200 Hz with
+    1-sample overlap) more slowly than Gecko's sub-second offset alignments
+    (~15,244 samples at 250 Hz with ~250-sample overlap). Channel code or
+    encoding differences are also possible.
+  - **Deferred — not investigating further.** RT130 cohort is only 5 VW
+    stations (LOYU/MOSU/SGWU/TRPU/WILU) of which only SGWU has 2023-2025
+    data in scope. The merge_sort tax is ~15 s per day on at most ~150 days
+    of SGWU work in scope (~37 min total). Not worth chasing relative to
+    the multi-VM and workers-sweep opportunities. Revisit if/when
+    RT130 turns out to be on the critical path.
 - **Caveats:** Profile instrumentation adds overhead during the profile run;
-  not for production use.
+  not for production use. Each sample is one day — for the SGWU anomaly to be
+  attributed to recorder vs day-specific, would need 5+ days of SGWU plus a
+  few TRPU days. Deferred per note above.
 
 ### 10. Two-VM year-partitioned parallel conversion
 
