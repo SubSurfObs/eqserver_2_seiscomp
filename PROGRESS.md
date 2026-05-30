@@ -367,3 +367,83 @@ The integration is **separable from the conversion correctness work** — round 
 of stress is staging-only, no LT promotion, so the provenance gap doesn't bite
 yet. But it **must land before any production LT promotion** so that every
 LT-resident byte can be traced back to its policy fingerprint.
+
+---
+
+## Pending design: cross-host production orchestration (option C)
+
+Recorded 2026-05-31 against the question: who runs `run_production.py --promote
+--clear-staging` for the full 2012–2025 VW sweep, given staging quota is 2 TB
+and projected output is ~2.6 TB (i.e. staging must be promoted-and-cleared
+continuously, not accumulated).
+
+**Status:** **Pending design** — not yet built. To be tackled after the
+disk_to_sds review of the ledger integration wraps up, before the first real
+production sweep.
+
+### The problem
+
+The conversion pipeline has three steps that live on two different hosts:
+
+| Step | Host | What it needs mounted |
+|---|---|---|
+| phase3 conversion | Staging VM | NFS ro origin + CIFS rw staging |
+| `apply.py` promotion | dev1 | staging + CIFS rw LT |
+| `cleanup.py` | Staging VM | staging rw + LT ro (for size-compare) |
+
+`run_production.py` as currently written calls `apply.py` via inline
+`subprocess.run` — which implicitly assumes apply.py is invokable from the same
+host running phase3. That's wrong for the cross-host model (staging VM doesn't
+write LT). The `--promote` flag exists in the code from an earlier single-host
+mental model and is **effectively broken** for the production architecture.
+
+### Option C (chosen): split into three per-host scripts
+
+```
+scan/run_production_convert.py   ← Staging VM. Drives phase3 per station;
+                                   on success, appends run_id to a queue file.
+scan/run_production_promote.py   ← dev1. Watches the queue; per entry invokes
+                                   apply.py with --run-manifest + --commit; on
+                                   success marks "promoted" in the queue.
+scan/run_production_cleanup.py   ← Staging VM. Watches "promoted" markers;
+                                   per entry invokes cleanup.py --net <NET>
+                                   --sta <STA> --commit; marks "cleaned".
+```
+
+Each script is independently restartable. State machine per station is
+explicit. Mirrors the disjoint-writers discipline the ledger already enforces.
+
+### Why option C over alternatives
+
+- **(a) Manual operator-gated batches** — works today with zero code (run
+  convert without `--promote`, then SSH to dev1 for apply, then back to
+  staging VM for cleanup). High operator cost over a week-long sweep.
+- **(b) Single cross-host orchestrator with SSH** — ~150 lines, one script
+  doing all three steps via SSH dispatch. Faster to build but couples all
+  three concerns into one script that's harder to debug when one host fails.
+- **(c) Split into three per-host scripts** *(chosen)* — ~200 lines spread
+  across three files, each script natively local to its host. Preserves the
+  cross-host discipline. Better failure isolation. Slightly more total code
+  but cleaner ownership.
+
+### Queue location decision
+
+The shared work queue lives on the **staging mount** (e.g.
+`/mnt/seiscomp_staging/eqserver_queue/{pending,promoted,cleaned}.jsonl`).
+Both hosts already have staging mounted; no git involvement. The ledger
+repo is reserved for LT provenance, not pipeline orchestration state.
+
+### What this does NOT touch
+
+- **No changes to `sds_staging_ledger`** — `apply.py` and `cleanup.py` both
+  already support per-station invocation (`--net <NET> --sta <STA>`); the
+  new policies/runs/ infrastructure handles eqserver provenance. The
+  orchestration scripts just shell out to them with the right args.
+- **No changes to `disk_to_sds`** — parallel infrastructure, unaffected.
+- Self-contained inside `eqserver_2_seiscomp/scan/`.
+
+### Pre-requisite to confirm before building
+
+Dev1 must have the staging share mounted (rw or ro — apply.py only reads it).
+`disk_to_sds` SD-card promotions already do this today, so the mount is
+presumably in place. Worth confirming on the actual host before relying on it.
