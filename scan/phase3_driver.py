@@ -28,13 +28,17 @@ Run:
 """
 from __future__ import annotations
 import argparse
+import hashlib
+import json
 import os
+import socket
 import sqlite3
+import subprocess as _sp
 import sys
 import time
 import traceback
 from collections import Counter
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -379,6 +383,17 @@ def main():
                          "down to 80%% of tele's size). Set 0.0 for old 'absolute "
                          "disk preference' policy; 1.0 for 'most data wins, disk "
                          "only on ties'.")
+    ap.add_argument("--run-manifest", default=None,
+                    help="path to write a phase3 run manifest (JSON) at end of run. "
+                         "When set, captures run identity, per-date status, "
+                         "aggregate counts, and a policy_sha+policy_yaml_path that "
+                         "sds_staging_ledger/apply.py can read via its own "
+                         "--run-manifest flag to copy the plan into policies/ and "
+                         "augment events.jsonl source dicts.")
+    ap.add_argument("--classifier-version", default="v3-OptionB",
+                    help="classifier version label embedded in the run manifest. "
+                         "Defaults to the current Option-B classifier. Bump when "
+                         "the classifier semantics change.")
     args = ap.parse_args()
 
     import yaml
@@ -395,6 +410,39 @@ def main():
 
     print(f"[phase3] station={network}.{station} loc={location!r} status={status} "
           f"commit={args.commit} dry-run={not args.commit}", flush=True)
+
+    # Run-manifest setup: capture identity at start; we'll fill in aggregates +
+    # per-date status during the run and write the manifest at the end.
+    # Manifest is a hand-off file for sds_staging_ledger/apply.py — see
+    # CLAUDE.md "Ledger integration".
+    run_manifest_state = None
+    if args.run_manifest:
+        plan_path_abs = os.path.abspath(args.plan)
+        plan_bytes = open(plan_path_abs, "rb").read()
+        plan_sha = hashlib.sha256(plan_bytes).hexdigest()
+        # project_git: best-effort. None if not in a git checkout.
+        _here = os.path.dirname(os.path.abspath(__file__))
+        try:
+            _gr = _sp.run(["git", "-C", _here, "rev-parse", "HEAD"],
+                          capture_output=True, text=True, timeout=5)
+            project_git = _gr.stdout.strip() if _gr.returncode == 0 else None
+        except Exception:
+            project_git = None
+        run_start_dt = datetime.now(timezone.utc)
+        run_id = (f"eqserver_{network}_{station}_"
+                  f"{run_start_dt.strftime('%Y%m%dT%H%M%SZ')}")
+        run_manifest_state = {
+            "started_at": run_start_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "run_id": run_id,
+            "plan_path_abs": plan_path_abs,
+            "plan_sha": plan_sha,
+            "project_git": project_git,
+            "phase3_argv": sys.argv,
+        }
+        print(f"[phase3] run-manifest target: {args.run_manifest}", flush=True)
+        print(f"[phase3]   run_id={run_id}", flush=True)
+        print(f"[phase3]   policy_sha={plan_sha}", flush=True)
+        print(f"[phase3]   project_git={project_git or '(unavailable)'}", flush=True)
 
     if status == "defer_conversion":
         print(f"[phase3] defer_conversion: {plan.get('defer_reason','')}", flush=True)
@@ -481,17 +529,31 @@ def main():
     results = Counter()
     written_bytes = 0
     days_processed = 0
+    # Per-date status records, populated when --run-manifest is set. Compact —
+    # one dict per day-job. Lands in the manifest's eqserver.per_date_status.
+    per_date_status: list = []
     t0 = time.time()
 
     def _emit(r):
         nonlocal written_bytes, days_processed
         days_processed += 1
         results[r["status"]] += 1
-        written_bytes += sum(sz for _, sz in r.get("sds_files_written", []))
+        day_bytes = sum(sz for _, sz in r.get("sds_files_written", []))
+        written_bytes += day_bytes
         n_written = len(r.get("sds_files_written", []))
         n_planned = len(r.get("sds_files_planned", []))
         mark = "WRITE" if args.commit else "PLAN"
         iso = r.get("date", "?")
+        if run_manifest_state is not None:
+            per_date_status.append({
+                "date": iso,
+                "status": r["status"],
+                "n_files": r.get("n_files", 0),
+                "n_traces": r.get("n_traces", 0),
+                "rate_hz": r.get("rate_hz"),
+                "read_errors": r.get("read_errors", 0),
+                "bytes_written": day_bytes,
+            })
         if r["status"] == "error":
             print(f"  [{iso}] ERROR {r.get('error')}", flush=True)
             if "traceback" in r:
@@ -527,26 +589,106 @@ def main():
     else:
         print(f"  (dry-run: pass --commit to actually write SDS)")
 
+    # Run manifest: write the hand-off file for apply.py if --run-manifest set.
+    # Written unconditionally (dry-run or --commit) so the schema can be
+    # exercised end-to-end during staging-only stress rehearsals.
+    if run_manifest_state is not None:
+        n_ok = results.get("ok", 0)
+        n_qc = results.get("qc_flagged", 0)
+        n_err = results.get("error", 0)
+        n_parse_err = results.get("parse_error", 0)
+        n_no_files = results.get("no_files", 0)
+        items_succeeded = n_ok + n_qc
+        items_failed = n_err + n_parse_err
+        finished_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        manifest_doc = {
+            "run_id": run_manifest_state["run_id"],
+            "kind": "eqserver",
+            "project": "eqserver_2_seiscomp",
+            "project_git": run_manifest_state["project_git"],
+            "host": socket.gethostname(),
+            "operator": os.environ.get("USER", "unknown"),
+            "started_at": run_manifest_state["started_at"],
+            "finished_at": finished_iso,
+            "net": network,
+            "sta": station,
+            "target_root": os.path.abspath(args.staging_sds),
+            "policy_sha": run_manifest_state["plan_sha"],
+            "policy_yaml_path": run_manifest_state["plan_path_abs"],  # transit-only
+            "classifier_version": args.classifier_version,
+            "aggregate": {
+                "items_attempted": days_processed,
+                "items_succeeded": items_succeeded,
+                "items_failed": items_failed,
+                "bytes_written": written_bytes,
+            },
+            "phase3_invocation": {
+                "command": run_manifest_state["phase3_argv"],
+                "argv": {
+                    "workers": args.workers,
+                    "commit": args.commit,
+                    "limit_days": args.limit_days,
+                    "start_date": args.start_date,
+                    "end_date": args.end_date,
+                    "dates_file": args.dates_file,
+                    "disk_size_floor_ratio": args.disk_size_floor_ratio,
+                },
+            },
+            "eqserver": {
+                "per_date_status": per_date_status,
+                "days_no_files": n_no_files,
+                "flagged_days_skipped": n_flagged_skipped,
+                "read_errors": sum(d.get("read_errors", 0) for d in per_date_status),
+                "elapsed_s": round(elapsed, 1),
+                "throughput_days_per_s": round(rate, 4),
+            },
+        }
+        # Atomic write so a reader never sees a partial manifest.
+        out_path = os.path.abspath(args.run_manifest)
+        os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+        tmp = out_path + ".partial"
+        with open(tmp, "w") as f:
+            json.dump(manifest_doc, f, indent=2, sort_keys=True)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, out_path)
+        print(f"[phase3] run manifest written: {out_path}", flush=True)
+
     # Ledger handoff: after a successful --commit run, suggest the apply.py
     # command line that promotes this station's staging output to the LT
     # archive. We never invoke apply.py automatically — promotion is operator-
     # gated by design (always review the apply.py dry-run before --commit).
     if args.commit and days_processed > 0 and results.get("ok", 0) > 0:
-        source_card = f"eqserver_{network}_{station}_{date.today().isoformat()}"
         ledger_root = "/home/unimelb.edu.au/dsand/projects/SubSurfObs/sds_staging_ledger/seiscomp_archive"
         apply_py = "/home/unimelb.edu.au/dsand/projects/SubSurfObs/sds_staging_ledger/apply.py"
         lt_root = "/mnt/seiscomp_archive"
         print()
         print("[phase3] To promote this station's staging output to the LT archive:")
-        print(f"  1. Dry-run to review (no writes):")
-        print(f"     python3 {apply_py} \\")
-        print(f"         --staging-root {args.staging_sds} \\")
-        print(f"         --lt-root {lt_root} \\")
-        print(f"         --ledger-root {ledger_root} \\")
-        print(f"         --net {network} --sta {station} \\")
-        print(f"         --source-kind eqserver --source-card {source_card} \\")
-        print(f"         --mode decide")
-        print(f"  2. Then add --commit when the dry-run looks right.")
+        if run_manifest_state is not None:
+            print(f"  1. Dry-run to review (no writes), pinning provenance via run-manifest:")
+            print(f"     python3 {apply_py} \\")
+            print(f"         --staging-root {args.staging_sds} \\")
+            print(f"         --lt-root {lt_root} \\")
+            print(f"         --ledger-root {ledger_root} \\")
+            print(f"         --net {network} --sta {station} \\")
+            print(f"         --source-kind eqserver \\")
+            print(f"         --run-manifest {os.path.abspath(args.run_manifest)} \\")
+            print(f"         --mode decide")
+            print(f"  2. Then add --commit when the dry-run looks right.")
+        else:
+            source_card = f"eqserver_{network}_{station}_{date.today().isoformat()}"
+            print(f"  1. Dry-run to review (no writes):")
+            print(f"     python3 {apply_py} \\")
+            print(f"         --staging-root {args.staging_sds} \\")
+            print(f"         --lt-root {lt_root} \\")
+            print(f"         --ledger-root {ledger_root} \\")
+            print(f"         --net {network} --sta {station} \\")
+            print(f"         --source-kind eqserver --source-card {source_card} \\")
+            print(f"         --mode decide")
+            print(f"  2. Then add --commit when the dry-run looks right.")
+            print(f"  NOTE: this run did not produce a run-manifest. Re-running phase3 "
+                  f"with --run-manifest /tmp/run.json gives apply.py full provenance "
+                  f"(policy_sha + run_id + project_git in every events.jsonl line).")
 
 
 if __name__ == "__main__":
