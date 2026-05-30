@@ -257,3 +257,113 @@ survived and it does not echo the date window. Reconstructed command:
 - NOTE the STBK plan's `1900-01-01` epoch start is a date artifact — worth clamping
   to the real first-data year in `plan_generator.py` so unwindowed runs don't
   iterate ~45k empty days.
+
+---
+
+## Checkpoint — 2026-05-30 (Saturday evening, AEST)
+
+Point-in-time **before pivoting to `sds_staging_ledger` integration work**.
+Records classifier v3 / Option B deployment, plan-regen outcome, the stress
+harness build, the round-1 stress shape, and the live quota constraint.
+
+### Classifier v3 / Option B — deployed and validated
+
+- `scan/check_manifest.py` edit (commit `e99a1f5`, pushed to `origin/rewrite-suds2sds`):
+  - All `partial_*` categories moved into `CLEAN_CATEGORIES` — partial coverage
+    is no longer treated as pathological. Operator framing: "the recorder
+    captured what it captured; the SDS just has fewer minutes."
+  - New `partial_source_disagree` category fires when **both** disk and tele
+    have substantial files (`hhd ≥ 60` AND `hht ≥ 60`) but their HHMM overlap
+    `< 50%` — captures the real pathology (random tele/disk distribution).
+- Plan regeneration on VM (~1 h wallclock for all 41 VW DBs):
+  - Status: **OLD 19 ok / 15 needs_review / 7 BLOCKED → NEW 26 ok / 8 needs_review / 7 BLOCKED**.
+  - 7 stations flipped `needs_review → ok`: CLIF, DDSW, DDWK, HOGN, LOYU, MOSU, MRDN.
+  - `partial_source_disagree` total across all 41 VW stations: **7 days**
+    (BRIG 3, NARR 1, HODL 1, HOGN 1, CLIF 1). The pathology is real but rare.
+
+### 2023-2025 VW review (with new plans)
+
+- 26 stations in scope. **15,233 days in window | 314 flagged | 14,919 Pass 1.**
+- DDWB minimus now correctly counted (389 days) — earlier 0 was my SQL using
+  the default-classifier exclude filter; with the override accounted for, it's
+  the only minimus station with real 2023-2025 data.
+- BRTH and several others flipped from `needs_review` once partials count clean.
+
+### Minimus + RefTek — confirmed via new plans
+
+- **Minimus (DDBE/DDWB/SCM2)** all 100% clean under registry-driven
+  `recorder_types: [minimus]` override. Per-channel files (excluded by default
+  as `single_channel`) revived by the minimus branch in `phase3_driver.py`.
+- **RefTek RT130 cohort** handled via `RECORDER_ALIASES = {"reftek_rt130": "gecko"}`:
+  - Pure-RT130 stations (LOYU/MOSU/WILU): registry single-value `[reftek_rt130]`
+    → plan epoch tagged `reftek_rt130` → aliased to gecko read path.
+  - Transition stations (SGWU/TRPU): registry multi-value `[reftek_rt130, gecko]`
+    → plan_generator falls back to `gecko` by extension → handled directly.
+  - Both paths converge on the same gecko `.ms.zip` in-memory read code.
+
+### Stress test design — random weekly sampling (active shape)
+
+- `scan/stress_random_weeks.py` (commit `997a723`): per-station random selection
+  of **N non-overlapping 7-day chunks** from the 2023-2025 Pass-1 pool.
+  Per-station reproducible seed (`42 + sum(ord(c) for c in sta)`). Resumable
+  via state file. **Halts on `EDQUOT` / `ENOSPC` / "Disk quota exceeded" /
+  "No space left on device"** in phase3 stdout or stderr.
+- `phase3_driver.py` gained `--dates-file <path>` for explicit non-contiguous
+  date conversion (used by the stress harness to convert exactly the chosen
+  56 days per station rather than the full epoch span).
+- **Round 1 shape (the active stress run):**
+  - 26 stations × up to 8 weeks each = **202 weeks, 1,414 day-jobs, ~104 GB est.**
+  - Covers all 4 recorder cohorts; **first `--commit` exercise** of:
+    - DDWB minimus on real data (per-channel concat path)
+    - SGWU RT130-via-gecko on real data (gecko-aliased read of RT130 .ms.zip)
+  - Small-station caps: WPNH gets 3 weeks (its entire pool), SCMB gets 7.
+  - Preflight passed (WPNH dry-run, 21 dates, all `ok`, no quota tripped).
+- Up to **~10 further rounds** of this shape available before pool exhaustion;
+  small stations (WPNH/SCMB/SGWU) cap out at 0/1/2 rounds respectively.
+
+### Quota situation (load-bearing)
+
+- Mediaflux staging share allocation is **2 GB** — a provisioning mistake;
+  was meant to be 2 TB. Current usage ~168 GB (~84× over).
+- Mediaflux has been lenient about the overage; user has requested expansion
+  to 2 TB. Approval expected Monday 2026-06-01.
+- **Stress run strategy:** push on, let the auto-pause-on-write-error catch a
+  hard quota hit if it comes. Resume after approval.
+- `/mnt/seiscomp_staging/eqserver_preview` (154 GB) identified as the
+  preliminary OUTU + STBK run output covering **2018→2023** (resolving the
+  "five years" mystery from earlier in the project). User chose to leave it in
+  place rather than free the 154 GB.
+
+### Next focus: `sds_staging_ledger` integration
+
+Full design proposal worked out in the conversation. Summary:
+
+- **New ledger top-level dirs:**
+  - `policies/<sha256>.yaml` — content-addressed copy of each plan that drove
+    a conversion (name chosen to avoid clash with the ledger's existing
+    `plans/` slot, which is reserved for an apply-time dry-run-report tool).
+  - `runs/<run_id>/run.json` — per-eqserver-conversion-run summary (one per
+    phase3 `--commit` invocation), with per-date status, aggregates, and
+    references to policy_sha + project_git.
+- **Augmented `events.jsonl` source field** when `kind == "eqserver"`:
+  `{kind, card_id: null, run_id, policy_sha, project_git, classifier_version}`.
+  Backward-compatible — sdcard events unchanged.
+- **Cross-host write contract preserved:** staging VM writes `policies/`+
+  `runs/` (and auto-pushes via existing `ledger_git.commit_and_push`); dev1
+  continues to own `events.jsonl`; auto-rebase choreography unchanged.
+- **Code changes (~310 lines across both repos):**
+  - `phase3_driver.py` gains `--run-manifest <path>` (writes the manifest at
+    end of a `--commit` run).
+  - `sds_staging_ledger/apply.py` gains `--run-manifest <path>` (reads it,
+    copies the plan into `policies/<sha>.yaml`, augments events.jsonl).
+  - `sds_staging_ledger/lib/manifest.py` gains `write_policy_record` and
+    `write_run_record` helpers.
+  - `eqserver_2_seiscomp/CLAUDE.md` grows a "Ledger integration" section so
+    this project is "completely across" the ledger architecture (per user
+    instruction 2026-05-30).
+  - `sds_staging_ledger/README.md` documents the new `policies/`/`runs/` slots.
+
+The integration is **separable from the conversion correctness work** — round 1
+of stress is staging-only, no LT promotion, so the provenance gap doesn't bite
+yet. But it **must land before any production LT promotion** so that every
+LT-resident byte can be traced back to its policy fingerprint.
