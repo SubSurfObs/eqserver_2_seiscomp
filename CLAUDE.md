@@ -489,6 +489,10 @@ by sample rate as fallback — NOT blanket `CH`):
 
 ## Performance and parallelism
 
+**Measured numbers and pending experiments live in `PERFORMANCE.md`; the section
+below captures design intent only.** When proposing a new perf experiment, check
+`PERFORMANCE.md` first to see whether it (or a near variant) has already been run.
+
 **Parallelism is a first-class design requirement**, not an optimisation to add later. The VM has 24–32 cores confirmed, possibly up to 64 (exact spec TBC). All pipeline stages must be designed to exploit this from the outset.
 
 **Legacy benchmark**: EqConvert file-by-file with 16 parallel procs ≈ 1 min/day (subset). Full 3000-file day ≈ 3 min. Target: 10× improvement.
