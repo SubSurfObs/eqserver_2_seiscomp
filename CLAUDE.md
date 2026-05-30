@@ -703,12 +703,175 @@ archive/<STA>/...              <YEAR>/<NET>/<STA>/...
 - **Staging space budget**: estimate one station's full SDS output size from the manifest before starting (total compressed source size × expansion factor); confirm staging has headroom — but **not via `df`** (unreliable on this CIFS mount, see verified note above); check the mediaflux share quota directly
 - **LT promotion**: via `sds_staging_ledger/apply.py` (atomic, dry-run by
   default, write/skip/override, never deletes); always run the default dry-run
-  first and review before `--commit`.
+  first and review before `--commit`. See the "Ledger integration" section
+  below for the full provenance flow.
 - **Manifest lives on VM local disk**, not on any SMB mount, to avoid I/O overhead on frequent reads/writes during scanning
 
 ---
 
-## VM access and origin archive navigation
+## Ledger integration
+
+`sds_staging_ledger` is the system of record for the long-term SeisComP archive
+— what's in it, and how each non-telemetered byte got there. This project
+(`eqserver_2_seiscomp`) and the sibling `disk_to_sds` are the two source
+projects that feed it. The integration is **load-bearing**: no eqserver byte
+should ever reach LT without a complete provenance trail in the ledger.
+
+### The ledger is the only writer to LT
+
+```
+origin (NFS, ro)              staging (CIFS, rw, shared)         long-term (CIFS)
+/mnt/eqserver_archive    →    /mnt/seiscomp_staging         →    /mnt/seiscomp_archive
+                              /seiscomp_archive                  (write only via apply.py)
+        ↑                              ↑                                  ↑
+        │                              │                                  │
+   read-only origin              this project + disk_to_sds         sds_staging_ledger
+                                 both write here                    apply.py (never deletes)
+```
+
+`apply.py` is the **single binary** that copies staged bytes into LT. It
+appends one line per `(day, channel)` decision to
+`seiscomp_archive/<YEAR>/<NET>/<STA>.events.jsonl`. That file is the canonical
+history of "what reached LT and how."
+
+### Two source kinds, one events.jsonl per (year, net, station)
+
+The `events.jsonl` source dict disambiguates the two pipelines:
+
+```json
+// sdcard (disk_to_sds runs)
+"source": {"kind": "sdcard", "card_id": "20250409-20250627_0487"}
+
+// eqserver (this project)
+"source": {
+  "kind": "eqserver",
+  "card_id": null,
+  "run_id": "eqserver_VW_LRSE_20260530T081500Z",
+  "policy_sha": "7a4f...",
+  "project_git": "997a723",
+  "classifier_version": "v3-OptionB"
+}
+```
+
+Both kinds appear interleaved in the same per-station-year file. Consumers
+that care about provenance branch on `source.kind`.
+
+### Two new ledger top-level dirs for eqserver provenance
+
+```
+sds_staging_ledger/
+├── seiscomp_archive/<YEAR>/<NET>/<STA>.events.jsonl     (existing — both kinds)
+├── seiscomp_archive/<YEAR>/<NET>/<STA>.cleanups.jsonl   (existing — staging-side)
+├── cards/<NET>.<STA>/<card_id>/...                       (existing — sdcard only)
+├── policies/<sha256>.yaml                                 (NEW — eqserver only)
+└── runs/<run_id>/run.json                                 (NEW — eqserver only)
+```
+
+- **`policies/<sha256>.yaml`** — verbatim copy of the per-station plan YAML
+  at conversion time, content-addressed by SHA256. Same content → same path.
+  Immutable once written: `apply.py` asserts byte-equality on duplicate-sha
+  writes and aborts on mismatch rather than overwriting either copy. This is
+  the **policy fingerprint** every `events.jsonl` eqserver line points back to
+  via `source.policy_sha`.
+- **`runs/<run_id>/run.json`** — per-conversion-run summary. One per phase3
+  `--commit` invocation that gets promoted to LT. Schema: stable shared core
+  (run_id, kind, project_git, host, started_at, finished_at, net, sta,
+  target_root, policy_sha, classifier_version, aggregate counts,
+  phase3_invocation) + a kind-namespaced extension under `eqserver:`
+  (per_date_status, days_no_files, flagged_days_skipped, read_errors).
+  See `sds_staging_ledger/README.md` for the full schema.
+
+**Naming gotcha:** the ledger has a reserved `plans/` slot for a future
+`plan.py` apply-dry-run tool. Eqserver plan YAMLs go to **`policies/`**, NOT
+`plans/`. Same word, different layer of meaning.
+
+### How phase3 produces the manifest
+
+`scan/phase3_driver.py --run-manifest <path>` emits a JSON file at the
+end of a station's conversion run. Schema is the same as `runs/<run_id>/run.json`
+plus a transit-only `policy_yaml_path` field telling `apply.py` where to find
+the plan YAML on disk so it can be hashed and copied to `policies/<sha>.yaml`.
+The manifest is written **unconditionally** (dry-run or `--commit`) so the
+schema can be exercised end-to-end during staging-only stress rehearsals.
+
+Run ID format: `eqserver_<NET>_<STA>_<YYYYmmddTHHMMSSZ>` (path-safe, compact,
+sortable). Unique per phase3 invocation.
+
+### How apply.py consumes it
+
+```
+apply.py --staging-root /mnt/seiscomp_staging/stress_round1 \
+         --lt-root /mnt/seiscomp_archive \
+         --ledger-root /home/.../sds_staging_ledger/seiscomp_archive \
+         --net VW --sta LRSE \
+         --source-kind eqserver \
+         --run-manifest /tmp/eqserver_runs/VW_LRSE.json \
+         --mode decide --commit
+```
+
+On a `--commit` apply with `--run-manifest` set, `apply.py`:
+
+1. Reads the manifest.
+2. Reads the plan YAML at `manifest.policy_yaml_path`, hashes it, verifies
+   the hash matches `manifest.policy_sha`. Aborts on mismatch.
+3. Copies the plan to `<ledger-repo>/policies/<policy_sha>.yaml` via
+   `lib/manifest.write_policy_record` (atomic, immutable, idempotent).
+4. Writes `<ledger-repo>/runs/<run_id>/run.json` via
+   `lib/manifest.write_run_record` (atomic).
+5. Auto-injects `{run_id, policy_sha, project_git, classifier_version}` into
+   the source dict for every events.jsonl line written during the apply.
+6. Sweeps the new `policies/<sha>.yaml` and `runs/<run_id>/run.json` paths
+   into the end-of-apply autocommit so they reach the Mac and dev1 via the
+   existing `ledger_git.commit_and_push` push path.
+
+There's also a generic `--source-extra-json '{...}'` flag for any writer
+that wants to inject extra source fields without going through a manifest.
+Reserved keys `kind` and `card_id` are rejected (the base shape stays stable).
+
+### Cross-host write architecture
+
+The ledger has a disjoint-writers invariant preserved through this integration:
+
+| Host | What it writes to the ledger | Auto-push |
+|---|---|---|
+| Mac | `cards/<NET>.<STA>/<card_id>/` (sdcard prep) | yes |
+| Staging VM | `card.json` + `cleanups.jsonl` (sdcard ingest); **eqserver phase3 does NOT write to the ledger directly — its manifest is a transit file consumed later by apply.py on dev1** | yes (for sdcard) |
+| dev1 (SeisComp VM) | `events.jsonl` + `policies/<sha>.yaml` + `runs/<run_id>/run.json` (via apply.py) | yes |
+
+The `policies/` and `runs/` entries always get written by `apply.py` on dev1.
+That keeps the disjoint-writers rule clean: staging VM never touches the
+ledger repo for eqserver work — it just hands the manifest file to dev1.
+
+### Provenance contract for production runs
+
+For any eqserver byte that reaches LT, there must exist:
+
+1. A line in `seiscomp_archive/<YEAR>/<NET>/<STA>.events.jsonl` with
+   `source.kind == "eqserver"` and a non-null `source.run_id` + `source.policy_sha`.
+2. `policies/<source.policy_sha>.yaml` containing the verbatim plan that
+   admitted the day.
+3. `runs/<source.run_id>/run.json` summarising the conversion run.
+
+If any of those three is missing for an LT-resident byte, the provenance
+trail is broken. `sds_staging_ledger/verify_provenance.py` (post-MVP)
+will be the walker that confirms this invariant; for now it's enforced by
+construction (apply.py writes all three together or none at all, and the
+autocommit ships them in the same push).
+
+### Promotion flow (the operator-facing path)
+
+1. **phase3 runs** with `--run-manifest <path>` on the staging VM. Writes
+   SDS to staging; emits manifest JSON.
+2. **Operator reviews** the manifest + staging output (dry-run apply, QA
+   plots, sanity checks).
+3. **apply.py runs** on dev1 with `--run-manifest <same-path> --mode decide
+   --commit`. Copies bytes into LT, writes events.jsonl, copies plan to
+   `policies/`, writes run.json, autocommits + pushes the ledger.
+4. **cleanup.py runs** on the staging VM (sometime later) to clear the
+   staged copy after verifying LT == staging. Independent of provenance.
+
+Step 1 and 2 are eqserver responsibility; step 3 is operator-gated; step 4
+is independent.
 
 > **Host, mounts, and creds are authoritative in "Shared infrastructure" above**
 > (current host: staging VM `rs-l-0ezd3a` / `172.26.144.41`, user `dsand`,

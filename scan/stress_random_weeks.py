@@ -129,11 +129,20 @@ def main():
                     help="don't pass --commit to phase3 (no SDS writes)")
     ap.add_argument("--stations", default="",
                     help="comma-separated subset to run (default: all VW)")
+    ap.add_argument("--run-manifests-dir", default=None,
+                    help="if set, pass --run-manifest <dir>/VW_<STA>.json to each "
+                         "phase3 invocation. Dress rehearsal for the production "
+                         "provenance flow (apply.py can later consume any of the "
+                         "resulting manifests). Even on staging-only stress runs, "
+                         "this exercises the eqserver-side end of the ledger "
+                         "integration.")
     args = ap.parse_args()
 
     import yaml  # imported here so --help doesn't require pyyaml
 
     os.makedirs(args.dates_dir, exist_ok=True)
+    if args.run_manifests_dir:
+        os.makedirs(args.run_manifests_dir, exist_ok=True)
 
     # Resume state
     if os.path.exists(args.state_file):
@@ -192,6 +201,10 @@ def main():
                "--staging-sds", args.staging_sds,
                "--workers", str(args.workers),
                "--dates-file", dates_file]
+        if args.run_manifests_dir:
+            run_manifest_path = os.path.join(args.run_manifests_dir,
+                                             f"VW_{sta}.json")
+            cmd.extend(["--run-manifest", run_manifest_path])
         if not args.dry_run:
             cmd.append("--commit")
 
@@ -206,6 +219,8 @@ def main():
             "station": sta, "rc": proc.returncode,
             "weeks": [w.isoformat() for w in picks],
             "n_weeks": len(picks), "n_days_planned": n_days_planned,
+            "run_manifest": (run_manifest_path if args.run_manifests_dir
+                             else None),
             "days_processed": days_proc,
             "bytes_written": bytes_w,
             "status_counts": status_counts,
