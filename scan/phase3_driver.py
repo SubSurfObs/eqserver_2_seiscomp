@@ -361,6 +361,11 @@ def main():
                     help="stop after this many days converted (for smoke tests)")
     ap.add_argument("--start-date", help="restrict window (YYYY-MM-DD)")
     ap.add_argument("--end-date", help="restrict window (YYYY-MM-DD)")
+    ap.add_argument("--dates-file", help="path to file with one YYYY-MM-DD per line; "
+                                         "if set, ONLY those dates are converted "
+                                         "(ignores --start-date/--end-date; flagged_days "
+                                         "are still skipped). Used for random stress "
+                                         "sampling where the chosen dates are non-contiguous.")
     ap.add_argument("--disk-to-sds", default=SUDS_CONVERT_PATH_DEFAULT,
                     help="path containing suds_convert.py (disk_to_sds engine)")
     ap.add_argument("--workers", type=int, default=1,
@@ -431,6 +436,13 @@ def main():
     # Build the date list across all supported epochs, optionally clipped
     user_start = date.fromisoformat(args.start_date) if args.start_date else None
     user_end = date.fromisoformat(args.end_date) if args.end_date else None
+    user_dates = None
+    if args.dates_file:
+        with open(args.dates_file) as f:
+            user_dates = {ln.strip() for ln in f
+                          if ln.strip() and not ln.startswith("#")}
+        print(f"[phase3] --dates-file: {len(user_dates)} explicit dates",
+              flush=True)
 
     jobs = []
     for ep in epochs_to_run:
@@ -438,11 +450,15 @@ def main():
         ep_end = date.fromisoformat(ep["end"])
         recorder_eff = effective(ep)
         for d in _iter_days(ep_start, ep_end):
-            if user_start and d < user_start:
-                continue
-            if user_end and d > user_end:
-                continue
             iso = d.isoformat()
+            if user_dates is not None:
+                if iso not in user_dates:
+                    continue
+            else:
+                if user_start and d < user_start:
+                    continue
+                if user_end and d > user_end:
+                    continue
             if iso in flagged:
                 n_flagged_skipped += 1
                 continue
