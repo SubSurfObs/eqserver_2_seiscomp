@@ -864,6 +864,50 @@ manual review.
   annotation in the registry — the source_type split is meaningless for that
   class (operator-inserted spaces fake telemetry on manual mseed uploads).
 
+**Classifier v3 — Option B / Pass-1 redefinition (2026-05-29):**
+
+The v2.2 rule treated all `partial_*` categories as "flagged, skip in Pass 1."
+Operator framing rejected this: **partial coverage is not pathological** —
+the recorder captured what it captured; the resulting SDS just has fewer
+minutes. Pathological is something else: (a) recorder thrashing AND coverage
+loss together, or (b) disk and telemetry sources recording different minutes
+of the same day with no consistent overlap pattern. v3 redraws the line.
+
+**Three buckets, by what's actually possible:**
+
+| Bucket | Outcome | Categories |
+|---|---|---|
+| **Convert (Pass 1)** | day-job runs | all `clean_*`, all `near_clean_*`, `clean_telemetry_primary`, `clean_cross_source_recovery`, and **all `partial_*`** (partial_disk, partial_gecko_disk, partial_telemetry_only, partial_minimus) |
+| **Skip (no work)** | day-job not created | `skip_empty` — no files exist for this day; nothing to do, not a "review" item |
+| **Pass 2 review** | flagged for operator | `failing_recorder_disk` (ssd > 10 AND hhd < 1380 — many sessions AND coverage loss together), `partial_source_disagree` (NEW, see below), `other` (genuinely unknown shape) |
+
+**New category — `partial_source_disagree`** (`check_manifest.py:classify`):
+
+Fires inside both gecko and echopro branches AFTER the clean detections and
+BEFORE the partial returns. Defined by:
+- both sources substantial: `n_hhmm_disk ≥ 60` AND `n_hhmm_tele ≥ 60`, AND
+- low overlap: `n_overlap / min(n_hhmm_disk, n_hhmm_tele) < 0.5`,
+
+where `n_overlap = n_hhmm_disk + n_hhmm_tele − n_hhmm_union`.
+
+Captures the operator's "no consistent pattern between disk and tele" case —
+the cross-source dedup logic has to make many independent per-minute
+decisions instead of "disk wins for the whole window." Days with single-source
+coverage cannot trigger this (nothing to disagree with) and stay in Pass 1
+under their existing `partial_*` classification.
+
+**Effect of v3 on the per-epoch status rule:** `MIN_OK_PCT = 80` still
+applies, but with the partials counting as clean, far fewer epochs come in
+under 80% and `status: ok` becomes the common case. Stations like BRTH
+(previously `needs_review` because of a 1-day `skip_empty` epoch between
+two gecko runs) flip to `ok` — the only remaining flag is the `skip_empty`
+day, which Phase 3 was going to skip regardless. The status field now
+reflects "operator review burden," not "data quality."
+
+**Operational implication:** Phase 3 conversion behavior is unchanged in
+code (it always honored `flagged_days`); the change is that `flagged_days`
+lists shrink dramatically, so Pass 1 captures far more of the real data.
+
 **Level 2 — Header scan (decompress headers, skip data payloads)**
 
 Runs `scan_suds_file()` (sudspy) or reads MiniSEED fixed header on files that survived Level 1. Adds per-file:

@@ -112,6 +112,13 @@ def classify(r, station_class=None):
             return "clean_telemetry_primary"
         if hhu >= (1440 - PARTIAL):
             return "clean_cross_source_recovery"
+        # Source-disagreement gate (Option B, 2026-05-29): if both disk and tele
+        # have substantial files but their HHMM overlap is low, the cross-source
+        # merge has no consistent pattern — pathological per the operator's
+        # framing (partials are fine, *random* tele/disk distribution is not).
+        n_overlap = hhd + hht - hhu
+        if hhd >= 60 and hht >= 60 and n_overlap / min(hhd, hht) < 0.5:
+            return "partial_source_disagree"
         if 0 < nd < (1440 - PARTIAL):
             return "partial_gecko_disk"
         if nd == 0 and nt > 0:
@@ -150,6 +157,10 @@ def classify(r, station_class=None):
         return "clean_telemetry_primary"  # NARR-style: USB pending upload
     if hhu >= (1440 - PARTIAL):
         return "clean_cross_source_recovery"  # disk+tele union covers the day
+    # Source-disagreement gate (Option B, 2026-05-29): see gecko branch.
+    n_overlap = hhd + hht - hhu
+    if hhd >= 60 and hht >= 60 and n_overlap / min(hhd, hht) < 0.5:
+        return "partial_source_disagree"
     if 0 < nd < (1440 - PARTIAL):
         return "partial_disk"
     if nd == 0 and nt > 0:
@@ -171,6 +182,12 @@ CLEAN_CATEGORIES = {
     "clean_minimus_perchan", "near_clean_minimus",
     # Source-agnostic clean cases
     "clean_telemetry_primary", "clean_cross_source_recovery",
+    # Option B (2026-05-29): partial-coverage days ARE convertible — the recorder
+    # captured what it captured; the resulting SDS just has fewer minutes. Pass 1
+    # only excludes days where merging is genuinely uncertain (failing_recorder_disk,
+    # partial_source_disagree) or impossible (skip_empty, other).
+    "partial_disk", "partial_gecko_disk",
+    "partial_telemetry_only", "partial_minimus",
 }
 
 
