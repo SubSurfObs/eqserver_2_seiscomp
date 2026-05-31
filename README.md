@@ -29,7 +29,8 @@ next step.
 | `level1.py` | Parallel NFS walk; emits per-(station, year) part-DBs and merges them |
 | `merge_parts.py` | Standalone recovery merger; consumes parts safely with progressive delete |
 | `check_manifest.py` | Day-level classifier (clean / partial / failing / defer) |
-| `plan_generator.py` | Emits per-station plan YAML with `status: ok / needs_review / BLOCKED / defer_conversion` |
+| `plan_generator.py` | Emits per-station plan YAML with `status: ok / defer_conversion`. Per-day classifications are descriptive QA labels, NOT skip signals — see [Plan regeneration](#plan-regeneration) |
+| `regenerate_plans.sh` | Wraps `plan_generator.py` over every `~/station_dbs/<NET>.<STA>.db` for one network and lands the YAMLs in `plans/<NET>/`. Optional `-j` for parallel |
 | `metadata_harvest.py` | Phase 2a — harvests PC-SUDS + Gecko `.ss` headers into per-station YAML |
 | `cross_source.py` | Pure-function per-HHMM file selector (disk vs telemetry, threshold-based) |
 | `phase3_driver.py` | Per-station EchoPro / Gecko / Minimus / RT130 converter, parallel workers, staging SDS write |
@@ -111,6 +112,37 @@ Working on per-network manifests (`vw_manifest.db`, `vx_manifest.db`,
 The pattern: pre-partition the parts dir by network using the station
 registry, then run separate merges. See the merge commands in
 `scan/merge_parts.py --help`.
+
+## Plan regeneration
+
+Per-station plan YAMLs live in `plans/<NET>/<NET>.<STA>.plan.yaml`, in git.
+They're regenerated whenever the classifier, plan_generator, or underlying
+manifest DBs change. The Level-1 manifest is **per-station** (each is its
+own SQLite DB at `~/station_dbs/<NET>.<STA>.db` on the staging VM), so
+regeneration is a per-station loop.
+
+The wrapper handles the loop, parallelism, and a status-breakdown summary:
+
+```bash
+# On the staging VM (where the DBs live):
+scan/regenerate_plans.sh VW -j 4
+# → plans/VW/VW.<STA>.plan.yaml × ~41
+# wallclock ~15-20 min at -j 4 (PROGRESS.md baseline: ~1 h at -j 1)
+```
+
+Plan status is now `ok` or `defer_conversion` only. `defer_conversion` is
+the single legitimate station-level skip (registry-annotated recorder
+whose EqServer presence is a misleading partial — PiesMo HHZ-only stub).
+Everything else is `ok`. Per-day classifications (`failing_recorder_disk`,
+`partial_*`, `other`, etc.) remain in the plan as descriptive QA metadata
+but **do not gate conversion** — phase3 attempts every day in each
+epoch's range, and only runtime-detected pathology (unreadable files →
+`status: parse_error` from the worker) results in no SDS output for a
+day.
+
+This is a deliberate framing: the pipeline converts what's on disc.
+Recorder restarts, partial days, low-power outages, and disk-vs-tele
+disagreement are operational reality of the archive, not skip signals.
 
 ## Quick smoke test
 
