@@ -48,6 +48,7 @@ Run:
 from __future__ import annotations
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -77,6 +78,27 @@ def station_years(plan: dict, year_min: int, year_max: int) -> list[int]:
         for y in range(max(start_y, year_min), min(end_y, year_max) + 1):
             years.add(y)
     return sorted(years, reverse=True)
+
+
+def mirror_plans_to_shared(local_plans_dir: Path, shared_plans_dir: Path,
+                           stations: set[str], network: str) -> int:
+    """Copy per-station plan YAMLs from the in-git location to the shared
+    staging-mount location so the policy_yaml_path recorded in each
+    run_manifest resolves from dev1 (apply.py reads it to hash and copy the
+    plan into ledger policies/<sha>.yaml). Idempotent: only copies when
+    content differs. Plans are ~10 KB each; the whole step is cheap."""
+    shared_plans_dir.mkdir(parents=True, exist_ok=True)
+    n_copied = 0
+    for sta in sorted(stations):
+        src = local_plans_dir / f"{network}.{sta}.plan.yaml"
+        if not src.exists():
+            continue
+        dst = shared_plans_dir / f"{network}.{sta}.plan.yaml"
+        if dst.exists() and dst.read_bytes() == src.read_bytes():
+            continue
+        shutil.copy2(src, dst)
+        n_copied += 1
+    return n_copied
 
 
 def run_convert(args, station: str, year: int) -> dict:
@@ -220,6 +242,19 @@ def main():
     if not work:
         print(f"[convert] nothing to do", flush=True)
         return 0
+
+    # Mirror the in-git plans into the shared mount so each run_manifest's
+    # policy_yaml_path is resolvable from dev1. Without this the manifest
+    # would point at the staging VM's local checkout, which dev1 can't see,
+    # and apply.py would error with "policy YAML not found" on every unit.
+    # After mirroring, switch args.plans so run_convert hands phase3 the
+    # shared-mount path (which then lands in the manifest verbatim).
+    shared_plans_dir = queue / "plans" / args.network
+    work_stations = {sta for sta, _ in work}
+    n = mirror_plans_to_shared(Path(args.plans), shared_plans_dir,
+                                work_stations, args.network)
+    print(f"[convert] mirrored {n} plan(s) to {shared_plans_dir}", flush=True)
+    args.plans = str(shared_plans_dir)
 
     t_overall = time.time()
     n_ok = n_fail = n_empty = 0
