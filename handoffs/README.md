@@ -71,8 +71,14 @@ record.
 
 | Peer | Thread | Status |
 |---|---|---|
-| `disk_to_sds` | `2026-05-30_ledger-integration` | open — eqserver branch `rewrite-suds2sds` shipped commits `cdb6439` and `b7bbe56`; sds_staging_ledger branch `eqserver-integration` awaiting disk_to_sds review |
-| `sds_staging_ledger` | `2026-05-30_ledger-integration` | one-way proposal sent (the ledger session reviewed by committing code, no document reply needed) |
+| `disk_to_sds` | `2026-05-31_production-workflow` | active — three messages; disk_to_sds has answered our follow-up Q1/Q2 (SSH VM→dev1 firewall-blocked → file-queue design on shared mount instead; state file under `eqserver_sweep/` with per-host single-writer files). Eqserver to rebuild the orchestrator on that pattern. |
+
+## Closed threads (this repo)
+
+| Peer | Thread | Closure |
+|---|---|---|
+| `disk_to_sds` | `2026-05-30_ledger-integration` | CLOSED — eqserver-integration branch merged to `sds_staging_ledger` main as `3cbdfd1`; eqserver shipped commits `cdb6439` + `b7bbe56` on `rewrite-suds2sds`. Smoke test on staging VM verified end-to-end. |
+| `sds_staging_ledger` | `2026-05-30_ledger-integration` | CLOSED — one-way proposal; ledger session reviewed by committing code, no document reply needed. |
 
 ## Future agents reading this
 
