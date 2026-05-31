@@ -1,22 +1,31 @@
 #!/usr/bin/env python3
 """run_production_convert.py — drives phase3_driver.py per (station, year),
-appends a completion event to pending.jsonl on success.
+appends a completion event to convert_done.jsonl on success.
 
 Runs on the **staging VM** (the host that has /mnt/eqserver_archive NFS ro
-and /mnt/seiscomp_staging CIFS rw). One half of the cross-host orchestration
-(option C in PROGRESS.md). The other halves are:
-  - run_production_promote.py  on dev1
-  - run_production_cleanup.py  on the staging VM
+and /mnt/seiscomp_staging CIFS rw). One of three orchestrator scripts; per
+disk_to_sds reply 03 (2026-05-31) the design is **file-queue on shared
+mount, no SSH between hosts**:
 
-Iteration order: **station-by-station outer, year-backwards inner** (decided
-2026-05-31; see PROGRESS.md). For each (station, year) the script invokes
-phase3 with --start-date YYYY-01-01 --end-date YYYY-12-31, captures the
-run-manifest, and on success appends one event line to pending.jsonl. The
-promote.py watcher on dev1 picks it up within seconds.
+  staging VM           shared mount                         dev1
+  ──────────           ────────────                         ────
+  convert.py  ──appends→  convert_done.jsonl  ──tailed by→  promote.py
+                          promote_done.jsonl  ◄───appends── promote.py (--commit succeeded)
+                          held.jsonl          ◄───appends── promote.py (overrides > 0)
+  cleanup.py  ──appends→  cleanup_done.jsonl
+              ◄──reads── promote_done.jsonl
 
-Resume: at startup, reads pending.jsonl and skips any (sta, year) tuple
-already present. Failed runs are NOT appended to pending.jsonl and will be
-retried on restart.
+Each file has exactly one writer (the host responsible); other hosts only
+read it. This avoids CIFS-cross-host append atomicity issues.
+
+Iteration order: **station-by-station outer, year-backwards inner**. For
+each (station, year) the script invokes phase3 with
+--start-date YYYY-01-01 --end-date YYYY-12-31, captures the run-manifest,
+and on success appends one event line to convert_done.jsonl.
+
+Resume: at startup, reads convert_done.jsonl and skips any (sta, year)
+tuple already present. Failed runs are NOT appended and will be retried
+on restart.
 
 Staging SDS root: /mnt/seiscomp_staging/seiscomp_archive — the SHARED SDS
 that disk_to_sds also writes into. Day-files for VW.<STA> end up at:
@@ -141,12 +150,12 @@ def main():
 
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_sds).parent)
-    pending = queue / "pending.jsonl"
+    convert_done = queue / "convert_done.jsonl"
     queue.mkdir(parents=True, exist_ok=True)
 
-    # Resume: which (sta, year) tuples are already in pending?
+    # Resume: which (sta, year) tuples are already in convert_done?
     done_sta_year: set[tuple[str, int]] = set()
-    for e in read_all_events(pending):
+    for e in read_all_events(convert_done):
         if "sta" in e and "year" in e:
             done_sta_year.add((e["sta"], int(e["year"])))
 
@@ -202,7 +211,7 @@ def main():
                 n_empty += 1
                 # Year had no convertible days. Still record so we don't retry,
                 # but mark items_succeeded=0 so promote.py can choose to skip.
-            append_event(pending, event)
+            append_event(convert_done, event)
             print(f"[convert] [{i}/{len(work)}] OK   {sta} {year} "
                   f"{r['elapsed_s']:.0f}s items={r['items_succeeded']}", flush=True)
         else:

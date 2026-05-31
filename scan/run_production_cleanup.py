@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""run_production_cleanup.py — watches promoted.jsonl, invokes
+"""run_production_cleanup.py — watches promote_done.jsonl, invokes
 sds_staging_ledger/cleanup.py per entry to free the staged copy.
 
 Runs on the **staging VM** (has staging rw + LT ro mounted; the cleanup.py
@@ -14,10 +14,10 @@ Note this script's filename DOES NOT shadow the ledger's cleanup.py — the
 ledger script is at `sds_staging_ledger/cleanup.py`, this one is
 `scan/run_production_cleanup.py`. They never collide.
 
-**STATUS NOTE (2026-05-31):** like promote.py, this watcher's shape is
-contingent on disk_to_sds's established cleanup pattern. May be simpler in
-practice (manual per-unit; cron) — see
-handoffs/disk_to_sds/2026-05-31_production-workflow/.
+**Updated 2026-05-31 per disk_to_sds reply 03.** Reads promote_done.jsonl
+(written by dev1) from the shared queue dir, scopes cleanup.py to (--net,
+--sta), and writes to cleanup_done.jsonl. Single-writer on each file; no
+SSH between hosts.
 
 Run (as a long-lived watcher):
   python3 scan/run_production_cleanup.py \
@@ -82,7 +82,7 @@ def main():
     ap.add_argument("--python", default=DEFAULT_VENV_PY)
     ap.add_argument("--log-dir", default="/tmp/eqserver_cleanup_logs")
     ap.add_argument("--poll-interval", type=int, default=60,
-                    help="seconds between polls of promoted.jsonl (default 60 — "
+                    help="seconds between polls of promote_done.jsonl (default 60 — "
                          "deliberately slower than promote.py's poll, gives "
                          "apply.py time to finalize)")
     ap.add_argument("--once", action="store_true")
@@ -91,8 +91,8 @@ def main():
 
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_root).parent)
-    promoted = queue / "promoted.jsonl"
-    cleaned = queue / "cleaned.jsonl"
+    promoted = queue / "promote_done.jsonl"
+    cleaned = queue / "cleanup_done.jsonl"
     queue.mkdir(parents=True, exist_ok=True)
 
     done = already_processed_ids(cleaned)

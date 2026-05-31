@@ -1,15 +1,29 @@
 """Shared queue helpers for the eqserver production orchestrator.
 
-The orchestrator is three scripts (run_production_convert.py on the staging VM,
-run_production_promote.py on dev1, run_production_cleanup.py on the staging VM)
-communicating via append-only JSONL queue files on the shared staging mount:
+The orchestrator is three scripts communicating via append-only JSONL queue
+files on the shared staging mount:
 
-    /mnt/seiscomp_staging/eqserver_queue/
-    ├── pending.jsonl    convert.py appends after phase3 finishes a (sta, year)
-    ├── promoted.jsonl   promote.py appends after apply.py succeeds for an entry
-    └── cleaned.jsonl    cleanup.py appends after staged copy verified deleted
+    /mnt/seiscomp_staging/eqserver_sweep/
+    ├── convert_done.jsonl   staging VM writes after phase3 finishes a (sta, year)
+    ├── promote_done.jsonl   dev1 writes after apply.py --commit succeeds
+    ├── held.jsonl           dev1 writes when apply.py --mode decide finds overrides > 0
+    └── cleanup_done.jsonl   staging VM writes after staged copy verified deleted
 
-Each line is one work-unit completion event, schema:
+Single-writer-per-file (disk_to_sds reply 03, 2026-05-31): CIFS cross-host
+append is NOT atomic, so each file has exactly one writer host:
+
+| File              | Writer        | Readers                       |
+|-------------------|---------------|-------------------------------|
+| convert_done.jsonl| staging VM    | dev1 (promote), VM (cleanup)  |
+| promote_done.jsonl| dev1          | staging VM (cleanup)          |
+| held.jsonl        | dev1          | operator (no automation)      |
+| cleanup_done.jsonl| staging VM    | operator                      |
+
+State = join by `run_id` across the four files. No SSH between hosts —
+both hosts mount the staging CIFS share read-write, so coordination is
+purely via shared filesystem.
+
+Event schema (per line):
 
     {
       "run_id":   "eqserver_VW_<STA>_<YEAR>_<TS>",
@@ -17,14 +31,15 @@ Each line is one work-unit completion event, schema:
       "sta":      "<STA>",
       "year":     2024,
       "run_manifest_path": "/tmp/eqserver_runs/VW_<STA>_<YEAR>.json",
-      "staging_root":      "/mnt/seiscomp_staging/<sweep_name>",
-      "ts":       "<ISO 8601 UTC>"
+      "staging_root":      "/mnt/seiscomp_staging/seiscomp_archive",
+      "ts":       "<ISO 8601 UTC>",
+      "action":   "converted" | "promoted" | "held" | "cleaned",
+      ...kind-specific fields...
     }
 
-Resume model: each script reads its OUTGOING queue file at startup, builds a
-set of already-processed run_ids, and skips them. Append-only + idempotent
-processing means restart-after-crash is safe (already-promoted entries
-re-evaluate to skip in apply.py --mode decide, etc.).
+Resume model: each script reads its OUTGOING queue file at startup, builds
+a set of already-processed run_ids, and skips them. Append-only + idempotent
+processing means restart-after-crash is safe.
 """
 from __future__ import annotations
 import json
@@ -39,8 +54,14 @@ def utc_now() -> str:
 
 
 def queue_dir(staging_root: Path) -> Path:
-    """Default queue directory under the staging mount."""
-    return Path(staging_root) / "eqserver_queue"
+    """Default queue directory under the staging mount.
+
+    Per disk_to_sds reply 03 (2026-05-31): use a dedicated subdir, NOT the
+    staging SDS root, so the SDS skeleton stays clean. Callers typically pass
+    the parent of the staging SDS (e.g. `/mnt/seiscomp_staging`), so this
+    helper resolves to `/mnt/seiscomp_staging/eqserver_sweep/`.
+    """
+    return Path(staging_root) / "eqserver_sweep"
 
 
 def append_event(queue_path: Path, event: dict) -> None:
