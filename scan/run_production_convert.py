@@ -149,7 +149,11 @@ def main():
                     help="Override the YYYY-12-31 default end of each "
                          "(sta, year) window. YYYY-MM-DD.")
     ap.add_argument("--station-dbs", default="/home/unimelb.edu.au/dsand/station_dbs")
-    ap.add_argument("--plans", default="/tmp/plans_vw")
+    ap.add_argument("--plans", default=None,
+                    help="Dir of per-station plan YAMLs. Defaults to the "
+                         "repo's plans/<network>/ — these are the in-git, "
+                         "reviewable, reproducible policy artefacts. Override "
+                         "only if you're testing against a one-off plan set.")
     ap.add_argument("--registry", required=True)
     ap.add_argument("--staging-sds", required=True,
                     help="SDS root for the production output. The shared "
@@ -177,6 +181,9 @@ def main():
     # alongside the queue files so dev1 can read it via the same path.
     if args.run_manifests_dir is None:
         args.run_manifests_dir = str(queue / "run_manifests")
+    # Resolve --plans default: <repo-root>/plans/<network>/
+    if args.plans is None:
+        args.plans = str(HERE.parent / "plans" / args.network)
 
     # Resume: which (sta, year) tuples are already in convert_done?
     done_sta_year: set[tuple[str, int]] = set()
