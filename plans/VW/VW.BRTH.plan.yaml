@@ -1,0 +1,49 @@
+station: BRTH
+network: VW
+location: '00'
+status: needs_review
+summary:
+  days_total: 2076
+  days_clean: 2075
+  days_flagged: 1
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '1900-01-01'
+  end: '2021-06-08'
+  recorder: gecko
+  days: 1053
+  classifications:
+    partial_telemetry_only: 6
+    partial_gecko_disk: 46
+    near_clean_gecko_disk: 137
+    near_clean_gecko_threshold: 20
+    clean_gecko_disk: 458
+    clean_cross_source_recovery: 22
+    clean_telemetry_primary: 364
+- id: 2
+  start: '2021-06-13'
+  end: '2021-06-13'
+  recorder: unknown
+  days: 1
+  classifications:
+    skip_empty: 1
+- id: 3
+  start: '2021-06-14'
+  end: '2024-11-03'
+  recorder: gecko
+  days: 1022
+  classifications:
+    partial_telemetry_only: 92
+    partial_gecko_disk: 9
+    clean_cross_source_recovery: 3
+    near_clean_gecko_disk: 348
+    clean_gecko_disk: 290
+    near_clean_gecko_threshold: 7
+    clean_telemetry_primary: 273
+flagged_days:
+- date: '2021-06-13'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0

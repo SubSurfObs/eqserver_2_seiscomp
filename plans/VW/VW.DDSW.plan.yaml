@@ -1,0 +1,38 @@
+station: DDSW
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 2589
+  days_clean: 2589
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '1900-01-01'
+  end: '1900-01-01'
+  recorder: gecko
+  days: 1
+  classifications:
+    partial_telemetry_only: 1
+- id: 2
+  start: '2017-10-04'
+  end: '2017-10-19'
+  recorder: echopro
+  days: 16
+  classifications:
+    partial_telemetry_only: 16
+- id: 3
+  start: '2017-10-20'
+  end: '2024-11-03'
+  recorder: gecko
+  days: 2572
+  classifications:
+    partial_gecko_disk: 16
+    near_clean_gecko_threshold: 602
+    near_clean_gecko_disk: 1306
+    clean_gecko_disk: 510
+    clean_cross_source_recovery: 64
+    clean_telemetry_primary: 74
+flagged_days: []

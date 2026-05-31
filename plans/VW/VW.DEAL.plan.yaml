@@ -1,0 +1,24 @@
+station: DEAL
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 1035
+  days_clean: 1035
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '2018-08-21'
+  end: '2022-01-13'
+  recorder: gecko
+  days: 1035
+  classifications:
+    partial_gecko_disk: 50
+    clean_cross_source_recovery: 9
+    clean_telemetry_primary: 3
+    clean_gecko_disk: 432
+    near_clean_gecko_disk: 426
+    near_clean_gecko_threshold: 115
+flagged_days: []

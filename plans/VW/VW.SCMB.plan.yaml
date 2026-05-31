@@ -1,0 +1,27 @@
+station: SCMB
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 1033
+  days_clean: 1033
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types:
+- echopro
+epochs:
+- id: 1
+  start: '1970-01-01'
+  end: '2023-03-01'
+  recorder: echopro
+  days: 1033
+  classifications:
+    partial_telemetry_only: 13
+    partial_disk: 87
+    near_clean_disk_1ss: 14
+    clean_telemetry_primary: 264
+    clean_cross_source_recovery: 14
+    clean_disk_1ss: 616
+    clean_disk_multi_ss: 24
+    near_clean_disk_threshold: 1
+flagged_days: []

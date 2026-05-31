@@ -1,0 +1,22 @@
+station: DDWB
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 1570
+  days_clean: 1570
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types:
+- minimus
+epochs:
+- id: 1
+  start: '2019-10-02'
+  end: '2024-01-24'
+  recorder: minimus
+  days: 1570
+  classifications:
+    partial_minimus: 19
+    clean_minimus_perchan: 1523
+    near_clean_minimus: 28
+flagged_days: []

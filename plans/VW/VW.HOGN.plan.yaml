@@ -1,0 +1,30 @@
+station: HOGN
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 336
+  days_clean: 335
+  days_flagged: 1
+  pct_clean: 99.7
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '2018-08-14'
+  end: '2020-01-29'
+  recorder: gecko
+  days: 336
+  classifications:
+    partial_telemetry_only: 83
+    partial_source_disagree: 1
+    partial_gecko_disk: 40
+    near_clean_gecko_threshold: 41
+    clean_cross_source_recovery: 100
+    clean_telemetry_primary: 43
+    clean_gecko_disk: 11
+    near_clean_gecko_disk: 17
+flagged_days:
+- date: '2018-08-21'
+  classification: partial_source_disagree
+  n_disk_ok: 713
+  n_tele_ok: 386

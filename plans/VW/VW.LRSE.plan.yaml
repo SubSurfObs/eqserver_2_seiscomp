@@ -1,0 +1,25 @@
+station: LRSE
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 1061
+  days_clean: 1061
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '2021-01-01'
+  end: '2023-12-05'
+  recorder: gecko
+  days: 1061
+  classifications:
+    near_clean_gecko_threshold: 239
+    near_clean_gecko_disk: 184
+    clean_gecko_disk: 56
+    clean_cross_source_recovery: 103
+    partial_gecko_disk: 5
+    partial_telemetry_only: 15
+    clean_telemetry_primary: 459
+flagged_days: []

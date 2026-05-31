@@ -1,0 +1,25 @@
+station: WDSD
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 2427
+  days_clean: 2427
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '1900-01-01'
+  end: '2025-07-04'
+  recorder: gecko
+  days: 2427
+  classifications:
+    partial_telemetry_only: 21
+    partial_gecko_disk: 104
+    near_clean_gecko_disk: 965
+    clean_cross_source_recovery: 47
+    clean_telemetry_primary: 521
+    clean_gecko_disk: 655
+    near_clean_gecko_threshold: 114
+flagged_days: []

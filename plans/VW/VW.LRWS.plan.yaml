@@ -1,0 +1,24 @@
+station: LRWS
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 529
+  days_clean: 529
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '2020-01-01'
+  end: '2021-06-12'
+  recorder: gecko
+  days: 529
+  classifications:
+    near_clean_gecko_disk: 314
+    clean_gecko_disk: 53
+    near_clean_gecko_threshold: 120
+    partial_gecko_disk: 28
+    clean_cross_source_recovery: 12
+    partial_telemetry_only: 2
+flagged_days: []

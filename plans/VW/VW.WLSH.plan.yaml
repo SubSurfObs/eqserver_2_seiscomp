@@ -1,0 +1,25 @@
+station: WLSH
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 1811
+  days_clean: 1811
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '1900-01-01'
+  end: '2024-11-03'
+  recorder: gecko
+  days: 1811
+  classifications:
+    partial_telemetry_only: 65
+    partial_gecko_disk: 15
+    clean_gecko_disk: 497
+    near_clean_gecko_disk: 459
+    clean_cross_source_recovery: 19
+    clean_telemetry_primary: 647
+    near_clean_gecko_threshold: 109
+flagged_days: []

@@ -1,0 +1,34 @@
+station: HOLS
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 3932
+  days_clean: 3930
+  days_flagged: 2
+  pct_clean: 99.9
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '2012-06-22'
+  end: '2024-04-16'
+  recorder: echopro
+  days: 3932
+  classifications:
+    partial_disk: 51
+    clean_disk_multi_ss: 1376
+    clean_disk_1ss: 2346
+    near_clean_disk_threshold: 5
+    near_clean_disk_1ss: 45
+    partial_telemetry_only: 1
+    clean_telemetry_primary: 106
+    failing_recorder_disk: 2
+flagged_days:
+- date: '2021-07-15'
+  classification: failing_recorder_disk
+  n_disk_ok: 1395
+  n_tele_ok: 198
+- date: '2021-10-21'
+  classification: failing_recorder_disk
+  n_disk_ok: 1173
+  n_tele_ok: 0

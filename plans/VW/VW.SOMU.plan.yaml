@@ -1,0 +1,23 @@
+station: SOMU
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 951
+  days_clean: 951
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types: null
+epochs:
+- id: 1
+  start: '2014-01-26'
+  end: '2019-10-19'
+  recorder: echopro
+  days: 951
+  classifications:
+    partial_disk: 40
+    clean_disk_1ss: 803
+    clean_disk_multi_ss: 100
+    near_clean_disk_1ss: 5
+    near_clean_disk_threshold: 3
+flagged_days: []

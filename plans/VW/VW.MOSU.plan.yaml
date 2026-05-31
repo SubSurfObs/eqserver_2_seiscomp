@@ -1,0 +1,27 @@
+station: MOSU
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 49
+  days_clean: 48
+  days_flagged: 1
+  pct_clean: 98.0
+registry_recorder_types:
+- reftek_rt130
+epochs:
+- id: 1
+  start: '2014-10-07'
+  end: '2016-04-05'
+  recorder: reftek_rt130
+  days: 49
+  classifications:
+    partial_gecko_disk: 27
+    clean_gecko_disk: 19
+    near_clean_gecko_threshold: 2
+    skip_empty: 1
+flagged_days:
+- date: '2016-04-05'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0

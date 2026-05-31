@@ -1,0 +1,22 @@
+station: DDBE
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 191
+  days_clean: 191
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types:
+- minimus
+epochs:
+- id: 1
+  start: '2019-10-01'
+  end: '2020-04-08'
+  recorder: minimus
+  days: 191
+  classifications:
+    near_clean_minimus: 3
+    clean_minimus_perchan: 187
+    partial_minimus: 1
+flagged_days: []

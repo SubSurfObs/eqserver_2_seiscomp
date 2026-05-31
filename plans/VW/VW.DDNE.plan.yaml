@@ -1,0 +1,47 @@
+station: DDNE
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 2243
+  days_clean: 2238
+  days_flagged: 5
+  pct_clean: 99.8
+registry_recorder_types:
+- gecko
+epochs:
+- id: 1
+  start: '1900-01-01'
+  end: '2024-06-14'
+  recorder: gecko
+  days: 2243
+  classifications:
+    partial_telemetry_only: 19
+    partial_gecko_disk: 15
+    near_clean_gecko_threshold: 122
+    clean_gecko_disk: 302
+    near_clean_gecko_disk: 477
+    skip_empty: 5
+    clean_cross_source_recovery: 40
+    clean_telemetry_primary: 1263
+flagged_days:
+- date: '2018-02-01'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0
+- date: '2018-02-02'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0
+- date: '2018-02-03'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0
+- date: '2018-02-04'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0
+- date: '2018-02-05'
+  classification: skip_empty
+  n_disk_ok: 0
+  n_tele_ok: 0

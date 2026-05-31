@@ -1,0 +1,22 @@
+station: SCM2
+network: VW
+location: '00'
+status: ok
+summary:
+  days_total: 729
+  days_clean: 729
+  days_flagged: 0
+  pct_clean: 100.0
+registry_recorder_types:
+- minimus
+epochs:
+- id: 1
+  start: '2019-11-06'
+  end: '2021-12-01'
+  recorder: minimus
+  days: 729
+  classifications:
+    near_clean_minimus: 21
+    clean_minimus_perchan: 690
+    partial_minimus: 18
+flagged_days: []
