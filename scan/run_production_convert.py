@@ -90,13 +90,20 @@ def run_convert(args, station: str, year: int) -> dict:
     log_path = Path(args.log_dir) / f"{run_id}.log"
     log_path.parent.mkdir(parents=True, exist_ok=True)
     run_manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    # Per-unit window. Defaults to the full year; the operator may override
+    # via --start-date/--end-date (mainly for short smoke tests). When the
+    # overrides are supplied they apply identically to every (sta, year) unit
+    # the driver visits, so use --year-min/--year-max to restrict the iteration
+    # to a single year if you want the overrides to map cleanly.
+    start_date = args.start_date or f"{year:04d}-01-01"
+    end_date = args.end_date or f"{year:04d}-12-31"
     cmd = [args.python, "-u", str(args.phase3), str(db_path), str(plan_path),
            "--registry", args.registry,
            "--staging-sds", args.staging_sds,
            "--workers", str(args.workers),
            "--commit",
-           "--start-date", f"{year:04d}-01-01",
-           "--end-date", f"{year:04d}-12-31",
+           "--start-date", start_date,
+           "--end-date", end_date,
            "--run-manifest", str(run_manifest_path)]
     t0 = time.time()
     with log_path.open("w") as logf:
@@ -132,6 +139,15 @@ def main():
                     help="comma-separated subset (default: all stations with a plan + DB)")
     ap.add_argument("--year-min", type=int, default=2012)
     ap.add_argument("--year-max", type=int, default=2025)
+    ap.add_argument("--start-date", default=None,
+                    help="Override the YYYY-01-01 default start of each "
+                         "(sta, year) window. YYYY-MM-DD. Mainly for short "
+                         "smoke tests. Combine with --year-min/--year-max "
+                         "set to a single year if you want the override to "
+                         "map cleanly to one unit.")
+    ap.add_argument("--end-date", default=None,
+                    help="Override the YYYY-12-31 default end of each "
+                         "(sta, year) window. YYYY-MM-DD.")
     ap.add_argument("--station-dbs", default="/home/unimelb.edu.au/dsand/station_dbs")
     ap.add_argument("--plans", default="/tmp/plans_vw")
     ap.add_argument("--registry", required=True)
