@@ -157,8 +157,13 @@ def main():
                          "(same root disk_to_sds writes into).")
     ap.add_argument("--queue-dir", default=None,
                     help="default: <staging-sds-parent>/eqserver_queue")
-    ap.add_argument("--run-manifests-dir", default="/tmp/eqserver_runs")
-    ap.add_argument("--log-dir", default="/tmp/eqserver_convert_logs")
+    ap.add_argument("--run-manifests-dir", default=None,
+                    help="Where convert.py writes the per-(sta, year) "
+                         "run_manifest JSONs. MUST be on the shared staging "
+                         "mount so promote.py on dev1 can read them. "
+                         "Default: <queue-dir>/run_manifests/")
+    ap.add_argument("--log-dir", default="/tmp/eqserver_convert_logs",
+                    help="Per-unit phase3 logs; can stay local to staging VM.")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--phase3", default=str(DEFAULT_PHASE3))
     ap.add_argument("--python", default=DEFAULT_VENV_PY)
@@ -168,6 +173,10 @@ def main():
             queue_dir(Path(args.staging_sds).parent)
     convert_done = queue / "convert_done.jsonl"
     queue.mkdir(parents=True, exist_ok=True)
+    # Resolve run_manifests_dir default lazily — keep it on the shared mount
+    # alongside the queue files so dev1 can read it via the same path.
+    if args.run_manifests_dir is None:
+        args.run_manifests_dir = str(queue / "run_manifests")
 
     # Resume: which (sta, year) tuples are already in convert_done?
     done_sta_year: set[tuple[str, int]] = set()
