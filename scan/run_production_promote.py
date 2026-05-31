@@ -92,6 +92,7 @@ def invoke_apply(args, entry: dict, commit: bool) -> dict:
            "--ledger-root", args.ledger_root,
            "--net", entry["net"],
            "--sta", entry["sta"],
+           "--year", str(entry["year"]),
            "--source-kind", "eqserver",
            "--run-manifest", entry["run_manifest_path"],
            "--mode", "decide"]
