@@ -17,9 +17,15 @@ Resume: at startup, reads promoted.jsonl and builds the set of run_ids
 already promoted. Re-poll the queue file from offset 0 and skip
 already-promoted entries.
 
+**STATUS NOTE (2026-05-31):** the existence of this script as a long-lived
+watcher on dev1 is an open question. The disk_to_sds session's established
+pattern may be simpler (e.g. per-card manual apply.py invocation), in which
+case this script may be replaced by a manual or SSH-driven trigger. See
+handoffs/disk_to_sds/2026-05-31_production-workflow/ for the open question.
+
 Run (as a long-lived watcher):
   python3 scan/run_production_promote.py \
-      --staging-root /mnt/seiscomp_staging/production \
+      --staging-root /mnt/seiscomp_staging/seiscomp_archive \
       --lt-root /mnt/seiscomp_archive \
       --ledger-root /home/.../sds_staging_ledger/seiscomp_archive \
       --poll-interval 30

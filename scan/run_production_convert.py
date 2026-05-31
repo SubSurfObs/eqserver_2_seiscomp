@@ -18,10 +18,21 @@ Resume: at startup, reads pending.jsonl and skips any (sta, year) tuple
 already present. Failed runs are NOT appended to pending.jsonl and will be
 retried on restart.
 
+Staging SDS root: /mnt/seiscomp_staging/seiscomp_archive — the SHARED SDS
+that disk_to_sds also writes into. Day-files for VW.<STA> end up at:
+  /mnt/seiscomp_staging/seiscomp_archive/<YEAR>/VW/<STA>/<CHA>.D/...
+Eqserver and disk_to_sds writes don't collide because they own different
+<NET>.<STA> subtrees in practice (eqserver runs do legacy stations;
+disk_to_sds does SD-card stations).
+
+Queue files (control-plane, NOT seismic data) live alongside seiscomp_archive
+at /mnt/seiscomp_staging/eqserver_queue/{pending,promoted,cleaned}.jsonl —
+both staging VM and dev1 mount the staging share so both can read/write here.
+
 Run:
   python3 scan/run_production_convert.py \
       --registry metadata/station_registry.yaml \
-      --staging-sds /mnt/seiscomp_staging/production \
+      --staging-sds /mnt/seiscomp_staging/seiscomp_archive \
       --year-min 2012 --year-max 2025 \
       --workers 4
 """
@@ -116,8 +127,9 @@ def main():
     ap.add_argument("--plans", default="/tmp/plans_vw")
     ap.add_argument("--registry", required=True)
     ap.add_argument("--staging-sds", required=True,
-                    help="SDS root for the production output, "
-                         "e.g. /mnt/seiscomp_staging/production")
+                    help="SDS root for the production output. The shared "
+                         "staging SDS is /mnt/seiscomp_staging/seiscomp_archive "
+                         "(same root disk_to_sds writes into).")
     ap.add_argument("--queue-dir", default=None,
                     help="default: <staging-sds-parent>/eqserver_queue")
     ap.add_argument("--run-manifests-dir", default="/tmp/eqserver_runs")

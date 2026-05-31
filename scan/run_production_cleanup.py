@@ -14,9 +14,14 @@ Note this script's filename DOES NOT shadow the ledger's cleanup.py — the
 ledger script is at `sds_staging_ledger/cleanup.py`, this one is
 `scan/run_production_cleanup.py`. They never collide.
 
+**STATUS NOTE (2026-05-31):** like promote.py, this watcher's shape is
+contingent on disk_to_sds's established cleanup pattern. May be simpler in
+practice (manual per-unit; cron) — see
+handoffs/disk_to_sds/2026-05-31_production-workflow/.
+
 Run (as a long-lived watcher):
   python3 scan/run_production_cleanup.py \
-      --staging-root /mnt/seiscomp_staging/production \
+      --staging-root /mnt/seiscomp_staging/seiscomp_archive \
       --lt-root /mnt/seiscomp_archive \
       --ledger-root /home/.../sds_staging_ledger/seiscomp_archive \
       --poll-interval 60
