@@ -8,8 +8,16 @@ plan YAML per station at plans/<NET>.<STA>.plan.yaml.
 Each plan tells Phase 3 conversion:
   - station identity (network, code, location)
   - epochs (one per recorder-class run), with day counts + class breakdown
-  - flagged days needing review (anything outside CLEAN_CATEGORIES)
-  - top-level status: ok | needs_review | BLOCKED (gate before conversion)
+  - flagged days needing review (anything outside CLEAN_CATEGORIES) — descriptive,
+    not a skip signal (see [[feedback-convert-what-is-on-disc]] in agent memory)
+  - top-level status: ok | defer_conversion
+      'defer_conversion' = registry-annotated recorder type whose EqServer
+        presence is a known-misleading partial (PiesMo HHZ-only stub).
+      'ok'              = everything else. The pipeline's job is to convert
+        what's on disc; recorder restarts / partial days / failing-recorder
+        stretches / disk-vs-tele disagreement are OPERATIONAL REALITY, not
+        skip signals. Per-day classifications are descriptive labels for QA;
+        they do NOT gate conversion.
 
 The per-day file-use list is NOT materialised here — it stays a manifest query at
 conversion time (avoids enormous YAML; the manifest is the source of truth).
@@ -36,9 +44,6 @@ from check_manifest import (  # noqa: E402
     MINIMUS_STATIONS_DEFAULT,
 )
 
-# Per-epoch thresholds for top-level station status
-MIN_OK_PCT = 80       # epoch is "ok" if >= 80% of its days land in CLEAN_CATEGORIES
-MAX_FAIL_PCT = 20     # BLOCKED if any epoch is > 20% failing_recorder_disk
 MAX_FLAGGED_IN_YAML = 200
 
 # Recorders whose EqServer presence we deliberately DO NOT convert in this pipeline.
@@ -121,24 +126,6 @@ def group_epochs(daily_rows):
     return epochs
 
 
-def station_status(epochs):
-    worst = "ok"
-    for ep in epochs:
-        total = sum(ep["classifications"].values())
-        if total == 0:
-            continue
-        n_clean = sum(ep["classifications"][c] for c in ep["classifications"]
-                      if c in CLEAN_CATEGORIES)
-        pct_clean = 100 * n_clean / total
-        n_fail = ep["classifications"].get("failing_recorder_disk", 0)
-        pct_fail = 100 * n_fail / total
-        if pct_fail > MAX_FAIL_PCT or "other" in ep["classifications"]:
-            return "BLOCKED"
-        if pct_clean < MIN_OK_PCT:
-            worst = "needs_review"
-    return worst
-
-
 def build_plan(station, registry_entry, daily_rows):
     epochs = group_epochs(daily_rows)
     flagged = [
@@ -148,12 +135,14 @@ def build_plan(station, registry_entry, daily_rows):
     ]
     n_total = len(daily_rows)
     n_clean = sum(1 for d in daily_rows if d["classification"] in CLEAN_CATEGORIES)
-    # defer_conversion gate: if registry annotates this station's recorder as one we
-    # intentionally do NOT convert from EqServer (PiesMo), override status before
-    # running the normal ok/needs_review/BLOCKED logic.
+    # defer_conversion gate: registry-annotated recorder type whose EqServer
+    # presence is a known-misleading partial (PiesMo HHZ-only stub). This is the
+    # ONLY thing that gates a station out of the sweep. Per-day classifications
+    # are descriptive labels for QA, NOT skip signals — the pipeline converts
+    # what's on disc. See [[feedback-convert-what-is-on-disc]].
     reg_rt = (registry_entry.get("recorder_types") if registry_entry else None) or []
     defer = any(rt in DEFER_CONVERSION_RECORDERS for rt in reg_rt)
-    status = "defer_conversion" if defer else station_status(epochs)
+    status = "defer_conversion" if defer else "ok"
     # target_location from registry (per-station enforcement). Defaults to "00"
     # for the VW/VX networks where the operator convention is uniform "00".
     # Source mseed often has empty location (Gecko/Reftek/Minimus all write '');

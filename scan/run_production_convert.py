@@ -193,10 +193,6 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--phase3", default=str(DEFAULT_PHASE3))
     ap.add_argument("--python", default=DEFAULT_VENV_PY)
-    ap.add_argument("--include-needs-review", action="store_true",
-                    help="Also process plans whose status is 'needs_review' "
-                         "(default: skip them). 'BLOCKED' and 'defer_conversion' "
-                         "are ALWAYS skipped — they require human intervention.")
     args = ap.parse_args()
 
     queue = Path(args.queue_dir) if args.queue_dir else \
@@ -233,18 +229,13 @@ def main():
             print(f"[convert]   skip {sta}: no DB at {db_path}", flush=True)
             continue
         plan = yaml.safe_load(plan_path.open())
-        # Status gate. Per CLAUDE.md ("the run refuses to proceed unless 'ok'"),
-        # a plan must be reviewed and marked `ok` before we promote its bytes.
-        # `BLOCKED` and `defer_conversion` are HARD-skipped; `needs_review`
-        # requires explicit operator opt-in via --include-needs-review.
-        status = plan.get("status")
-        if status in ("BLOCKED", "defer_conversion"):
-            print(f"[convert]   skip {sta}: status={status} "
-                  "(needs human review before conversion)", flush=True)
-            continue
-        if status == "needs_review" and not args.include_needs_review:
-            print(f"[convert]   skip {sta}: status=needs_review "
-                  "(pass --include-needs-review to override)", flush=True)
+        # The only legitimate station-level gate is defer_conversion: registry-
+        # annotated recorder type whose EqServer presence is misleading partial
+        # data (PiesMo HHZ-only stub). Everything else is converted as-is —
+        # per-day classifier labels are descriptive, not skip signals. See
+        # [[feedback-convert-what-is-on-disc]].
+        if plan.get("status") == "defer_conversion":
+            print(f"[convert]   skip {sta}: status=defer_conversion", flush=True)
             continue
         for year in station_years(plan, args.year_min, args.year_max):
             if (sta, year) in done_sta_year:

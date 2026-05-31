@@ -14,11 +14,17 @@ Coverage of recorders in v1:
   - defer_conversion: no-op with an explanatory log line.
 
 Per-day flow:
-  1. Skip if day is in plan's flagged_days (classifier already said not clean)
-  2. Query manifest for the day's .dmx files (disk source, not excluded)
-  3. Call convert_suds_files(files, network, station)
-  4. Call write_sds(stream, staging_sds_root)  # only if --commit
-  5. Log per-day result (n_files, n_traces, sds_files_written, qc.read_errors)
+  1. Query manifest for the day's source files (disk + telemetry, not excluded)
+  2. Call convert_suds_files(files, network, station) / equivalent
+  3. Call write_sds(stream, staging_sds_root)  # only if --commit
+  4. Log per-day result (n_files, n_traces, sds_files_written, qc.read_errors)
+
+  Every day in the epoch range is ATTEMPTED. The plan's `flagged_days` list
+  is descriptive QA metadata, NOT a skip signal — see
+  [[feedback-convert-what-is-on-disc]] in agent memory. Days that genuinely
+  cannot be read return status=no_files or status=parse_error from the
+  worker; these are runtime-detected pathologies, not pre-filtered classifier
+  decisions.
 
 Run:
   python3 scan/phase3_driver.py <manifest.db> <plan.yaml> [--commit] \\
@@ -367,9 +373,9 @@ def main():
     ap.add_argument("--end-date", help="restrict window (YYYY-MM-DD)")
     ap.add_argument("--dates-file", help="path to file with one YYYY-MM-DD per line; "
                                          "if set, ONLY those dates are converted "
-                                         "(ignores --start-date/--end-date; flagged_days "
-                                         "are still skipped). Used for random stress "
-                                         "sampling where the chosen dates are non-contiguous.")
+                                         "(ignores --start-date/--end-date). Used for "
+                                         "random stress sampling where the chosen dates "
+                                         "are non-contiguous.")
     ap.add_argument("--disk-to-sds", default=SUDS_CONVERT_PATH_DEFAULT,
                     help="path containing suds_convert.py (disk_to_sds engine)")
     ap.add_argument("--workers", type=int, default=1,
@@ -447,22 +453,11 @@ def main():
     if status == "defer_conversion":
         print(f"[phase3] defer_conversion: {plan.get('defer_reason','')}", flush=True)
         return 0
-    if status != "ok":
-        # Per the operator framing (2026-05-28): coverage and pathology are
-        # different things. A short/partial day is fine to convert — just less
-        # data — so we don't gate the whole station on epoch-level completeness
-        # statistics. The plan's `flagged_days` list (which the worker honors
-        # below) already excludes any individual day the classifier called
-        # "not clean", so non-clean days never get converted regardless of
-        # station-level status. needs_review and BLOCKED stations have their
-        # CLEAN days converted; their flagged days remain skipped for human
-        # review.
-        print(f"[phase3] WARN: status={status} (proceeding; flagged_days={len(plan.get('flagged_days', []))} "
-              "will be skipped). True pathological cases require a classifier-level "
-              "fix; this gate is now per-day, not per-station.", flush=True)
-
-    flagged = {d["date"] for d in plan.get("flagged_days", [])}
-    n_flagged_skipped = 0
+    # Every day in the epoch range is attempted. flagged_days is descriptive
+    # QA metadata, NOT a skip signal. Days that can't be read return
+    # status=no_files / status=parse_error from the worker — runtime
+    # pathology, not classifier-driven pre-filter.
+    n_flagged_skipped = 0  # kept at 0 for manifest schema stability
 
     # Recorder aliases: file layout / read path is identical, only the
     # registry label differs. RT130 + Gecko both produce dashed-date .ms.zip
@@ -507,9 +502,6 @@ def main():
                     continue
                 if user_end and d > user_end:
                     continue
-            if iso in flagged:
-                n_flagged_skipped += 1
-                continue
             jobs.append({
                 "station": station, "network": network, "location": location,
                 "date": iso, "recorder_eff": recorder_eff,
@@ -523,8 +515,7 @@ def main():
             continue
         break
 
-    print(f"[phase3] {len(jobs)} day-jobs queued (flagged-skipped={n_flagged_skipped}), "
-          f"workers={args.workers}", flush=True)
+    print(f"[phase3] {len(jobs)} day-jobs queued, workers={args.workers}", flush=True)
 
     results = Counter()
     written_bytes = 0
@@ -583,7 +574,7 @@ def main():
     rate = days_processed / elapsed if elapsed > 0 else 0
     print(f"\n[phase3] done in {elapsed:.1f}s ({rate:.2f} days/sec aggregate)")
     print(f"  status counts: {dict(results)}")
-    print(f"  days processed: {days_processed}, flagged-skipped: {n_flagged_skipped}")
+    print(f"  days processed: {days_processed}")
     if args.commit:
         print(f"  total bytes written: {written_bytes:,}")
     else:
