@@ -1578,6 +1578,122 @@ Once Claude has VM access, a structured test suite should be built covering:
     reports/              # test pass/fail summaries
 ```
 
+### Multi-unit pipeline test (the harness that catches orchestrator bugs)
+
+Per-day correctness tests above don't catch failures in the ORCHESTRATOR
+(convert.py + promote.py + cleanup.py + apply.py + ledger). That class of bug
+is what bit the project on 2026-05-31 (the BEST 2024-under-BEST-2025-run_id
+year-leak). Before any production sweep restart, exercise the orchestrator as
+a system. Tested workflow on 2026-06-01 — see `agent memory:
+project-pipeline-test-results` and `project-stress-test-results` for full
+results.
+
+**Infrastructure: proxy LT + local-bare ledger, NO real-target writes.**
+
+The test infrastructure is deliberately distinct from production:
+- **Proxy LT**: mount a fresh CIFS share (e.g. `proj-6700_sds_other_networks`)
+  at a distinct mount point (`/mnt/test_lt`) on dev1 AND on the staging VM
+  (ro on staging is enough; cleanup.py only reads LT there). Use a
+  project-tied scratch subdirectory (e.g.
+  `/mnt/test_lt/eqserver_pipeline_test_<YYYYmmdd>`) as the `--lt-root` so a
+  one-typo `--lt-root /mnt/test_lt` still couldn't conflate with the real
+  filesystem.
+- **Local-bare ledger**: `git init --bare /var/tmp/.../test_ledger_bare.git`
+  on dev1, then `git push` the real ledger main to it, then clone the bare
+  into `test_ledger_clone`. The clone's `origin` URL **must** end in
+  `.git` and **must NOT** contain `github|unimelb|gitlab|bitbucket` —
+  verify in the same shell pipeline that creates it so a slip cannot leak.
+  Autocommits push to the bare, not to real github.
+- **Distinct staging + queue paths**: e.g.
+  `/mnt/seiscomp_staging/test_round_<YYYYmmdd>/{seiscomp_archive,queue}`
+  so a typo in `--staging-sds` or `--queue-dir` cannot collide with the
+  real `/mnt/seiscomp_staging/seiscomp_archive` or
+  `/mnt/seiscomp_staging/eqserver_sweep`.
+
+**Pre-flight checks that ABORT before any test run if they fail.**
+
+- `stat -c %d /mnt/test_lt` vs `stat -c %d /mnt/seiscomp_archive` —
+  device IDs MUST differ.
+- `mount | awk '/<test path>/'` vs `mount | awk '/<real path>/'` —
+  source CIFS URLs MUST differ literally.
+- `find /mnt/test_lt/<scratch> -maxdepth 2 -type d -regex '.*/20[12][0-9]'`
+  MUST be zero (no year-dirs from prior runs).
+- Test ledger clone `git remote -v` MUST be exactly one remote and MUST
+  NOT contain external repo hosts.
+- `git -C <real ledger> status --porcelain` MUST be empty (no working-tree
+  dirt that could leak into autocommit).
+- `pgrep -af "run_production_(convert|promote|cleanup)\.py" | grep -v
+  <test path>` MUST be empty on BOTH hosts (no production watcher will
+  race with the test on shared mounts).
+- Capture real ledger HEAD + real github main SHA **into files** for
+  post-test comparison.
+
+**Scenarios that MUST run before a production sweep.**
+
+1. **S0 — Falsifiability control.** Patch promote.py (or apply.py) with the
+   bug REMOVED (e.g. `sed -i 's|"--year", str(...),||' promote_unfixed.py`),
+   run the same multi-unit workload, assert the leak DOES appear. If S0
+   cannot reproduce the bug, the subsequent year-scoping assertion is
+   meaningless — ABORT the whole suite.
+2. **S1 — Race + year scoping.** Convert two consecutive units sharing a
+   station (different years). Open the race window by starting the second
+   unit's phase3 in background. Assert that the first unit's events.jsonl
+   contains only its own year's day strings and a single run_id matching
+   that year.
+3. **S2 — SKIP path (LT preserved).** Re-convert a unit whose LT data is
+   already byte-equivalent. `apply.py` MUST report `skip` for every
+   day-channel; LT bytes MUST be unchanged. This is the case operators
+   most fear: "what if seedlink LT data gets overwritten by an eqserver
+   sweep?" Answer: not if samples match.
+4. **S2b — OVERRIDE path → held.jsonl.** Truncate one LT day-file (simulate
+   partial pre-existing LT). Re-convert. `apply.py` dry-run MUST report
+   `override > 0`. promote.py MUST refuse to call `--commit` and instead
+   append to `held.jsonl`. No `.commit.log` created. LT bytes unchanged.
+5. **S3 — Cleanup year-safety witness.** Plant a fake staged file in a
+   year that was never promoted. Run cleanup. Assert the witness survives
+   (cleanup.py is year-blind in *what it walks* but safe-by-construction
+   via the LT-match-required precondition).
+6. **S4 — Provenance triangle.** For every events.jsonl line, assert the
+   referenced `policies/<sha>.yaml` and `runs/<run_id>/run.json` files
+   exist. Assert real ledger HEAD and real github main are unchanged.
+7. **S5 — setsid detach.** Launch each watcher via
+   `setsid -f bash -c 'exec CMD > LOG 2>&1' < /dev/null`. Disconnect the
+   launching SSH. From a fresh SSH session, verify each PID is still
+   alive. Yesterday's `nohup ... &` failed this test.
+8. **S6 — Process group kill.** Kill convert.py via
+   `kill -KILL -<PGID>` (negative PID = process group) and verify the
+   phase3 child also dies (no orphan).
+9. **S7 — Resume after kill.** After S6, restart convert.py with the same
+   args. Assert the killed (sta, year) is correctly re-queued and NOT
+   listed in `convert_done.jsonl` until it actually completes.
+
+**The detach recipe (record so it doesn't get lost).**
+
+```bash
+setsid -f bash -c 'exec PYTHON SCRIPT [args] > LOG 2>&1' < /dev/null
+```
+
+- `setsid` — new session/PGID, no controlling terminal, immune to SIGHUP
+- `-f` — fork into background (launcher SSH can exit immediately)
+- `bash -c 'exec ...'` — `exec` replaces bash with python, no wrapper
+  process to confuse `pgrep`/`kill`
+- `> LOG 2>&1` — capture all output
+- `< /dev/null` — disconnect stdin so the process never blocks
+
+To kill cleanly afterwards: `kill -KILL -<PGID>` catches the phase3 child too.
+
+**Teardown.**
+
+After sign-off, the teardown is mechanical:
+- Kill any remaining watchers (`pgrep -af run_production_*test_round | xargs -r kill`)
+- `rm -rf` all `/var/tmp/test_round_<DATE>*` and
+  `/mnt/seiscomp_staging/test_round_<DATE>*` paths
+- Remove project-named scratch dirs INSIDE the proxy mount, then
+  `sudo umount /mnt/test_lt` on each host
+
+Keep the local-bare and clone for forensic review until you're sure the
+sweep is healthy, then `rm -rf` those too.
+
 ---
 
 ## Open questions
