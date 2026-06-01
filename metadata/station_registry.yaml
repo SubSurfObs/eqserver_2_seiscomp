@@ -1371,7 +1371,12 @@ ALLA:
   coverage_end: 2012
 
 ARKL:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Arkaroola SA. NOT on UoM seedlink VIP 2026-06-01 — GoingToEqserver2025 notes 'Out for 12 months'. Real DU station temporarily offline; operator confirmed include 2026-06-01"
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1450,7 +1455,12 @@ BRT2:
   coverage_end: 2022
 
 BRTS:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Brighton South SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro Telstra 4G; SAA: EchoPro"
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1771,7 +1781,12 @@ PI6:
   coverage_end: 2025
 
 PLMR:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Palmer SA. NOT on UoM seedlink VIP 2026-06-01 — GoingToEqserver2025 notes 'presently out' (WAP + satellite, old Netgear WAPS). Real DU station temporarily offline; operator confirmed include 2026-06-01"
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1801,7 +1816,12 @@ RND2:
   coverage_end: 2025
 
 ROBE:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Robe SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro Telstra 4G; SAA: EchoPro multi-epoch sensors (Guralp CMG 6T-1 / 5T)"
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1830,7 +1850,12 @@ SG_U:
   coverage_end: 2021
 
 STR2:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Strathalbyn SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro Telstra 4G; SAA: EchoPro multi-epoch sensors (Guralp CMG 6T-1 / 5T)"
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1838,7 +1863,12 @@ STR2:
   notes: "Long-running (15yr); 1970 artefact"
 
 SUND:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Sunnydale SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHZ); GoingToEqserver2025: Epro home network (ASSA)"
   target_network: null
   network_basis: unknown
   coverage_start: 2020
@@ -1910,7 +1940,12 @@ WGWU:
   coverage_end: 2021
 
 WILM:
-  include: unknown
+  include: true
+  target_network: DU
+  network_basis: registry
+  recorder_types: [echopro]
+  source_network_code: null
+  notes: "DL Wilmington SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro home netwk 4G"
   target_network: null
   network_basis: unknown
   coverage_start: null
