@@ -55,6 +55,46 @@ from cross_source import select_files_for_day, DEFAULT_DISK_SIZE_FLOOR_RATIO  # 
 SUDS_CONVERT_PATH_DEFAULT = "/home/unimelb.edu.au/dsand/projects/SubSurfObs/disk_to_sds/scripts"
 
 
+DEFAULT_MIN_DATA_YEAR = 2012   # UoM VW/VX/DU operations didn't start before this
+                                # — anything before is no-GPS-lock or bogus header
+
+
+def _filter_bogus_year_traces(stream, min_year, dropped_list):
+    """Drop traces whose start-time year is below `min_year` (no-GPS-lock /
+    bogus-SUDS-header guard).
+
+    Some EqServer-era recorder files have valid path-dates (e.g.
+    /BEST/continuous/2024/.../) but contain SUDS traces whose internal
+    starttime fell back to a pre-GPS-fix default (often 1989, 1970, 1999).
+    If those traces flow through to write_sds(), they land in SDS day-files
+    under /staging/1989/... — wrong year subtree, almost certainly bogus
+    data.
+
+    This filter inspects each trace's `stats.starttime.year` and keeps only
+    those at or above the cutoff. Dropped traces are appended to
+    `dropped_list` for surfacing in the day-job result.
+
+    Operates in-place on the passed `Stream`; returns it for chaining.
+    """
+    from obspy import Stream
+    if not stream or min_year is None:
+        return stream
+    kept = []
+    for tr in stream:
+        yr = tr.stats.starttime.year
+        if yr < min_year:
+            dropped_list.append({
+                'id': tr.id,
+                'starttime': str(tr.stats.starttime),
+                'npts': int(tr.stats.npts),
+                'reason': f'starttime year {yr} < min_data_year {min_year}',
+            })
+        else:
+            kept.append(tr)
+    # Return a fresh Stream rather than mutating the input — caller assigns.
+    return Stream(kept)
+
+
 def _write_sds_retry(suds_convert, stream, staging_root, retries=3, backoff=2.0):
     """Write SDS with retry on transient OSError.
 
@@ -185,6 +225,9 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     # non-masked traces — required because ObsPy MSEED writer rejects masked.
     st = st.split()
     st.sort(["starttime"])
+    # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
+    bogus = []
+    st = _filter_bogus_year_traces(st, DEFAULT_MIN_DATA_YEAR, bogus)
 
     rate = st[0].stats.sampling_rate if len(st) > 0 else None
     result = {
@@ -194,6 +237,7 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
         "rate_hz": rate,
         "dropped_components": [],
         "read_errors": len(read_errors),
+        "bogus_year_traces_dropped": len(bogus),
         "sds_files_written": [],
     }
     if commit and len(st) > 0:
@@ -247,6 +291,9 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     st.merge(method=1, fill_value=None)
     st = st.split()
     st.sort(["starttime"])
+    # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
+    bogus = []
+    st = _filter_bogus_year_traces(st, DEFAULT_MIN_DATA_YEAR, bogus)
 
     rate = st[0].stats.sampling_rate if len(st) > 0 else None
     result = {
@@ -256,6 +303,7 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
         "rate_hz": rate,
         "dropped_components": [],
         "read_errors": len(read_errors),
+        "bogus_year_traces_dropped": len(bogus),
         "sds_files_written": [],
     }
     if commit and len(st) > 0:
@@ -285,6 +333,9 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     stream, qc = suds_convert.convert_suds_files(files, network=network, station=station)
     for tr in stream:
         tr.stats.location = location
+    # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
+    bogus = []
+    stream = _filter_bogus_year_traces(stream, DEFAULT_MIN_DATA_YEAR, bogus)
     result = {
         "status": "ok" if not qc["read_errors"] else "qc_flagged",
         "n_files": len(files),
@@ -296,6 +347,7 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
         # truncation). With sudspy strict=False these are RECOVERED (not lost)
         # — the count surfaces how many files had the trailing-appendix issue.
         "n_recovered": qc.get("n_recovered", 0),
+        "bogus_year_traces_dropped": len(bogus),
         "sds_files_written": [],
     }
     if commit and stream:
@@ -556,6 +608,7 @@ def main():
               f"errs={r.get('read_errors',0)} "
               f"recovered={r.get('n_recovered',0)} "
               f"dropped={r.get('dropped_components',[])} "
+              f"bogus_yr={r.get('bogus_year_traces_dropped',0)} "
               f"{mark}={n_written + n_planned}", flush=True)
 
     if args.workers <= 1:
