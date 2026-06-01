@@ -74,14 +74,27 @@ def select_files_for_day(
     tests in scan/test_cross_source.py); the rest of phase3 is untouched.
     """
     by_slot = defaultdict(list)
+    n_skipped_null_hhmm = 0
     for r in rows:
         path, source_type, hhmm, channel_suffix, size_bytes = r
+        if hhmm is None:
+            # Level-1 scan couldn't parse HHMM from this filename (oddball
+            # legacy/test/corrupted name). Skip — cross-source dedup is
+            # HHMM-keyed and there's no slot for None. Counts logged for QA.
+            n_skipped_null_hhmm += 1
+            continue
         by_slot[hhmm].append({
             "path": path,
             "source_type": source_type,
             "channel_suffix": channel_suffix,
             "size_bytes": size_bytes or 0,
         })
+    if n_skipped_null_hhmm:
+        # Surface via the module-level logger if available; otherwise stderr
+        # so a phase3 day-job report can pick it up.
+        import sys
+        print(f"[cross_source] skipped {n_skipped_null_hhmm} row(s) with NULL hhmm",
+              file=sys.stderr)
 
     selected = []
     for hhmm in sorted(by_slot):
