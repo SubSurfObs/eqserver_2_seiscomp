@@ -120,9 +120,18 @@ Reuse its model rather than re-implementing:
 
 ### Shared conversion core: `disk_to_sds/scripts/suds_convert.py`
 
-A **working, validated** SUDS→miniSEED+SDS engine now exists in
-`disk_to_sds/scripts/suds_convert.py` (built + tested on a real 2024 OUTU EchoPro
-day) — reuse it here for Stage 3 instead of reimplementing:
+**Engine pin: the SUDS→miniSEED+SDS engine the eqserver sweep imports lives
+in `disk_to_sds/scripts/suds_convert.py` at `disk_to_sds` SHA `9a3b2ae`
+(committed 2026-06-01).** This is the version that converted the
+production-sweep bytes from 2026-06-01 onwards; prior to that commit the
+file existed only as an untracked, side-loaded copy on the staging VM —
+byte-identical to this SHA, but with no git record. See
+`handoffs/disk_to_sds/2026-06-01_engine-provenance/` for the incident
+write-up; see [[feedback-git-synced-across-hosts]] in agent memory for the
+rule we're tightening to prevent recurrence.
+
+The engine (built + tested on a real 2024 OUTU EchoPro day) — reuse it
+here for Stage 3 instead of reimplementing:
 - `convert_suds_files()` — read SUDS (sudspy) → remap to SEED ids: registry
   network, `c01→CHN / c02→CHE / c03→CHZ` (Kelunji manual), drop `c04+` aux/mic,
   loc `00`, band code by sample rate; per-file read-error capture for QC.
