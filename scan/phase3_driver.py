@@ -95,6 +95,34 @@ def _filter_bogus_year_traces(stream, min_year, dropped_list):
     return Stream(kept)
 
 
+def _trim_to_day(stream, d):
+    """Trim stream to [d, d+1) so this day-job writes ONLY day d's SDS file.
+
+    Half of the midnight-boundary fix (Option C in CLAUDE.md). Day-job N pulls
+    day N-1's 2359 file in as a boundary tail (to capture day N's first SS
+    seconds). After merge, this trim drops anything outside day N's wall-clock
+    range. Net effect:
+
+      - Day-job N captures + writes its OWN boundary sliver (the first SS s).
+      - Day-job N does NOT write to day N-1's SDS file (so it can't race with
+        day-job N-1, which would otherwise overwrite each other under
+        parallel workers).
+      - The tail of day N that spills into day N+1 (from day N's own 2359
+        file) is dropped here but recovered by day-job N+1, which pulls
+        day N's 2359 in as ITS boundary tail.
+
+    Uses a 1-microsecond epsilon at endtime so a sample at exactly
+    day_(N+1)_start (which belongs to day N+1) is excluded.
+    """
+    if stream is None or len(stream) == 0 or d is None:
+        return stream
+    from obspy import UTCDateTime
+    day_start = UTCDateTime(d.isoformat() + "T00:00:00")
+    day_end = day_start + 86400 - 1e-6
+    return stream.trim(starttime=day_start, endtime=day_end,
+                       nearest_sample=False)
+
+
 def _write_sds_retry(suds_convert, stream, staging_root, retries=3, backoff=2.0):
     """Write SDS with retry on transient OSError.
 
@@ -195,7 +223,47 @@ def query_cross_source_day_files(conn, station, d, recorder, disk_size_floor_rat
     return select_files_for_day(rows, disk_size_floor_ratio=disk_size_floor_ratio)
 
 
-def convert_gecko_day(station, network, location, files, staging_sds_root, commit, suds_convert):
+def query_boundary_tail_files(conn, station, d, recorder, disk_size_floor_ratio):
+    """Return previous-day (d-1) HHMM='2359' files — the midnight-boundary
+    tail that carries data extending into day d.
+
+    EqServer minute-files are filed by their filename HHMM start time, but each
+    file's data extends SS seconds into the next day (constant SS within a
+    recording session). The 23:59 file of day d-1 thus contains the first SS
+    seconds of day d. Without including it, day d's SDS starts at 00:00:SS
+    instead of 00:00:00 — ~12 s lost per channel per day on a typical recorder.
+    See "Midnight-boundary data loss" in CLAUDE.md.
+
+    Same cross-source dedup as query_cross_source_day_files but restricted to
+    HHMM='2359'. Empty list if d-1 has no data, no 2359 file, or is in a
+    different recorder epoch (year transitions handled naturally — the manifest
+    is indexed by dir_year/month/day so December 31 of the prior year resolves
+    fine).
+    """
+    from datetime import timedelta as _td
+    d_prev = d - _td(days=1)
+    if recorder == "minimus":
+        sql = (
+            "SELECT path, source_type, hhmm, channel_suffix, size_bytes FROM files "
+            "WHERE station = ? AND dir_year = ? AND dir_month = ? AND dir_day = ? "
+            "  AND recorder_type = 'mseed' AND exclude_reason = 'single_channel' "
+            "  AND hhmm = '2359'"
+        )
+        params = (station, d_prev.year, d_prev.month, d_prev.day)
+    else:
+        sql = (
+            "SELECT path, source_type, hhmm, channel_suffix, size_bytes FROM files "
+            "WHERE station = ? AND dir_year = ? AND dir_month = ? AND dir_day = ? "
+            "  AND recorder_type = ? AND exclude_reason IS NULL "
+            "  AND hhmm = '2359'"
+        )
+        params = (station, d_prev.year, d_prev.month, d_prev.day, recorder)
+    rows = conn.execute(sql, params).fetchall()
+    return select_files_for_day(rows, disk_size_floor_ratio=disk_size_floor_ratio)
+
+
+def convert_gecko_day(station, network, location, files, staging_sds_root, commit, suds_convert,
+                      boundary_files=None, day=None):
     """Gecko branch: read all .ms.zip in day, concat the inner mseed records into
     one buffer, parse with ObsPy, override network+location, merge, write SDS.
 
@@ -203,14 +271,21 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     only network (UM placeholder) and location (empty '') need patching. The
     location value comes from the plan YAML (registry-driven; default "00").
     STEIM2 encoding is preserved end-to-end (no decode-recode).
+
+    When `boundary_files` + `day` are passed (the production path from
+    `_worker_convert_day`), the boundary tail file(s) from day-1 are read with
+    the day's files and the merged stream is trimmed to [day, day+1) so only
+    day's SDS file is written. See Option C in CLAUDE.md / `_trim_to_day`.
     """
     import io, zipfile
     from obspy import read, Stream
-    if not files:
-        return {"status": "no_files", "n_files": 0}
+    boundary_files = boundary_files or []
+    all_files = list(files) + list(boundary_files)
+    if not all_files:
+        return {"status": "no_files", "n_files": 0, "n_boundary_files": 0}
     combined = io.BytesIO()
     read_errors = []
-    _concat_zip_members(files, combined, read_errors)
+    _concat_zip_members(all_files, combined, read_errors)
     combined.seek(0)
     bulk_fallback_used = False
     bulk_fallback_reason = None
@@ -226,7 +301,7 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
         bulk_fallback_used = True
         bulk_fallback_reason = f"bulk: {type(e).__name__}: {e}"
         st = Stream()
-        for f in files:
+        for f in all_files:
             try:
                 whole = open(f, "rb").read()
                 with zipfile.ZipFile(io.BytesIO(whole)) as zf:
@@ -237,6 +312,7 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
                 read_errors.append(f"per-file {f}: {type(fe).__name__}: {fe}")
         if len(st) == 0:
             return {"status": "parse_error", "n_files": len(files),
+                    "n_boundary_files": len(boundary_files),
                     "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
                     "read_errors": len(read_errors)}
     for tr in st:
@@ -250,11 +326,17 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
     bogus = []
     st = _filter_bogus_year_traces(st, DEFAULT_MIN_DATA_YEAR, bogus)
+    # Midnight-boundary fix (Option C): trim to day's wall-clock range so this
+    # day-job writes ONLY day's SDS file. Without this, the boundary tail file
+    # we pulled in from day-1 would also write into day-1's SDS file, racing
+    # with day-job N-1 under parallel workers.
+    st = _trim_to_day(st, day)
 
     rate = st[0].stats.sampling_rate if len(st) > 0 else None
     result = {
         "status": "ok" if (not read_errors and not bulk_fallback_used) else "qc_flagged",
         "n_files": len(files),
+        "n_boundary_files": len(boundary_files),
         "n_traces": len(st),
         "rate_hz": rate,
         "dropped_components": [],
@@ -291,19 +373,25 @@ def query_minimus_day_files(conn, station, d):
     return [r[0] for r in rows]
 
 
-def convert_minimus_day(station, network, location, files, staging_sds_root, commit, suds_convert):
+def convert_minimus_day(station, network, location, files, staging_sds_root, commit, suds_convert,
+                        boundary_files=None, day=None):
     """Minimus branch: per-channel-per-minute mseed zips (~4320 files/day).
     Each zip holds one minute of one component. Same in-memory concat-then-parse
     pattern as Gecko; ObsPy groups by trace id automatically. Location override
     comes from the plan YAML (registry-driven; default "00").
+
+    Midnight-boundary handling identical to convert_gecko_day — see Option C
+    in CLAUDE.md.
     """
     import io, zipfile
-    from obspy import read
-    if not files:
-        return {"status": "no_files", "n_files": 0}
+    from obspy import read, Stream
+    boundary_files = boundary_files or []
+    all_files = list(files) + list(boundary_files)
+    if not all_files:
+        return {"status": "no_files", "n_files": 0, "n_boundary_files": 0}
     combined = io.BytesIO()
     read_errors = []
-    _concat_zip_members(files, combined, read_errors)
+    _concat_zip_members(all_files, combined, read_errors)
     combined.seek(0)
     bulk_fallback_used = False
     bulk_fallback_reason = None
@@ -319,7 +407,7 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
         bulk_fallback_used = True
         bulk_fallback_reason = f"bulk: {type(e).__name__}: {e}"
         st = Stream()
-        for f in files:
+        for f in all_files:
             try:
                 whole = open(f, "rb").read()
                 with zipfile.ZipFile(io.BytesIO(whole)) as zf:
@@ -330,6 +418,7 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
                 read_errors.append(f"per-file {f}: {type(fe).__name__}: {fe}")
         if len(st) == 0:
             return {"status": "parse_error", "n_files": len(files),
+                    "n_boundary_files": len(boundary_files),
                     "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
                     "read_errors": len(read_errors)}
     for tr in st:
@@ -341,11 +430,14 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
     bogus = []
     st = _filter_bogus_year_traces(st, DEFAULT_MIN_DATA_YEAR, bogus)
+    # Midnight-boundary fix (Option C): trim to day's wall-clock range.
+    st = _trim_to_day(st, day)
 
     rate = st[0].stats.sampling_rate if len(st) > 0 else None
     result = {
         "status": "ok" if (not read_errors and not bulk_fallback_used) else "qc_flagged",
         "n_files": len(files),
+        "n_boundary_files": len(boundary_files),
         "n_traces": len(st),
         "rate_hz": rate,
         "dropped_components": [],
@@ -369,7 +461,8 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     return result
 
 
-def convert_echopro_day(suds_convert, station, network, location, files, staging_sds_root, commit):
+def convert_echopro_day(suds_convert, station, network, location, files, staging_sds_root, commit,
+                        boundary_files=None, day=None):
     """One EchoPro station-day. Returns dict with n_files, n_traces, write_results, qc.
 
     suds_convert.convert_suds_files() resolves location via FDSN inventory if
@@ -377,19 +470,31 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     default. We then enforce the registry-driven `location` on every trace
     afterwards so the plan YAML is the single source of truth for the SDS
     location code regardless of what the SUDS source said.
+
+    Midnight-boundary handling identical to the gecko branch — see Option C
+    in CLAUDE.md. The boundary tail file(s) from day-1 are fed into
+    `convert_suds_files` alongside day's files; after the SUDS read we trim
+    the stream to [day, day+1) so we write only day's SDS file.
     """
-    if not files:
-        return {"status": "no_files", "n_files": 0}
-    stream, qc = suds_convert.convert_suds_files(files, network=network, station=station)
+    boundary_files = boundary_files or []
+    all_files = list(files) + list(boundary_files)
+    if not all_files:
+        return {"status": "no_files", "n_files": 0, "n_boundary_files": 0}
+    stream, qc = suds_convert.convert_suds_files(all_files, network=network, station=station)
     for tr in stream:
         tr.stats.location = location
     # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
     bogus = []
     stream = _filter_bogus_year_traces(stream, DEFAULT_MIN_DATA_YEAR, bogus)
+    # Midnight-boundary fix (Option C): trim to day's wall-clock range.
+    stream = _trim_to_day(stream, day)
     result = {
         "status": "ok" if not qc["read_errors"] else "qc_flagged",
         "n_files": len(files),
-        "n_traces": qc["n_traces"],
+        "n_boundary_files": len(boundary_files),
+        # After trim, the trace count may differ from qc["n_traces"] (boundary
+        # file's pre-midnight portion gets dropped). Report the post-trim count.
+        "n_traces": len(stream),
         "rate_hz": qc["rate_hz"],
         "dropped_components": qc["dropped_components"],
         "read_errors": len(qc["read_errors"]),
@@ -440,18 +545,28 @@ def _worker_convert_day(job):
         # query_day_files; for partial days the selector reclaims data from
         # telemetry where disk has gaps.
         files = query_cross_source_day_files(conn, sta, d, recorder_eff, floor_ratio)
+        # Midnight-boundary fix (Option C): also pull day-1's HHMM='2359'
+        # file(s) — these carry the first SS seconds of `d` that would
+        # otherwise be lost when write_sds overwrites `d`'s SDS file from
+        # scratch. See "Midnight-boundary data loss" in CLAUDE.md.
+        boundary_files = query_boundary_tail_files(conn, sta, d, recorder_eff, floor_ratio)
 
         try:
             if recorder_eff == "echopro":
-                r = convert_echopro_day(suds_convert, sta, net, loc, files, staging, commit)
+                r = convert_echopro_day(suds_convert, sta, net, loc, files, staging, commit,
+                                        boundary_files=boundary_files, day=d)
             elif recorder_eff == "gecko":
-                r = convert_gecko_day(sta, net, loc, files, staging, commit, suds_convert)
+                r = convert_gecko_day(sta, net, loc, files, staging, commit, suds_convert,
+                                      boundary_files=boundary_files, day=d)
             elif recorder_eff == "minimus":
-                r = convert_minimus_day(sta, net, loc, files, staging, commit, suds_convert)
+                r = convert_minimus_day(sta, net, loc, files, staging, commit, suds_convert,
+                                        boundary_files=boundary_files, day=d)
             else:
-                r = {"status": "unsupported_recorder", "n_files": len(files)}
+                r = {"status": "unsupported_recorder", "n_files": len(files),
+                     "n_boundary_files": len(boundary_files)}
         except Exception as e:
             r = {"status": "error", "n_files": len(files),
+                 "n_boundary_files": len(boundary_files),
                  "error": f"{type(e).__name__}: {e}",
                  "traceback": traceback.format_exc()}
         r["date"] = d_iso
@@ -642,6 +757,7 @@ def main():
                 "date": iso,
                 "status": r["status"],
                 "n_files": r.get("n_files", 0),
+                "n_boundary_files": r.get("n_boundary_files", 0),
                 "n_traces": r.get("n_traces", 0),
                 "rate_hz": r.get("rate_hz"),
                 "read_errors": r.get("read_errors", 0),
@@ -656,6 +772,7 @@ def main():
             return
         bulk_fb = " bulk_fallback=Y" if r.get("bulk_fallback_used") else ""
         print(f"  [{iso}] {r['status']:10} files={r['n_files']:>5} "
+              f"bf={r.get('n_boundary_files',0):>1} "
               f"traces={r.get('n_traces',0):>3} "
               f"rate={r.get('rate_hz') or 0:>5} "
               f"errs={r.get('read_errors',0)} "
