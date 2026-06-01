@@ -181,6 +181,22 @@ def main():
         print("    [ ] engine_git source-dict schema bumped in apply.py")
         print("        See agent memory project-engine-provenance-incident-2026-06-01")
         print()
+
+    # Day-level retry candidates (separate from unit-level retry) — these
+    # are days where ANY unit recorded parse_error in its run_manifest.
+    # Mid-sweep these can't be recovered (the unit already promoted with
+    # zero traces for that day), so they need a per-day retry pass after
+    # the main sweep + BEST 2019 unit-retry are both done.
+    if failed_keys:
+        print("  DAY-LEVEL RETRY PASS (after sweep + unit-retries complete):")
+        print("    A separate pass should walk all run_manifests for status='parse_error'")
+        print("    days and re-convert them (gecko bulk-fallback now landed in a6894fb")
+        print("    means this WILL recover them). Known affected so far: 13 BRTH days")
+        print("    across 2020-2024. Surfaced via:")
+        print("      ls /mnt/seiscomp_staging/eqserver_sweep/run_manifests/*.json | \\")
+        print("        xargs -I{} jq -r '.eqserver.per_date_status[] | \\")
+        print("                          select(.status==\"parse_error\") | .date' {}")
+        print()
         print("  Retry list (re-run after main sweep completes):")
         # Group by station for compact display
         by_sta_retry = defaultdict(list)
