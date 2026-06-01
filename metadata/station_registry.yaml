@@ -614,7 +614,8 @@ THOR4:
 
 
 RDK01:
-  include: unknown
+  include: false
+  reason: "Geoscience Australia operated — out of UoM/DU scope"
   target_network: null
   network_basis: unknown
   source_network_code: null
@@ -1187,7 +1188,8 @@ NNP3:
   coverage_end: 2026
 
 PLYP2:
-  include: unknown
+  include: false
+  reason: "Test deployment: 2 days in EqServer archive (Nov 2025). DL Plympton variant"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1205,7 +1207,8 @@ RNDA2:
   coverage_end: 2026
 
 RNDA3:
-  include: unknown
+  include: false
+  reason: "Test deployment: 1 day in EqServer archive (Oct 2025). KM Aranda variant"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1214,7 +1217,8 @@ RNDA3:
   coverage_end: 2025
 
 SYD:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 5 days in archive over 7-day span"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1223,7 +1227,8 @@ SYD:
   coverage_end: 2025
 
 SYD01:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 12 days over 63-day span (19% density)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1232,7 +1237,8 @@ SYD01:
   coverage_end: 2025
 
 SYD02:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 8 days over 70-day span (11% density)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1241,7 +1247,8 @@ SYD02:
   coverage_end: 2025
 
 SYD03:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 7 days over 64-day span (11% density)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1250,7 +1257,8 @@ SYD03:
   coverage_end: 2025
 
 SYD04:
-  include: unknown
+  include: false
+  reason: "Test station (per operator 2026-06-01). 69 days over 77-day span — dense but operator-confirmed test"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1259,7 +1267,8 @@ SYD04:
   coverage_end: 2025
 
 SYD05:
-  include: unknown
+  include: false
+  reason: "Test station (per operator 2026-06-01). 65 days over 71-day span — dense but operator-confirmed test"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1268,7 +1277,8 @@ SYD05:
   coverage_end: 2025
 
 SYD06:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 3 days over 9-day span"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1277,7 +1287,8 @@ SYD06:
   coverage_end: 2025
 
 SYD07:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 8 days in archive (Jul 2025)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1286,7 +1297,8 @@ SYD07:
   coverage_end: 2025
 
 SYD08:
-  include: unknown
+  include: false
+  reason: "Test station codes (per EW 2026-06-01). 9 days in archive (Jul 2025)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1304,7 +1316,8 @@ PLY3:
   coverage_end: 2026
 
 PLYPD:
-  include: unknown
+  include: false
+  reason: "Test deployment: 1 day in EqServer archive (Mar 2026). DL Plympton variant"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1313,7 +1326,8 @@ PLYPD:
   coverage_end: 2026
 
 PLYPT:
-  include: unknown
+  include: false
+  reason: "Test deployment: 1 day in EqServer archive (Feb 2026). DL Plympton variant"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1512,7 +1526,8 @@ DNL4:
 
 
 DNL44:
-  include: unknown
+  include: false
+  reason: "Test deployment: 1 day in EqServer archive (2025-02-25). Operator: DL"
   target_network: DU
   network_basis: notes
   source_network_code: null
@@ -1566,7 +1581,8 @@ FORH:
   coverage_end: 2022
 
 FRTM:
-  include: unknown
+  include: false
+  reason: "OZ network station (per operator 2026-06-01), not DU"
   target_network: null
   network_basis: unknown
   coverage_start: 2023
@@ -1655,7 +1671,8 @@ MELU:
   notes: "1970 artefact; Melbourne?"
 
 MELU2:
-  include: unknown
+  include: false
+  reason: "Test station (per operator 2026-06-01)"
   target_network: null
   network_basis: unknown
   coverage_start: 2024
@@ -1762,7 +1779,8 @@ PLMR:
   notes: "Long-running (14yr)"
 
 R2737:
-  include: unknown
+  include: false
+  reason: "Raspberry Shake — out of UoM/DU conversion scope"
   target_network: null
   network_basis: unknown
   coverage_start: 2020
