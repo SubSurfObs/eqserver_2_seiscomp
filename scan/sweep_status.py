@@ -167,6 +167,20 @@ def main():
         if r["status"] == "FAIL":
             failed_keys.add((r["sta"], r["year"]))
     if failed_keys:
+        # Prerequisites checklist — surface before the retry CLI so the
+        # operator can't accidentally launch a fresh phase3 without
+        # closing the open provenance/engine items first.
+        print("  PREREQUISITES before retry pass (these MUST be done first):")
+        print("    [ ] VM disk_to_sds checkout reconciled to >= 9a3b2ae")
+        print("        ssh dsand@172.26.144.41 'cd ~/projects/SubSurfObs/disk_to_sds && \\")
+        print("            sha256sum scripts/suds_convert.py && \\")
+        print("            rm scripts/suds_convert.py && \\")
+        print("            git pull --ff-only origin main && \\")
+        print("            sha256sum scripts/suds_convert.py'")
+        print("        # Expect post-pull sha256 == 7f625589...")
+        print("    [ ] engine_git source-dict schema bumped in apply.py")
+        print("        See agent memory project-engine-provenance-incident-2026-06-01")
+        print()
         print("  Retry list (re-run after main sweep completes):")
         # Group by station for compact display
         by_sta_retry = defaultdict(list)
