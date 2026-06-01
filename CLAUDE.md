@@ -47,6 +47,52 @@ dirs (leftover sync trials; do not rely on them).
 `df` to gauge staging headroom — size per-station output from the manifest and
 confirm against the actual mediaflux share quota.
 
+### Mediaflux service properties (verified with RCP 2026-06-01)
+
+These properties of the UoM mediaflux platform meaningfully relax the safety
+posture this project was originally designed against. They should be relied on
+as a backstop but NOT as a substitute for the override gate or other
+correctness checks.
+
+- **Quota auto-grant up to 30 TB.** Allocations on `proj-6700_*` shares up to
+  30 TB are granted automatically — no ticket required. This is enough to hold
+  the full ~16 TB EqServer archive's converted SDS output (estimated ~17 TB
+  for VW alone after channel-collapse) plus headroom.
+- **Soft delete on local AND offsite.** Deleting a file from a mediaflux share
+  doesn't actually remove the bytes — it's reclaimable for **up to 1 year**
+  via the offsite copy. Even an `rm -rf` across the whole staging share is
+  recoverable within that window. Recovery is operator-mediated via RCP.
+- **Versioned overwrites.** When apply.py writes a new copy on top of an
+  existing LT file, the previous bytes are kept as a prior version (not
+  destroyed). This means an `--mode overwrite` mistake or a `--fast` typo is
+  not catastrophic; the old version can be restored. However, **version count
+  is not free** — routinely overwriting at scale pollutes version history and
+  consumes quota, so the override gate (held.jsonl) remains the right
+  primary defence, with versioning as backstop.
+- **Offsite replication latency.** New files reach the offsite copy within
+  seconds of being written locally. So even a window of catastrophic loss
+  between write and offsite-sync is tiny.
+- **Storage is single-IP backend.** Both the LT share (`proj-6700_earth_
+  sciences_seismology-1128.4.1237`) and the staging share (`proj-6700_seis
+  comp_staging-1128.4.1649`) — and any other `proj-6700_*` share — resolve to
+  the same mediaflux backend at **`128.250.56.118`** (primary-mf1-qh2.storage.
+  unimelb.edu.au). Per-share bandwidth caps and contention apply at this
+  shared backend, not at a per-share network endpoint.
+
+**Practical consequences for the sweep:**
+
+- The pre-sweep LT-archive snapshot is **no longer urgent**; the soft-delete +
+  versioning + offsite-replication chain is the backup. (We can still take a
+  snapshot if it's cheap, but it's not gating.)
+- The cleanup.py step that frees staging after a successful promote is
+  **optional during the sweep** — we can leave staged copies in place as a
+  redundant local-side backup, given the 30 TB allocation room. Run cleanup
+  as a separate pass after the sweep is fully verified.
+- The override gate (held.jsonl) is **still load-bearing**, not for "prevent
+  data loss" (mediaflux's job now) but for "prevent silent provenance
+  corruption + version-history pollution". A held entry is still a unit that
+  needs human review before bytes flip.
+
 ### Shared staging SDS skeleton
 
 Both pipelines write SDS into the **same** staging tree:
