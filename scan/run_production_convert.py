@@ -198,6 +198,7 @@ def main():
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_sds).parent)
     convert_done = queue / "convert_done.jsonl"
+    convert_failed = queue / "convert_failed.jsonl"
     queue.mkdir(parents=True, exist_ok=True)
     # Resolve run_manifests_dir default lazily — keep it on the shared mount
     # alongside the queue files so dev1 can read it via the same path.
@@ -287,6 +288,37 @@ def main():
                   f"{r['elapsed_s']:.0f}s items={r['items_succeeded']}", flush=True)
         else:
             n_fail += 1
+            # Durable failure record — read by sweep_status.py for fail-density
+            # monitoring and by the end-of-sweep retry pass to know what to
+            # re-run. Best-effort tail-of-log to capture the last successful
+            # phase3 day (helps identify which day's data triggered the bug).
+            last_phase3_day = None
+            log_path = r.get("log_path", "")
+            try:
+                from collections import deque
+                with open(log_path) as f:
+                    last_ok = deque(maxlen=1)
+                    for line in f:
+                        if line.startswith("  [") and " ok " in line:
+                            last_ok.append(line.strip())
+                    if last_ok:
+                        last_phase3_day = last_ok[0]
+            except Exception:
+                pass
+            fail_event = {
+                "run_id": r.get("run_id"),
+                "net": args.network,
+                "sta": sta,
+                "year": year,
+                "rc": r.get("rc"),
+                "reason": r.get("reason", ""),
+                "elapsed_s": r.get("elapsed_s", 0),
+                "items_succeeded_before_fail": r.get("items_succeeded", 0),
+                "last_successful_phase3_day": last_phase3_day,
+                "log_path": log_path,
+                "ts": utc_now(),
+            }
+            append_event(convert_failed, fail_event)
             print(f"[convert] [{i}/{len(work)}] FAIL {sta} {year} rc={r['rc']} "
                   f"reason={r.get('reason','')} log={r.get('log_path','')}", flush=True)
 
