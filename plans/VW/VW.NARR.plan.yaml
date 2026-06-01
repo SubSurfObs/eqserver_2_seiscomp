@@ -1,7 +1,7 @@
 station: NARR
 network: VW
 location: '00'
-status: needs_review
+status: ok
 summary:
   days_total: 3994
   days_clean: 3768

@@ -1,7 +1,7 @@
 station: LRNW
 network: VW
 location: '00'
-status: needs_review
+status: ok
 summary:
   days_total: 875
   days_clean: 871

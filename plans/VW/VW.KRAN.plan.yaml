@@ -1,7 +1,7 @@
 station: KRAN
 network: VW
 location: '00'
-status: BLOCKED
+status: ok
 summary:
   days_total: 670
   days_clean: 533

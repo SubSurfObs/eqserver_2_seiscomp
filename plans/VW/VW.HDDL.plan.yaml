@@ -1,7 +1,7 @@
 station: HDDL
 network: VW
 location: '00'
-status: BLOCKED
+status: ok
 summary:
   days_total: 1819
   days_clean: 1459
