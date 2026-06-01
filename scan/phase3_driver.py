@@ -212,11 +212,33 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     read_errors = []
     _concat_zip_members(files, combined, read_errors)
     combined.seek(0)
+    bulk_fallback_used = False
+    bulk_fallback_reason = None
     try:
         st = read(combined, format="MSEED")
     except Exception as e:
-        return {"status": "parse_error", "n_files": len(files),
-                "error": f"{type(e).__name__}: {e}", "read_errors": len(read_errors)}
+        # Bulk-read failed — typically one corrupted mseed record (Steim
+        # integrity check failure) somewhere in the concatenated buffer
+        # takes the whole day down. Fall back to per-file read: open each
+        # .ms.zip individually and drop only the files that fail.
+        # Slower but tolerates corrupted records. Triggered ~1/100 days on
+        # gecko stations with on-disk corruption (BRTH 2021-01-08 etc).
+        bulk_fallback_used = True
+        bulk_fallback_reason = f"bulk: {type(e).__name__}: {e}"
+        st = Stream()
+        for f in files:
+            try:
+                whole = open(f, "rb").read()
+                with zipfile.ZipFile(io.BytesIO(whole)) as zf:
+                    for name in zf.namelist():
+                        if name.endswith(".ms") or name.endswith(".mseed"):
+                            st += read(io.BytesIO(zf.read(name)), format="MSEED")
+            except Exception as fe:
+                read_errors.append(f"per-file {f}: {type(fe).__name__}: {fe}")
+        if len(st) == 0:
+            return {"status": "parse_error", "n_files": len(files),
+                    "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
+                    "read_errors": len(read_errors)}
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
@@ -231,15 +253,18 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
 
     rate = st[0].stats.sampling_rate if len(st) > 0 else None
     result = {
-        "status": "ok" if not read_errors else "qc_flagged",
+        "status": "ok" if (not read_errors and not bulk_fallback_used) else "qc_flagged",
         "n_files": len(files),
         "n_traces": len(st),
         "rate_hz": rate,
         "dropped_components": [],
         "read_errors": len(read_errors),
         "bogus_year_traces_dropped": len(bogus),
+        "bulk_fallback_used": bulk_fallback_used,
         "sds_files_written": [],
     }
+    if bulk_fallback_reason:
+        result["error"] = bulk_fallback_reason
     if commit and len(st) > 0:
         written = _write_sds_retry(suds_convert, st, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
@@ -280,11 +305,33 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     read_errors = []
     _concat_zip_members(files, combined, read_errors)
     combined.seek(0)
+    bulk_fallback_used = False
+    bulk_fallback_reason = None
     try:
         st = read(combined, format="MSEED")
     except Exception as e:
-        return {"status": "parse_error", "n_files": len(files),
-                "error": f"{type(e).__name__}: {e}", "read_errors": len(read_errors)}
+        # Bulk-read failed — typically one corrupted mseed record (Steim
+        # integrity check failure) somewhere in the concatenated buffer
+        # takes the whole day down. Fall back to per-file read: open each
+        # .ms.zip individually and drop only the files that fail.
+        # Slower but tolerates corrupted records. Triggered ~1/100 days on
+        # gecko stations with on-disk corruption (BRTH 2021-01-08 etc).
+        bulk_fallback_used = True
+        bulk_fallback_reason = f"bulk: {type(e).__name__}: {e}"
+        st = Stream()
+        for f in files:
+            try:
+                whole = open(f, "rb").read()
+                with zipfile.ZipFile(io.BytesIO(whole)) as zf:
+                    for name in zf.namelist():
+                        if name.endswith(".ms") or name.endswith(".mseed"):
+                            st += read(io.BytesIO(zf.read(name)), format="MSEED")
+            except Exception as fe:
+                read_errors.append(f"per-file {f}: {type(fe).__name__}: {fe}")
+        if len(st) == 0:
+            return {"status": "parse_error", "n_files": len(files),
+                    "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
+                    "read_errors": len(read_errors)}
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
@@ -297,15 +344,18 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
 
     rate = st[0].stats.sampling_rate if len(st) > 0 else None
     result = {
-        "status": "ok" if not read_errors else "qc_flagged",
+        "status": "ok" if (not read_errors and not bulk_fallback_used) else "qc_flagged",
         "n_files": len(files),
         "n_traces": len(st),
         "rate_hz": rate,
         "dropped_components": [],
         "read_errors": len(read_errors),
         "bogus_year_traces_dropped": len(bogus),
+        "bulk_fallback_used": bulk_fallback_used,
         "sds_files_written": [],
     }
+    if bulk_fallback_reason:
+        result["error"] = bulk_fallback_reason
     if commit and len(st) > 0:
         written = _write_sds_retry(suds_convert, st, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
@@ -596,19 +646,23 @@ def main():
                 "rate_hz": r.get("rate_hz"),
                 "read_errors": r.get("read_errors", 0),
                 "bytes_written": day_bytes,
+                "error": r.get("error", ""),
+                "bulk_fallback_used": r.get("bulk_fallback_used", False),
             })
         if r["status"] == "error":
             print(f"  [{iso}] ERROR {r.get('error')}", flush=True)
             if "traceback" in r:
                 print(r["traceback"], flush=True)
             return
+        bulk_fb = " bulk_fallback=Y" if r.get("bulk_fallback_used") else ""
         print(f"  [{iso}] {r['status']:10} files={r['n_files']:>5} "
               f"traces={r.get('n_traces',0):>3} "
               f"rate={r.get('rate_hz') or 0:>5} "
               f"errs={r.get('read_errors',0)} "
               f"recovered={r.get('n_recovered',0)} "
               f"dropped={r.get('dropped_components',[])} "
-              f"bogus_yr={r.get('bogus_year_traces_dropped',0)} "
+              f"bogus_yr={r.get('bogus_year_traces_dropped',0)}"
+              f"{bulk_fb} "
               f"{mark}={n_written + n_planned}", flush=True)
 
     if args.workers <= 1:
