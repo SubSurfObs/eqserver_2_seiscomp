@@ -148,8 +148,24 @@ def main():
             print(f"    {sta}: {n} year(s)  {years}")
         print()
 
-    # Retry list
+    # In-flight: look for the most recent unit start line that has no matching OK/FAIL
+    in_flight_re = re.compile(r"\[convert\]\s+\[(\d+)/(\d+)\]\s+(\S+)\s+(\d+)\s+\.\.\.\s*$")
+    last_start = None
+    for line in convert_log.open():
+        m = in_flight_re.search(line)
+        if m:
+            last_start = (m.group(3), int(m.group(4)))
+    if last_start:
+        done_keys = {(r["sta"], r["year"]) for r in log_results}
+        if last_start not in done_keys:
+            print(f"  In flight: {last_start[0]} {last_start[1]}")
+            print()
+
+    # Retry list — union of convert_failed.jsonl + log-derived FAIL lines
     failed_keys = {(f["sta"], f["year"]) for f in convert_failed}
+    for r in log_results:
+        if r["status"] == "FAIL":
+            failed_keys.add((r["sta"], r["year"]))
     if failed_keys:
         print("  Retry list (re-run after main sweep completes):")
         # Group by station for compact display
