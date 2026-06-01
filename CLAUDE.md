@@ -542,6 +542,117 @@ by sample rate as fallback — NOT blanket `CH`):
 
 ---
 
+## Midnight-boundary data loss (KNOWN ISSUE, discovered 2026-06-02)
+
+### The issue, plainly
+
+EqServer's day directories file minute-files by their FILENAME START
+timestamp, not by the data range inside. The `SS` field in the filename
+is the seconds offset within the minute, and (per CLAUDE.md "EchoPro
+detail") is constant within a recording session — it changes only on
+recorder restart.
+
+Concrete example. A recorder with SS=12:
+
+- File `2024-01-15_2359_12_STA.dmx` starts at **23:59:12** and contains
+  60 seconds of data → extends to **00:00:12 the next day**.
+- File `2024-01-16_0000_12_STA.dmx` starts at **00:00:12** (filed in
+  day 16's directory) → extends to 00:01:12.
+- The 12 seconds from **00:00:00 to 00:00:12 of day 16** live ONLY in
+  day 15's `2359_12` file.
+
+When phase3 processes day 15, it reads the `2359_12` file, includes
+its full trace in the merged Stream, and `write_sds` writes records
+for that trace into BOTH `2024.015` and `2024.016` SDS files (correct).
+
+Then phase3 processes day 16. `write_sds` writes a fresh SDS file at
+`2024.016`, **overwriting** what day-job 15 left there. The 12-second
+sliver at the start of day 16 is LOST.
+
+### Verified, with numbers
+
+`scan/` script + ObsPy sample-count check, run 2026-06-02 mid-sweep
+against staging output:
+
+| Station-year | SS pattern | Loss per day per channel |
+|---|---|---|
+| BRIG 2023 (gecko) | constant SS=12 | every day starts 00:00:12 → ~12 s lost |
+| BRTH 2019 (gecko) | mixed SS (41-60 s, recorder restarted) | days start 00:00:41-58 → 14-22 s lost |
+
+For BRIG 2023, every CHZ day-file started at EXACTLY `00:00:12.000000Z`
+— a perfect signal that this is systematic, not coincidence.
+
+### Estimated network-scale magnitude
+
+Assuming median SS ≈ 12 across VW:
+- 12 s × 365 days × 3 channels = ~13,140 s/station/year ≈ **3.65 hours
+  lost per station-year**.
+- VW network (~26 stations × ~12 years × 3.65 hr) ≈ **~1,140 hours of
+  recoverable data lost** if uncorrected.
+
+The data is RECOVERABLE because the source files on the EqServer NFS
+archive are read-only and immutable. We just need to read them again
+and patch.
+
+### Three candidate fixes (one in flight, two queued)
+
+**Option A — post-sweep boundary-stitch pass.** A standalone tool walks
+every promoted SDS day-file, finds the previous day's last source file
+in EqServer, reads the boundary samples, prepends them. Doesn't touch
+the running sweep. Recovers all already-promoted units' loss too.
+Slower but ad-hoc; can run anytime after sweep completes.
+
+**Option B — fix `write_sds` to merge** (in disk_to_sds). Read existing
+SDS file, combine with new traces, dedup, write back. Right semantically
+but lives in disk_to_sds (cross-project change). **Caveat raised by
+operator 2026-06-02:** B implicitly assumes day-jobs run in incremental
+day-by-day order. disk_to_sds processes one SD card at a time so this
+is true there, but eqserver's phase3 uses `workers=4` parallel day-jobs
+within a unit — two adjacent day-jobs could write to the same SDS file
+concurrently. B is only safe if the read-merge-write becomes atomic
+(file lock), which adds complexity. **Pending consultation with
+disk_to_sds.**
+
+**Option C — phase3 day-job N also reads day N-1's last file.** Self-
+contained fix in eqserver/scan/phase3_driver.py. Each day-job pulls
+the tail file from the previous day's directory into its own source
+set so it KNOWS about its own first SS seconds. No race because each
+day-job is self-contained. Edge cases: year boundaries (day 1 of year
+Y reads from day 365 of year Y-1, which might not be in the current
+unit's queue), epoch transitions (recorder swap between days), days
+where the previous day was `no_files`. About 20 lines of code.
+
+### Status as of compaction (2026-06-02)
+
+- **C is the planned mid-flight fix.** Pending the actual edit to
+  `phase3_driver.py`. Once landed, all units processed from that point
+  forward stop bleeding boundary data.
+- **A is queued as a post-sweep recovery pass.** Recovers loss from
+  all units processed before C landed (including this morning's BEST
+  + BRIG + BRTH cohort).
+- **B is operator-flagged but deferred** pending disk_to_sds
+  consultation. If disk_to_sds adopts atomic merge, C may be
+  unnecessary going forward.
+
+### Verification command (for any future session)
+
+```bash
+ssh dsand@172.26.144.41 \
+  '/home/.../disk_to_sds/.venv/bin/python3 -c "
+from obspy import read
+import glob
+for f in sorted(glob.glob(\"/mnt/seiscomp_staging/seiscomp_archive/2023/VW/BRIG/CHZ.D/*\"))[:5]:
+    st = read(f, format=\"MSEED\")
+    st.sort([\"starttime\"])
+    print(f.split(\"/\")[-1], \"starts\", st[0].stats.starttime)
+"'
+```
+
+If output shows starttimes at `T00:00:00.000` → fix is working. If at
+`T00:00:NN.000` → loss still happening.
+
+---
+
 ## Performance and parallelism
 
 **Measured numbers and pending experiments live in `PERFORMANCE.md`; the section
