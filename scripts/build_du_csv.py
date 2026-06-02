@@ -36,23 +36,25 @@ VIP_JSON = "/tmp/vip_status.json"
 
 # Columns (order matters; this is the CSV header):
 COLUMNS = [
-    "tier",             # 1=have channel high-conf, 2=have channel low-conf, 3=needs_input
-    "station",          # SEED station code
-    "include",          # true | unknown
-    "place",            # human-readable site name
-    "state",            # AU state code
-    "recorder",         # echopro | gecko | piesmo | minimus | reftek_rt130 | unknown
-    "sample_rate_hz",   # int
-    "sensor_class",     # broadband | short_period | accelerometer | unknown
-    "location",         # SEED location code (00, 60, AB, ...)
-    "band",             # 2-char stem (HH, EH, SH, CH, FH) — implies Z/N/E
-    "convention",       # seed | gecko | explicit
-    "first_year",       # earliest year of data in LT
-    "last_year",        # latest year of data in LT (or "live" if currently in VIP)
-    "vip_status",       # active | inactive | not_in_vip
-    "operator_status",  # o | blank  (c removed: closed stations are excluded from this file)
-    "channel_source",   # vip | fdsn | lt | saa | inferred | needs_input
-    "notes",            # combined freeform
+    "tier",                 # 1=have channel high-conf, 2=have channel low-conf, 3=needs_input
+    "station",              # SEED station code
+    "include",              # true | unknown
+    "place",                # human-readable site name
+    "state",                # AU state code
+    "recorder",             # echopro | gecko | piesmo | minimus | reftek_rt130 | unknown
+    "sample_rate_hz",       # int
+    "sensor_class",         # broadband | short_period | accelerometer | unknown
+    "location",             # SEED location code (00, 60, AB, ...)
+    "band",                 # 2-char stem (HH, EH, SH, CH, FH) — implies Z/N/E
+    "convention",           # seed | gecko | explicit
+    "eqserver_first_year",  # earliest year of data in EqServer source archive (DU cutoff 2017)
+    "eqserver_last_year",   # latest year of data in EqServer source archive
+    "lt_first_year",        # earliest year of data in SeisComP LT archive
+    "lt_last_year",         # latest year of data in LT (or "live" if VIP active)
+    "vip_status",           # active | inactive | not_in_vip
+    "operator_status",      # o | blank  (c excluded — closed stations filtered out)
+    "channel_source",       # vip | fdsn | lt | saa | inferred | needs_input
+    "notes",                # combined freeform
 ]
 
 # Tier mapping (drives the on-disk row order — tier ASC, station ASC):
@@ -61,6 +63,14 @@ TIER_BY_SOURCE = {
     "saa": 2, "inferred": 2,              # have channel, lower confidence
     "needs_input": 3,                     # no channel info anywhere
 }
+
+# DU-specific cutoff for presenting eqserver first-year. The DU network was
+# brought across to EqServer around 2017 (operator-confirmed 2026-06-02);
+# any earlier year directories on EqServer for DU stations are pre-GPS-lock
+# WNRO artifacts (the same class that phase3's _filter_bogus_year_traces
+# guard drops at 2012 at conversion time). Apply 2017 here so the CSV shows
+# operator-meaningful coverage; phase3's filter is separate and unchanged.
+DU_EQSERVER_MIN_YEAR = 2017
 
 
 def load_registry():
@@ -109,6 +119,15 @@ def scan_lt():
                     loc = parts[2] if len(parts) >= 4 else ""
                     out[sta].add((loc, chan, yr))
     return dict(out)
+
+
+def scan_eqserver_years(stn):
+    """Direct ls of /mnt/eqserver_archive/.../<STN>/continuous/<YEAR>/.
+    Returns a set of years. Empty if station has no EqServer dir."""
+    base = f"/mnt/eqserver_archive/shared/data/repository/archive/{stn}/continuous"
+    if not os.path.isdir(base):
+        return set()
+    return {int(d) for d in os.listdir(base) if d.isdigit() and 1980 < int(d) < 2100}
 
 
 def parse_saa_dans():
@@ -408,24 +427,29 @@ def main():
         # Sensor class
         sensor_class = derive_sensor_class(band)
 
-        # First/last year from LT
-        first_year = last_year = ""
-        if stn in lt:
-            years = {y for _l, _c, y in lt[stn]}
-            if years:
-                first_year = str(min(years))
-                last_year = str(max(years))
+        # EqServer first/last year (DU cutoff applied to drop pre-2017 artifacts)
+        eq_years = scan_eqserver_years(stn)
+        eq_years_filtered = {y for y in eq_years if y >= DU_EQSERVER_MIN_YEAR}
+        if eq_years_filtered:
+            eqserver_first_year = str(min(eq_years_filtered))
+            eqserver_last_year = str(max(eq_years_filtered))
         else:
-            first_year = str(body.get("coverage_start") or "")
-            last_year = str(body.get("coverage_end") or "")
-            if first_year == "None": first_year = ""
-            if last_year == "None": last_year = ""
+            eqserver_first_year = ""
+            eqserver_last_year = ""
+
+        # LT first/last year (no cutoff — LT only post-dates the migration)
+        lt_first_year = lt_last_year = ""
+        if stn in lt:
+            lt_yrs = {y for _l, _c, y in lt[stn]}
+            if lt_yrs:
+                lt_first_year = str(min(lt_yrs))
+                lt_last_year = str(max(lt_yrs))
 
         # VIP status
         if vip_entry:
             vip_status = "active" if vip_entry["active"] else "inactive"
             if vip_entry["active"]:
-                last_year = "live"
+                lt_last_year = "live"
         else:
             vip_status = "not_in_vip"
 
@@ -499,8 +523,10 @@ def main():
             "location": loc,
             "band": band,
             "convention": convention,
-            "first_year": first_year,
-            "last_year": last_year,
+            "eqserver_first_year": eqserver_first_year,
+            "eqserver_last_year": eqserver_last_year,
+            "lt_first_year": lt_first_year,
+            "lt_last_year": lt_last_year,
             "vip_status": vip_status,
             "operator_status": op_st,
             "channel_source": channel_source,
