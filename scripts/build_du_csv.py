@@ -36,6 +36,7 @@ VIP_JSON = "/tmp/vip_status.json"
 
 # Columns (order matters; this is the CSV header):
 COLUMNS = [
+    "tier",             # 1=have channel high-conf, 2=have channel low-conf, 3=needs_input
     "station",          # SEED station code
     "include",          # true | unknown
     "place",            # human-readable site name
@@ -49,10 +50,17 @@ COLUMNS = [
     "first_year",       # earliest year of data in LT
     "last_year",        # latest year of data in LT (or "live" if currently in VIP)
     "vip_status",       # active | inactive | not_in_vip
-    "operator_status",  # o | c | blank
+    "operator_status",  # o | blank  (c removed: closed stations are excluded from this file)
     "channel_source",   # vip | fdsn | lt | saa | inferred | needs_input
     "notes",            # combined freeform
 ]
+
+# Tier mapping (drives the on-disk row order — tier ASC, station ASC):
+TIER_BY_SOURCE = {
+    "vip": 1, "fdsn": 1, "lt": 1,        # have channel, high confidence
+    "saa": 2, "inferred": 2,              # have channel, lower confidence
+    "needs_input": 3,                     # no channel info anywhere
+}
 
 
 def load_registry():
@@ -421,16 +429,14 @@ def main():
         else:
             vip_status = "not_in_vip"
 
-        # Operator status
+        # Operator status (DL 2026-06-02: 'c' means physically shut down,
+        # those rows are filtered out at the registry level; this column
+        # now only carries 'o' for stations the operator confirmed operational).
         op_st = ""
         if stn in ops:
             sts = ops[stn]["statuses"]
-            if "o" in sts and "c" not in sts:
+            if "o" in sts:
                 op_st = "o"
-            elif "c" in sts and "o" not in sts:
-                op_st = "c"
-            elif sts:
-                op_st = "/".join(sorted(sts))
 
         # Convention
         # Default: 'seed' for DU (full SEED naming with corner-period dep)
@@ -479,7 +485,10 @@ def main():
         else:
             include_str = "unknown"
 
+        tier = TIER_BY_SOURCE.get(channel_source, 3)
+
         rows.append({
+            "tier": tier,
             "station": stn,
             "include": include_str,
             "place": place,
@@ -498,6 +507,9 @@ def main():
             "notes": notes,
         })
 
+    # Sort: tier ASC (most info first), then station ASC within each tier.
+    rows.sort(key=lambda r: (r["tier"], r["station"]))
+
     # Write CSV
     out_path = "/tmp/du_stations.csv"
     with open(out_path, "w", newline="") as f:
@@ -506,6 +518,11 @@ def main():
         for r in rows:
             w.writerow(r)
     print(f"Wrote {out_path}: {len(rows)} rows.", file=sys.stderr)
+    by_tier = defaultdict(int)
+    for r in rows:
+        by_tier[r["tier"]] += 1
+    for t in sorted(by_tier):
+        print(f"  tier {t}: {by_tier[t]} rows", file=sys.stderr)
 
 
 if __name__ == "__main__":
