@@ -6,6 +6,21 @@ Replace the legacy bash + Java EqConvert pipeline (in `legacy/`) with a Python p
 
 **Core dependency**: `sudspy` (`/Users/DSAND/projects/SubSurfObs/sudspy`) — provides PC-SUDS parsing and ObsPy bridge. The pipeline is built around Python and sudspy/ObsPy. SeisComP CLI tools (`scmssort`, `scart`) are available on the VM and were central to the legacy pipeline, but are not assumed to be required in the rewrite — see Toolchain section.
 
+## Sweep recovery registers
+
+Each production sweep accumulates issues that need post-sweep recovery
+work (boundary loss, parse_error days, unit-level failures, etc.). One
+durable register per scan:
+
+- **`docs/scan1_recovery_register.md`** — VW network sweep (2026-06-01
+  onwards). Current; in active accumulation. Read this for the
+  authoritative list of pending recovery work, NOT scattered memory
+  files or `sweep_status.py` output.
+- `docs/scan2_DU_recovery_register.md` — DU network sweep (future).
+
+The register schema is documented at the bottom of each register; new
+scans copy it verbatim so cross-scan comparisons are mechanical.
+
 ---
 
 ## Shared infrastructure & sibling project (added 2026-05)
