@@ -49,8 +49,8 @@ COLUMNS = [
     "convention",           # seed | gecko | explicit
     "eqserver_first_year",  # earliest year of data in EqServer source archive (DU cutoff 2017)
     "eqserver_last_year",   # latest year of data in EqServer source archive
-    "lt_first_year",        # earliest year of data in SeisComP LT archive
-    "lt_last_year",         # latest year of data in LT (or "live" if VIP active)
+    "seiscomp_first_year",        # earliest year of data in SeisComP LT archive
+    "seiscomp_last_year",         # latest year of data in LT (or "live" if VIP active)
     "vip_status",           # active | inactive | not_in_vip
     "operator_status",      # o | blank  (c excluded — closed stations filtered out)
     "channel_source",       # vip | fdsn | lt | saa | inferred | needs_input
@@ -59,7 +59,7 @@ COLUMNS = [
 
 # Tier mapping (drives the on-disk row order — tier ASC, station ASC):
 TIER_BY_SOURCE = {
-    "vip": 1, "fdsn": 1, "lt": 1,        # have channel, high confidence
+    "vip": 1, "fdsn": 1, "seiscomp": 1,  # have channel, high confidence
     "saa": 2, "inferred": 2,              # have channel, lower confidence
     "needs_input": 3,                     # no channel info anywhere
 }
@@ -376,12 +376,12 @@ def main():
             rates = [r for _l, _c, r in fdsn[stn] if r]
             if rates:
                 sample_rate = str(int(rates[0]))
-        # LT fallback
+        # SeisComP LT fallback
         if not band and stn in lt:
             parsed = [(l, c) for l, c, _y in lt[stn]]
             lb = collapse_channels_to_stems(parsed)
             loc, band = pick_primary_loc_band(lb)
-            channel_source = "lt"
+            channel_source = "seiscomp"
         # SAA fallback
         if not band and stn in saa:
             sa = saa[stn]
@@ -438,18 +438,18 @@ def main():
             eqserver_last_year = ""
 
         # LT first/last year (no cutoff — LT only post-dates the migration)
-        lt_first_year = lt_last_year = ""
+        seiscomp_first_year = seiscomp_last_year = ""
         if stn in lt:
             lt_yrs = {y for _l, _c, y in lt[stn]}
             if lt_yrs:
-                lt_first_year = str(min(lt_yrs))
-                lt_last_year = str(max(lt_yrs))
+                seiscomp_first_year = str(min(lt_yrs))
+                seiscomp_last_year = str(max(lt_yrs))
 
         # VIP status
         if vip_entry:
             vip_status = "active" if vip_entry["active"] else "inactive"
             if vip_entry["active"]:
-                lt_last_year = "live"
+                seiscomp_last_year = "live"
         else:
             vip_status = "not_in_vip"
 
@@ -525,8 +525,8 @@ def main():
             "convention": convention,
             "eqserver_first_year": eqserver_first_year,
             "eqserver_last_year": eqserver_last_year,
-            "lt_first_year": lt_first_year,
-            "lt_last_year": lt_last_year,
+            "seiscomp_first_year": seiscomp_first_year,
+            "seiscomp_last_year": seiscomp_last_year,
             "vip_status": vip_status,
             "operator_status": op_st,
             "channel_source": channel_source,
