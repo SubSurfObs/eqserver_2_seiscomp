@@ -5,8 +5,12 @@ Consumes a station plan YAML (from plan_generator.py) plus the Level-1 manifest,
 dispatches each "clean" day through disk_to_sds/scripts/suds_convert.py, and
 writes the result to a staging SDS root.
 
-Dry-run by default (mirrors sds_staging_ledger/apply.py). Pass --commit to
-actually write SDS files.
+Requires --commit to actually do anything. Without --commit, phase3 still
+reads + parses + merges files (useful for surfacing parse errors / file-level
+problems) but does not write SDS. Earlier versions of this file also computed
+a "would-write" SDS path list in dry-run mode via the engine's private
+_sds_day_path helper; that path was removed when disk_to_sds's write_sds
+refactor (B / 00b6835) dropped the helper.
 
 Coverage of recorders in v1:
   - echopro: full pipeline (sudspy -> convert_suds_files -> write_sds)
@@ -350,13 +354,6 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     if commit and len(st) > 0:
         written = _write_sds_retry(suds_convert, st, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
-    elif len(st) > 0:
-        from collections import defaultdict
-        groups = defaultdict(int)
-        for tr in st:
-            p = suds_convert._sds_day_path(staging_sds_root, tr)
-            groups[str(p)] += tr.stats.npts
-        result["sds_files_planned"] = [(p, n) for p, n in sorted(groups.items())]
     return result
 
 
@@ -451,13 +448,6 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     if commit and len(st) > 0:
         written = _write_sds_retry(suds_convert, st, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
-    elif len(st) > 0:
-        from collections import defaultdict
-        groups = defaultdict(int)
-        for tr in st:
-            p = suds_convert._sds_day_path(staging_sds_root, tr)
-            groups[str(p)] += tr.stats.npts
-        result["sds_files_planned"] = [(p, n) for p, n in sorted(groups.items())]
     return result
 
 
@@ -508,14 +498,6 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     if commit and stream:
         written = _write_sds_retry(suds_convert, stream, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
-    elif stream:
-        # Dry-run: just compute the output paths so the operator can review
-        from collections import defaultdict
-        groups = defaultdict(int)
-        for tr in stream:
-            p = suds_convert._sds_day_path(staging_sds_root, tr)
-            groups[str(p)] += tr.stats.npts
-        result["sds_files_planned"] = [(p, n) for p, n in sorted(groups.items())]
     return result
 
 
@@ -749,8 +731,6 @@ def main():
         day_bytes = sum(sz for _, sz in r.get("sds_files_written", []))
         written_bytes += day_bytes
         n_written = len(r.get("sds_files_written", []))
-        n_planned = len(r.get("sds_files_planned", []))
-        mark = "WRITE" if args.commit else "PLAN"
         iso = r.get("date", "?")
         if run_manifest_state is not None:
             per_date_status.append({
@@ -780,7 +760,7 @@ def main():
               f"dropped={r.get('dropped_components',[])} "
               f"bogus_yr={r.get('bogus_year_traces_dropped',0)}"
               f"{bulk_fb} "
-              f"{mark}={n_written + n_planned}", flush=True)
+              f"WRITE={n_written}", flush=True)
 
     if args.workers <= 1:
         # Serial path — keep for direct debugging and to isolate NFS effects.
