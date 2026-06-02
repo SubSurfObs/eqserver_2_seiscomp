@@ -2,160 +2,151 @@
 
 Snapshot of which sources have channel/location info for each of the 53
 DU `include:true` stations, taken at the start of DU-sweep planning. The
-question this answers: *"for how many DU stations do we already have
-channel-code information, and from where?"*
+question this answers: **for how many DU stations do we have ZERO
+channel-code information available across all sources, and which ones?**
 
 Reproduce with `scripts/du_channel_coverage.py` (run on the staging VM).
 
 ## Sources checked
 
-| Tag | Source | Path | What it tells us |
+| Tag | Source | Path / endpoint | What it tells us |
 |---|---|---|---|
-| **S1a** | FDSN snapshot | `metadata/uploaded/DU/du.xml` | Current-cohort streams on the UoM SeisComP server (subsurface.science.unimelb.edu.au) |
-| **S1b** | LT SeisComP archive | `/mnt/seiscomp_archive/<YEAR>/DU/<STA>/` | All channels that have ever made it to LT, with location codes inferred from SDS filenames |
-| **S2** | SAA operator spreadsheets | `metadata/uploaded/DU/*.xlsx` (6 files) | Operator's per-station notes; coverage is which files mention the station, NOT necessarily what channel info those files contain |
-| **S3** | upstream EchoPro→seedlink mapping file | *location TBD* | Should be on the UoM SeisComP server itself; haven't located yet |
+| **VIP** | Live upstream Seismosphere snapshot | `https://objects.storage.unimelb.edu.au/6700-realtime-seismology-assets/system-health/vip_status.json` | Streams currently published by the upstream Seismosphere server (auto-generated; effectively a live "what's flowing through right now") |
+| **FDSN snap** | UoM SeisComP FDSN snapshot | `metadata/uploaded/DU/du.xml` | Current-cohort channels on the UoM SeisComP server (subsurface.science.unimelb.edu.au) — derived downstream from VIP, captured 2026-02-03 |
+| **LT** | LT SeisComP archive | `/mnt/seiscomp_archive/<YEAR>/DU/<STA>/` | All channels ever archived, with location codes inferred from SDS filenames. Note: includes decimation-duplicate channels from the upstream operator (EHZ as a duplicate of HHZ etc.) — should be filtered against VIP/FDSN truth when interpreting. |
+| **xlsx** | SAA operator spreadsheets | `metadata/uploaded/DU/*.xlsx` (6 files) | Operator's per-station notes. Coverage column shows files whose rows for this station contain text matching a SEED channel-code pattern. |
+
+Source 3 (upstream EchoPro→seedlink mapping file) was excluded by the
+operator — it's managed by the SRC and the operator confirmed every fact
+in it should be derivable from VIP + LT.
 
 ## Headline numbers
 
 | Source | Coverage |
 |---|---|
-| S1a (FDSN) | 29 / 53 |
-| S1b (LT archive) | 32 / 53 |
-| S2 (any spreadsheet mention) | 53 / 53 |
-| **ANY source** | **53 / 53** |
-| **No waveform-source coverage** (S1a + S1b both absent) | **11 / 53** |
+| VIP (live upstream) | 29 / 53 |
+| FDSN snapshot | 29 / 53 — exact match to VIP |
+| LT archive | 32 / 53 |
+| Spreadsheet with channel-code hint | 31 / 53 |
+| **At least one source** | **43 / 53** |
+| **ZERO channel info in ANY source** | **10 / 53** |
 
-The "ANY" number is misleading on its own — every station appears in at
-least one spreadsheet, but spreadsheet *presence* doesn't equal usable
-channel info. The load-bearing number is **53 − 11 = 42 stations with
-direct waveform-source evidence of channel codes**.
+### The 10 zero-info stations
 
-## Five categories
+These have nothing to plan from in any source — no current upstream
+stream, no FDSN entry, no LT history, no spreadsheet row that names a
+channel code:
 
-Grouping by what kind of evidence each station has:
+| Station | Spreadsheet hints (no channel) |
+|---|---|
+| **ARKL** | "SA, Radio + netwk, Epro, Freewave, Out for 12 months" (GoingToEqserver2025) |
+| **PLMR** | "SA, WAP + satellite, Epro, old Netgear WAPS, presently out" (GoingToEqserver2025) |
+| **LKHRT** | "NSW, ? Telstra 4G, Gecko, ?" (GoingToEqserver2025) — recorder type known (Gecko); rate unknown |
+| **JMS2 / JMS3 / JMS4 / JMS5** | "DL" (operator initials only) — no recorder type, no rate, no channel |
+| **S88M / S88U** | "GG" (operator initials only) |
+| **TPSOP** | "DL" only. NOTE: `TPSO` (without the P) IS live in VIP but under network **AB**, not DU. |
 
-### A — FDSN + LT agree (clean, 6 stations)
+For these 10, either the registry's `include:true` was aspirational
+(stations the operator wants to convert when they next come online) or
+they need explicit operator input on channel codes before they can be
+planned. Suggested split:
+- **3 with recorder-type known** (ARKL = Epro, PLMR = Epro, LKHRT = Gecko):
+  the recorder-type alone narrows possibilities. ARKL/PLMR look like
+  short-period EchoPros at 100 sps based on neighbouring SA stations
+  (BRTS/ROBE/STR2 etc. all 60/EHE/N/Z), so a default of EHE/N/Z at
+  loc 60 is a defensible per-station registry override pending operator
+  confirmation. LKHRT (Gecko, no rate) is harder.
+- **7 with zero structural info** (JMS2-5, S88M/U, TPSOP): operator
+  needs to nominate or these stay out of first-pass DU sweep.
 
-ABRY, ALEX, BRON, KBRI, LGMA, PFLO.
+## Cross-source verification (VIP vs FDSN vs LT)
 
-Both sources show the same code, typically `00/HHZ@200`. These are
-the modern PiesMo cohort, freshly telemetered and well-represented.
-Plan generation = FDSN-verbatim, no manual input needed.
+VIP and FDSN snapshot agreed exactly on count (29 each). Station-level
+overlap is near-perfect with small expected differences:
+- BEGA, BRTS, CLV2, DNL, DNL2, HMV1, MRAT, ROBE, STR2, SUND, TPSO,
+  UTT, WALR, WKA — in VIP, NOT in FDSN snapshot. These are stations
+  on the upstream but not in the static FDSN copy from 2026-02-03 (the
+  upstream churns; FDSN snapshot is a point-in-time).
+- ALEX, BAMB, CLIL, DAMM, HKER, LEU, LGMA, NNP1, NNP2, PENW, PLYP,
+  RNDA, S88P, USYD, WAH — in FDSN snapshot, NOT in VIP. Recent FDSN-
+  registered stations that aren't actively telemetering, OR inactive
+  in current upstream cycle. Worth a re-pull of FDSN to refresh.
 
-### B — FDSN + LT, multiple epochs visible (11 stations)
+## Divergences worth resolving before DU sweep
 
-DJO, ERIKA, HAZO, HELEN, KENT, LEU, NSTM, OAT, USYD, WAH, WEPH.
+These don't affect the headline count but they affect plan-generation
+correctness:
 
-FDSN says current PiesMo (`00/HHZ@200`); LT also has older
-`00/EHZ` entries from when the station was on EchoPro. Two valid
-codes for two different epochs. Plan needs to be epoch-aware: pre-PiesMo
-years → EHZ, PiesMo era → HHZ. The transition date per station is the
-question for the plan generator.
+1. **TPSO network mismatch.** Registry has `TPSO: target_network: DU`,
+   but the live upstream publishes `AB.TPSO` (with `60/HH*`).
+   Decision: reclassify TPSO to AB in registry, or accept DU.TPSO as
+   the conversion target despite upstream code? If the latter, this
+   is the only EqServer station that gets a registry network code
+   different from its upstream code.
+2. **HKER / WKA channel disagreement.** FDSN says `60/SHZ@100`; VIP
+   says `00/HHZ` (HKER) and `60/EHZ` (WKA). Different bands, different
+   eras. WKA's LT has both `60/EHZ` (matches VIP) and a historical
+   different rate — sample-rate-aware epoch slicing needed.
+3. **HML1 multi-instrument complexity.** FDSN exposes both `60/SH*@100`
+   (seismometer) and `AB/HN*@100` (accelerometer); VIP says `60/EH*`;
+   LT confirms `60/EH*`. Two location codes (60 + AB) and two
+   instrument types in the same station.
+4. **DNL band disagreement.** VIP says `60/EHE/N/Z`, spreadsheet rows
+   say `SHE/SHN/SHZ`. The spreadsheet is older; VIP is the truth. But
+   DNL2 says VIP `60/HH*` while LT shows `60/EH*` AND `60/HH*` —
+   genuine multi-epoch.
+5. **WILM live now.** Registry note said "NOT on UoM seedlink VIP
+   2026-06-01" but VIP shows WILM as ACTIVE with `60/EHE/N/Z`. The
+   note is stale (recovered today, or yesterday).
 
-### C — FDSN-only, not in LT yet (5 stations)
+## Decimation-duplicate handling
 
-BAMB, CLIL, DAMM, NNP1, NNP2.
+The upstream operator started producing decimated copies of channels
+which surface as extra codes (e.g. EHZ as a duplicate of HHZ at a
+PiesMo station). The plan generator should:
 
-Modern PiesMo deployments registered with FDSN but no telemetered
-bytes in LT yet (or telemetered very recently). Plan = FDSN-verbatim,
-recovery for EchoPro era (if any) would still need S1b/S3.
+- Trust **VIP / FDSN** as the truth for what's CURRENTLY meaningful.
+- When LT has more channels than VIP/FDSN for the same epoch, treat
+  the extras as decimation duplicates and drop them.
+- When LT has channels in years BEFORE the VIP/FDSN epoch started,
+  treat those as historical epoch and preserve them per-epoch.
 
-### D — LT-only (no FDSN entry, 14 stations)
+This means the 11 stations I classified as "multi-epoch FDSN+LT" in
+the v1 analysis (DJO/ERIKA/HAZO/HELEN/KENT/LEU/NSTM/OAT/USYD/WAH/WEPH —
+all showing HHZ in VIP/FDSN + EHZ in LT) need a year-range check to
+distinguish:
 
-BEGA, BRTS, CLV2, DNL, DNL2, HMV1, MRAT, ROBE, STR2, SUND, TPSO,
-UTT, WALR, WKA.
+- **EHZ files in years contemporaneous with HHZ files** → decimation
+  duplicate, drop.
+- **EHZ files in years before HHZ first appeared** → real EchoPro
+  history, preserve as epoch.
 
-These are the **EchoPro-era cohort** that haven't been put onto the
-new SeisComP server. They DO have LT data — almost all show
-`60/EHZ` (short-period at loc 60), confirming the EHE/EHN/EHZ codes
-the operator hand-wrote in registry notes for BRTS/ROBE/STR2/SUND/WILM.
+Code path TBD; the LT scan already captured per-year, just needs the
+year-range query exposed in the analysis.
 
-This is the most important finding: **for the DU EchoPro stations,
-LT (S1b) is the de facto source of truth for channel codes**, not
-FDSN. Plan generator must consult LT before falling through to BLOCKED.
+## Coverage matrix (all 53 stations)
 
-Two exceptions to flag inside this group:
-- **BEGA** shows `00/HHE/HHN/HHZ` in LT (PiesMo-shape) despite
-  being absent from FDSN. Either a recent addition the FDSN snapshot
-  predates, or a misread — investigate.
-- **WALR** has six channel codes in LT (`60/EHE/EHN/EHZ`,
-  `60/ENE/ENN/ENZ`, `60/HHE/HHN/HHZ`). Almost certainly multi-epoch
-  / multi-sensor; needs careful epoch slicing.
+Full table generated by `scripts/du_channel_coverage.py` — see the
+script's output. Sample of categories:
 
-### E — Spreadsheet-only (no FDSN, no LT, 11 stations)
-
-ARKL, JMS2, JMS3, JMS4, JMS5, LKHRT, PLMR, S88M, S88U, TPSOP, WILM.
-
-These are the genuine first-pass risk: we have zero waveform-source
-evidence of channel codes for them. Three are the operator's "out for 12
-months" / "presently out" / "temporarily offline" stations from the
-recent promotion notes (ARKL, PLMR, WILM). The JMS group + S88 group +
-LKHRT + TPSOP are the others.
-
-This is exactly the cohort where **Source 3 (upstream EchoPro→seedlink
-mapping)** would be most valuable, IF it has historical entries for
-stations no longer telemetering. Otherwise: per-station operator input
-or skip.
-
-### F — Multi-sensor station, structural complexity (4 stations)
-
-HKER, PENW, HML1, RNDA.
-
-- **HKER, PENW**: `60/SHZ@100` in FDSN — short-period single-channel
-  at loc 60. Simple but non-default.
-- **HML1**: FDSN has `60/SH*@100` (broadband 3-comp) + `AB/HN*@100`
-  (accelerometer at separate location code AB). LT shows only `60/EH*`
-  — disagreement to resolve.
-- **RNDA**: FDSN has `60/HH*@100` + `AB/HN*@100`. Note `HH` at 100 sps
-  here uses the SEED full-convention (broadband at 80-250 sps → H), not
-  the Gecko-subset table.
-
-These need per-station per-instrument-code epoch handling and explicit
-location-code resolution (`AB` vs `60` per channel).
-
-## Location-code finding (critical)
-
-The registry default `target_location: "00"` is wrong for the
-EchoPro cohort. **EHE/EHN/EHZ channels in DU consistently use location
-code `"60"`** in both FDSN (where present) and LT. Cohort breakdown:
-
-| Cohort | Typical loc | Typical channel |
+| Category | Count | Examples |
 |---|---|---|
-| Modern PiesMo (HH@200) | `00` | `HHZ/HHN/HHE` |
-| EchoPro short-period (EH@100) | `60` | `EHZ/EHN/EHE` |
-| Multi-sensor (accel) | `AB` | `HN*` |
+| In VIP + FDSN + LT (clean) | ~17 | ABRY, BRON, KBRI, DJO, HAZO, NSTM, OAT, WEPH... |
+| In VIP only (live, not in stale FDSN) | 14 | BEGA, BRTS, CLV2, DNL, DNL2, HMV1, MRAT, ROBE, STR2, SUND, TPSO, UTT, WALR, WKA |
+| In FDSN only (FDSN-registered, not active in VIP right now) | 14 | ALEX, BAMB, CLIL, DAMM, LEU, LGMA, NNP1, NNP2, PENW, PLYP, S88P, USYD, WAH, RNDA |
+| In LT only (historic, no longer live or never on new server) | ~3 | (LT-only with no spreadsheet channel hint) |
+| Spreadsheet channel-hint only | 0 | (none — spreadsheets confirm where waveform sources do too, never standalone) |
+| **ZERO INFO** | **10** | **ARKL, JMS2-5, LKHRT, PLMR, S88M, S88U, TPSOP** |
 
-The plan generator must pull location from FDSN/LT per station-epoch,
-not from a single registry default. The registry's `target_location`
-field should either become **per-epoch** or be removed in favor of
-source-derivation.
+## Next steps
 
-## The "0" vs "00" location-code split
-
-LT shows both `0/HHZ` and `00/HHZ` for some stations (e.g. ALEX, DJO,
-ERIKA, KENT, LEU). This is the PiesMo-era ingest where the single-char
-"0" location was used (CLAUDE.md "PiesMo cohort" section documents this
-on the EqServer-archive side). Promotion to LT preserves whatever was
-written. The plan generator should normalize both to a single canonical
-loc code per epoch — almost certainly `"00"`.
-
-## What still needs the user
-
-1. **Source 3 location.** Where is the upstream EchoPro→seedlink mapping
-   file? Best guess is on the SeisComP server itself — probably under
-   `/etc/seiscomp/` or wherever the seedlink module's station bindings
-   live. If you can point me at it (path on dev1), I'll add it to the
-   coverage matrix. It's most useful for Category E (the 11 stations
-   with no FDSN + no LT).
-2. **Spreadsheet drill-in.** The 53/53 spreadsheet coverage is just
-   "station name appears in the file." None of the 11 Category E
-   stations have waveform-source channel info, but they might have
-   channel info inside one of the spreadsheets I haven't yet parsed
-   the contents of. If S3 is unavailable, I'll deep-read each xlsx for
-   the Category E stations specifically.
-3. **Multi-epoch transition dates.** For Category B (11 stations), the
-   transition from EchoPro to PiesMo defines the epoch boundary
-   between EHZ and HHZ. We'll need either a per-station transition date
-   from the operator OR derivation from when LT files transition from
-   `EHZ` to `HHZ`. I can run the LT-derivation pass.
+1. Resolve the 5 divergences above (TPSO network code, HKER/WKA band,
+   HML1 multi-instrument, DNL/DNL2 multi-epoch, WILM stale note).
+2. Per-station registry override for ARKL, PLMR (EHE/N/Z@60, EchoPros)
+   and LKHRT (Gecko, rate TBD) pending operator confirmation.
+3. Operator input needed for JMS2-5, S88M/U, TPSOP — or exclude from
+   first-pass DU sweep.
+4. Decimation-duplicate filter pass over LT for the 11 multi-epoch
+   stations (year-range split).
+5. Re-pull FDSN snapshot to refresh against 2026-02-03 vintage and
+   add the 14 VIP-only stations.
