@@ -1377,11 +1377,8 @@ ARKL:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Arkaroola SA. NOT on UoM seedlink VIP 2026-06-01 — GoingToEqserver2025 notes 'Out for 12 months'. Real DU station temporarily offline; operator confirmed include 2026-06-01"
-  target_network: null
-  network_basis: unknown
   coverage_start: null
   coverage_end: 2024
-  notes: "Long-running station (12yr) — likely VW or similar permanent network"
 
 BD70:
   include: unknown
@@ -1461,11 +1458,8 @@ BRTS:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Brighton South SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro Telstra 4G; SAA: EchoPro"
-  target_network: null
-  network_basis: unknown
   coverage_start: null
   coverage_end: 2026
-  notes: "Long-running (12yr) — likely VW permanent"
 
 CLV2:
   include: true
@@ -1787,11 +1781,8 @@ PLMR:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Palmer SA. NOT on UoM seedlink VIP 2026-06-01 — GoingToEqserver2025 notes 'presently out' (WAP + satellite, old Netgear WAPS). Real DU station temporarily offline; operator confirmed include 2026-06-01"
-  target_network: null
-  network_basis: unknown
   coverage_start: null
   coverage_end: 2026
-  notes: "Long-running (14yr)"
 
 R2737:
   include: false
@@ -1822,11 +1813,8 @@ ROBE:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Robe SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro Telstra 4G; SAA: EchoPro multi-epoch sensors (Guralp CMG 6T-1 / 5T)"
-  target_network: null
-  network_basis: unknown
   coverage_start: null
   coverage_end: 2026
-  notes: "Long-running (13yr)"
 
 SCH2:
   include: unknown
@@ -1856,11 +1844,8 @@ STR2:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Strathalbyn SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro Telstra 4G; SAA: EchoPro multi-epoch sensors (Guralp CMG 6T-1 / 5T)"
-  target_network: null
-  network_basis: unknown
   coverage_start: null
   coverage_end: 2026
-  notes: "Long-running (15yr); 1970 artefact"
 
 SUND:
   include: true
@@ -1869,8 +1854,6 @@ SUND:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Sunnydale SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHZ); GoingToEqserver2025: Epro home network (ASSA)"
-  target_network: null
-  network_basis: unknown
   coverage_start: 2020
   coverage_end: 2026
 
@@ -1946,11 +1929,8 @@ WILM:
   recorder_types: [echopro]
   source_network_code: null
   notes: "DL Wilmington SA. Confirmed active on UoM seedlink VIP 2026-06-01 (EHE/N/Z); GoingToEqserver2025: Epro home netwk 4G"
-  target_network: null
-  network_basis: unknown
   coverage_start: null
   coverage_end: 2026
-  notes: "Long-running (7yr)"
 
 WOOD:
   include: unknown
