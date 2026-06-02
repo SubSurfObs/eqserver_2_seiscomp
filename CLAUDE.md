@@ -622,17 +622,28 @@ Y reads from day 365 of year Y-1, which might not be in the current
 unit's queue), epoch transitions (recorder swap between days), days
 where the previous day was `no_files`. About 20 lines of code.
 
-### Status as of compaction (2026-06-02)
+### Status as of 2026-06-02
 
-- **C is the planned mid-flight fix.** Pending the actual edit to
-  `phase3_driver.py`. Once landed, all units processed from that point
-  forward stop bleeding boundary data.
+- **C LANDED** as commit `2724c15` (phase3_driver.py). Mechanism:
+  `query_boundary_tail_files()` pulls day-1's HHMM='2359' files into
+  day N's source set; `_trim_to_day()` clips the merged stream to
+  `[day, day+1)` before `write_sds` so each day-job writes ONLY its own
+  SDS file (race-free under parallel workers). Verified end-to-end on
+  the staging VM: synthetic BRIG SS=12 case → trimmed stream starts at
+  exactly `00:00:00.000` (was `00:00:12.000` before fix); year-rollover
+  query correctly resolves Jan 1 → Dec 31 of prior year (returns
+  `…/2022/12/31/2022-12-31_2359_12_BRIG.dmx`). New phase3 invocations
+  (next station spawn onward, retries, DU sweep) pick this up
+  automatically; the in-flight worker at landing time does not
+  (already-imported module bytes).
 - **A is queued as a post-sweep recovery pass.** Recovers loss from
-  all units processed before C landed (including this morning's BEST
-  + BRIG + BRTH cohort).
+  all units processed BEFORE C landed (the BEST + BRIG + BRTH cohort
+  this morning + everything up to ~the first 29 units of the current
+  sweep). Boundary samples are still on the read-only EqServer NFS
+  archive and recoverable.
 - **B is operator-flagged but deferred** pending disk_to_sds
-  consultation. If disk_to_sds adopts atomic merge, C may be
-  unnecessary going forward.
+  consultation. C makes the problem go away for new units regardless of
+  whether B is ever adopted, so B is no longer urgent.
 
 ### Verification command (for any future session)
 
