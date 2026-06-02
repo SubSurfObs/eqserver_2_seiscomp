@@ -120,22 +120,43 @@ Reuse its model rather than re-implementing:
 
 ### Shared conversion core: `disk_to_sds/scripts/suds_convert.py`
 
-**Engine pin: the SUDS→miniSEED+SDS engine the eqserver sweep imports lives
-in `disk_to_sds/scripts/suds_convert.py` at `disk_to_sds` SHA `9a3b2ae`
-(committed 2026-06-01).** This is the version that converted the
-production-sweep bytes from 2026-06-01 onwards; prior to that commit the
-file existed only as an untracked, side-loaded copy on the staging VM —
-byte-identical to this SHA, but with no git record. See
-`handoffs/disk_to_sds/2026-06-01_engine-provenance/` for the incident
-write-up; see [[feedback-git-synced-across-hosts]] in agent memory for the
-rule we're tightening to prevent recurrence.
+**Engine pin (current): `disk_to_sds` SHA `2ee96f3` (post-2026-06-02 16:00 AEST),
+which contains the midnight-boundary fix at `00b6835` ("Option B" — `write_sds`
+now reads any existing per-channel day-file, merges with new traces, atomic
+writes back).** As of the 2026-06-02 VM reconcile, the staging VM tracks the
+engine at this SHA (no longer side-loaded), so fresh phase3 subprocesses
+import the B-enabled `write_sds`.
+
+**Earlier pin (historical):** SHA `9a3b2ae` (committed 2026-06-01) was the
+first git-tracked engine commit and the version that converted production
+bytes from 2026-06-01 until the 2026-06-02 reconcile. Prior to `9a3b2ae` the
+file existed only as an untracked, side-loaded copy on the staging VM
+byte-identical to `9a3b2ae`. See
+`handoffs/disk_to_sds/2026-06-01_engine-provenance/` for the provenance
+incident write-up, and `handoffs/disk_to_sds/2026-06-02_midnight-boundary/`
+for the boundary-fix collaboration. See [[feedback-git-synced-across-hosts]]
+in agent memory for the rule we're tightening to prevent recurrence.
+
+**Queued cross-repo follow-up: `suds_convert.py` → split into `sds_writer.py`
++ `suds_convert.py`.** The file's name is accurate for the SUDS reader
+(`convert_suds_files`) but misleading for the generic SDS writer (`write_sds`,
+`_sds_day_path`) that every gecko/minimus branch actually calls. After the
+current sweep stabilises, disk_to_sds will split the generic writer into
+`sds_writer.py`; eqserver's `scan/phase3_driver.py` `_write_sds_retry`
+import must update from `suds_convert.write_sds` → `sds_writer.write_sds`
+in the same coordinated window. Tracked in agent memory:
+[[project-split-suds-convert-followup]].
 
 The engine (built + tested on a real 2024 OUTU EchoPro day) — reuse it
 here for Stage 3 instead of reimplementing:
 - `convert_suds_files()` — read SUDS (sudspy) → remap to SEED ids: registry
   network, `c01→CHN / c02→CHE / c03→CHZ` (Kelunji manual), drop `c04+` aux/mic,
   loc `00`, band code by sample rate; per-file read-error capture for QC.
-- `write_sds()` — atomic per-channel day-file write, **STEIM2** (int32 cast).
+- `write_sds()` — **post-`00b6835`:** per-channel day-file write that reads
+  existing SDS records (if any), merges with the new traces, atomic-writes
+  back via `.partial`+rename. STEIM2 (int32 cast). Captures both midnight
+  boundaries automatically as data flows through; complementary to
+  eqserver's Option C trim in `phase3_driver.py`.
 - `network_for_station()` — registry lookup.
 
 `disk_to_sds/scripts/echopro_usb_to_sds.py` is the per-day **driver** to mirror:
