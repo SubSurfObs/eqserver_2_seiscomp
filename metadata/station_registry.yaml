@@ -1349,7 +1349,8 @@ PLYPT:
   coverage_end: 2025
 
 ADE:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   notes: "Adelaide? Short-lived 2014-2015"
@@ -1357,7 +1358,8 @@ ADE:
   coverage_end: 2015
 
 ADE2:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: 2023
@@ -1614,14 +1616,16 @@ G1053:
   coverage_end: 2023
 
 GLDS:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2018
 
 GLN:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
@@ -1651,7 +1655,8 @@ HOGM:
 
 
 LILH:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: null
@@ -1719,7 +1724,8 @@ MVM1Y:
   coverage_end: 2021
 
 MYP:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: 2014
@@ -1733,7 +1739,8 @@ NAME:
   coverage_end: 2026
 
 NBK:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: 2004
@@ -1872,7 +1879,8 @@ TOOL:
   coverage_end: 2017
 
 TORR:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
@@ -1887,7 +1895,8 @@ UTT:
   notes: "Long-running (13yr); 1970 artefact"
 
 WAL1:
-  include: unknown
+  include: false
+  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
   target_network: null
   network_basis: unknown
   coverage_start: null
