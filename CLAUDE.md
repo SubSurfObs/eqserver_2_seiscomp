@@ -1335,8 +1335,8 @@ whenever convenient; doesn't block anything.
 
 ### Recorder distinguishers (DU-scope ruleset, byte-level)
 
-Confirmed structural rules (consolidated from `docs/du_pre_sweep_notes.md`
-+ operator confirmations 2026-06-02/03):
+Consolidated from `docs/du_pre_sweep_notes.md` + operator confirmations
+2026-06-02/03. Confidence varies by rule — see the table below.
 
 ```
 At Level 1 (filename only):
@@ -1347,8 +1347,8 @@ At Level 1 (filename only):
 
 At Level 2 (single header read disambiguates):
   Within SUDS family — channel labels in header:
-    c01 / c02 / c03                      -> EchoPro
-    Up-T / East-T / North-T              -> Echo (Kelunji predecessor)
+    c01 / c02 / c03                      -> EchoPro  (WORKING HYPOTHESIS)
+    Up-T / East-T / North-T              -> Echo     (WORKING HYPOTHESIS)
 
   Within .ms.zip — sister-file presence:
     .ss kelunjimeta sidecar anywhere in
@@ -1358,6 +1358,23 @@ At Level 2 (single header read disambiguates):
       (DDBE/DDWB/SCM2 are the entire VW Minimus cohort;
        LOYU/MOSU/SGWU/TRPU/WILU are the entire VW Reftek cohort)
 ```
+
+**Rule confidence:**
+
+| Rule | Basis | Status |
+|---|---|---|
+| `.dmx*` → SUDS family | Long-established; SUDS-format-only extension | Confirmed |
+| `_HHZ.mseed.zip` → Piesmo | CLAUDE.md Piesmo section + scan evidence | Confirmed |
+| Per-channel-per-minute (~4320/day) → Minimus | CLAUDE.md Minimus section + cohort confirmation | Confirmed |
+| `.ms.zip` plain → Gecko (in DU) | Operator-confirmed no Reftek in DU 2026-06-03 | Confirmed for DU |
+| `.ss` sidecar → Gecko | CLAUDE.md Gecko section, cross-station scan | Confirmed |
+| **`c01/c02/c03` → EchoPro, `Up-T/East-T/North-T` → Echo** | One Echo sample (SDAN 2017-01 + 2018-01) and one EchoPro sample (BRTS 2024-01) probed via `scan_suds_file`. Operator (David Love) indicated SDAN 2017-2018 was Echo. | **WORKING HYPOTHESIS — needs broader corroboration** |
+
+To upgrade the Echo/EchoPro hypothesis to a confirmed rule, Level 2's
+SUDS header probe should be run across the known-EchoPro VW cohort
+(BEST, BRIG, CLIF, OUTU etc.) and any other suspected-Echo dates the
+operator nominates. Until then, treat the split as informative-but-
+unverified.
 
 So Level 2's recorder column for a DU station typically resolves with
 ZERO header reads needed beyond the SUDS Echo/EchoPro split. For VW the

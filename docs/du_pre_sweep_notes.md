@@ -92,7 +92,11 @@ Files in continuous/<YEAR>/<MONTH>/<DAY>/:
        sidecars are a Gecko tell)
 ```
 
-### How Echo vs EchoPro was nailed down (2026-06-02)
+### Echo vs EchoPro hypothesis (2026-06-02) — needs broader corroboration
+
+**This is a working hypothesis, not a confirmed rule.** It's based on
+one Echo sample (SDAN 2017 + 2018) and one EchoPro sample (BRTS 2024),
+plus the operator (David Love) indicating SDAN 2017-2018 was Echo.
 
 David Love provided SDAN's history. EqServer probe of three sample
 files:
@@ -103,12 +107,24 @@ files:
 | SDAN 2018-01-01 `.dmx.gz` | `East-T` (3-comp, with `North-T`/`Up-T` siblings) |
 | BRTS 2024-01-01 `.dmx` *(known EchoPro)* | `c01`, `c02`, `c03` |
 
-**Echo uses descriptive long-form channel names**; **EchoPro uses
-Kelunji `c0X` codes**. SDAN 2017-2018 is Echo, not EchoPro. The disk_to_sds
-engine's c01→N/c02→E/c03→Z Kelunji mapping is therefore an
-EchoPro-specific contract — for Echo, the channel-to-orientation
-mapping has to come from the descriptive label (`Up-T` → Z,
-`East-T` → E, `North-T` → N).
+Working hypothesis: **Echo uses descriptive long-form channel names**
+(Up-T / East-T / North-T); **EchoPro uses Kelunji `c0X` codes**. If the
+hypothesis holds, the disk_to_sds engine's `c01→N / c02→E / c03→Z`
+Kelunji mapping is EchoPro-specific — for Echo, the channel-to-
+orientation mapping would have to come from the descriptive label
+(`Up-T` → Z, `East-T` → E, `North-T` → N).
+
+**To upgrade to confirmed**, Level 2's SUDS header probe should be run
+across:
+- the known-EchoPro VW cohort (BEST, BRIG, CLIF, OUTU, etc.) — expect
+  `c0X` everywhere if the rule is right
+- any other suspected-Echo dates the operator nominates — expect
+  descriptive labels
+- a sweep across DU EchoPros to see if any are actually Echo in
+  disguise
+
+Until that corroboration runs, treat the split as informative-but-
+unverified.
 
 ### Side observations from the SDAN probe
 
