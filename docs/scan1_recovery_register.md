@@ -192,6 +192,46 @@ network gets its own register (next: `scan2_DU_recovery_register.md`).
 
 ---
 
+## Issue 3b — DDNE 2017 phase3 deadlock (single bad day stalled the pool)
+
+- **Detected:** 2026-06-04 ~14:00 AEST. DDNE 2017 had been listed
+  "in flight" for ~22 hours with no log activity. Diagnosis: phase3
+  emitted 364 of 365 day-lines, missing day `2017-10-07`. All 6 phase3
+  processes alive but in `futex_wait_queue_me`/`pipe_read` with 0%
+  momentary CPU — classic multiprocessing.Pool deadlock with one worker
+  hung mid-day-job and the parent waiting forever.
+- **Root cause:** unknown specifically. Day `2017-10-07` on a Minimus
+  per-channel-per-minute station triggered some pathological state
+  inside an ObsPy operation (likely `Stream.merge()` given the DDBE
+  precedent — see Issue 5 below). The worker neither errored, nor
+  returned a result, nor crashed; it just sat sleeping. Not in D-state
+  (no NFS hang), so it's a Python-level deadlock, not an I/O block.
+- **Fix landed:** none yet. Mitigation: operator-initiated SIGKILL of
+  the phase3 process group 2026-06-04. convert.py recorded `FAIL DDNE
+  2017 rc=-9` and advanced through DDNE 2016-2012 (all empty
+  pre-deployment years) to DDSW 2024 within seconds.
+- **Affected scope.** Criterion: convert log entries with `rc=-9`.
+  Known: DDNE 2017 (one unit). The specific day **2017-10-07** is the
+  poison input that needs isolated investigation in the retry pass.
+- **Recovery strategy.** Unit-level retry, similar to BEST 2019:
+  1. Retry phase3 for DDNE 2017 from scratch with the post-fix engine.
+     If the bug is in `Stream.merge()` for some pathological trace
+     pattern, this will hang again on 2017-10-07.
+  2. If the retry also hangs, isolate that single day: run phase3 with
+     `--dates-file` listing only `2017-10-07` to reproduce. Then
+     either (a) skip that day and convert the other 364, or (b) add
+     a per-day timeout watchdog to the worker so a single stuck day
+     doesn't block the pool.
+- **Status:** PENDING — queued for post-sweep retry pass.
+- **Notes.** Suggests we should add a per-day-job timeout to the
+  multiprocessing pool so a future hang fails the day cleanly instead
+  of stalling the whole unit indefinitely. Filing as a follow-up
+  against `scan/phase3_driver.py:_worker_convert_day`. The DDBE
+  2019-12-16 issue (Issue 5) is a related but different failure mode
+  — that one raised an exception visibly; this one hung silently.
+
+---
+
 ## Issue 4 — Bogus pre-2012 trace year-leak
 
 - **Detected:** 2026-05-31, during the first sweep attempt. BEST 2024
@@ -232,6 +272,88 @@ network gets its own register (next: `scan2_DU_recovery_register.md`).
 - **Notes.** The fix prevents future occurrences; recovery here is
   cleanup of any historical artifacts. Low urgency vs Issues 1-3 if
   the audit comes up empty.
+
+---
+
+## Issue 5 — Gecko/Minimus mid-day sample-rate change crashes the merge
+
+- **Detected:** 2026-06-03 audit. DDBE 2019-12-16 produced a Python
+  exception during convert (status `error`, not `parse_error`):
+  ```
+  Exception: Can not merge traces with same ids (VW.DDBE.00.HHE)
+    but differing sampling rates (200.0, 250.0)!
+  ```
+  Confirmed via mseed header probe: the rate changed mid-day (last
+  file of 2019-12-16 already at 250 sps; first file of 2019-12-17 also
+  at 250 sps with corrected `_CHE`-style filename).
+- **Root cause.** The upstream/relay didn't update the file-naming
+  convention when the recorder changed rate mid-day, so the late-day
+  files carry `_HHE` in the filename despite holding 250 sps records
+  inside. `convert_minimus_day` (and `convert_gecko_day` by symmetry)
+  trust the source mseed channel id verbatim — both 200 sps and 250
+  sps traces end up with id `VW.DDBE.00.HHE`. ObsPy `Stream.merge()`
+  refuses to merge same-id different-rate traces and raises.
+- **Engine gap.** The EchoPro path (`convert_echopro_day`) avoids
+  this because the disk_to_sds engine's `channel_for(rate)` reassigns
+  band per-trace before merge. The Gecko/Minimus paths do NOT do this
+  — they should. Fix: in `convert_gecko_day` and `convert_minimus_day`,
+  reassign each trace's `stats.channel` via `seed_band(rate) +
+  instrument + orientation` BEFORE calling `st.merge()`. That splits
+  the merge into per-band groups and writes both 200-sps `HH*` and
+  250-sps `CH*` SDS files cleanly.
+- **Fix landed:** none yet. Engine change belongs in disk_to_sds (the
+  `seed_band` function is already there); the call site to update is
+  in eqserver `scan/phase3_driver.py` `convert_gecko_day` /
+  `convert_minimus_day`.
+- **Affected scope.** Criterion: convert log entries with `error`
+  status (NOT `parse_error`), specifically with the
+  `"Can not merge traces with same ids ... but differing sampling
+  rates"` message. Known: DDBE 2019-12-16 (one day). Possibly broader
+  — any other Gecko/Minimus station-year with an intra-band rate
+  change would crash the same way; cross-band changes (200→250) are
+  the only visible class in VW so far. The post-VW Level 2 header
+  scan (CLAUDE.md "Level 2 — Header scan") is the systematic way to
+  identify hidden cases before DU launch.
+- **Recovery strategy.**
+  1. Ship the per-trace band reassignment in the gecko/minimus
+     paths.
+  2. Day-level retry for the known affected day (DDBE 2019-12-16).
+  3. Once Level 2 has run, any newly-surfaced mid-day rate-change
+     candidates from other stations get the same treatment.
+- **Status:** PENDING — engine fix queued; one known affected day so
+  far. Don't block VW sweep on this; the failure is one day, not a
+  unit.
+- **Notes.** This was the trigger for the Level 2 design expansion in
+  CLAUDE.md — the intra-band rate-change class is invisible at Level 1
+  and would silently silently mis-merge if Level 2 doesn't surface it
+  before DU launch.
+
+---
+
+## Issue 6 — CLIF 2018-01-16 STEIM2 encoding spike (single day lost)
+
+- **Detected:** 2026-06-03 audit. CLIF 2018-01-16 produced:
+  ```
+  InternalMSEEDError: msr_encode_steim2(VW_CLIF_00_CHN_D):
+    Unable to represent difference in <= 30 bits
+  ```
+- **Root cause.** A sample-to-sample delta in one record exceeded
+  STEIM2's 30-bit dynamic range — typically caused by a recorder
+  spike or clock anomaly. The whole day failed to write because one
+  bad record couldn't encode.
+- **Fix landed:** none yet. Two options for handling at conversion
+  time: (a) skip the offending record (drop a fraction of a second of
+  data, keep the rest of the day); (b) clip the spike value into
+  STEIM2's representable range. (a) is safer because (b) silently
+  alters the recorded signal.
+- **Affected scope.** Criterion: convert log entries with `error`
+  status carrying `Unable to represent difference in <= 30 bits`.
+  Known: CLIF 2018-01-16 (one day).
+- **Recovery strategy.**
+  1. Modify the engine to catch `InternalMSEEDError` per-record and
+     skip-with-log instead of failing the day.
+  2. Day-level retry for the known affected day.
+- **Status:** PENDING — engine fix queued; one known day.
 
 ---
 
