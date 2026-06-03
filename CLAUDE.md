@@ -1290,13 +1290,201 @@ lists shrink dramatically, so Pass 1 captures far more of the real data.
 
 **Level 2 — Header scan (decompress headers, skip data payloads)**
 
-Runs `scan_suds_file()` (sudspy) or reads MiniSEED fixed header on files that survived Level 1. Adds per-file:
-- Channel names present in the file (e.g.  'c01', `DL*`,  Need to confirm what variable options might be. C0*, [123] definitely confirmed.)
-- Sample rate(s)
-- Precise start and end times
-- Confirmed station identity from header (catches wrong-station files that passed filename check)
+Runs `scan_suds_file()` (sudspy) or reads MiniSEED fixed header on files
+that survived Level 1. Populates the Level-2 columns already defined in
+the per-station SQLite manifest (`channels`, `sample_rates`, `t_start`,
+`t_end`, `header_station` — currently NULL on every row). Schema is
+done; the work is populating it.
 
-This is the same as the existing Stage 2 in the per-day processing strategy, but run as a batch sweep across the archive and stored persistently.
+Per the design conversation 2026-06-03, Level 2 is the metadata-building
+stage that should follow VW sweep completion and precede DU sweep
+launch. The waveform conversion does NOT need Level 2 to work — the
+disk_to_sds engine already derives band code per-trace from
+`seed_band(rate_hz)` at conversion time, so undocumented rate changes
+get correct SDS channel codes byte-by-byte (cross-band; the intra-band
+gap is discussed below). What Level 2 enables is **comprehensive
+epoch-aware metadata for `uom_seismic_metadata`** — a separate question
+from "does the conversion work."
+
+Minimum per-file capture (the four bullets above) + the structured
+metadata harvest below.
+
+### Sampling strategy
+
+Reading every file in the archive is wasteful — for VW + DU we're looking
+at ~10^8 files. The relevant signals are concentrated:
+
+- **Baseline density**: one file per (station × month × channel_suffix).
+  For ~50 in-scope stations, ~10 years average, 12 months, 1-3 channel
+  suffixes per station-month → ~18,000 header reads. At ~50 ms/read on
+  NFS that's ~15 minutes total. Trivially affordable.
+- **Boundary-bracketing**: at any Level-1 transition (recorder_type
+  change, channel_suffix change, source_type change, SS jump beyond
+  normal restart range), sample the LAST file before and FIRST file
+  after to bracket the change precisely. Without bracketing, the
+  boundary date is +/- 1 month; with bracketing it's day-level.
+- **Suspected intra-band rate changes**: see the section below — these
+  are invisible at Level 1 and Level 2 IS the only way to catch them.
+  Heuristic: if a station-year shows a high `error` count at conversion
+  time (the DDBE 2019-12-16 signature), schedule extra Level 2 reads
+  for that year.
+
+Level 2 can run OFFLINE relative to the conversion sweep — it's read-only
+against EqServer NFS and doesn't touch staging or LT — so launch it
+whenever convenient; doesn't block anything.
+
+### Recorder distinguishers (DU-scope ruleset, byte-level)
+
+Confirmed structural rules (consolidated from `docs/du_pre_sweep_notes.md`
++ operator confirmations 2026-06-02/03):
+
+```
+At Level 1 (filename only):
+  *.dmx / *.dmx.gz                       -> SUDS family (Echo or EchoPro)
+  *_HHZ.mseed.zip                        -> Piesmo
+  *_<CHAN>.mseed.zip (~4320/day)          -> Minimus
+  *.ms.zip / *.mseed.zip (no chan suffix) -> Gecko (or Reftek — same shape)
+
+At Level 2 (single header read disambiguates):
+  Within SUDS family — channel labels in header:
+    c01 / c02 / c03                      -> EchoPro
+    Up-T / East-T / North-T              -> Echo (Kelunji predecessor)
+
+  Within .ms.zip — sister-file presence:
+    .ss kelunjimeta sidecar anywhere in
+      station's tree                     -> Gecko (high-confidence positive)
+    Reftek-specific blockettes in mseed  -> Reftek RT130 (header probe)
+    Operator-confirmed: NO Reftek in DU; NO Minimus in DU
+      (DDBE/DDWB/SCM2 are the entire VW Minimus cohort;
+       LOYU/MOSU/SGWU/TRPU/WILU are the entire VW Reftek cohort)
+```
+
+So Level 2's recorder column for a DU station typically resolves with
+ZERO header reads needed beyond the SUDS Echo/EchoPro split. For VW the
+extra check is `.ss` presence-or-absence to distinguish Gecko from the
+RT130 cohort.
+
+### Sensor identification + authority tagging
+
+Best-case scenario per recorder (when the operator entered the right
+values; see Skepticism section below for when they didn't):
+
+| Recorder | Source of sensor identity | Other authoritative fields |
+|---|---|---|
+| EchoPro / Echo (PC-SUDS) | `sensor` field in SUDS header (authority: **operator_input**) | recorder, gain, cpv, sample_rate, GPS — **authoritative** |
+| Gecko | `sensor_name`, `sens` fields in `.ss` kelunjimeta sidecar (**operator_input**) | recorder serial, cpv, firmware, sample_rate, gain, GPS — **authoritative** |
+| Minimus | **AUTO-RESOLVED** → Guralp Radian (only pairing in VW) | sample_rate, channel codes from mseed blockettes — derived |
+| Reftek RT130 | **AUTO-RESOLVED** → IESE S10g / S21g borehole geophone (the entire pairing in VW; LOYU exception is OYO Geospace HS-1 deep+surface) | sample_rate, channel codes from mseed blockettes — derived |
+| Piesmo | Sample rate + channel from mseed header; sensor identity from cohort lookup | rate, channel — derived; sensor — cohort_resolved |
+
+For the auto-resolved recorders (Minimus, Reftek), Level 2 should write
+the sensor identity straight into the harvest without any header probe
+for it — the recorder identity alone determines it.
+
+For the operator-input recorders (Echo, EchoPro, Gecko), Level 2
+captures what the header says verbatim and tags it `operator_input`. The
+synthesis step in `uom_seismic_metadata` will compare against
+documentary sources (wiki, field notes, handover PDFs) and reconcile.
+
+### Epoch boundary detection
+
+An epoch boundary = a consequential change in **recorder**, **sensor**,
+or **sample_rate**. NOT serial number changes (those annotate the
+existing epoch). NOT location code changes (those don't affect response).
+
+What Level 2 surfaces:
+
+- **Sample-rate changes**: month-over-month diff on the `sample_rates`
+  column. Bracketing reads pin the change to day-level.
+- **Recorder changes**: the byte-level rules above applied to monthly
+  samples will flip the recorder label at the transition month.
+- **Sensor changes**: header sensor field diff month-over-month for the
+  Echo/EchoPro/Gecko cases; auto-confirmed cases never change within a
+  recorder.
+
+**Important gap that Level 2 specifically closes** — intra-band rate
+changes. The conversion-time engine derives band code from
+`seed_band(rate)`:
+
+```
+50           -> B            100, 200       -> H
+250, 400, 500, 800 -> C       1000+         -> F
+```
+
+Cross-band changes (200→250 = H→C, like DDBE 2019-12-16) get a visible
+SDS channel-code split at conversion time. Intra-band changes (100→200
+both H; 250→500 both C) are invisible in the SDS output — they manifest
+only as an `error` status at conversion time when the merge crashes on
+"same id, different rates." VW so far has only had cross-band rate
+changes; the historical universe in VW (per operator) makes intra-band
+unlikely. But Level 2 is the only systematic way to know in advance,
+and it's cheap.
+
+### Skepticism rules for operator-input fields
+
+The `sensor` field is the load-bearing skepticism case. The classic
+failure mode is "operator put the wrong sensor model in the recorder
+config at deployment; corrected on the next site visit days/weeks
+later." Recently confirmed by operator with a personal example of a
+Gecko sensor mis-entry caught after several days (2026-06-03).
+
+Rules Level 2 should apply when emitting the metadata harvest:
+
+- **Rapid sensor changes**: if the `sensor` field changes between two
+  adjacent monthly samples AND the previous sensor was present for less
+  than N days (default proposal: 14 days), flag the change as
+  `suspicious_rapid_sensor_change`. This is the "looks like a misconfig
+  that got corrected" pattern.
+- **Unknown sensor strings**: if the sensor string doesn't match any
+  entry in `uom_seismic_metadata/source/sensors.yaml` known-cohort
+  list for the relevant recorder, flag `suspicious_unknown_sensor`.
+- **Empty / "unknown" sensor**: emit `sensor: unknown` per the metadata
+  schema's sentinel semantics (we know there WAS a sensor but can't
+  determine it). NOT a `null` — null would mean "no sensor existed."
+- **Out-of-cohort sensor**: a Gecko station emitting a non-Gecko-cohort
+  sensor string, or an EchoPro emitting an unusual-for-EchoPro string,
+  → flag `suspicious_cohort_mismatch`.
+
+"Suspicious" doesn't mean wrong — it means human review needed at
+synthesis time before promoting to canonical metadata. All flags
+attached as `authority_overrides` on the sensor field in the harvested
+observation; the synthesis step in `uom_seismic_metadata` consumes
+these and cross-references against wiki + field notes + handover PDFs.
+
+### Output target — `uom_seismic_metadata` harvest
+
+Per the existing CLAUDE.md "Station metadata epochs" section, this
+project's empirical version of station history feeds into
+`uom_seismic_metadata/reference/waveform_db/<net>_observations.yaml`,
+tagged per-observation with:
+
+- `source`: `pcsuds/<file_or_ref>` | `gecko_ss/<ref>` |
+  `sds_scan/<ref>` (the three Level-2 emission tags)
+- `authority`: `authoritative` | `operator_input` | etc. (see the
+  existing CLAUDE.md table)
+- `authority_overrides`: per-field, for operator-input fields inside
+  otherwise authoritative files (e.g. PC-SUDS is overall authoritative
+  but its sensor field is operator_input)
+
+Schema contract is in `uom_seismic_metadata/schema/station_metadata.draft.yaml`;
+the join with the documentary version (wiki + PDF + StationXML) happens
+in that project, not here.
+
+### What Level 2 explicitly does NOT do
+
+- **Data quality** (PPSD noise, knocked-over sensor like OUTU, etc.):
+  separate post-conversion QC pass against the LT archive. Out of scope
+  for Level 2.
+- **Resolve operator-input ambiguity**: that's the synthesis step in
+  `uom_seismic_metadata`. Level 2 captures the raw signal + skepticism
+  flags; reconciliation against wiki / field notes happens downstream.
+- **Read every file**: sampling-based with bracketing. If an epoch
+  boundary turns out to need finer pinning later, targeted re-reads can
+  drill down without re-running the whole Level 2.
+
+This is the same as the existing Stage 2 in the per-day processing
+strategy, but run as a batch sweep across the archive and stored
+persistently.
 
 **Level 3 — Day-level aggregation (derived, no file opens)**
 

@@ -290,6 +290,17 @@ In rough order of how blocking they are:
   marked `c` in the 2026-05-27 ListToCheck round are demoted to
   `include: false` with reason captured in registry.
 
+## Related design docs
+
+- `CLAUDE.md` § "Pre-scan and file manifest" → **Level 2 — Header scan**
+  is the metadata-building stage that should run AFTER VW sweep completes
+  and BEFORE DU sweep launches. Recorder distinguishers, sensor authority
+  tagging, epoch boundary detection (including the intra-band rate-change
+  gap exposed by DDBE 2019-12-16), and skepticism rules for
+  operator-input fields are all consolidated there as design notes.
+  Implementation TBD; schema is already in place (the columns are NULL
+  in the per-station DBs and just need populating).
+
 ## Related agent memories (cross-reference for future sessions)
 
 - `[[project-du-sweep-preconditions]]` — what must be reviewed before
