@@ -6,6 +6,14 @@ Replace the legacy bash + Java EqConvert pipeline (in `legacy/`) with a Python p
 
 **Core dependency**: `sudspy` (`/Users/DSAND/projects/SubSurfObs/sudspy`) — provides PC-SUDS parsing and ObsPy bridge. The pipeline is built around Python and sudspy/ObsPy. SeisComP CLI tools (`scmssort`, `scart`) are available on the VM and were central to the legacy pipeline, but are not assumed to be required in the rewrite — see Toolchain section.
 
+**Infra context**: see `~/projects/SubSurfObs/uom_compute/CLAUDE.md` for the
+canonical reference on UoM hosts, mount points, share endpoints, and the
+write-host invariant for apply.py / promote.py. The "Shared infrastructure"
+section further down in this file is project-specific and may diverge over
+time; `uom_compute` is the single source of truth for host facts. When the
+two disagree, `uom_compute` wins for host/mount/access questions; this file
+wins for pipeline-specific design.
+
 ## Sweep recovery registers
 
 Each production sweep accumulates issues that need post-sweep recovery
