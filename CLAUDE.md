@@ -1048,12 +1048,33 @@ The ledger has a disjoint-writers invariant preserved through this integration:
 | Host | What it writes to the ledger | Auto-push |
 |---|---|---|
 | Mac | `cards/<NET>.<STA>/<card_id>/` (sdcard prep) | yes |
-| Staging VM | `card.json` + `cleanups.jsonl` (sdcard ingest); **eqserver phase3 does NOT write to the ledger directly — its manifest is a transit file consumed later by apply.py on dev1** | yes (for sdcard) |
-| dev1 (SeisComp VM) | `events.jsonl` + `policies/<sha>.yaml` + `runs/<run_id>/run.json` (via apply.py) | yes |
+| Staging VM (`rs-l-0ezd3a.desktop.cloud.unimelb.edu.au`) | `card.json` + `cleanups.jsonl` (sdcard ingest); **eqserver phase3 does NOT write to the ledger directly — its manifest is a transit file consumed later by apply.py on dev1** | yes (for sdcard) |
+| **dev1** = `ssh seiscomp@seismology-dev1.its.unimelb.edu.au` | `events.jsonl` + `policies/<sha>.yaml` + `runs/<run_id>/run.json` (via apply.py) | yes |
 
 The `policies/` and `runs/` entries always get written by `apply.py` on dev1.
 That keeps the disjoint-writers rule clean: staging VM never touches the
 ledger repo for eqserver work — it just hands the manifest file to dev1.
+
+> **⚠ WRITE-HOST INVARIANT.** `apply.py` and `run_production_promote.py`
+> must run on dev1 only. Staging VM has `/mnt/seiscomp_archive` mounted
+> **ro** by design (verified via `mount | grep seiscomp_archive`:
+> `ro,relatime,...,file_mode=0444,dir_mode=0555`). Launching promote.py
+> on staging VM fails on the first commit attempt with
+> `OSError: [Errno 30] Read-only file system: '/mnt/seiscomp_archive/...'`
+> — this is the failsafe that caught the wrong-host launch 2026-06-04.
+> Before any relaunch of apply.py / promote.py, run the preflight:
+> ```
+> ssh seiscomp@seismology-dev1.its.unimelb.edu.au '
+>   hostname
+>   mount | grep seiscomp_archive   # must include rw
+>   touch /mnt/seiscomp_archive/.preflight_$$ && rm /mnt/seiscomp_archive/.preflight_$$
+> '
+> ```
+> All three must succeed. If they don't, abort and investigate. Never
+> assume the host is dev1 because the script ran somewhere previously;
+> the run record in `promote_done.jsonl` does NOT carry host identity,
+> so the only way to know is to verify the mount flags on the host
+> you're about to launch from.
 
 ### Provenance contract for production runs
 
