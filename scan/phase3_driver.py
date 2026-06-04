@@ -505,16 +505,41 @@ def _worker_convert_day(job):
     """Pickle-safe worker. Opens its own DB connection, imports suds_convert
     internally (so the parent doesn't have to pass the module across pickle).
     `job` is a plain dict so it pickles cleanly.
+
+    Per-day-job timeout: wraps the body in a SIGALRM-based 10 minute deadline.
+    Days that legitimately convert finish in seconds (slowest unit-average
+    observed so far: 27s/day on DDNE 2018), so a day exceeding 10 minutes
+    is overwhelmingly likely to be a deadlock or pathological-data hang.
+    On timeout, the worker returns status="timeout" cleanly; the pool
+    continues with other days. The poison day goes to the day-level retry
+    pass. Without this, a single bad day stalls the whole unit indefinitely
+    (DDNE 2017 lost 17h, DDSW 2019 lost 4.5h before manual intervention,
+    both 2026-06-03/04).
     """
     import sqlite3 as _sql
+    import signal as _signal
+
+    DAY_TIMEOUT_S = 600  # 10 minutes per day-job; see docstring
+
+    def _timeout_handler(signum, frame):
+        raise TimeoutError(f"day-job exceeded {DAY_TIMEOUT_S}s wall-clock")
+
+    # Arm the alarm. signal.alarm only fires when Python returns to the
+    # interpreter loop; for CPU-spinning hangs (DDSW 2019 signature, 40% CPU)
+    # this works because workers do return to Python periodically. For
+    # futex_wait deadlocks (DDNE 2017 signature, 0% CPU) signal interrupts
+    # the wait and TimeoutError propagates.
+    _signal.signal(_signal.SIGALRM, _timeout_handler)
+    _signal.alarm(DAY_TIMEOUT_S)
+
     sys.path.insert(0, job["disk_to_sds"])
     import suds_convert  # noqa: E402
     conn = _sql.connect(job["db_path"])
+    d_iso = job["date"]
     try:
         sta = job["station"]
         net = job["network"]
         loc = job["location"]
-        d_iso = job["date"]
         d = date.fromisoformat(d_iso)
         recorder_eff = job["recorder_eff"]
         staging = job["staging_sds"]
@@ -546,6 +571,10 @@ def _worker_convert_day(job):
             else:
                 r = {"status": "unsupported_recorder", "n_files": len(files),
                      "n_boundary_files": len(boundary_files)}
+        except TimeoutError as e:
+            r = {"status": "timeout", "n_files": len(files),
+                 "n_boundary_files": len(boundary_files),
+                 "error": str(e)}
         except Exception as e:
             r = {"status": "error", "n_files": len(files),
                  "n_boundary_files": len(boundary_files),
@@ -553,7 +582,12 @@ def _worker_convert_day(job):
                  "traceback": traceback.format_exc()}
         r["date"] = d_iso
         return r
+    except TimeoutError as e:
+        # Timeout fired before files/boundary_files were even resolved.
+        return {"status": "timeout", "n_files": 0, "n_boundary_files": 0,
+                "error": str(e), "date": d_iso}
     finally:
+        _signal.alarm(0)
         conn.close()
 
 
