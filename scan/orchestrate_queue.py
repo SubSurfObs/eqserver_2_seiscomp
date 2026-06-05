@@ -64,37 +64,85 @@ def queue_dir(staging_root: Path) -> Path:
     return Path(staging_root) / "eqserver_sweep"
 
 
+def _fs_retry(op, what: str, retries: int = 5, base_delay: float = 2.0):
+    """Retry a filesystem operation on transient OSError.
+
+    Mediaflux CIFS sessions on the shared staging share occasionally drop
+    briefly and surface as `OSError: [Errno 112] Host is down` (the `soft`
+    mount option means kernel returns the error rather than hanging). We saw
+    this kill run_production_promote.py twice (2026-06-04 ~05:16 UTC and
+    again 2026-06-04 ~21:00 UTC). The session re-handshakes in the
+    background within seconds; retrying with linear backoff survives the
+    blip without crashing the long-running poll loop.
+
+    Re-raises the last error if all retries fail. Logs each retry to stderr
+    so the caller can see what's happening.
+    """
+    import sys
+    last_err = None
+    for attempt in range(1, retries + 1):
+        try:
+            return op()
+        except OSError as e:
+            last_err = e
+            if attempt == retries:
+                break
+            delay = base_delay * attempt
+            print(f"  [orchestrate_queue] OSError on {what} "
+                  f"attempt {attempt}/{retries}: {e}; sleeping {delay:.1f}s "
+                  f"and retrying", file=sys.stderr, flush=True)
+            time.sleep(delay)
+    raise last_err
+
+
 def append_event(queue_path: Path, event: dict) -> None:
     """Append one event line to the queue file. Creates parent dir if needed.
 
     Uses a simple write — the staging CIFS mount is rw and we have one writer
     per queue file (convert.py owns pending.jsonl, promote.py owns
     promoted.jsonl, cleanup.py owns cleaned.jsonl). No locking needed.
+
+    Wraps the filesystem ops in `_fs_retry` to survive transient CIFS blips
+    on the mediaflux backend (the "Host is down" pattern, see _fs_retry doc).
     """
-    queue_path.parent.mkdir(parents=True, exist_ok=True)
     line = json.dumps(event, separators=(",", ":"), sort_keys=True)
-    with queue_path.open("a") as f:
-        f.write(line + "\n")
-        f.flush()
-        os.fsync(f.fileno())
+
+    def _do():
+        queue_path.parent.mkdir(parents=True, exist_ok=True)
+        with queue_path.open("a") as f:
+            f.write(line + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+
+    _fs_retry(_do, f"append({queue_path})")
 
 
 def read_all_events(queue_path: Path) -> list[dict]:
-    """Read every event in a queue file. Returns [] if file is missing."""
-    if not queue_path.exists():
+    """Read every event in a queue file. Returns [] if file is missing.
+
+    Wraps filesystem ops in `_fs_retry` to survive transient CIFS blips on
+    the mediaflux backend (`OSError: Host is down` on `.exists()` or open()
+    during session re-handshake).
+    """
+    exists = _fs_retry(lambda: queue_path.exists(),
+                       f"exists({queue_path})")
+    if not exists:
         return []
-    events = []
-    with queue_path.open() as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                events.append(json.loads(line))
-            except json.JSONDecodeError:
-                # Tolerate a partial trailing line (writer was mid-flush).
-                continue
-    return events
+
+    def _read_all():
+        out = []
+        with queue_path.open() as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    out.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+        return out
+
+    return _fs_retry(_read_all, f"read({queue_path})")
 
 
 def already_processed_ids(queue_path: Path) -> set[str]:
