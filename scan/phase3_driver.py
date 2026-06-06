@@ -173,6 +173,57 @@ def _concat_zip_members(files, combined, read_errors):
             read_errors.append((path, f"{type(e).__name__}: {e}"))
 
 
+def _start_phase3_watchdog(deadline_s=10800):
+    """Force-kill the phase3 process if it runs longer than `deadline_s` wall-clock.
+
+    This is the safety net for hangs the per-day-job SIGALRM (in
+    _worker_convert_day) does not catch — specifically, the
+    multiprocessing.Pool context-manager teardown hanging after all
+    day-jobs have returned their results. Observed pattern: all 365
+    day-lines emitted to the log, then phase3 sits forever in
+    `pool.__exit__()` waiting for a worker process that won't die.
+
+    LOYU 2016 hit this on 2026-06-06 (3.4h stuck before manual kill).
+    DDWB 2022 hit a milder version on 2026-06-04 (~30 min before
+    self-resolving). The SIGALRM in _worker_convert_day doesn't help
+    because by the time the hang occurs, all workers' SIGALRM handlers
+    have already been cleared (alarm(0) in the finally).
+
+    Default deadline 10800s = 3 hours. The slowest legitimate unit
+    observed (DDWB 2018 with workers=4) was 8783s = 2.4h. With workers=8
+    the slowest are ~1.5h. 3h gives a comfortable margin over legitimate
+    completions while bounding hangs at +1h instead of "indefinite".
+
+    Uses `os.kill(os.getpid(), SIGKILL)` rather than SIGTERM because the
+    hang we're protecting against is in C code that doesn't respond to
+    signal handlers. SIGKILL can't be blocked — the kernel reaps the
+    process. convert.py then records `FAIL <STA> <YEAR> rc=-9` and
+    advances to the next unit.
+    """
+    import threading
+    import signal as _signal
+    start = time.time()
+
+    def _bark():
+        deadline = start + deadline_s
+        while time.time() < deadline:
+            time.sleep(60)
+        # We are past the deadline. Force-kill.
+        print(f"\n[phase3] WATCHDOG: exceeded {deadline_s}s wall-clock without "
+              f"clean exit; force-killing PID {os.getpid()} with SIGKILL",
+              file=sys.stderr, flush=True)
+        # Some platforms also need to forcibly reap child workers; SIGKILL on
+        # the process group catches any orphaned phase3 children too.
+        try:
+            os.killpg(os.getpgrp(), _signal.SIGKILL)
+        except Exception:
+            os.kill(os.getpid(), _signal.SIGKILL)
+
+    t = threading.Thread(target=_bark, name="phase3_watchdog", daemon=True)
+    t.start()
+    return t
+
+
 def _iter_days(start_date, end_date):
     """Inclusive day-by-day iterator."""
     d = start_date
@@ -649,6 +700,12 @@ def main():
 
     print(f"[phase3] station={network}.{station} loc={location!r} status={status} "
           f"commit={args.commit} dry-run={not args.commit}", flush=True)
+
+    # Unit-level watchdog: force-kills the whole phase3 process after a hard
+    # wall-clock deadline. Catches the multiprocessing.Pool finalisation hangs
+    # (LOYU 2016 2026-06-06, DDWB 2022 2026-06-04) that the per-day-job
+    # SIGALRM in _worker_convert_day does not cover.
+    _start_phase3_watchdog(deadline_s=10800)  # 3 hours
 
     # Run-manifest setup: capture identity at start; we'll fill in aggregates +
     # per-date status during the run and write the manifest at the end.
