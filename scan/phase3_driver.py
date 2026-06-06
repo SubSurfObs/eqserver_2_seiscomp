@@ -212,12 +212,14 @@ def _start_phase3_watchdog(deadline_s=10800):
         print(f"\n[phase3] WATCHDOG: exceeded {deadline_s}s wall-clock without "
               f"clean exit; force-killing PID {os.getpid()} with SIGKILL",
               file=sys.stderr, flush=True)
-        # Some platforms also need to forcibly reap child workers; SIGKILL on
-        # the process group catches any orphaned phase3 children too.
-        try:
-            os.killpg(os.getpgrp(), _signal.SIGKILL)
-        except Exception:
-            os.kill(os.getpid(), _signal.SIGKILL)
+        # IMPORTANT: kill ONLY this phase3 process, NOT the process group.
+        # phase3 is spawned via subprocess.run() from convert.py, so it
+        # inherits convert.py's pgid. An os.killpg(os.getpgrp(), SIGKILL)
+        # would kill the orchestrator AND its tmux session — exactly what
+        # happened to LRNW 2020 on 2026-06-07, halting the entire sweep.
+        # Multiprocessing.Pool workers will be orphaned briefly, then reaped
+        # by the kernel; that's fine, they don't affect convert.py's view.
+        os.kill(os.getpid(), _signal.SIGKILL)
 
     t = threading.Thread(target=_bark, name="phase3_watchdog", daemon=True)
     t.start()
