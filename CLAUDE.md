@@ -143,22 +143,36 @@ Reuse its model rather than re-implementing:
 
 ### Shared conversion core: `disk_to_sds/scripts/suds_convert.py`
 
-**Engine pin (current): `disk_to_sds` SHA `2ee96f3` (post-2026-06-02 16:00 AEST),
-which contains the midnight-boundary fix at `00b6835` ("Option B" — `write_sds`
-now reads any existing per-channel day-file, merges with new traces, atomic
-writes back).** As of the 2026-06-02 VM reconcile, the staging VM tracks the
-engine at this SHA (no longer side-loaded), so fresh phase3 subprocesses
-import the B-enabled `write_sds`.
+**Engine pin (current): `disk_to_sds` SHA `88323ec` (committed 2026-06-07
+afternoon AEST), which adds an INT32 fallback in `write_sds` when STEIM2
+cannot encode a glitch sample (digitizer bit-error that produces a
+sample-to-sample delta >30 bits). Days affected by glitch samples now
+preserve the day at ~3.4× size for the affected day-channel; previously
+the whole day would error and require manual recovery. Includes the
+midnight-boundary fix at `00b6835` ("Option B") that the previous pin
+also had.** Live on staging VM from 2026-06-07 evening AEST after smoke
+test (HOLS 2013-06-15 EchoPro / LRSH 2022-06-15 Gecko /
+DDWB 2021-06-15 Minimus, all byte-equal to the previous pin on clean
+days). See `handoffs/disk_to_sds/2026-06-07_pool-teardown-hang/` for the
+full motivation — the glitch-sample fallback is hoped to defuse some
+of the "poison days" that triggered the SIGALRM-induced pool teardown
+hangs, reducing how often any timeout has to fire.
 
-**Earlier pin (historical):** SHA `9a3b2ae` (committed 2026-06-01) was the
-first git-tracked engine commit and the version that converted production
-bytes from 2026-06-01 until the 2026-06-02 reconcile. Prior to `9a3b2ae` the
-file existed only as an untracked, side-loaded copy on the staging VM
-byte-identical to `9a3b2ae`. See
-`handoffs/disk_to_sds/2026-06-01_engine-provenance/` for the provenance
-incident write-up, and `handoffs/disk_to_sds/2026-06-02_midnight-boundary/`
-for the boundary-fix collaboration. See [[feedback-git-synced-across-hosts]]
-in agent memory for the rule we're tightening to prevent recurrence.
+**Earlier pins (historical):**
+
+- `2ee96f3` — pin from 2026-06-02 16:00 AEST until 2026-06-07 evening
+  AEST. Contains the midnight-boundary fix at `00b6835` but not the
+  INT32-fallback. Most of the VW production sweep ran on this pin.
+- `9a3b2ae` — first git-tracked engine commit (2026-06-01), pre-
+  midnight-boundary fix. Converted production bytes from 2026-06-01
+  until the 2026-06-02 reconcile. Prior to `9a3b2ae` the file existed
+  only as an untracked, side-loaded copy on the staging VM byte-
+  identical to `9a3b2ae`. See
+  `handoffs/disk_to_sds/2026-06-01_engine-provenance/` for the
+  provenance incident write-up, and
+  `handoffs/disk_to_sds/2026-06-02_midnight-boundary/` for the
+  boundary-fix collaboration. See [[feedback-git-synced-across-hosts]]
+  in agent memory for the rule we're tightening to prevent recurrence.
 
 **Queued cross-repo follow-up: `suds_convert.py` → split into `sds_writer.py`
 + `suds_convert.py`.** The file's name is accurate for the SUDS reader
