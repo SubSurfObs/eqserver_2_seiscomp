@@ -53,13 +53,19 @@ BANNER_STATION = re.compile(
     r"^\[phase3\]\s+station=(\S+)\.(\S+)\s+loc='(\S*)'\s+status=(\S+)"
 )
 
-# Per-day line:
+# Per-day line, normal shape:
 #   "  [2020-12-31] ok         files= 1440 bf=1 traces= 84 rate=250.0
 #    errs=0 recovered=0 dropped=[] bogus_yr=0 WRITE=3"
 DAY_LINE = re.compile(
     r"^\s*\[(\d{4})-(\d{2})-(\d{2})\]\s+(\S+)\s+"
     r"files=\s*(\d+)\s+bf=(\d+)\s+traces=\s*(\d+)\s+rate=([\d.]+)\s+"
     r"errs=(\d+)"
+)
+
+# Per-day line, ERROR shape (no files=/bf=/traces=... — just an exception):
+#   "  [2020-07-13] ERROR InternalMSEEDError: Encountered 2 error(s) ..."
+DAY_LINE_ERROR = re.compile(
+    r"^\s*\[(\d{4})-(\d{2})-(\d{2})\]\s+ERROR\s+(.+)$"
 )
 
 
@@ -120,6 +126,24 @@ def parse_log(log_path: Path) -> dict:
                     "n_traces": int(ntr),
                     "rate_hz": float(rate),
                     "read_errors": int(errs),
+                    "error_msg": "",
+                })
+                continue
+            if m := DAY_LINE_ERROR.match(line):
+                y, mo, d, msg = m.groups()
+                date = f"{y}-{mo}-{d}"
+                if date in seen_dates:
+                    continue
+                seen_dates.add(date)
+                out["per_day"].append({
+                    "date": date,
+                    "status": "error",
+                    "n_files": 0,
+                    "n_boundary_files": 0,
+                    "n_traces": 0,
+                    "rate_hz": 0.0,
+                    "read_errors": 0,
+                    "error_msg": msg.strip(),
                 })
     return out
 
@@ -192,8 +216,18 @@ def synthesize_per_date(per_day_log, bytes_by_date) -> tuple[list, dict]:
             items_succeeded += 1
             total_bytes += b
         else:
-            # Non-"ok" status from the log (e.g. error): preserve, accumulate.
-            items_failed += 1
+            # Non-"ok" status from the log (qc_flagged, error). Preserve the
+            # original status. Carry through the original error_msg if any.
+            error = d.get("error_msg", "") or ""
+            if status == "qc_flagged":
+                # qc_flagged days DID write SDS — count as success for bytes.
+                if b > 0:
+                    total_bytes += b
+                    items_succeeded += 1
+                else:
+                    items_failed += 1
+            else:
+                items_failed += 1
         out.append({
             "bulk_fallback_used": False,
             "bytes_written": b,
