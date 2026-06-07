@@ -855,6 +855,12 @@ def main():
               f"{bulk_fb} "
               f"WRITE={n_written}", flush=True)
 
+    # Tracks whether the parallel loop bailed early because Pool got stuck
+    # (heartbeat below). When True, the manifest is tagged so apply.py and
+    # the recovery register know the per_date_status is partial.
+    partial_completion = False
+    partial_completion_reason = ""
+
     if args.workers <= 1:
         # Serial path — keep for direct debugging and to isolate NFS effects.
         for job in jobs:
@@ -862,10 +868,52 @@ def main():
     else:
         # Parallel path. imap_unordered streams results as workers finish,
         # so output appears continuously rather than in one final flush.
+        #
+        # Heartbeat-driven loop. The CPython stdlib Pool does NOT re-dispatch
+        # a dead worker's in-flight task — when a worker is killed by glibc
+        # for heap corruption (the SIGALRM-during-libmseed chain documented
+        # in handoffs/disk_to_sds/2026-06-07_pool-teardown-hang/), MainThread
+        # blocks forever in IMapIterator.next()._cond.wait() because _index
+        # can never reach _length. Without this loop, the only escape is the
+        # 3h unit-level watchdog. With it, we bail ~POOL_HEARTBEAT_S after
+        # the last successful result, write a partial manifest, and exit 0.
+        # apply.py promotes whatever days DID complete; the missing days are
+        # logged for a targeted re-run via the recovery register.
+        POOL_HEARTBEAT_S = 900  # 15 min — see _bail_threshold reasoning below
         from multiprocessing import Pool
+        from multiprocessing import TimeoutError as MPTimeoutError
         with Pool(processes=args.workers) as pool:
-            for r in pool.imap_unordered(_worker_convert_day, jobs):
-                _emit(r)
+            iter_ = pool.imap_unordered(_worker_convert_day, jobs)
+            n_emitted = 0
+            while True:
+                try:
+                    r = iter_.next(timeout=POOL_HEARTBEAT_S)
+                except StopIteration:
+                    break
+                except MPTimeoutError:
+                    # No result in POOL_HEARTBEAT_S since the last one.
+                    # _bail_threshold reasoning: with 8 workers each capped
+                    # at DAY_TIMEOUT_S=600s, the worst-case natural silence
+                    # between batched-completion bursts is ~10 min. 15 min
+                    # gives buffer for variance without false-triggering.
+                    # When this fires it's reliably the dead-worker-task-loss
+                    # hang, not a slow day.
+                    partial_completion = True
+                    partial_completion_reason = (
+                        f"Pool hang detected: no result in {POOL_HEARTBEAT_S}s "
+                        f"after {n_emitted}/{len(jobs)} day-jobs emitted. "
+                        f"Likely SIGALRM-induced libmseed heap corruption "
+                        f"killed worker(s) mid-task; standard library Pool "
+                        f"does not re-dispatch lost tasks. Exiting cleanly "
+                        f"with partial results — see handoff "
+                        f"2026-06-07_pool-teardown-hang."
+                    )
+                    print(f"\n[phase3] HEARTBEAT: {partial_completion_reason}",
+                          flush=True)
+                    break
+                else:
+                    _emit(r)
+                    n_emitted += 1
 
     elapsed = time.time() - t0
     rate = days_processed / elapsed if elapsed > 0 else 0
@@ -929,6 +977,8 @@ def main():
                 "read_errors": sum(d.get("read_errors", 0) for d in per_date_status),
                 "elapsed_s": round(elapsed, 1),
                 "throughput_days_per_s": round(rate, 4),
+                "partial_completion": partial_completion,
+                "partial_completion_reason": partial_completion_reason,
             },
         }
         # Atomic write so a reader never sees a partial manifest.
