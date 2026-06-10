@@ -391,22 +391,50 @@ def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
     """Build proposed_epochs[] from deduplicated observations.
 
     Each dedup'd observation becomes one epoch. Boundary-pin labels
-    use `archive_first_data`, `open`, or `pinned_at_<YYYY-MM-DD>`.
-    Confidence is `high` when both ends are bisection-pinned (or
-    archive_first_data / open), `medium` otherwise.
+    use `archive_first_data`, `open`, `pinned_at_<YYYY-MM-DD>`, or
+    `unpinned_data_gap` (when there's a long gap after this epoch
+    where we have no observations).
+
+    Confidence is:
+      - `high` when both ends are bisection-pinned (or
+        archive_first_data / open).
+      - `medium` when at least one end is unpinned/gap-only.
+      - `low` when the observation also carries sparse_observation
+        flag (e.g. 2 samples over 13 years).
     """
     epochs = []
     for i, obs in enumerate(deduped):
         is_first = i == 0
         is_last = i == len(deduped) - 1
+        has_gap_after = obs.get("_gap_after", False)
         start_pinned = obs.get("boundary_pinned", False) or is_first
         end_pinned = is_last or (
-            i + 1 < len(deduped) and deduped[i + 1].get("boundary_pinned", False)
+            not has_gap_after
+            and i + 1 < len(deduped)
+            and deduped[i + 1].get("boundary_pinned", False)
         )
-        confidence = "high" if start_pinned and end_pinned else "medium"
+        is_sparse = "sparse_observation" in obs.get("flags", [])
+        if is_sparse:
+            confidence = "low"
+        elif start_pinned and end_pinned:
+            confidence = "high"
+        else:
+            confidence = "medium"
+        # Epoch end: actual last_seen when there's a gap (we don't know
+        # how long the tuple persisted past last sample); next obs's
+        # first_seen otherwise (the bisection-pinned transition).
+        if is_last:
+            epoch_end = None
+            end_label = "open"
+        elif has_gap_after:
+            epoch_end = obs["last_seen"]
+            end_label = f"unpinned_data_gap_after_{obs['last_seen']}"
+        else:
+            epoch_end = deduped[i + 1]["first_seen"]
+            end_label = f"pinned_at_{deduped[i+1]['first_seen']}"
         ep = {
             "start": obs["first_seen"],
-            "end": None if is_last else deduped[i+1]["first_seen"],
+            "end": epoch_end,
             "recorder": obs.get("recorder", "unknown"),
             "sensor": obs.get("sensor", "unknown"),
             "sample_rate": obs.get("sample_rate"),
@@ -416,11 +444,10 @@ def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
             "boundary_pin": {
                 "start": ("archive_first_data" if is_first
                           else f"pinned_at_{obs['first_seen']}"),
-                "end": ("open" if is_last
-                        else f"pinned_at_{deduped[i+1]['first_seen']}"),
+                "end": end_label,
             },
-            "observations": 1,
-            "flags": [],
+            "observations": obs.get("sample_count", 1),
+            "flags": (["sparse_observation"] if is_sparse else []),
         }
         epochs.append(ep)
     return epochs
@@ -511,40 +538,68 @@ def scan_station(
     deduped = dedup_observations(raw_obs)
     print(f"  dedup'd observations: {len(deduped)}", file=sys.stderr)
 
-    # Day-level bisection of each detected transition. Pins boundaries
-    # to day-level so the empirical view aligns with documentary sources
-    # (wiki, handover notes) that record changes day-level.
+    # Day-level bisection of each detected transition. Pins the FIRST_SEEN
+    # of the next observation to day-level. Does NOT modify the previous
+    # observation's last_seen (which stays at the actual last sampled
+    # date) — bisection tells us when the new tuple appeared, not when
+    # the old tuple stopped. For gap cases (OUTU 2001-11 → 2014-12 = 13
+    # year gap), obs_lo's last_seen stays at 2001-11-01; obs_hi's
+    # first_seen gets bisection-pinned.
+    GAP_THRESHOLD_DAYS = 180  # >6 months = treat as data gap, end unpinned
     reg_recs = reg.get("recorder_types") or []
     reg_singleton = (reg_recs[0] if isinstance(reg_recs, list)
                      and len(reg_recs) == 1 else None)
     for i in range(len(deduped) - 1):
         obs_lo = deduped[i]
         obs_hi = deduped[i + 1]
-        # Month-level boundary: obs_lo's last_seen is month-start of N,
-        # obs_hi's first_seen is month-start of N+1. The change happened
-        # somewhere between them.
-        date_lo = _dt.date.fromisoformat(obs_lo["last_seen"])
-        date_hi = _dt.date.fromisoformat(obs_hi["first_seen"])
+        last_actual_lo = _dt.date.fromisoformat(obs_lo["last_seen"])
+        first_actual_hi = _dt.date.fromisoformat(obs_hi["first_seen"])
+        gap_days = (first_actual_hi - last_actual_lo).days
         t_lo = value_tuple(obs_lo)
         t_hi = value_tuple(obs_hi)
+
+        if gap_days > GAP_THRESHOLD_DAYS:
+            # Data gap, not a transition. Don't bisect (would be
+            # misleading). Mark obs_lo's end as unpinned-due-to-gap and
+            # leave obs_hi's first_seen at actual first sampled date.
+            print(f"    gap {last_actual_lo} ↔ {first_actual_hi} "
+                  f"({gap_days}d) — no bisect, flag obs_lo as gap_end",
+                  file=sys.stderr)
+            obs_lo["_gap_after"] = True
+            continue
+
         pinned = bisect_transition(
-            archive_root, sta, date_lo, date_hi, t_lo, t_hi,
+            archive_root, sta, last_actual_lo, first_actual_hi, t_lo, t_hi,
             disk_to_sds, reg_singleton,
         )
-        print(f"    bisect {date_lo} ↔ {date_hi}: pinned at {pinned}",
+        print(f"    bisect {last_actual_lo} ↔ {first_actual_hi}: pinned at {pinned}",
               file=sys.stderr)
         obs_hi["first_seen"] = pinned.isoformat()
-        obs_lo["last_seen"] = (pinned - _dt.timedelta(days=1)).isoformat()
         obs_hi["boundary_pinned"] = True
+        # obs_lo gets day-before-pinned as last_seen only if NOT a gap case
+        obs_lo["last_seen"] = (pinned - _dt.timedelta(days=1)).isoformat()
         obs_lo["boundary_pinned"] = True
+
+    # Sparse-observation flag — when a tuple's coverage is suspiciously
+    # thin (e.g. 2 samples spread across years), the synthesis side
+    # should know not to trust the epoch span at face value.
+    for obs in deduped:
+        first = _dt.date.fromisoformat(obs["first_seen"])
+        last = _dt.date.fromisoformat(obs["last_seen"])
+        span_months = max(1, (last - first).days // 30)
+        if obs["sample_count"] / span_months < 0.3 and span_months > 6:
+            obs.setdefault("flags", []).append("sparse_observation")
 
     proposed = derive_proposed_epochs(deduped)
     print(f"  proposed epochs: {len(proposed)}", file=sys.stderr)
 
-    # Network code drift flag
-    if len(network_codes_seen) > 1:
-        for ep in proposed:
-            ep["flags"].append("network_code_drift")
+    # Note: we deliberately do NOT emit a `network_code_drift` flag on
+    # epochs even when multiple network codes were seen. In the VW archive,
+    # codes like UM/AB/ABC are parse-noise on a bogus pre-2025-VW-formal-
+    # registration network field; the existing VW conversion already maps
+    # all of these to VW per the registry. Flagging drift across them is
+    # over-reading. The raw codes stay in `archive_network_codes_seen`
+    # (audit trail at the station level) but don't gate epoch identity.
 
     return {
         "archive_first_data": raw_obs[0]["sampled_at"] if raw_obs else None,
