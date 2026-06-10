@@ -120,38 +120,70 @@ def list_station_year_months(archive_root: Path, sta: str) -> list[tuple[int, in
     return out
 
 
-def _pick_file_in_dir(d_dir: Path) -> Optional[Path]:
-    """Helper: pick one file from a single day-directory. Prefers PC-SUDS."""
+def _pick_files_in_dir(d_dir: Path) -> dict:
+    """Pick up to one file per source-type from a single day-directory.
+
+    Returns {source_type: Path}. Source types:
+        'pcsuds'   - .dmx / .dmx.gz (PC-SUDS / EchoPro / Echo)
+        'sds_scan' - .ms.zip / .ms (miniSEED, Gecko/RT130)
+
+    Skip filters:
+    - .trig files (event-triggered, excluded from continuous-scan)
+    - Single-channel mseed stubs (_CHZ/_CHN/_CHE/_HHZ) - Gecko emergency
+      telemetry stubs from disk-side that don't represent station state
+    """
+    out = {}
     if not d_dir.is_dir():
-        return None
+        return out
     for ext in [".dmx", ".dmx.gz"]:
+        if "pcsuds" in out:
+            break
         for f in sorted(d_dir.iterdir()):
             if not f.is_file():
                 continue
             if f.name.endswith(ext) and ".trig" not in f.name:
-                return f
+                out["pcsuds"] = f
+                break
     for ext in [".ms.zip", ".ms"]:
+        if "sds_scan" in out:
+            break
         for f in sorted(d_dir.iterdir()):
             if not f.is_file():
                 continue
             if (f.name.endswith(ext)
                     and "_CHZ" not in f.name and "_CHN" not in f.name
-                    and "_CHE" not in f.name):
-                return f
-    return None
+                    and "_CHE" not in f.name and "_HHZ" not in f.name):
+                out["sds_scan"] = f
+                break
+    return out
+
+
+def _pick_file_in_dir(d_dir: Path) -> Optional[Path]:
+    """Backward-compatible single-file picker (preferring pcsuds)."""
+    files = _pick_files_in_dir(d_dir)
+    return files.get("pcsuds") or files.get("sds_scan")
+
+
+def pick_representative_files(archive_root: Path, sta: str,
+                              year: int, month: int) -> dict:
+    """Walk the month directory until we find a day with files, then
+    return all source-types present in that day's directory. Returns
+    {source_type: Path}; may have 0, 1, or 2 entries."""
+    m_dir = archive_root / sta / "continuous" / str(year) / f"{month:02d}"
+    if not m_dir.exists():
+        return {}
+    for d_dir in sorted(m_dir.iterdir()):
+        files = _pick_files_in_dir(d_dir)
+        if files:
+            return files
+    return {}
 
 
 def pick_representative_file(archive_root: Path, sta: str,
                              year: int, month: int) -> Optional[Path]:
-    """Pick one file from the first day of the month that has any data."""
-    m_dir = archive_root / sta / "continuous" / str(year) / f"{month:02d}"
-    if not m_dir.exists():
-        return None
-    for d_dir in sorted(m_dir.iterdir()):
-        f = _pick_file_in_dir(d_dir)
-        if f is not None:
-            return f
-    return None
+    """Backward-compatible single-file picker."""
+    files = pick_representative_files(archive_root, sta, year, month)
+    return files.get("pcsuds") or files.get("sds_scan")
 
 
 def pick_file_for_day(archive_root: Path, sta: str,
@@ -484,34 +516,49 @@ def bisect_transition(archive_root: Path, sta: str,
 
 
 def dedup_observations(raw_obs: list[dict]) -> list[dict]:
-    """Collapse time-adjacent same-tuple observations into single entries
-    with first_seen/last_seen/sample_count.
+    """Collapse time-adjacent same-tuple observations within each
+    source-type stream separately. Returns a single list with all
+    streams' dedup'd observations, sorted by first_seen.
 
-    raw_obs is a list sorted chronologically; each dict has a `sampled_at`
-    ISO date plus value fields.
+    The PER-SOURCE-TYPE dedup is the fix for the v3b-attempt bug
+    where interleaved pcsuds and mseed observations produced
+    alternating tuples and 49-epoch noise. Each source-type's
+    observations have their own value-vocabulary (PC-SUDS gives
+    recorder+sensor codes; mseed gives `unknown` for those but
+    real sample_rate), so they should never share a dedup stream.
     """
     if not raw_obs:
         return []
-    deduped = []
-    cur = None
+    # Bucket by source_type, preserve chronological order within each
+    streams: dict[str, list[dict]] = {}
     for obs in raw_obs:
-        t = value_tuple(obs)
-        if cur is None or value_tuple(cur) != t:
-            cur = dict(obs)
-            cur["first_seen"] = obs["sampled_at"]
-            cur["last_seen"] = obs["sampled_at"]
-            cur["sample_count"] = 1
-            # Collect raw codes for the audit trail
-            cur["_raw_codes"] = []
-            if obs.get("recorder_raw_code"):
-                cur["_raw_codes"].append(("recorder", obs["recorder_raw_code"]))
-            if obs.get("sensor_raw_code"):
-                cur["_raw_codes"].append(("sensor", obs["sensor_raw_code"]))
-            deduped.append(cur)
-        else:
-            cur["last_seen"] = obs["sampled_at"]
-            cur["sample_count"] += 1
-    return deduped
+        streams.setdefault(obs.get("source_type", "default"), []).append(obs)
+
+    all_dedup = []
+    for st, obs_list in streams.items():
+        # obs_list is already chronological from caller's sort
+        cur = None
+        for obs in obs_list:
+            t = value_tuple(obs)
+            if cur is None or value_tuple(cur) != t:
+                cur = dict(obs)
+                cur["first_seen"] = obs["sampled_at"]
+                cur["last_seen"] = obs["sampled_at"]
+                cur["sample_count"] = 1
+                cur["_raw_codes"] = []
+                if obs.get("recorder_raw_code"):
+                    cur["_raw_codes"].append(("recorder", obs["recorder_raw_code"]))
+                if obs.get("sensor_raw_code"):
+                    cur["_raw_codes"].append(("sensor", obs["sensor_raw_code"]))
+                all_dedup.append(cur)
+            else:
+                cur["last_seen"] = obs["sampled_at"]
+                cur["sample_count"] += 1
+
+    # Sort the combined dedup'd list by first_seen for readability;
+    # downstream bisection iterates per source-type via index lookup.
+    all_dedup.sort(key=lambda o: (o["first_seen"], o.get("source_type", "")))
+    return all_dedup
 
 
 def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
@@ -562,6 +609,7 @@ def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
         ep = {
             "start": obs["first_seen"],
             "end": epoch_end,
+            "source_type": obs.get("source_type"),
             "recorder": obs.get("recorder", "unknown"),
             "sensor": obs.get("sensor", "unknown"),
             "sample_rate": obs.get("sample_rate"),
@@ -610,54 +658,63 @@ def scan_station(
     locations_seen = set()
 
     for (y, m) in year_months:
-        f = pick_representative_file(archive_root, sta, y, m)
-        if f is None:
+        # Multi-source picker: months with both .dmx and .ms.zip emit
+        # one observation per source-type. Each source-type's stream
+        # then dedups independently downstream.
+        files = pick_representative_files(archive_root, sta, y, m)
+        if not files:
             skipped += 1
             continue
-        # Pick reader by extension
-        if f.name.endswith(".dmx") or f.name.endswith(".dmx.gz"):
-            hdr = read_pcsuds_header(f, disk_to_sds)
-        else:
-            hdr = read_mseed_header(f)
 
-        if hdr.get("_read_error"):
-            skipped += 1
-            print(f"    skip {y}-{m:02d}: {hdr['_read_error']}", file=sys.stderr)
-            continue
+        for src_type, f in files.items():
+            if src_type == "pcsuds":
+                hdr = read_pcsuds_header(f, disk_to_sds)
+            else:
+                hdr = read_mseed_header(f)
 
-        # Recorder reconciliation against registry
-        reg_recs = reg.get("recorder_types") or []
-        if isinstance(reg_recs, list) and len(reg_recs) == 1 and hdr.get("recorder") == "unknown":
-            hdr["recorder"] = reg_recs[0]
+            if hdr.get("_read_error"):
+                skipped += 1
+                print(f"    skip {y}-{m:02d} ({src_type}): {hdr['_read_error']}",
+                      file=sys.stderr)
+                continue
 
-        obs = {
-            "source": f"{'pcsuds' if f.name.endswith(('.dmx','.dmx.gz')) else 'sds_scan'}/"
-                      f"{sta}/{y}/{m:02d}/{f.name}",
-            "sampled_at": f"{y}-{m:02d}-01",  # representative date
-            "authority": "authoritative",
-            "authority_overrides": {"sensor": "operator_input"},
-            "recorder": hdr.get("recorder", "unknown"),
-            "sensor": hdr.get("sensor", "unknown"),
-            "sample_rate": hdr.get("sample_rate"),
-            "gain": hdr.get("gain", 1),
-            "location_seen": hdr.get("location_seen", "00"),
-            "channels_seen": hdr.get("channels_seen", []),
-            "network_code_seen": hdr.get("network_code_seen", "unknown"),
-            "recorder_raw_code": hdr.get("recorder_raw_code"),
-            "sensor_raw_code": hdr.get("sensor_raw_code"),
-            "boundary_pinned": False,
-            "flags": [],
-        }
-        # Flags
-        if hdr.get("recorder") == "unknown" or obs["recorder"] == "unknown":
-            obs["flags"].append("catalogue_gap")
-        if hdr.get("sensor") == "unknown":
-            obs["flags"].append("suspicious_unknown_sensor")
-        flags_aggregate.update(obs["flags"])
-        network_codes_seen.add(obs["network_code_seen"])
-        locations_seen.add(obs["location_seen"])
+            # Recorder reconciliation against registry
+            reg_recs = reg.get("recorder_types") or []
+            if (isinstance(reg_recs, list) and len(reg_recs) == 1
+                    and hdr.get("recorder") == "unknown"):
+                hdr["recorder"] = reg_recs[0]
 
-        raw_obs.append(obs)
+            obs = {
+                "source": f"{src_type}/{sta}/{y}/{m:02d}/{f.name}",
+                "source_type": src_type,
+                "sampled_at": f"{y}-{m:02d}-01",
+                "authority": "authoritative",
+                "authority_overrides": {"sensor": "operator_input"},
+                "recorder": hdr.get("recorder", "unknown"),
+                "sensor": hdr.get("sensor", "unknown"),
+                "sample_rate": hdr.get("sample_rate"),
+                "gain": hdr.get("gain", 1),
+                "location_seen": hdr.get("location_seen", "00"),
+                "channels_seen": hdr.get("channels_seen", []),
+                "network_code_seen": hdr.get("network_code_seen", "unknown"),
+                "recorder_raw_code": hdr.get("recorder_raw_code"),
+                "sensor_raw_code": hdr.get("sensor_raw_code"),
+                "boundary_pinned": False,
+                "flags": [],
+            }
+            if obs["recorder"] == "unknown":
+                obs["flags"].append("catalogue_gap")
+            if obs["sensor"] == "unknown":
+                obs["flags"].append("suspicious_unknown_sensor")
+            flags_aggregate.update(obs["flags"])
+            network_codes_seen.add(obs["network_code_seen"])
+            locations_seen.add(obs["location_seen"])
+
+            raw_obs.append(obs)
+
+    # Sort raw observations by (sampled_at, source_type) so per-source-
+    # type streams are easy to walk in chronological order downstream.
+    raw_obs.sort(key=lambda o: (o["sampled_at"], o.get("source_type", "")))
 
     print(f"  raw observations: {len(raw_obs)} (skipped {skipped})", file=sys.stderr)
 
@@ -671,47 +728,48 @@ def scan_station(
     deduped = dedup_observations(raw_obs)
     print(f"  dedup'd observations: {len(deduped)}", file=sys.stderr)
 
-    # Day-level bisection of each detected transition. Pins the FIRST_SEEN
-    # of the next observation to day-level. Does NOT modify the previous
-    # observation's last_seen (which stays at the actual last sampled
-    # date) — bisection tells us when the new tuple appeared, not when
-    # the old tuple stopped. For gap cases (OUTU 2001-11 → 2014-12 = 13
-    # year gap), obs_lo's last_seen stays at 2001-11-01; obs_hi's
-    # first_seen gets bisection-pinned.
-    GAP_THRESHOLD_DAYS = 180  # >6 months = treat as data gap, end unpinned
+    # Day-level bisection — operates PER SOURCE-TYPE STREAM separately.
+    # A transition only makes sense within one stream's vocabulary
+    # (you can't bisect "pcsuds at 200 Hz" vs "mseed at 250 Hz" — those
+    # are different observations of different file shapes, not a single
+    # state change). Gap-aware logic + sparse-observation flag as in v3a.
+    GAP_THRESHOLD_DAYS = 180
     reg_recs = reg.get("recorder_types") or []
     reg_singleton = (reg_recs[0] if isinstance(reg_recs, list)
                      and len(reg_recs) == 1 else None)
-    for i in range(len(deduped) - 1):
-        obs_lo = deduped[i]
-        obs_hi = deduped[i + 1]
-        last_actual_lo = _dt.date.fromisoformat(obs_lo["last_seen"])
-        first_actual_hi = _dt.date.fromisoformat(obs_hi["first_seen"])
-        gap_days = (first_actual_hi - last_actual_lo).days
-        t_lo = value_tuple(obs_lo)
-        t_hi = value_tuple(obs_hi)
+    # Group deduped observations by source_type, preserving order
+    by_st: dict[str, list[dict]] = {}
+    for obs in deduped:
+        by_st.setdefault(obs.get("source_type", "default"), []).append(obs)
 
-        if gap_days > GAP_THRESHOLD_DAYS:
-            # Data gap, not a transition. Don't bisect (would be
-            # misleading). Mark obs_lo's end as unpinned-due-to-gap and
-            # leave obs_hi's first_seen at actual first sampled date.
-            print(f"    gap {last_actual_lo} ↔ {first_actual_hi} "
-                  f"({gap_days}d) — no bisect, flag obs_lo as gap_end",
-                  file=sys.stderr)
-            obs_lo["_gap_after"] = True
-            continue
+    for st, stream in by_st.items():
+        # bisect adjacent pairs within this stream
+        for i in range(len(stream) - 1):
+            obs_lo = stream[i]
+            obs_hi = stream[i + 1]
+            last_actual_lo = _dt.date.fromisoformat(obs_lo["last_seen"])
+            first_actual_hi = _dt.date.fromisoformat(obs_hi["first_seen"])
+            gap_days = (first_actual_hi - last_actual_lo).days
+            t_lo = value_tuple(obs_lo)
+            t_hi = value_tuple(obs_hi)
 
-        pinned = bisect_transition(
-            archive_root, sta, last_actual_lo, first_actual_hi, t_lo, t_hi,
-            disk_to_sds, reg_singleton,
-        )
-        print(f"    bisect {last_actual_lo} ↔ {first_actual_hi}: pinned at {pinned}",
-              file=sys.stderr)
-        obs_hi["first_seen"] = pinned.isoformat()
-        obs_hi["boundary_pinned"] = True
-        # obs_lo gets day-before-pinned as last_seen only if NOT a gap case
-        obs_lo["last_seen"] = (pinned - _dt.timedelta(days=1)).isoformat()
-        obs_lo["boundary_pinned"] = True
+            if gap_days > GAP_THRESHOLD_DAYS:
+                print(f"    [{st}] gap {last_actual_lo} ↔ {first_actual_hi} "
+                      f"({gap_days}d) — no bisect, flag obs_lo as gap_end",
+                      file=sys.stderr)
+                obs_lo["_gap_after"] = True
+                continue
+
+            pinned = bisect_transition(
+                archive_root, sta, last_actual_lo, first_actual_hi, t_lo, t_hi,
+                disk_to_sds, reg_singleton,
+            )
+            print(f"    [{st}] bisect {last_actual_lo} ↔ {first_actual_hi}: "
+                  f"pinned at {pinned}", file=sys.stderr)
+            obs_hi["first_seen"] = pinned.isoformat()
+            obs_hi["boundary_pinned"] = True
+            obs_lo["last_seen"] = (pinned - _dt.timedelta(days=1)).isoformat()
+            obs_lo["boundary_pinned"] = True
 
     # Sparse-observation flag — when a tuple's coverage is suspiciously
     # thin (e.g. 2 samples spread across years), the synthesis side
@@ -723,7 +781,14 @@ def scan_station(
         if obs["sample_count"] / span_months < 0.3 and span_months > 6:
             obs.setdefault("flags", []).append("sparse_observation")
 
-    proposed = derive_proposed_epochs(deduped)
+    # Derive proposed_epochs PER source-type stream, then concatenate.
+    # Each stream's epochs are an independent timeline (e.g. pcsuds
+    # epochs for the EchoPro era + sds_scan epochs for the Gecko era
+    # at a transition station).
+    proposed = []
+    for st, stream in by_st.items():
+        proposed.extend(derive_proposed_epochs(stream))
+    proposed.sort(key=lambda e: (e["start"], e.get("source_type") or ""))
     print(f"  proposed epochs: {len(proposed)}", file=sys.stderr)
 
     # Note: we deliberately do NOT emit a `network_code_drift` flag on
