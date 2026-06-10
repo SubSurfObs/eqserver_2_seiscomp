@@ -120,35 +120,60 @@ def list_station_year_months(archive_root: Path, sta: str) -> list[tuple[int, in
     return out
 
 
+def _pick_file_in_dir(d_dir: Path) -> Optional[Path]:
+    """Helper: pick one file from a single day-directory. Prefers PC-SUDS."""
+    if not d_dir.is_dir():
+        return None
+    for ext in [".dmx", ".dmx.gz"]:
+        for f in sorted(d_dir.iterdir()):
+            if not f.is_file():
+                continue
+            if f.name.endswith(ext) and ".trig" not in f.name:
+                return f
+    for ext in [".ms.zip", ".ms"]:
+        for f in sorted(d_dir.iterdir()):
+            if not f.is_file():
+                continue
+            if (f.name.endswith(ext)
+                    and "_CHZ" not in f.name and "_CHN" not in f.name
+                    and "_CHE" not in f.name):
+                return f
+    return None
+
+
 def pick_representative_file(archive_root: Path, sta: str,
                              year: int, month: int) -> Optional[Path]:
-    """Pick one file from the first day of the month that has any data.
-
-    Prefers .dmx/.dmx.gz (PC-SUDS — full metadata); falls back to .ms.zip
-    or .ms (MiniSEED — sample_rate only).
-    """
+    """Pick one file from the first day of the month that has any data."""
     m_dir = archive_root / sta / "continuous" / str(year) / f"{month:02d}"
     if not m_dir.exists():
         return None
     for d_dir in sorted(m_dir.iterdir()):
-        if not d_dir.is_dir():
-            continue
-        # First try PC-SUDS
-        for ext in [".dmx", ".dmx.gz"]:
-            for f in sorted(d_dir.iterdir()):
-                if not f.is_file():
-                    continue
-                if f.name.endswith(ext) and ".trig" not in f.name:
-                    return f
-        # Then mseed
-        for ext in [".ms.zip", ".ms"]:
-            for f in sorted(d_dir.iterdir()):
-                if not f.is_file():
-                    continue
-                if f.name.endswith(ext) and "_CHZ" not in f.name and "_CHN" not in f.name and "_CHE" not in f.name:
-                    return f
-        # If nothing matched, give up on this day and move to next
+        f = _pick_file_in_dir(d_dir)
+        if f is not None:
+            return f
     return None
+
+
+def pick_file_for_day(archive_root: Path, sta: str,
+                      day: _dt.date,
+                      search_radius: int = 3) -> Optional[Path]:
+    """Pick one file for a specific day. If that day has no data, walks
+    outwards up to `search_radius` days (preferring later days first since
+    a transition typically establishes new state going forward).
+
+    Returns (file_path, actual_day_used) or (None, None).
+    """
+    candidate_days = [day]
+    for off in range(1, search_radius + 1):
+        candidate_days.append(day + _dt.timedelta(days=off))
+        candidate_days.append(day - _dt.timedelta(days=off))
+    for d in candidate_days:
+        d_dir = (archive_root / sta / "continuous"
+                 / str(d.year) / f"{d.month:02d}" / f"{d.day:02d}")
+        f = _pick_file_in_dir(d_dir)
+        if f is not None:
+            return f, d
+    return None, None
 
 
 # === Header readers ========================================================
@@ -270,6 +295,67 @@ def value_tuple(obs: dict) -> tuple:
     )
 
 
+def _read_one_day(archive_root: Path, sta: str, day: _dt.date,
+                  disk_to_sds: Path, reg_recorder_singleton: Optional[str]) -> Optional[tuple]:
+    """Read one representative file for a single day. Returns the
+    value_tuple or None if unable to sample.
+
+    `reg_recorder_singleton` is the registry's recorder_types if single-
+    valued, used to fill in `recorder` for mseed reads that can't
+    determine it from bytes alone.
+    """
+    f, actual_day = pick_file_for_day(archive_root, sta, day)
+    if f is None:
+        return None
+    if f.name.endswith(".dmx") or f.name.endswith(".dmx.gz"):
+        hdr = read_pcsuds_header(f, disk_to_sds)
+    else:
+        hdr = read_mseed_header(f)
+    if hdr.get("_read_error"):
+        return None
+    if reg_recorder_singleton and hdr.get("recorder") == "unknown":
+        hdr["recorder"] = reg_recorder_singleton
+    return value_tuple({
+        "recorder": hdr.get("recorder", "unknown"),
+        "sensor": hdr.get("sensor", "unknown"),
+        "sample_rate": hdr.get("sample_rate"),
+        "gain": hdr.get("gain", 1),
+        "location_seen": hdr.get("location_seen", "00"),
+    })
+
+
+def bisect_transition(archive_root: Path, sta: str,
+                      date_lo: _dt.date, date_hi: _dt.date,
+                      tuple_lo: tuple, tuple_hi: tuple,
+                      disk_to_sds: Path,
+                      reg_recorder_singleton: Optional[str]) -> _dt.date:
+    """Binary search for the first day with `tuple_hi`. Returns the pinned
+    date. Falls back to `date_hi` (the month-level boundary we already
+    had) if we hit unresolvable middle-ground or no-files day.
+    """
+    iters = 0
+    while (date_hi - date_lo).days > 1 and iters < 10:
+        iters += 1
+        mid = date_lo + (date_hi - date_lo) / 2
+        t = _read_one_day(archive_root, sta, mid, disk_to_sds,
+                          reg_recorder_singleton)
+        if t is None:
+            # Couldn't sample at mid — bias toward earlier resolution
+            # (assume change happened later than mid)
+            date_lo = mid
+            continue
+        if t == tuple_lo:
+            date_lo = mid
+        elif t == tuple_hi:
+            date_hi = mid
+        else:
+            # Third value at mid — transient mid-epoch change. Stop and
+            # report the conservative boundary (date_hi); v2 doesn't
+            # handle 3+ states gracefully.
+            return date_hi
+    return date_hi
+
+
 def dedup_observations(raw_obs: list[dict]) -> list[dict]:
     """Collapse time-adjacent same-tuple observations into single entries
     with first_seen/last_seen/sample_count.
@@ -304,17 +390,20 @@ def dedup_observations(raw_obs: list[dict]) -> list[dict]:
 def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
     """Build proposed_epochs[] from deduplicated observations.
 
-    Each dedup'd observation becomes one epoch. Boundary-pin policy:
-    - First epoch's `start` is `archive_first_data` (the first sampled_at)
-    - Last epoch's `end` is `archive_last_data` if station is closed in
-      our scope, else `open`
-    - Internal transitions are `pinned_at_<YYYY-MM-DD>` to month-level
-      precision (no bisection in v1)
+    Each dedup'd observation becomes one epoch. Boundary-pin labels
+    use `archive_first_data`, `open`, or `pinned_at_<YYYY-MM-DD>`.
+    Confidence is `high` when both ends are bisection-pinned (or
+    archive_first_data / open), `medium` otherwise.
     """
     epochs = []
     for i, obs in enumerate(deduped):
         is_first = i == 0
         is_last = i == len(deduped) - 1
+        start_pinned = obs.get("boundary_pinned", False) or is_first
+        end_pinned = is_last or (
+            i + 1 < len(deduped) and deduped[i + 1].get("boundary_pinned", False)
+        )
+        confidence = "high" if start_pinned and end_pinned else "medium"
         ep = {
             "start": obs["first_seen"],
             "end": None if is_last else deduped[i+1]["first_seen"],
@@ -323,9 +412,10 @@ def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
             "sample_rate": obs.get("sample_rate"),
             "gain": obs.get("gain", 1),
             "location": obs.get("location_seen", "00"),
-            "confidence": "medium",     # month-level pinning, no bisection
+            "confidence": confidence,
             "boundary_pin": {
-                "start": "archive_first_data" if is_first else f"pinned_at_{obs['first_seen']}",
+                "start": ("archive_first_data" if is_first
+                          else f"pinned_at_{obs['first_seen']}"),
                 "end": ("open" if is_last
                         else f"pinned_at_{deduped[i+1]['first_seen']}"),
             },
@@ -417,10 +507,38 @@ def scan_station(
 
     print(f"  raw observations: {len(raw_obs)} (skipped {skipped})", file=sys.stderr)
 
-    # Dedup and derive
+    # Dedup
     deduped = dedup_observations(raw_obs)
-    proposed = derive_proposed_epochs(deduped)
     print(f"  dedup'd observations: {len(deduped)}", file=sys.stderr)
+
+    # Day-level bisection of each detected transition. Pins boundaries
+    # to day-level so the empirical view aligns with documentary sources
+    # (wiki, handover notes) that record changes day-level.
+    reg_recs = reg.get("recorder_types") or []
+    reg_singleton = (reg_recs[0] if isinstance(reg_recs, list)
+                     and len(reg_recs) == 1 else None)
+    for i in range(len(deduped) - 1):
+        obs_lo = deduped[i]
+        obs_hi = deduped[i + 1]
+        # Month-level boundary: obs_lo's last_seen is month-start of N,
+        # obs_hi's first_seen is month-start of N+1. The change happened
+        # somewhere between them.
+        date_lo = _dt.date.fromisoformat(obs_lo["last_seen"])
+        date_hi = _dt.date.fromisoformat(obs_hi["first_seen"])
+        t_lo = value_tuple(obs_lo)
+        t_hi = value_tuple(obs_hi)
+        pinned = bisect_transition(
+            archive_root, sta, date_lo, date_hi, t_lo, t_hi,
+            disk_to_sds, reg_singleton,
+        )
+        print(f"    bisect {date_lo} ↔ {date_hi}: pinned at {pinned}",
+              file=sys.stderr)
+        obs_hi["first_seen"] = pinned.isoformat()
+        obs_lo["last_seen"] = (pinned - _dt.timedelta(days=1)).isoformat()
+        obs_hi["boundary_pinned"] = True
+        obs_lo["boundary_pinned"] = True
+
+    proposed = derive_proposed_epochs(deduped)
     print(f"  proposed epochs: {len(proposed)}", file=sys.stderr)
 
     # Network code drift flag
@@ -533,12 +651,14 @@ def main():
         )
 
     scan_strategy = {
-        "version": "v1-monthly",
+        "version": "v2-monthly-with-bisect",
         "sampling": "one file per (station, year-month), first day of month",
         "boundary_bracket": False,
-        "bisection": False,
+        "bisection": True,
+        "bisection_resolution": "day",
         "ss_sidecar_reader": False,
-        "note": "v1 calibration scope; no bisection yet — boundaries pinned to month level only",
+        "note": ("v2: monthly survey + day-level bisection of detected "
+                 "transitions. .ss sidecar reader still v3 work."),
     }
     emit_yaml(args.out, args.network, results, args.archive_root,
               scan_strategy, args)
