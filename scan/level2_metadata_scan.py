@@ -238,6 +238,133 @@ def read_pcsuds_header(path: Path, disk_to_sds: Path) -> dict:
     return out
 
 
+def read_gecko_ss(path: Path) -> dict:
+    """Parse a Gecko kelunjimeta .ss sidecar (plain-text "key"=value
+    format). Returns a dict of extracted fields, plus a parsed
+    settings_time as ISO datetime (from the in-file field, not the
+    filename — they typically match).
+    """
+    out: dict = {}
+    if not path.exists():
+        return {"_read_error": "file missing"}
+    try:
+        text = path.read_text(errors="replace")
+    except OSError as e:
+        return {"_read_error": f"read failed: {e}"}
+
+    # Format: lines like  "key"="string"  or  "key"=number  or  "key"=x1 (ro)
+    import re
+    pat = re.compile(r'^\s*"([^"]+)"=("?)([^"]*)\2(?:\s.*)?$')
+    for line in text.splitlines():
+        m = pat.match(line)
+        if not m:
+            continue
+        k, _q, v = m.groups()
+        out[k] = v.strip()
+
+    # Parse settings_time "YYYY-MM-DD HHMM SS" into ISO datetime
+    st = out.get("settings_time", "")
+    if st:
+        m = re.match(r"^(\d{4}-\d{2}-\d{2})\s+(\d{2})(\d{2})\s+(\d{2})$", st)
+        if m:
+            d, h, mn, s = m.groups()
+            out["settings_time_iso"] = f"{d}T{h}:{mn}:{s}Z"
+    return out
+
+
+def gecko_ss_config_tuple(ss: dict) -> tuple:
+    """The config-fingerprint tuple for an .ss snapshot. Distinct values
+    of this tuple are epoch-boundary candidates."""
+    return (
+        ss.get("serial", "unknown"),
+        ss.get("cpv", "unknown"),
+        ss.get("current_gain", "unknown"),
+        ss.get("sampling_rate", "unknown"),
+        ss.get("sensor_name", "unknown"),
+        ss.get("firmware_version", "unknown"),
+    )
+
+
+def scan_gecko_ss(archive_root: Path, sta: str) -> list[dict]:
+    """Walk all .ss files for the station, parse, dedup by config-tuple,
+    return a chronologically-sorted list of distinct config observations.
+    Each entry is one observation suitable for inclusion in the
+    station's observations[] block.
+    """
+    ss_dir = archive_root / sta / "continuous" / "1900" / "01" / "01"
+    if not ss_dir.exists():
+        return []
+    ss_files = sorted(p for p in ss_dir.iterdir()
+                      if p.is_file() and p.name.endswith(".ss"))
+    if not ss_files:
+        return []
+
+    parsed = []
+    for p in ss_files:
+        d = read_gecko_ss(p)
+        if d.get("_read_error") or not d.get("settings_time_iso"):
+            continue
+        d["_path"] = p
+        parsed.append(d)
+    parsed.sort(key=lambda d: d["settings_time_iso"])
+
+    # Dedup by config-tuple, chronologically
+    dedup = []
+    cur = None
+    for d in parsed:
+        t = gecko_ss_config_tuple(d)
+        if cur is None or gecko_ss_config_tuple(cur) != t:
+            d["_first_seen_iso"] = d["settings_time_iso"]
+            d["_last_seen_iso"] = d["settings_time_iso"]
+            d["_sample_count"] = 1
+            dedup.append(d)
+            cur = d
+        else:
+            cur["_last_seen_iso"] = d["settings_time_iso"]
+            cur["_sample_count"] += 1
+
+    # Convert into observations matching the schema shape
+    obs = []
+    for d in dedup:
+        path_short = (d["_path"].name).strip()
+        # Try to coerce sample_rate to int/float
+        sr = d.get("sampling_rate", "")
+        try:
+            sr_val = float(sr)
+        except (ValueError, TypeError):
+            sr_val = None
+        # gain like "x1 (ro)" → 1
+        cg = d.get("current_gain", "")
+        import re
+        gm = re.match(r"x(\d+)", cg)
+        gain_val = int(gm.group(1)) if gm else "unknown"
+        obs.append({
+            "source": f"gecko_ss/{sta}/{path_short}",
+            "source_type": "gecko_ss",
+            "sampled_at": d["settings_time_iso"][:10],  # ISO date
+            "authority": "authoritative",
+            "authority_overrides": {"sensor": "operator_input"},
+            "recorder": "src/gecko",
+            "recorder_serial": d.get("serial", "unknown"),
+            "sensor": "unknown",  # raw sensor_name preserved separately
+            "sensor_raw_name": d.get("sensor_name", ""),
+            "sample_rate": sr_val,
+            "gain": gain_val,
+            "cpv": d.get("cpv", ""),
+            "firmware_version": d.get("firmware_version", ""),
+            "build_number": d.get("build_number", ""),
+            "location_seen": (d.get("location_id", "").strip() or "00"),
+            "channels_seen": [],  # .ss carries storing_chan flags, not codes
+            "network_code_seen": d.get("network_code", "unknown"),
+            "boundary_pinned": True,  # .ss settings_time is a precise pin
+            "flags": ["suspicious_unknown_sensor"],  # sensor_name is operator_input
+            "first_seen": d["_first_seen_iso"][:10],
+            "last_seen": d["_last_seen_iso"][:10],
+            "sample_count": d["_sample_count"],
+        })
+    return obs
+
+
 def read_mseed_header(path: Path) -> dict:
     """Read miniSEED first record's blockette via obspy headonly.
 
@@ -534,7 +661,13 @@ def scan_station(
 
     print(f"  raw observations: {len(raw_obs)} (skipped {skipped})", file=sys.stderr)
 
-    # Dedup
+    # v3c: Gecko .ss sidecar observations (chronologically dedup'd)
+    ss_obs = scan_gecko_ss(archive_root, sta)
+    if ss_obs:
+        print(f"  gecko_ss observations: {len(ss_obs)} (dedup'd from settings_time stream)",
+              file=sys.stderr)
+
+    # Dedup the monthly raw_obs into the main observations list
     deduped = dedup_observations(raw_obs)
     print(f"  dedup'd observations: {len(deduped)}", file=sys.stderr)
 
@@ -601,13 +734,24 @@ def scan_station(
     # over-reading. The raw codes stay in `archive_network_codes_seen`
     # (audit trail at the station level) but don't gate epoch identity.
 
+    # Combine monthly-derived observations + .ss-derived observations
+    # into a single observations[] list, with source_type field
+    # distinguishing them. Sort by sampled_at for readability.
+    all_observations = deduped + ss_obs
+    all_observations.sort(key=lambda o: (o["sampled_at"], o.get("source_type", "")))
+    # Aggregate network codes + locations from .ss too
+    for ss in ss_obs:
+        network_codes_seen.add(ss.get("network_code_seen", "unknown"))
+        locations_seen.add(ss.get("location_seen", "00"))
+
     return {
         "archive_first_data": raw_obs[0]["sampled_at"] if raw_obs else None,
         "archive_last_data": raw_obs[-1]["sampled_at"] if raw_obs else None,
         "archive_network_codes_seen": sorted(network_codes_seen),
         "location_codes_seen": sorted(locations_seen),
-        "observations": deduped,
+        "observations": all_observations,
         "proposed_epochs": proposed,
+        "gecko_ss_observations_count": len(ss_obs),
     }
 
 
@@ -706,14 +850,16 @@ def main():
         )
 
     scan_strategy = {
-        "version": "v2-monthly-with-bisect",
+        "version": "v3-monthly-bisect-ss",
         "sampling": "one file per (station, year-month), first day of month",
         "boundary_bracket": False,
         "bisection": True,
         "bisection_resolution": "day",
-        "ss_sidecar_reader": False,
-        "note": ("v2: monthly survey + day-level bisection of detected "
-                 "transitions. .ss sidecar reader still v3 work."),
+        "ss_sidecar_reader": True,
+        "note": ("v3: monthly survey + day-level bisection + Gecko .ss "
+                 "sidecar reader (dedup'd by config-tuple, pinned to "
+                 "settings_time). v3a: gap-aware dedup. v3b extension-"
+                 "aware picker deferred — not needed for calibration set."),
     }
     emit_yaml(args.out, args.network, results, args.archive_root,
               scan_strategy, args)
