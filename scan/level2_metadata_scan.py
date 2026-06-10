@@ -120,71 +120,38 @@ def list_station_year_months(archive_root: Path, sta: str) -> list[tuple[int, in
     return out
 
 
-def _pick_files_in_dir(d_dir: Path) -> dict:
-    """Helper: from a single day-directory, return a dict mapping
-    source_type → first matching file. Source types are 'pcsuds' and
-    'sds_scan' (the mseed family). v3b: probes BOTH instead of returning
-    a single preferred file, so transition months where both extensions
-    exist (e.g. OUTU 2017-04 when EchoPro + Gecko overlapped) emit one
-    observation per source-type rather than masking the recorder change.
-    """
-    out = {}
+def _pick_file_in_dir(d_dir: Path) -> Optional[Path]:
+    """Helper: pick one file from a single day-directory. Prefers PC-SUDS."""
     if not d_dir.is_dir():
-        return out
+        return None
     for ext in [".dmx", ".dmx.gz"]:
-        if "pcsuds" in out:
-            break
         for f in sorted(d_dir.iterdir()):
             if not f.is_file():
                 continue
             if f.name.endswith(ext) and ".trig" not in f.name:
-                out["pcsuds"] = f
-                break
-    for ext in [".ms.zip", ".ms", ".mseed.zip", ".mseed"]:
-        if "sds_scan" in out:
-            break
+                return f
+    for ext in [".ms.zip", ".ms"]:
         for f in sorted(d_dir.iterdir()):
             if not f.is_file():
                 continue
-            # Skip Gecko/EchoPro single-channel emergency stubs
             if (f.name.endswith(ext)
                     and "_CHZ" not in f.name and "_CHN" not in f.name
-                    and "_CHE" not in f.name
-                    and "_HHZ" not in f.name):
-                out["sds_scan"] = f
-                break
-    return out
-
-
-def _pick_file_in_dir(d_dir: Path) -> Optional[Path]:
-    """Single-file picker (legacy; kept for callers that only want one)."""
-    files = _pick_files_in_dir(d_dir)
-    return files.get("pcsuds") or files.get("sds_scan")
-
-
-def pick_representative_files(archive_root: Path, sta: str,
-                              year: int, month: int) -> dict:
-    """Walk the month directory until we find a day that has files,
-    then return all source-types present in that day's directory.
-
-    Returns a dict {source_type: Path}. May contain 0, 1, or 2 entries.
-    Empty when the whole month has no usable files.
-    """
-    m_dir = archive_root / sta / "continuous" / str(year) / f"{month:02d}"
-    if not m_dir.exists():
-        return {}
-    for d_dir in sorted(m_dir.iterdir()):
-        files = _pick_files_in_dir(d_dir)
-        if files:
-            return files
-    return {}
+                    and "_CHE" not in f.name):
+                return f
+    return None
 
 
 def pick_representative_file(archive_root: Path, sta: str,
                              year: int, month: int) -> Optional[Path]:
-    """Backward-compatible single-file picker."""
-    files = pick_representative_files(archive_root, sta, year, month)
-    return files.get("pcsuds") or files.get("sds_scan")
+    """Pick one file from the first day of the month that has any data."""
+    m_dir = archive_root / sta / "continuous" / str(year) / f"{month:02d}"
+    if not m_dir.exists():
+        return None
+    for d_dir in sorted(m_dir.iterdir()):
+        f = _pick_file_in_dir(d_dir)
+        if f is not None:
+            return f
+    return None
 
 
 def pick_file_for_day(archive_root: Path, sta: str,
@@ -516,63 +483,54 @@ def scan_station(
     locations_seen = set()
 
     for (y, m) in year_months:
-        # v3b: probe BOTH source-types present in the month. Months with
-        # only one source emit one observation; transition months with
-        # both emit two (one per source-type).
-        files = pick_representative_files(archive_root, sta, y, m)
-        if not files:
+        f = pick_representative_file(archive_root, sta, y, m)
+        if f is None:
             skipped += 1
             continue
+        # Pick reader by extension
+        if f.name.endswith(".dmx") or f.name.endswith(".dmx.gz"):
+            hdr = read_pcsuds_header(f, disk_to_sds)
+        else:
+            hdr = read_mseed_header(f)
 
-        for src_type, f in files.items():
-            if src_type == "pcsuds":
-                hdr = read_pcsuds_header(f, disk_to_sds)
-            else:
-                hdr = read_mseed_header(f)
+        if hdr.get("_read_error"):
+            skipped += 1
+            print(f"    skip {y}-{m:02d}: {hdr['_read_error']}", file=sys.stderr)
+            continue
 
-            if hdr.get("_read_error"):
-                skipped += 1
-                print(f"    skip {y}-{m:02d} ({src_type}): {hdr['_read_error']}",
-                      file=sys.stderr)
-                continue
+        # Recorder reconciliation against registry
+        reg_recs = reg.get("recorder_types") or []
+        if isinstance(reg_recs, list) and len(reg_recs) == 1 and hdr.get("recorder") == "unknown":
+            hdr["recorder"] = reg_recs[0]
 
-            # Recorder reconciliation against registry
-            reg_recs = reg.get("recorder_types") or []
-            if (isinstance(reg_recs, list) and len(reg_recs) == 1
-                    and hdr.get("recorder") == "unknown"):
-                hdr["recorder"] = reg_recs[0]
+        obs = {
+            "source": f"{'pcsuds' if f.name.endswith(('.dmx','.dmx.gz')) else 'sds_scan'}/"
+                      f"{sta}/{y}/{m:02d}/{f.name}",
+            "sampled_at": f"{y}-{m:02d}-01",  # representative date
+            "authority": "authoritative",
+            "authority_overrides": {"sensor": "operator_input"},
+            "recorder": hdr.get("recorder", "unknown"),
+            "sensor": hdr.get("sensor", "unknown"),
+            "sample_rate": hdr.get("sample_rate"),
+            "gain": hdr.get("gain", 1),
+            "location_seen": hdr.get("location_seen", "00"),
+            "channels_seen": hdr.get("channels_seen", []),
+            "network_code_seen": hdr.get("network_code_seen", "unknown"),
+            "recorder_raw_code": hdr.get("recorder_raw_code"),
+            "sensor_raw_code": hdr.get("sensor_raw_code"),
+            "boundary_pinned": False,
+            "flags": [],
+        }
+        # Flags
+        if hdr.get("recorder") == "unknown" or obs["recorder"] == "unknown":
+            obs["flags"].append("catalogue_gap")
+        if hdr.get("sensor") == "unknown":
+            obs["flags"].append("suspicious_unknown_sensor")
+        flags_aggregate.update(obs["flags"])
+        network_codes_seen.add(obs["network_code_seen"])
+        locations_seen.add(obs["location_seen"])
 
-            obs = {
-                "source": f"{src_type}/{sta}/{y}/{m:02d}/{f.name}",
-                "source_type": src_type,  # for dedup separation across sources
-                "sampled_at": f"{y}-{m:02d}-01",
-                "authority": "authoritative",
-                "authority_overrides": {"sensor": "operator_input"},
-                "recorder": hdr.get("recorder", "unknown"),
-                "sensor": hdr.get("sensor", "unknown"),
-                "sample_rate": hdr.get("sample_rate"),
-                "gain": hdr.get("gain", 1),
-                "location_seen": hdr.get("location_seen", "00"),
-                "channels_seen": hdr.get("channels_seen", []),
-                "network_code_seen": hdr.get("network_code_seen", "unknown"),
-                "recorder_raw_code": hdr.get("recorder_raw_code"),
-                "sensor_raw_code": hdr.get("sensor_raw_code"),
-                "boundary_pinned": False,
-                "flags": [],
-            }
-            if obs["recorder"] == "unknown":
-                obs["flags"].append("catalogue_gap")
-            if obs["sensor"] == "unknown":
-                obs["flags"].append("suspicious_unknown_sensor")
-            flags_aggregate.update(obs["flags"])
-            network_codes_seen.add(obs["network_code_seen"])
-            locations_seen.add(obs["location_seen"])
-
-            raw_obs.append(obs)
-
-    # Sort by (sampled_at, source_type) so the dedup walk sees stable
-    # ordering across source-types within the same month.
-    raw_obs.sort(key=lambda o: (o["sampled_at"], o.get("source_type", "")))
+        raw_obs.append(obs)
 
     print(f"  raw observations: {len(raw_obs)} (skipped {skipped})", file=sys.stderr)
 
