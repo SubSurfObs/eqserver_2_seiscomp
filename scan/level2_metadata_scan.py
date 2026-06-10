@@ -266,7 +266,11 @@ def read_pcsuds_header(path: Path, disk_to_sds: Path) -> dict:
         out["elev"] = float(sb.get("elev") or 0.0)
         if stationcomp.get("statident"):
             si = stationcomp["statident"]
-            out["network_code_seen"] = (si.get("network") or "").strip("\x00 ") or "unknown"
+            # Emit raw network code (may be empty bytes). Per
+            # project-pcsuds-network-code-is-bogus: variation across
+            # UM/AB/ABC/empty is meaningless artifact, but the bytes
+            # are still bytes — don't default to "unknown" on empty.
+            out["network_code_seen"] = (si.get("network") or "").strip("\x00 ")
     return out
 
 
@@ -385,9 +389,12 @@ def scan_gecko_ss(archive_root: Path, sta: str) -> list[dict]:
             "cpv": d.get("cpv", ""),
             "firmware_version": d.get("firmware_version", ""),
             "build_number": d.get("build_number", ""),
-            "location_seen": (d.get("location_id", "").strip() or "00"),
+            # Raw bytes for location (.ss has location_id, may be "  ").
+            # Strip whitespace and emit even if empty — empty ≠ unknown.
+            "location_seen": d.get("location_id", "").strip(),
             "channels_seen": [],  # .ss carries storing_chan flags, not codes
-            "network_code_seen": d.get("network_code", "unknown"),
+            # Raw bytes for network code; empty stays empty (not "unknown").
+            "network_code_seen": d.get("network_code", ""),
             "boundary_pinned": True,  # .ss settings_time is a precise pin
             "flags": ["suspicious_unknown_sensor"],  # sensor_name is operator_input
             "first_seen": d["_first_seen_iso"][:10],
@@ -427,14 +434,20 @@ def read_mseed_header(path: Path) -> dict:
         return {"_read_error": "empty stream"}
 
     tr = st[0]
+    # Important: emit RAW bytes for fields that have legitimate empty
+    # state (network code, location) — don't default to "unknown" on
+    # empty (empty ≠ unknown) and don't default to a VW-convention
+    # value like "00" (would mask LOYU's "10" location for dual sensor).
+    # For fields mseed doesn't carry at all (recorder, sensor, gain),
+    # use the "unknown" sentinel.
     out = {
-        "sample_rate": float(tr.stats.sampling_rate),
-        "network_code_seen": (tr.stats.network or "").strip() or "unknown",
-        "channels_seen": sorted({t.stats.channel for t in st}),
-        "location_seen": (tr.stats.location or "00").strip() or "00",
-        "recorder": "unknown",      # mseed doesn't carry recorder identity
-        "sensor": "unknown",        # nor sensor
-        "gain": 1,                   # default — refine from registry/cohort
+        "sample_rate": float(tr.stats.sampling_rate),  # read from bytes
+        "network_code_seen": (tr.stats.network or "").strip(),  # raw, may be ""
+        "channels_seen": sorted({t.stats.channel for t in st}),  # read from bytes
+        "location_seen": (tr.stats.location or "").strip(),  # raw, may be ""
+        "recorder": "unknown",   # mseed doesn't carry recorder identity
+        "sensor": "unknown",     # nor sensor
+        "gain": "unknown",       # nor gain
         "recorder_raw_code": None,
         "sensor_raw_code": None,
     }
@@ -638,7 +651,10 @@ def scan_station(
     disk_to_sds: Path,
 ) -> dict:
     """Scan one station. Returns a dict ready to drop into the YAML's
-    `stations:` block."""
+    `stations:` block. Returns special markers for stations the scan
+    deliberately skipped or that have no data: _no_data, _out_of_scope,
+    each with a `reason` string per uom_seismic_metadata's request.
+    """
     reg = load_registry_entry(registry_path, sta)
     plan = load_plan(plans_dir, sta)
 
@@ -646,10 +662,40 @@ def scan_station(
     print(f"  registry recorder_types: {reg.get('recorder_types')}", file=sys.stderr)
     print(f"  plan epochs: {len(plan.get('epochs', []))}", file=sys.stderr)
 
+    # Out-of-scope: Minimus stations write per-channel-per-minute mseed
+    # (DDBE/DDWB/SCM2). My picker excludes _CH*/_HH* suffixes (which is
+    # correct for Gecko/EchoPro emergency single-channel stubs), so
+    # Minimus would emit empty observations. Per operator: metadata not
+    # needed for Minimus. Mark explicitly out-of-scope so the synthesis
+    # side can skip comparison rather than seeing it as missing-data.
+    reg_recs = reg.get("recorder_types") or []
+    if isinstance(reg_recs, list) and "minimus" in reg_recs:
+        print(f"  OUT OF SCOPE: registry recorder_types includes minimus",
+              file=sys.stderr)
+        return {
+            "_out_of_scope": True,
+            "_reason": "minimus_per_channel_mseed",
+            "_notes": ("Minimus stations write per-channel mseed; current "
+                       "scanner picker excludes those filename patterns. "
+                       "Operator confirmed metadata not needed for VW Minimus."),
+        }
+
+    sta_dir = archive_root / sta / "continuous"
+    if not sta_dir.exists():
+        return {
+            "_no_data": True,
+            "_reason": "archive_dir_missing",
+            "_notes": "",
+        }
+
     year_months = list_station_year_months(archive_root, sta)
     print(f"  archive year-months with data: {len(year_months)}", file=sys.stderr)
     if not year_months:
-        return {"_no_data": True}
+        return {
+            "_no_data": True,
+            "_reason": "archive_dir_present_but_no_parseable_months",
+            "_notes": "",
+        }
 
     raw_obs = []
     skipped = 0
@@ -690,11 +736,18 @@ def scan_station(
                 "sampled_at": f"{y}-{m:02d}-01",
                 "authority": "authoritative",
                 "authority_overrides": {"sensor": "operator_input"},
+                # Every field defaults to the explicit `unknown` string
+                # sentinel when the reader didn't provide it. NO leaked
+                # plausible defaults (gain=1, location="00") — those
+                # would produce false CONFLICTs against the wiki YAML.
                 "recorder": hdr.get("recorder", "unknown"),
                 "sensor": hdr.get("sensor", "unknown"),
-                "sample_rate": hdr.get("sample_rate"),
-                "gain": hdr.get("gain", 1),
-                "location_seen": hdr.get("location_seen", "00"),
+                "sample_rate": hdr.get("sample_rate", "unknown"),
+                "gain": hdr.get("gain", "unknown"),
+                # Raw bytes for location and network code — empty string
+                # is a real observation, distinct from "unknown" (no
+                # bytes read). Don't collapse "" to "00" or "unknown".
+                "location_seen": hdr.get("location_seen", "unknown"),
                 "channels_seen": hdr.get("channels_seen", []),
                 "network_code_seen": hdr.get("network_code_seen", "unknown"),
                 "recorder_raw_code": hdr.get("recorder_raw_code"),
@@ -809,11 +862,19 @@ def scan_station(
         network_codes_seen.add(ss.get("network_code_seen", "unknown"))
         locations_seen.add(ss.get("location_seen", "00"))
 
+    # observations_status surfaces the extreme case where we walked the
+    # archive, found year-months with files, but NO file was readable.
+    # That's distinct from "no archive at all" (handled above) and
+    # from "1+ observations extracted" (normal).
+    obs_status = ("files_present_but_unreadable"
+                  if not raw_obs and year_months else "ok")
+
     return {
         "archive_first_data": raw_obs[0]["sampled_at"] if raw_obs else None,
         "archive_last_data": raw_obs[-1]["sampled_at"] if raw_obs else None,
         "archive_network_codes_seen": sorted(network_codes_seen),
         "location_codes_seen": sorted(locations_seen),
+        "observations_status": obs_status,
         "observations": all_observations,
         "proposed_epochs": proposed,
         "gecko_ss_observations_count": len(ss_obs),
@@ -845,20 +906,40 @@ def emit_yaml(out_path: Path, network: str, stations: dict, archive_root: Path,
     doc["scan_strategy"] = scan_strategy
 
     populated = [(sta, info) for sta, info in stations.items()
-                 if not info.get("_no_data")]
-    empty = [sta for sta, info in stations.items() if info.get("_no_data")]
+                 if not info.get("_no_data") and not info.get("_out_of_scope")]
+    no_data = [(sta, info) for sta, info in stations.items()
+               if info.get("_no_data")]
+    out_of_scope = [(sta, info) for sta, info in stations.items()
+                    if info.get("_out_of_scope")]
 
     total_obs = sum(len(info["observations"]) for sta, info in populated)
     doc["scan_summary"] = {
         "stations_scanned": len(stations),
         "stations_with_data": len(populated),
+        "stations_with_no_data": len(no_data),
+        "stations_out_of_scope": len(out_of_scope),
         "unique_observations": total_obs,
     }
     doc["stations"] = OrderedDict()
     for sta, info in populated:
-        doc["stations"][sta] = info
-    if empty:
-        doc["stations_with_no_data"] = empty
+        # Strip internal _-prefixed markers from the populated entry
+        doc["stations"][sta] = {k: v for k, v in info.items()
+                                if not k.startswith("_")}
+    if no_data:
+        # Reason-keyed dict per uom_seismic_metadata's request.
+        doc["stations_with_no_data"] = OrderedDict()
+        for sta, info in no_data:
+            doc["stations_with_no_data"][sta] = {
+                "reason": info.get("_reason", "unknown"),
+                "notes": info.get("_notes", ""),
+            }
+    if out_of_scope:
+        doc["stations_out_of_scope"] = OrderedDict()
+        for sta, info in out_of_scope:
+            doc["stations_out_of_scope"][sta] = {
+                "reason": info.get("_reason", "unknown"),
+                "notes": info.get("_notes", ""),
+            }
 
     # Recursively convert OrderedDict → dict; YAML SafeDumper rejects
     # OrderedDict by default. We also drop internal _-prefixed keys
