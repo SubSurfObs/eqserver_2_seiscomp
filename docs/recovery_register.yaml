@@ -1,0 +1,55 @@
+# Recovery register — phase3 re-runs for units that didn't reach LT cleanly
+# in the main VW sweep. Driven by scan/run_recovery_register.py.
+#
+# For each entry:
+#   sta, year:    station + year
+#   start_date,   ISO date range narrowed to the missing window. Re-running
+#   end_date:     a window that already overlaps LT bytes will produce
+#                 override conflicts and the unit will be held — see notes.
+#   notes:        why this entry exists / what it expects to recover.
+#
+# Marker for resume: convert_done.jsonl entries from this script all carry
+# `"recovery": true` so the driver can skip what's already done.
+#
+# After each entry succeeds, promote.py auto-promotes it within ~60 s.
+
+entries:
+  - sta: DDNE
+    year: 2017
+    start_date: "2017-01-01"
+    end_date:   "2017-12-31"
+    notes: |
+      Full-year re-run. Original sweep aborted on poison day 2017-10-07
+      (SIGALRM path before heartbeat existed). 88323ec INT32 fallback +
+      Option B heartbeat should resolve cleanly or bail gracefully at
+      15 min. Nothing in LT for this year → no override risk.
+
+  - sta: DDSW
+    year: 2019
+    start_date: "2019-01-01"
+    end_date:   "2019-12-31"
+    notes: |
+      Full-year re-run. Original sweep aborted on poison days 2019-04-09
+      and 2019-04-23. Same engine/heartbeat coverage as DDNE 2017.
+
+  - sta: LOYU
+    year: 2016
+    start_date: "2016-01-01"
+    end_date:   "2016-12-31"
+    notes: |
+      Full-year re-run. Original sweep hit Pool teardown finalization
+      hang at 145/365 days; killed manually 2026-06-06. Pre-recovery-
+      tool partial loss — 145 days NEVER reached LT (no manifest was
+      written, no staging promote happened). Re-run with current engine.
+
+  - sta: LRNW
+    year: 2019
+    start_date: "2019-08-29"
+    end_date:   "2019-12-31"
+    notes: |
+      Partial re-run for the 125-day gap. The 2026-06-07 manual recovery
+      of LRNW 2019 captured 240 days (Jan 1 - Aug 28) via the
+      reconstructed manifest. Days 241-365 (Aug 29 onwards) were never
+      converted because the worker crashed mid-stream and the workers
+      after it didn't get queued. The narrowed date range avoids LT
+      override conflicts on the 240 days already promoted.
