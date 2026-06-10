@@ -627,7 +627,7 @@ def derive_proposed_epochs(deduped: list[dict]) -> list[dict]:
             "sensor": obs.get("sensor", "unknown"),
             "sample_rate": obs.get("sample_rate"),
             "gain": obs.get("gain", 1),
-            "location": obs.get("location_seen", "00"),
+            "location": obs.get("location_seen", "unknown"),
             "confidence": confidence,
             "boundary_pin": {
                 "start": ("archive_first_data" if is_first
