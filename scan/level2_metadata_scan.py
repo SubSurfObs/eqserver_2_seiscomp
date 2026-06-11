@@ -920,6 +920,27 @@ def emit_yaml(out_path: Path, network: str, stations: dict, archive_root: Path,
         "stations_out_of_scope": len(out_of_scope),
         "unique_observations": total_obs,
     }
+
+    # Top-level diagnostic for known scan artifacts. The synthesis side
+    # filters on these so dates that come from these artifacts can be
+    # discounted at consumption time, rather than us trying to apply the
+    # correction in the scanner.
+    known_artifacts = []
+    pre_2012 = False
+    for sta, info in populated:
+        first = info.get("archive_first_data")
+        if first and first < "2012-01-01":
+            pre_2012 = True
+            break
+    if pre_2012:
+        known_artifacts.append("pre_2012_gps_lock_unhandled")
+        # Per uom_seismic_metadata 2026-06-11: no VW station predates 2012
+        # except FBNK. 2001-era epochs at BEST/LOCU/MARD/NARR/OUTU/HODL
+        # are GPS-time-lock artifacts (distinct from RT130 WNRO 1024-week
+        # shift — different mechanism, same shape). Scanner doesn't apply
+        # the correction; consumer side filters start < 2012-01-01.
+    if known_artifacts:
+        doc["known_artifacts"] = known_artifacts
     doc["stations"] = OrderedDict()
     for sta, info in populated:
         # Strip internal _-prefixed markers from the populated entry
