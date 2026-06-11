@@ -252,13 +252,26 @@ def read_pcsuds_header(path: Path, disk_to_sds: Path) -> dict:
         out["sensor_raw_code"] = sens_code
         out["recorder"] = PCSUDS_RECORDER_CODE.get(rec_code, "unknown")
         out["sensor"] = PCSUDS_SENSOR_CODE.get(sens_code, "unknown")
-        # PC-SUDS sentinel for "no value" is -32767. Emit as 'unknown'
-        # (string sentinel per schema) instead of leaking the int.
+        # PC-SUDS atod_gain field — known sentinels + whitelist of real
+        # preamp values. Per uom_seismic_metadata 2026-06-11: empirical
+        # gain=2 readings were WAVES-disproven (HODL/NARR Aug-2012 PC-SUDS
+        # showed sensitivity 2,013,265,536 = 838,860.8 cpv × 2400 V·s/m =
+        # CMG-6T-1 + EchoPro gain=1 signature, bit-exact). The "2" reading
+        # is a reader artifact — possibly flag-bit or sign-bit confusion
+        # in atod_gain that we don't yet understand. Until rooted out,
+        # whitelist only the known real preamp values (1, 8, 32) and
+        # emit 'unknown' for anything else (including the spurious 2).
         gain_raw = sb.get("atod_gain")
-        if gain_raw == -32767 or gain_raw is None or gain_raw == 0:
+        KNOWN_REAL_GAINS = {1, 8, 32}
+        if gain_raw in (None, -32767, 0):
             out["gain"] = "unknown"
+        elif isinstance(gain_raw, int) and gain_raw in KNOWN_REAL_GAINS:
+            out["gain"] = gain_raw
         else:
-            out["gain"] = int(gain_raw)
+            # Includes the spurious gain=2 case, plus any future
+            # surprising value we haven't catalogued yet.
+            out["gain"] = "unknown"
+            out["_gain_raw_dropped"] = gain_raw  # audit trail only
         out["max_gain"] = float(sb.get("max_gain") or 0.0)
         out["con_mvolts"] = float(sb.get("con_mvolts") or 0.0)
         out["st_lat"] = float(sb.get("st_lat") or 0.0)
