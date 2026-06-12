@@ -1366,8 +1366,8 @@ ADE2:
   coverage_end: 2023
 
 ALLA:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: VX
   network_basis: unknown
   coverage_start: 2012
   coverage_end: 2012
@@ -1551,29 +1551,29 @@ DPSH:
   coverage_end: 2022
 
 DR01:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: VX
   network_basis: unknown
   coverage_start: 2015
   coverage_end: 2019
 
 DR02:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: VX
   network_basis: unknown
   coverage_start: 2015
   coverage_end: 2019
 
 DR03:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: VX
   network_basis: unknown
   coverage_start: 2015
   coverage_end: 2019
 
 DR04:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: VX
   network_basis: unknown
   coverage_start: 2016
   coverage_end: 2017
