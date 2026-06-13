@@ -91,16 +91,21 @@ def main():
         key = (e.get("net"), e.get("sta"), e.get("year"))
         failed_by_unit.setdefault(key, []).append(e)
 
-    # Identify recovery promotes — convention: run_id contains
-    # '_recovery_' or '_recovered_'. These are the run_ids produced by
-    # run_recovery_register.py (and the earlier LRNW manifest
-    # reconstructions that used '_recovered_' as the marker).
+    # Identify resolution promotes — any promote_done entry with
+    # action="promoted" for a (net, sta, year) that ALSO has a failed
+    # event. Whether the resolution came through the dedicated recovery
+    # script (run_recovery_register.py, run_ids marked _recovery_ /
+    # _recovered_) OR through a plain orchestrator re-run with a normal
+    # run_id is semantically equivalent: the failure is no longer
+    # outstanding because the unit reached promoted. The unit-table
+    # state machine treats them the same.
     recovery_promotes: list[dict] = []
     for e in promote_events:
-        rid = e.get("run_id", "")
-        if "_recovery_" in rid or "_recovered_" in rid:
-            if e.get("action") == "promoted":
-                recovery_promotes.append(e)
+        if e.get("action") != "promoted":
+            continue
+        key = (e.get("net"), e.get("sta"), e.get("year"))
+        if key in failed_by_unit:
+            recovery_promotes.append(e)
 
     print(f"convert_failed.jsonl: {len(failed_events)} total events "
           f"({sum(1 for e in failed_events if e.get('action')=='resolved')} "
