@@ -21,13 +21,31 @@ work (boundary loss, parse_error days, unit-level failures, etc.). One
 durable register per scan:
 
 - **`docs/scan1_recovery_register.md`** — VW network sweep (2026-06-01
-  onwards). Current; in active accumulation. Read this for the
-  authoritative list of pending recovery work, NOT scattered memory
-  files or `sweep_status.py` output.
+  onwards). The **narrative** layer of recovery state — issues with
+  context, decision rationale, status. Read this for human-level
+  understanding of pending recovery work.
 - `docs/scan2_DU_recovery_register.md` — DU network sweep (future).
 
 The register schema is documented at the bottom of each register; new
 scans copy it verbatim so cross-scan comparisons are mechanical.
+
+**Machine-checkable layer:** `python3 scan/sweep_status.py --unit-table
+--queue-dir /mnt/seiscomp_staging/eqserver_sweep` is the canonical view
+of per-(net, sta, year) current state. It joins all four queue jsonl
+files and folds in `action="resolved"` events from convert_failed.jsonl
+that link recovery run_ids to original failure run_ids. **Any retry-
+class decision must consult `--unit-table` first** — convert_failed.jsonl
+alone is append-only and misleads. State precedence (highest to lowest):
+`cleaned > promoted > held > failed-unresolved > failed-resolved >
+converted-not-yet-promoted > not-attempted`. The narrative register and
+the unit-table should agree; if they don't, that's a bug to investigate
+not a decision to make.
+
+History: prior to 2026-06-13, `convert_failed.jsonl` had no resolved-
+event mechanism and was append-only; recovered units stayed marked as
+failed forever. The Option B refactor (this section + the resolved
+event + `--unit-table`) closes that hole. See the queue-reconciliation
+follow-up handoff for the full rationale.
 
 ---
 

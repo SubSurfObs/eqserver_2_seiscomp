@@ -306,6 +306,7 @@ def main():
             except Exception:
                 pass
             fail_event = {
+                "action": "failed",
                 "run_id": r.get("run_id"),
                 "net": args.network,
                 "sta": sta,

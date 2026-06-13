@@ -216,6 +216,51 @@ def run_entry(
         f.write(line + "\n")
         f.flush()
         os.fsync(f.fileno())
+
+    # Also append a "resolved" event to convert_failed.jsonl so any tooling
+    # that walks convert_failed for "what's still unresolved?" can fold this
+    # recovery in. The original failed event's run_id (if any) is best-effort
+    # — we look it up by (sta, year) and pick the latest failed event lacking
+    # a matching resolved event. This is the queue-reconciliation fix per
+    # Option B (see CLAUDE.md "Sweep recovery registers" + sweep_status.py
+    # --unit-table). Single-host write (recovery script runs on staging VM,
+    # same host as convert.py) so cross-host append-atomicity is not at
+    # stake.
+    convert_failed = queue_dir / "convert_failed.jsonl"
+    original_run_id = None
+    if convert_failed.exists():
+        failed_for_unit = []
+        resolved_run_ids = set()
+        for fl in convert_failed.open():
+            try:
+                d = json.loads(fl.strip())
+            except Exception:
+                continue
+            if d.get("net") == "VW" and d.get("sta") == sta and d.get("year") == year:
+                if d.get("action") == "resolved":
+                    resolved_run_ids.add(d.get("original_run_id"))
+                else:
+                    failed_for_unit.append(d)
+        for d in reversed(failed_for_unit):
+            if d.get("run_id") and d["run_id"] not in resolved_run_ids:
+                original_run_id = d["run_id"]
+                break
+    resolved_event = {
+        "action": "resolved",
+        "net": "VW",
+        "sta": sta,
+        "year": year,
+        "original_run_id": original_run_id,
+        "recovery_run_id": run_id,
+        "ts": utc_now_iso(),
+        "recovery_source_register": str(args.register),
+    }
+    resolved_line = json.dumps(resolved_event, separators=(",", ":"), sort_keys=True)
+    with convert_failed.open("a") as f:
+        f.write(resolved_line + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+
     print(f"    OK — convert_done appended; promote.py will pick up in <60s")
     return True
 
