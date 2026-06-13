@@ -357,6 +357,182 @@ network gets its own register (next: `scan2_DU_recovery_register.md`).
 
 ---
 
+## Issue 7 — Held-queue policy decision: release 4 VW units via hard override-commit
+
+- **Detected:** 2026-06-11. End-of-VW-sweep audit of held.jsonl found 4
+  units in held state from the production sweep, none ever released:
+  FORG 2024, OUTU 2024, WDSD 2025, WPSH 2024. All held with reason
+  `"overrides > 0"` from `promote.py`'s dry-run gate.
+- **Root cause.** Misunderstanding of what the `decide()` rule's
+  "override" decision means. Apply.py's `decide()` is **strictly
+  additive gap-fill** — it returns `override` only when staging has
+  MORE samples than LT by more than 0.1% of a full day. It never
+  returns override when staging and LT samples are equal or LT is
+  larger (those are `skip`). So an override is always a *data
+  recovery* — staging has samples LT doesn't. The held-queue gate
+  treats any non-zero override count as needing human review, which
+  is over-conservative for the gap-fill semantics.
+- **Per-unit shape:**
+  | Unit | write | override | skip | LT-vs-stg shape |
+  |---|---|---|---|---|
+  | FORG 2024 | 51 | 1 | 305 | LT 167d/c, stg 116/116/125; single-day gap-fill |
+  | OUTU 2024 | 492 | 174 | 120 | LT 98d/c (partial seedlink), stg 262 — large genuine gap-fill |
+  | WDSD 2025 | 552 | 3 | 0 | LT 111-112d/c (seedlink), stg 185; tiny boundary fills |
+  | WPSH 2024 | 0 | 102 | 104 | LT 264d/c × 3 components (complete), stg CHZ-only 206d; eqserver source partial |
+- **Fix landed (policy):** Operator authorized 2026-06-11 to
+  hard-override-commit all four via `apply.py --mode decide --commit`
+  (which writes the overrides per the rule). Reasoning: the override
+  direction is strictly additive, mediaflux soft-delete (1yr) +
+  versioned overwrites are the backstop, no actual byte-divergence
+  risk in the decide-mode semantics. Holding the year for a 0.3%
+  override rate (FORG) or 0.5% (WDSD) sacrifices most-of-a-year of
+  promotion to protect a handful of days that the rule says we should
+  extend anyway.
+- **Affected scope.** Criterion: `held.jsonl` entries with
+  `action=held` and `reason="overrides > 0"`. Snapshot: 4 entries
+  listed above (all 4 will be released by the documented operation).
+- **Recovery strategy.**
+  1. Run `/tmp/release_held_units.py` on dev1 (script staged 2026-06-11):
+     preflights LT writability → invokes apply.py --mode decide
+     --commit per unit → appends promote_done.jsonl → rewrites
+     held.jsonl with released entries removed (backup written
+     alongside).
+  2. Verify ledger autocommit pushed all four runs/<run_id>/run.json
+     + policies/<sha>.yaml.
+  3. After release, the 4 units roll into the cleanup pile with the
+     other 343 promoted.
+  4. Optional later: revisit the WPSH 2024 CHZ-only situation
+     specifically — eqserver source has only vertical, LT has full
+     3-comp from elsewhere. Worth understanding the source asymmetry
+     before similar SD-card scenarios appear.
+- **Status:** PENDING — script staged at `/tmp/release_held_units.py`
+  on staging VM 2026-06-11 17:55Z; execution blocked on dev1
+  reachability (port 22 timed out from staging VM at audit time;
+  retry when dev1 is back).
+- **Notes.** Tightens the held-queue policy: future production sweeps
+  should release `reason="overrides > 0"` entries on operator review
+  by default, treating any STRUCTURAL anomalies (e.g. WPSH-shaped
+  one-component-only) as the actual review case. The gate as
+  currently written is correct (any auto-commit of overrides
+  warrants a human gate), but operator can sign off in bulk when the
+  override pattern is recognised gap-fill. The disk_to_sds field
+  history (`feedback-held-queue-is-load-bearing`) showed an override
+  rule wrong in production once; this issue does NOT invalidate that
+  — that case was an `--mode overwrite` blast-radius concern, not the
+  `decide` semantics here.
+
+---
+
+## Issue 8 — KRAN accelerometer on c04-c06 (no action), SOMU Trillium on c04-c06 (silent loss, action needed)
+
+- **Detected:** 2026-06-11. Triage of VW zero-write promotions surfaced KRAN 2012 (65 days) and SOMU 2019 (60 days) as "c04-c06-only, traces=0" — candidate Bug B (velocity wired to input B). Operator verified by opening one representative file per station in WAVES.
+- **Findings:**
+  - **KRAN 2012 c04-c06 = ACCELEROMETER.** Correctly dropped by the converter (`channel_exclude` for accelerometers). Not data loss. The 65 zero-write days are days where only the accelerometer recorded — no velocity present. **No action needed.**
+  - **SOMU c04-c06 = long-period Trillium velocity sensor.** SOMU has a dual-sensor setup: standard Guralp CMG-1s on c01-c03 + Trillium long-period on c04-c06. The current converter drops c04-c06 as aux, silently discarding the Trillium velocity data.
+- **Root cause (SOMU).** disk_to_sds's PC-SUDS converter hardcodes the Kelunji "input A=velocity, input B=aux" assumption — c01/c02/c03 mapped to Z/N/E and c04/c05/c06 unconditionally dropped. It has no awareness that input B can carry a second velocity sensor at stations with two seismometers.
+- **Engine fix path (recommended).** Map SOMU c04-c06 to a **second SDS location code** (e.g. `SOMU.10.HHZ/HHN/HHE` for Trillium vs `SOMU.00.HHZ/HHN/HHE` for CMG-1s). Per-station registry annotation: `secondary_sensor: {input: c04-c06, sensor: trillium-..., location: "10"}`. The engine reads the annotation and emits both location codes on days where both are present.
+- **Silent-drop scope — RESOLVED 2026-06-11 (audit result).** Walked all 951 SOMU day-dirs across all years (2014, 2015, 2016, 2018, 2019), sampled 3 files per day-dir. Distribution:
+  - **c01-c03 only: 890 days** (CMG-only recording — what was promoted)
+  - **c04-c06 only: 61 days** (Trillium-only — the original Bug B candidates, in 2019 only)
+  - **BOTH c01-c03 AND c04-c06: ZERO days**
+
+  CMG and Trillium were never recording simultaneously per day. The 61 Trillium days are the entire affected scope. There is no silent-drop hidden inside the promoted CMG data. Per-year breakdown:
+  | Year | CMG (c01-c03) only | Trillium (c04-c06) only |
+  |---|---|---|
+  | 2014 | 24 | 0 |
+  | 2015 | 286 | 0 |
+  | 2016 | 66 | 0 |
+  | 2018 | 283 | 0 |
+  | 2019 | 231 | 61 |
+- **Affected scope (KRAN).** Criterion: KRAN flagged-days list (65 days in 2012). No action.
+- **Affected scope (SOMU).** Criterion: any SOMU day-dir with c04-c06 channel presence. Confirmed scope post-audit: **61 day-dirs in 2019 only**, all c04-c06-only. Re-convert with second-location-code engine to recover the Trillium velocity at e.g. `SOMU.10.*`. CMG-promoted days untouched (additive `--mode decide`).
+- **Recovery strategy.**
+  1. Land per-station `secondary_sensor` annotation in `station_registry.yaml` for SOMU.
+  2. Engine change in disk_to_sds: respect `secondary_sensor` annotation; map c04-c06 to the secondary location code when present.
+  3. Re-convert SOMU all years, gap-fill into LT via `apply.py --mode decide` (additive, no destructive override).
+  4. After SOMU works, audit other VW stations for likely dual-sensor pattern (any station with EchoPro era + c04-c06 channels present in the source). Apply same fix.
+- **Status:** POTENTIAL TODO — **not** a Phase 1 blocker. SOMU is not a key station; the 61 Trillium-only days are a small bounded scope; the CMG-promoted data is unaffected. Park this for a future engineering window when the dual-sensor-location-code generalisation has independent value (e.g. when we encounter another dual-sensor EchoPro station that DOES matter, or when DU/VX surface similar cases). At that point land annotation + engine fix together, re-convert SOMU 2019, gap-fill via `apply.py --mode decide`.
+- **Notes.** This generalises the SOMU finding: the EchoPro "input B" convention was never hard-wired to accelerometer — it was operator discretion per deployment. Some stations may have used input B for an accelerometer (KRAN: confirmed), others for a second velocity sensor (SOMU: confirmed). Any future EchoPro station with c04-c06 traffic needs operator confirmation of what was wired there before convert-time channel decisions.
+
+---
+
+## Issue 9 — HDDL pre-2018 + MRDN post-2018-04-27 LT mis-labels (two stations, two different causes)
+
+- **Detected:** 2026-06-11 via uom_seismic_metadata cross-check. Their report: "LT HDDL directory: 6,390 files starting 2012-01-04T11:24:33.856 UTC". Reported as a possible station-code collapse (HODL → HDDL) by our conversion pipeline.
+- **Audit result (confirmation + scope reduction):**
+  - **Actual LT HDDL pre-2018 content: 3 files**, not 6,390. All three are 2012 day-of-year 4 (= 2012-01-04), one per channel:
+    - `/mnt/seiscomp_archive/2012/VW/HDDL/CHE.D/VW.HDDL.00.CHE.D.2012.004`
+    - `/mnt/seiscomp_archive/2012/VW/HDDL/CHN.D/VW.HDDL.00.CHN.D.2012.004`
+    - `/mnt/seiscomp_archive/2012/VW/HDDL/CHZ.D/VW.HDDL.00.CHZ.D.2012.004`
+  - mseed header in all three: `NET=VW STA=HDDL LOC=00 CHA=CH{N,E,Z} year=2012 doy=4`.
+  - Total LT HDDL: 5,841 files (3 + 5,838 post-2018). The metadata project's "6,390" figure is overstated; ask them to re-verify against the actual filesystem.
+- **Source attribution — NOT this sweep:**
+  - Registry has `HODL.coverage_start: 2012` and `HDDL.coverage_start: 2018` (correct).
+  - EqServer source archive: `HDDL/continuous/` jumps from bogus-date dirs (1900/1970/1980/1989/1999) straight to 2018. No legitimate pre-2018 HDDL source data exists.
+  - This sweep wrote HDDL only for 2018-2025 (matches our promote_done summaries exactly): 5,838 files.
+  - The 3 mystery files predate our sweep and have to have come from the legacy bash+Java EqConvert pipeline (the `legacy/` directory tooling).
+- **Fix.** Two clean options, both on dev1 (write-host), both pure mediaflux operations:
+  1. **Rename** the 3 files to HODL: move `2012/VW/HDDL/CH{N,E,Z}.D/VW.HDDL.00.CH*.D.2012.004` → `2012/VW/HODL/CH{N,E,Z}.D/VW.HODL.00.CH*.D.2012.004`, and patch the mseed `STA` field in each file's records from `HDDL` to `HODL`. The latter is a 5-byte in-record edit per record (offset 8-12 in every 4096-byte record); needs a short Python helper.
+  2. **Delete** the 3 files. Mediaflux soft-delete is 1-year recoverable per CLAUDE.md infrastructure section. Loses one day-channel of pre-2018 data, but uom_seismic_metadata says HDDL didn't exist then anyway — so the bytes were never going to be valid as HDDL.
+
+  Option 2 is simpler and matches what the metadata project actually wants ("the LT archive should match canonical").
+- **Affected scope.** Criterion: any LT file under `<YEAR>/VW/HDDL/` where year < 2018. Snapshot: 3 files (CHE/CHN/CHZ, all day-of-year 4, all 2012). Audit is mechanical: `find /mnt/seiscomp_archive/{2012..2017}/VW/HDDL -type f` returns the full set.
+- **Status:** PENDING — pure LT cleanup (3 files), no conversion-pipeline change. No effect on this project's sweep going forward; registry already correct so future SD-card / DU writes will never produce HDDL pre-2018.
+- **Notes.** Worth replying to the metadata project with the corrected count (3 not 6,390) and asking them to share the query that produced their figure so we can reconcile. Also a reminder: any "legacy LT artifacts" surface they uncover via future cross-checks should be triaged the same way — confirm whether THIS sweep contributed, and if not, treat as one-shot LT cleanup independent of the conversion pipeline.
+
+### Part B — MRDN post-2018-04-27 mis-labeled bytes (EqServer ingest mistake, AMPLIFIED by this sweep)
+
+- **Detected:** 2026-06-11 via uom_seismic_metadata cross-check. Their report: "LT MRDN > 2018-04-27 actually MARD, 2018-04-27 → 2019-01-11, ~4,145 files". Discovered alongside the HDDL claim.
+- **Audit result (corrected 2026-06-11 after operator re-verification on dev1):**
+  - **EqServer source `MRDN/continuous/` HAS mis-labeled data post-move:** months 01/02/03/04 of 2018 (legitimate, pre-move) PLUS month 11 of 2018 (day **20** only) AND month 01 of 2019 (day **11** only). The 2018-11 + 2019-01 data is upstream-mis-routed: the actual station was MARD by then but the telemetry-ingest pipeline filed it under MRDN.
+  - **This sweep wrote it as MRDN** — faithfully converted what EqServer source said. Visible in `promote_done.jsonl`:
+    - MRDN 2018: 354 files (mostly pre-move legitimate, plus 3 files from 2018-11-20)
+    - MRDN 2019: 3 files (= 1 day × 3 channels, the 2019-01-11 mis-routed day)
+  - **Actual mis-labeled scope: 6 LT files** (2 day-dirs × 3 channels), not 4,145. The metadata team's 4,145 is the *total* LT MRDN count, including the legitimate pre-move bulk.
+  - **Time-range verification (2026-06-11):** MRDN copies are strict SUBSETS of the corresponding MARD same-day files. 2018-11-20: MRDN 00:47:08–00:48:08 (1 min, 11 KB) vs MARD 00:00:00–23:59:60 (full day, ~30 MB). 2019-01-11: MRDN 02:10:41–02:16:43 (~6 min, ~100 KB) vs MARD full day. Conclusion: **deleting the 6 MRDN copies loses zero waveform** — MARD already has the canonical full-day version of those records.
+- **Source attribution.** Mis-label is at the EqServer telemetry-ingest boundary (upstream), not in our conversion. Operator confirmation 2026-06-11: "a station might have telemetered from under one station name but been added to EQ server under another station name."
+- **Fix — DELETE-ONLY (verified safe).** Time-range check confirmed MRDN copies are subsets of MARD's already-complete full-day files; re-conversion is unnecessary. On dev1:
+  ```
+  rm /mnt/seiscomp_archive/2018/VW/MRDN/CH{E,N,Z}.D/VW.MRDN.*.CH*.D.2018.324
+  rm /mnt/seiscomp_archive/2019/VW/MRDN/CH{E,N,Z}.D/VW.MRDN.*.CH*.D.2019.011
+  ```
+  6 files removed; zero waveform loss; mediaflux soft-delete is the 1-year safety net.
+- **Affected scope.** Criterion: any LT file under `<YEAR>/VW/MRDN/` with doy > 117 in 2018 (post-move days) or any 2019 file. Snapshot: 6 files (3 channels × {2018-11-20, 2019-01-11}).
+- **Status:** DELEGATED 2026-06-11 to `seiscomp_server_uom` — owns LT-cleanup operations from here. This project's involvement is complete (audit + scope + verification handed over).
+
+### Part C — Optional long-term hardening: registry `coverage_end` annotations
+
+The HDDL + MRDN mis-labels share a class of failure: **station X was renamed/moved on date D; bytes after D should NEVER carry the old station code.** The current `station_registry.yaml` has `coverage_start` but no `coverage_end`. Adding a `coverage_end` field — and having `phase3_driver.py` skip day-dirs past the coverage_end with a flagged log row — would catch any future mis-routing in EqServer ingest (or in DU / SD-card flows) without us having to spot it case-by-case.
+
+- HODL: `coverage_end: 2018-04-19` (move to HDDL)
+- MRDN: `coverage_end: 2018-04-27` (move to MARD)
+
+Implementation cost: ~30 LOC in phase3_driver.py + per-station registry entries for the small number of stations that have known moves. Worth it before DU sweep launches, since DU might have similar within-property moves we don't yet know about. Track as part of pre-DU work, not blocking VW Phase 1 cleanup.
+
+---
+
+## Issue 10 — 27 GB residual staging after cleanup (per-file LT-mismatch preservation)
+
+- **Detected:** 2026-06-12 at cleanup orchestrator completion.
+- **What happened.** `run_production_cleanup.py --once` walked all 347 promote_done entries and invoked `cleanup.py --net <NET> --sta <STA>` per unit. cleanup.py's per-file rule: delete from staging if LT has the SAME size; otherwise keep + flag. Final result:
+  - **347/347 units processed, zero failures**
+  - **Staging 4.0 TB → 27 GB** (~99.3% freed)
+- **What the 27 GB leftover IS — and why it's correct.** Per-file LT-mismatch preservation. The byte-divergent staged files were NOT deleted because LT bytes differ. Two recognised classes:
+  - **Class A — `decide`-mode skip files** (LT had more samples than staging, so apply.py kept LT and skipped overwriting). Staging copy preserved as evidence of the divergence.
+    | Station-year | Leftover | Origin |
+    |---|---|---|
+    | VW.FORG 2024 | 3.8 GB | 305 skip files from yesterday's held release |
+    | VW.OUTU 2024 | 2.6 GB | 120 skip files from held release |
+    | VW.WPSH 2024 | 2.4 GB | 104 skip files from held release |
+    | VW.CRJN 2024 | 6.3 GB | per-day skips (no held entry, just decide-mode skips) |
+    | VW.SOMU 2025 | 11 GB | per-day skips |
+  - **Class B — small residue** in 2018-2021 (sub-100 MB per station: BRTH, MARD etc.) + 2023 (13 KB rounding) + 2026 (34 MB recent partials). Same skip-mode pattern at smaller scale.
+- **Affected scope.** Criterion: any file remaining under `/mnt/seiscomp_staging/seiscomp_archive/` after cleanup.py declined to delete. Snapshot: 27 GB across ~10 stations in 2018, 2019, 2020, 2021, 2023, 2024, 2025, 2026.
+- **Status:** OK / NO ACTION REQUIRED — the leftover is the SAFETY net working as designed. The data isn't "garbage in the way" — it's evidence of byte-divergent (day, channel) cells that the override-gate (or its per-file analogue) preserved for review. If we ever want to triage individual divergences, the per-station cleanup logs at `/tmp/eqserver_cleanup_logs/<run_id>.cleanup.log` list every kept file and why.
+- **Notes.** Worth keeping in mind for any future SD-card promote rounds: the staging share is NOT empty post-cleanup; it has this 27 GB of legitimately-divergent residue. New uploads should write to fresh (net, sta, year) cells that don't collide.
+
+---
+
 ## Schema reminder for next scan
 
 When opening `scan2_DU_recovery_register.md`, copy the file header
