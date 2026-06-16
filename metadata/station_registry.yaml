@@ -1419,8 +1419,8 @@ BEGA:
   notes: "Bega NSW; long-running — possible DU or other"
 
 BLAT:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: DU
   network_basis: unknown
   coverage_start: 2023
   coverage_end: 2023
@@ -1717,8 +1717,8 @@ MTON:
   coverage_end: 2025
 
 MVM1Y:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: DU
   network_basis: unknown
   coverage_start: 2021
   coverage_end: 2021
