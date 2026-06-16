@@ -1349,18 +1349,18 @@ PLYPT:
   coverage_end: 2025
 
 ADE:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   notes: "Adelaide? Short-lived 2014-2015"
   coverage_start: 2014
   coverage_end: 2015
 
 ADE2:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   coverage_start: 2023
   coverage_end: 2023
@@ -1624,9 +1624,9 @@ GLDS:
   coverage_end: 2018
 
 GLN:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2017
@@ -1724,9 +1724,9 @@ MVM1Y:
   coverage_end: 2021
 
 MYP:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   coverage_start: 2014
   coverage_end: 2014
@@ -1739,9 +1739,9 @@ NAME:
   coverage_end: 2026
 
 NBK:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   coverage_start: 2004
   coverage_end: 2017
@@ -1879,9 +1879,9 @@ TOOL:
   coverage_end: 2017
 
 TORR:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2017
@@ -1895,9 +1895,9 @@ UTT:
   notes: "Long-running (13yr); 1970 artefact"
 
 WAL1:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16; closure-as-exclusion-rationale reverted (registry is for conversion of historical data, station closure is irrelevant). Prior note: DL 2026-06-02 marked closed/shut-down."
+  target_network: DU
   network_basis: unknown
   coverage_start: null
   coverage_end: 2022
