@@ -1616,9 +1616,9 @@ G1053:
   coverage_end: 2023
 
 GLDS:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16 for SAA SA missing-station recovery (was: closed/shut down DL 2026-06-02 — historical data still wanted)"
+  target_network: DU
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2018
@@ -1655,9 +1655,9 @@ HOGM:
 
 
 LILH:
-  include: false
-  reason: "Operator-confirmed closed/shut down (DL 2026-06-02)"
-  target_network: null
+  include: true
+  reason: "DU sweep inclusion 2026-06-16 for SAA SA missing-station recovery (was: closed/shut down DL 2026-06-02 — historical data still wanted)"
+  target_network: DU
   network_basis: unknown
   coverage_start: null
   coverage_end: 2024
@@ -1695,8 +1695,8 @@ MHIL:
   coverage_end: 2018
 
 MPTV:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: DU
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2018
@@ -1710,8 +1710,8 @@ MRAT:
   notes: "Long-running (18yr) — likely VW permanent"
 
 MTON:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: DU
   network_basis: unknown
   coverage_start: 2025
   coverage_end: 2025
@@ -1865,8 +1865,8 @@ SUND:
   coverage_end: 2026
 
 THS:
-  include: unknown
-  target_network: null
+  include: true
+  target_network: DU
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2020
