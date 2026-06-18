@@ -60,56 +60,44 @@ BOGUS_YEARS = {"1900", "1970", "1980", "1989", "1999", "2000", "2002",
                "2004", "2007", "2008", "2009"}
 
 
-def list_source_days(archive: Path, sta: str, year: int) -> set[date]:
-    """Walk source archive for one (sta, year) and return real day-dates.
+def list_source_days(station_dbs: Path, network: str, sta: str,
+                     year: int) -> set[date]:
+    """Use the indexed Level-1 station DB to find real source day-dates
+    for one (sta, year). Avoids NFS walks — orders of magnitude faster.
 
-    Source layout: <archive>/<STA>/continuous/<YEAR>/<MM>/<DD>/
+    DB schema (per scan/level1.py): table `files` with columns
+    file_year, file_month, file_day (filename-derived; authoritative per
+    CLAUDE.md), dir_year/dir_month/dir_day (path-derived; less reliable
+    due to bogus-date dirs), role, exclude_reason.
+
+    Counts a day as 'source has data' iff there's at least one row
+    where role='waveform' AND exclude_reason IS NULL AND
+    the filename date matches year. Filename date IS authoritative —
+    bogus-date dirs (1900/1970/etc.) have file_year matching the real
+    filename date, which is correct.
     """
-    base = archive / sta / "continuous" / str(year)
-    if not base.is_dir():
+    import sqlite3
+    db = station_dbs / f"{network}.{sta}.db"
+    if not db.exists():
         return set()
     out: set[date] = set()
-    for mo_name in sorted(os.listdir(base)):
-        mo_path = base / mo_name
-        if not mo_path.is_dir():
-            continue
-        if not re.fullmatch(r"\d{2}", mo_name):
-            continue
-        try:
-            mo = int(mo_name)
-        except ValueError:
-            continue
-        if not (1 <= mo <= 12):
-            continue
-        for d_name in sorted(os.listdir(mo_path)):
-            if not re.fullmatch(r"\d{2}", d_name):
-                continue
+    con = sqlite3.connect(str(db))
+    try:
+        cur = con.execute(
+            "SELECT DISTINCT file_year, file_month, file_day "
+            "FROM files "
+            "WHERE role='waveform' AND exclude_reason IS NULL "
+            "  AND file_year=? "
+            "  AND file_month BETWEEN 1 AND 12 "
+            "  AND file_day BETWEEN 1 AND 31",
+            (year,))
+        for y, m, d in cur:
             try:
-                day = int(d_name)
-            except ValueError:
+                out.add(date(y, m, d))
+            except (ValueError, TypeError):
                 continue
-            if not (1 <= day <= 31):
-                continue
-            try:
-                dt = date(year, mo, day)
-            except ValueError:
-                continue
-            # Also verify the day-dir has at least one waveform-looking
-            # file — empty placeholders shouldn't count as "source has
-            # data for this day."
-            try:
-                files = os.listdir(mo_path / d_name)
-            except OSError:
-                continue
-            if not files:
-                continue
-            has_waveform = any(
-                f.endswith((".dmx", ".dmx.gz", ".ms.zip", ".ms",
-                            ".mseed.zip", ".mseed"))
-                for f in files
-            )
-            if has_waveform:
-                out.add(dt)
+    finally:
+        con.close()
     return out
 
 
@@ -239,9 +227,9 @@ def categorize_gap_day(dt: date, manifest_idx: dict[date, dict]) -> str:
 
 
 def audit_unit(sta: str, year: int, network: str,
-               archive: Path, lt_root: Path, plans_dir: Path,
+               station_dbs: Path, lt_root: Path, plans_dir: Path,
                queue_dir: Path) -> dict | None:
-    src = list_source_days(archive, sta, year)
+    src = list_source_days(station_dbs, network, sta, year)
     if not src:
         return None  # no source data — not a gap, just not in scope
     lt = list_lt_days(lt_root, network, sta, year)
@@ -276,8 +264,8 @@ def audit_unit(sta: str, year: int, network: str,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--registry", required=True)
-    ap.add_argument("--archive", required=True,
-                    help="EqServer archive root (NFS ro)")
+    ap.add_argument("--station-dbs", required=True,
+                    help="dir containing per-station Level-1 DBs (~/station_dbs)")
     ap.add_argument("--lt-root", required=True,
                     help="LT root (CIFS ro from staging VM)")
     ap.add_argument("--queue-dir", required=True,
@@ -293,7 +281,7 @@ def main():
                     help="output file (- for stdout)")
     args = ap.parse_args()
 
-    archive = Path(args.archive)
+    station_dbs = Path(args.station_dbs)
     lt_root = Path(args.lt_root)
     plans_dir = Path(args.plans)
     queue_dir = Path(args.queue_dir)
@@ -330,7 +318,7 @@ def main():
     grand_src = 0
     for sta in target:
         for yr in range(args.year_min, args.year_max + 1):
-            row = audit_unit(sta, yr, args.network, archive, lt_root,
+            row = audit_unit(sta, yr, args.network, station_dbs, lt_root,
                              plans_dir, queue_dir)
             if row is None:
                 continue
