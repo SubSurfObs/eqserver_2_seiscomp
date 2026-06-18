@@ -670,6 +670,34 @@ Side-load contamination window: 2026-06-01 (first git-tracked engine `9a3b2ae`) 
 
 Class A station-years (DDNE/BRTH 2017-2019 etc) are NOT eligible — their source data is intrinsically gappy and re-conversion produces the same gappy result.
 
+### Morning-resume plan (2026-06-19) — for next session
+
+**Critical reality check pending**: have we correctly diagnosed Class B? The disk_to_sds team's verification chain is solid in isolation (current code on test case = clean output, LT on date 06-09 = corrupted) but we haven't yet proven end-to-end that re-conversion through OUR production code path on a verified-current VM checkout produces clean LT bytes.
+
+**Smoke-test gate** (must pass before any large re-conversion):
+1. HOLS 2022 + 2023 re-conversion (task #49, running overnight, PID 2243883 on staging VM) — uses current engine 94ff229. When done, pick one HOLS output day-file:
+   - Read with ObsPy
+   - Apply `merge(method=1, fill_value=None) + split()`
+   - Confirm `len == 1` per channel
+   - Confirm `npts == sum(source_per_minute_npts)`
+   - If clean: diagnosis confirmed, engine path works, blast-radius re-conversion is safe.
+   - If fragmented: diagnosis is incomplete. Something else is wrong. STOP and re-investigate before scaling.
+
+**Blast-radius result file**: `/tmp/side_load_blast_radius.txt` on staging VM. 56 confirmed-affected + 264 registry-empty-recorder-type. Operator (2026-06-18 night): "more than 250 with empty recorder types... that's not looking too different than a full redo... 100 station-years is the realistic floor".
+
+**Decision pending for morning**: triage path for the 264 registry-empty entries. Options:
+- (a) Fill in registry `recorder_types` from metadata sources we already have, narrow to ~100 Gecko/Minimus station-years, re-convert just those.
+- (b) Accept the larger scope and just re-convert anything in the window regardless of recorder type — EchoPro re-conversion would be a no-op for the fragmentation issue but costs CPU and risks finding new bugs.
+- (c) Step back and consider whether a clean-slate re-sweep of ALL VW is simpler than tracking provenance per unit. Operator opined this approaches (a) in cost anyway.
+
+**Pre-DU blockers still standing regardless of Class B outcome**:
+- Task #50 — orchestrator clip-guard (prevent HOLS-style silent loss in DU)
+- Task #48 — pure-NFS-walk audit (independent of DB, catches level1 classifier bugs)
+
+**Operator stance on Class A**: not going to do anything. The intrinsic source-level gaps in DDNE/BRTH 2017-2019 are real archive data and stay as-is. No interpolation, no synthetic fill.
+
+**Hard-learned principle (memory file feedback-orchestrator-must-validate-date-range exists)**: provenance discipline isn't a nicety — side-loaded engine contamination has now produced a blast radius that approaches full-sweep scope. Future sweep launches must verify VM checkout SHA before phase3 starts.
+
 ### Affected scope refinement (per-station-year)
 
 Blast-radius sampling 2026-06-18 against Gecko-only stations (10 random files per station-year):
