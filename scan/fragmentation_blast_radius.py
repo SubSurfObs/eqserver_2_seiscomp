@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
-"""fragmentation_blast_radius.py — count Gecko fragmentation per day-file.
+"""fragmentation_blast_radius.py — sample Gecko fragmentation per (sta,year).
 
-For each LT day-file under one or more stations, reads ObsPy headers only
-(no sample decode) and counts traces. Reports the distribution per station
-and the total count of days affected. Use to size the recovery scope for
-Issue 12 (Gecko/Minimus day-file fragmentation).
+For each station × year, randomly samples N day-files (default 10 per
+channel), reads ObsPy headers only (no sample decode), counts traces.
+Reports per-year heavy-fragmentation rate using the sample as estimate.
 
-Headers-only read is fast (~0.1-1 sec per file vs many sec for full
-decode), so 3 stations × ~3k days × 3 channels = ~9000 files = ~30 min
-over CIFS.
+Headers-only sampling: ~30 sec per station instead of ~10 min full walk.
 
 USAGE:
   python3 scan/fragmentation_blast_radius.py \\
       --lt-root /mnt/seiscomp_archive \\
       --net VW --stations BRTH,FORG,DDNE \\
+      --samples-per-year 10 \\
       --out /tmp/frag_blast.txt
 """
 from __future__ import annotations
 import argparse
 import os
+import random
 import sys
 import time
 from collections import Counter, defaultdict
@@ -33,8 +32,13 @@ def main():
     ap.add_argument("--net", default="VW")
     ap.add_argument("--stations", required=True,
                     help="comma-separated station codes")
+    ap.add_argument("--samples-per-year", type=int, default=10,
+                    help="random day-files to probe per (sta, year) — "
+                         "across all channels combined")
+    ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default="-")
     args = ap.parse_args()
+    random.seed(args.seed)
 
     stations = [s.strip() for s in args.stations.split(",") if s.strip()]
     fh = sys.stdout if args.out == "-" else open(args.out, "w")
@@ -60,7 +64,7 @@ def main():
         worst_examples: list[tuple[int, str]] = []
         read_errors = 0
 
-        # Walk all years for this station
+        # Walk all years for this station — SAMPLING N day-files per year
         for year_dir in sorted(args.lt_root.iterdir()):
             if not year_dir.is_dir() or not year_dir.name.isdigit():
                 continue
@@ -68,27 +72,35 @@ def main():
             sta_dir = year_dir / args.net / sta
             if not sta_dir.is_dir():
                 continue
+            # Collect all candidate files across all channels for this year
+            candidates = []
             for cha_dir in sorted(sta_dir.iterdir()):
                 if not cha_dir.is_dir() or not cha_dir.name.endswith(".D"):
                     continue
                 for f in sorted(cha_dir.iterdir()):
-                    if not f.is_file():
-                        continue
-                    try:
-                        st = read(str(f), headonly=True)
-                        n = len(st)
-                    except Exception:
-                        read_errors += 1
-                        continue
-                    sta_dist[_bucket(n)] += 1
-                    per_year_total[year] += 1
-                    if n > 100:
-                        per_year_heavy[year] += 1
-                        if len(worst_examples) < 5 or n > worst_examples[0][0]:
-                            worst_examples.append((n, f.name))
-                            worst_examples.sort(reverse=True)
-                            worst_examples = worst_examples[:5]
-                    total_files += 1
+                    if f.is_file():
+                        candidates.append(f)
+            # Random sample
+            if len(candidates) > args.samples_per_year:
+                sample = random.sample(candidates, args.samples_per_year)
+            else:
+                sample = candidates
+            # Probe each sampled file
+            for f in sample:
+                try:
+                    st = read(str(f), headonly=True)
+                    n = len(st)
+                except Exception:
+                    read_errors += 1
+                    continue
+                sta_dist[_bucket(n)] += 1
+                per_year_total[year] += 1
+                if n > 100:
+                    per_year_heavy[year] += 1
+                    worst_examples.append((n, f.name))
+                    worst_examples.sort(reverse=True)
+                    worst_examples = worst_examples[:5]
+                total_files += 1
 
         total_heavy += sum(per_year_heavy.values())
         total_read_errors += read_errors
