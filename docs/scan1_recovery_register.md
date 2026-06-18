@@ -578,12 +578,14 @@ Implementation cost: ~30 LOC in phase3_driver.py + per-station registry entries 
 - **Scope:** LRNW 2019 (4 days), LRWS 2020 (4 days), DDSW 2019 (1 day), DDNE 2017 (1 day), LOYU 2016 (1 day), LOCU 2020 (1 day), LRWS 2019 (1 day), MRDN 2018/2019 (1 day each).
 - **Fix:** Targeted day-level retry with `phase3_driver.py --dates-file`.
 
-### Headline impact
+### Headline impact (FINAL — audit completed 2026-06-18)
 
-- **Total estimated recoverable: ~800 station-days** (dominated by HOLS 2022/2023 at 716 days; rest is ~100 days across small clusters and blips).
-- **Of those, ~98% recoverable cleanly via re-run** with current engine 94ff229. The remaining ~2% are silent-zero-byte cases where the source file behaviour itself may be ambiguous.
-- **No evidence of systemic data loss** across the rest of VW's 339 manifests. Most station-years were processed correctly.
-- **Final audit totals pending** — audit still running ~30 min away from completion.
+- **Total unintentional gap: 927 station-days** out of 64,211 total VW source days = **1.4% loss fraction**.
+- **28 unit-years** with non-zero gap (out of ~339 audited).
+- Subtract SOMU 2019 (60 days, already-known Issue-8 Trillium c04-c06 loss, tagged POTENTIAL TODO): **net new discovery = 867 days**.
+- **HOLS 2022 + HOLS 2023 alone = 716 days = 83% of the new loss.** Both attributable to bug class A (test-run-clip) on 2026-05-31. Re-conversion recovers them cleanly.
+- Remaining ~150 days split between bug class B (~98 days, KRAN 2012 + DDSW/DDWK 2017 clusters) and bug classes C/D (~50 days, scattered 1-5 day blips).
+- **No systemic data loss found.** Every gap traces to one of the four documented bug classes. The 311 non-flagged unit-years in the audit are clean.
 
 ### Status
 
