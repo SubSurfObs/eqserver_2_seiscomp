@@ -598,6 +598,22 @@ Implementation cost: ~30 LOC in phase3_driver.py + per-station registry entries 
 
 ---
 
+## Issue 12 — Gecko/Minimus day-file fragmentation (~minute-boundary gaps surviving into LT)
+
+- **Detected:** 2026-06-18 by downstream quake-fetch project. Symptoms: PhaseNet scan flooded with "fragments shorter than input samples" warnings; per-day scan time 5× normal (5 min → 25 min average), 73-min outliers on worst days.
+- **Smoking-gun case:** `VW.STBK.00.CHZ.D.2022.296` — 450 separate ObsPy traces in one day-file, with 0.83–1.65 s gaps between each (median 1.084 s). Verified on staging VM 2026-06-18. Contrast: `VW.BEST.00.CHZ.D.2022.299` is 1 single contiguous trace covering the full day.
+- **Root cause class:** Gecko/Minimus conversion path in `disk_to_sds/scripts/suds_convert.py` reads each per-minute `.ms.zip` file as a separate ObsPy trace and writes them without the consolidating `Stream.merge(method=1, fill_value=None)` step that the EchoPro path applies. The per-record start-time stamps from Gecko have ~1 sample-period offsets between consecutive minute files, which default merge can't bridge. EchoPro stations (BEST, HOLS, OUTU, FORG, etc.) are NOT affected because their SUDS reader merges all minute traces into one Stream before writing.
+- **Affected scope:** All Gecko-recorder station-days in VW (BRTH, BRIG, DDNE, MARD, STBK, WLSH, WPNH, WPSH, and others), all Minimus station-days (DDBE, DDWB, SCM2 — should verify). All VX Gecko stations. Will affect every future DU sweep and SD-card upload unless fixed.
+- **Two-track recovery (both required per operator 2026-06-18):**
+  1. **Engine fix in disk_to_sds**: add `stream.merge(method=1, fill_value=None)` before `write_sds` in the Gecko/Minimus paths of `suds_convert.py`. Canonical fix. Handoff required to disk_to_sds repo.
+  2. **In-place msrepack sweep** over existing LT files: walks the LT archive, reads each day-file via ObsPy, applies the merge, writes back atomically. Cheap (~few hours unattended for whole VW LT), no source re-read required.
+- **Sequencing:** Run #1 first (so the engine doesn't keep producing fragmented bytes during the catch-up window). Then #2 (catches up historical LT files). Both before DU launch.
+- **Downstream impact resolves automatically once both tasks land** — quake-fetch's PhaseNet flooding stops, per-day scan time drops back to ~5 min.
+- **Open before handoff to disk_to_sds:** confirm Minimus path has the same bug by probing one DDBE, DDWB, SCM2 day each. Downstream project offered to surface the cases.
+- **Status:** PENDING — BOTH tracks confirmed needed by operator 2026-06-18 BUT held pending downstream confirmation of Minimus path. Engine fix is handoff to disk_to_sds. msrepack pass is local to this project. Tasks #52 + #53. Will not execute until Minimus probes return (DDBE/DDWB/SCM2 day-file traces); narrows fix design to Gecko-only vs all-non-EchoPro paths.
+
+---
+
 ## Schema reminder for next scan
 
 When opening `scan2_DU_recovery_register.md`, copy the file header
