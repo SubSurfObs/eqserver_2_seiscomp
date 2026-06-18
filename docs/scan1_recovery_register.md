@@ -603,14 +603,20 @@ Implementation cost: ~30 LOC in phase3_driver.py + per-station registry entries 
 - **Detected:** 2026-06-18 by downstream quake-fetch project. Symptoms: PhaseNet scan flooded with "fragments shorter than input samples" warnings; per-day scan time 5× normal (5 min → 25 min average), 73-min outliers on worst days.
 - **Smoking-gun case:** `VW.STBK.00.CHZ.D.2022.296` — 450 separate ObsPy traces in one day-file, with 0.83–1.65 s gaps between each (median 1.084 s). Verified on staging VM 2026-06-18. Contrast: `VW.BEST.00.CHZ.D.2022.299` is 1 single contiguous trace covering the full day.
 - **Root cause class:** Gecko/Minimus conversion path in `disk_to_sds/scripts/suds_convert.py` reads each per-minute `.ms.zip` file as a separate ObsPy trace and writes them without the consolidating `Stream.merge(method=1, fill_value=None)` step that the EchoPro path applies. The per-record start-time stamps from Gecko have ~1 sample-period offsets between consecutive minute files, which default merge can't bridge. EchoPro stations (BEST, HOLS, OUTU, FORG, etc.) are NOT affected because their SUDS reader merges all minute traces into one Stream before writing.
-- **Affected scope:** All Gecko-recorder station-days in VW (BRTH, BRIG, DDNE, MARD, STBK, WLSH, WPNH, WPSH, and others), all Minimus station-days (DDBE, DDWB, SCM2 — should verify). All VX Gecko stations. Will affect every future DU sweep and SD-card upload unless fixed.
+- **Affected scope:** All eqserver-converted Gecko-recorder station-days in VW. Confirmed:
+  - STBK 2022-10-23 (Gecko, eqserver-converted): 450 records → 450 contigs (median 1.08 s gap)
+  - BEST 2019-10-07 (Gecko era — EchoPro replaced by Gecko 2019-05 → 2020-02 per wiki): 44 records → 44 contigs (1.00 s median gap)
+  - **STBK 2026-04-10 (Gecko, live SeedLink → SeisComP, NOT eqserver-converted): 2498 records → 1 contig (zero gaps).** This is the disambiguator — same recorder, different ingest path, no fragmentation. Proves the bug is in our eqserver→SDS conversion, not the Gecko hardware.
+  - BEST 2025-07-19 onwards (Gecko, live SeedLink): single-trace-per-day across all probed dates.
+  - Minimus path probes (DDBE/DDWB/SCM2) not yet returned — likely affected since they share the per-minute-file write architecture, but not formally confirmed.
 - **Two-track recovery (both required per operator 2026-06-18):**
   1. **Engine fix in disk_to_sds**: add `stream.merge(method=1, fill_value=None)` before `write_sds` in the Gecko/Minimus paths of `suds_convert.py`. Canonical fix. Handoff required to disk_to_sds repo.
   2. **In-place msrepack sweep** over existing LT files: walks the LT archive, reads each day-file via ObsPy, applies the merge, writes back atomically. Cheap (~few hours unattended for whole VW LT), no source re-read required.
 - **Sequencing:** Run #1 first (so the engine doesn't keep producing fragmented bytes during the catch-up window). Then #2 (catches up historical LT files). Both before DU launch.
 - **Downstream impact resolves automatically once both tasks land** — quake-fetch's PhaseNet flooding stops, per-day scan time drops back to ~5 min.
 - **Open before handoff to disk_to_sds:** confirm Minimus path has the same bug by probing one DDBE, DDWB, SCM2 day each. Downstream project offered to surface the cases.
-- **Status:** PENDING — BOTH tracks confirmed needed by operator 2026-06-18 BUT held pending downstream confirmation of Minimus path. Engine fix is handoff to disk_to_sds. msrepack pass is local to this project. Tasks #52 + #53. Will not execute until Minimus probes return (DDBE/DDWB/SCM2 day-file traces); narrows fix design to Gecko-only vs all-non-EchoPro paths.
+- **Status:** RELEASED FROM HOLD 2026-06-18 after downstream provided the live-SeedLink disambiguator. Both tracks proceeding. Engine fix (#52) is handoff to disk_to_sds — disk_to_sds team owns the patch. msrepack pass (#53) is local to this project — script ready, awaits operator authorization to run on dev1 (write-host). Minimus probes still useful when they come back but no longer block the fix.
+- **Acceptance test (downstream-proposed):** re-convert STBK 2022-10-23 from EqServer source, probe new SDS output with `merge(method=1)+split()`. Expected: 1 contig (or contig count reflecting only real outages, not per-record boundaries). Same diagnostic applies to msrepack output.
 
 ---
 
