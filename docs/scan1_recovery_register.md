@@ -618,6 +618,47 @@ Implementation cost: ~30 LOC in phase3_driver.py + per-station registry entries 
 - **Status:** RELEASED FROM HOLD 2026-06-18 after downstream provided the live-SeedLink disambiguator. Both tracks proceeding. Engine fix (#52) is handoff to disk_to_sds — disk_to_sds team owns the patch. msrepack pass (#53) is local to this project — script ready, awaits operator authorization to run on dev1 (write-host). Minimus probes still useful when they come back but no longer block the fix.
 - **Acceptance test (downstream-proposed):** re-convert STBK 2022-10-23 from EqServer source, probe new SDS output with `merge(method=1)+split()`. Expected: 1 contig (or contig count reflecting only real outages, not per-record boundaries). Same diagnostic applies to msrepack output.
 
+### Update 2026-06-18 (afternoon): the bug is TWO classes, not one
+
+Source-file inspection (DDNE 2019-03-02 and STBK 2022-10-23, with operator validation in WAVES) revealed that what looked like one "Gecko fragmentation bug" is actually two genuinely-different phenomena:
+
+**Class A — Gecko source-level fragmentation (REAL data loss in the source):**
+- DDNE 2019 era: even within a single 1-minute Gecko source file, the recorder produced 5-6 sub-traces with 12-20 ms gaps (3-5 missing samples each at 250 Hz).
+- These gaps are **present in BOTH the disk-recorded file AND the telemetered file** — they're NOT a packet-loss-in-transit artefact. Both source variants contain the same gaps with the same widths and same UTC locations.
+- The gaps are visible in ObsPy as separate sub-traces; visible in WAVES at sample-level zoom as 3-5 missing samples (WAVES draws a horizontal hold-fill line that doesn't actually contain the missing data).
+- Operator confirmation 2026-06-18: zoomed WAVES at 2019-03-02T00:01:44.42 UTC showed "3 suspicious identical-flat-but-not-zero samples" — confirming WAVES interpolates over real gaps.
+- The LT fragmentation for these station-years is **faithful to source reality**. The samples were never recorded. No engine fix or re-conversion can bring them back.
+- Multiplies across files: ~5 gaps/minute × 1440 minutes/day = ~7,200 gaps/day/channel, contributing the dominant share of the trace count we see in DDNE-2019-era LT files.
+
+**Class B — Converter-introduced fragmentation (samples exist in source, lost in conversion):**
+- STBK 2022-10-23 era: source minute files are 1-trace each (clean, ~60 sec of data per file).
+- Our converter doesn't bridge the small clock offsets between consecutive minute files, so the LT day-file shows ~450 traces (one per minute file).
+- Recoverable via re-conversion with the disk_to_sds engine fix (#52: add `Stream.merge(method=1, fill_value=None)` before `write_sds`).
+- Confirmed by downstream's live-SeedLink probe: same Gecko recorder via SeedLink produces 1-contig day; via our archive conversion it doesn't.
+
+**Recorder-config metadata gap (separate finding):**
+For DDNE 2019-03-02, the kelunjimeta `.ss` config shows the recorder is digitising all 3 components (E/N/Z) at hardware level but the disk file only contains CHZ; the telemetered file contains all 3 (CHE/CHN/CHZ). **This is opposite to the typical norm** (disk usually has full data, telemetry is the subset). The Gecko firmware has explicit "storing channels" and "telemetered channels" configuration knobs per operator, but the **.ss does NOT explicitly record which channels are saved to disk vs telemetered** — only `tele_chan=1` whose semantics are unclear given that the file actually contains 3 channels. Means: for any Gecko station-day, you can't infer disk-vs-telemetry channel coverage from metadata alone; you have to read the file to find out.
+
+### Decision still open (operator)
+
+Class A is genuine source loss. Choosing whether to interpolate-at-LT (filling synthetic samples ≤ ~10 samples wide) vs preserve-honest-and-fix-downstream is a data-philosophy decision (discussed 2026-06-18 with cost measurement: ~10 sec per day-channel downstream overhead per consumer per read vs one-time ~6 days CPU to re-convert all VW). Draft email to SRC peer organisation written but not sent — asking how they handled the same class of problem in their archive conversion.
+
+### Affected scope refinement (per-station-year)
+
+Blast-radius sampling 2026-06-18 against Gecko-only stations (10 random files per station-year):
+
+| Station | Class A / heavy fragmentation years | Clean / handled-well years |
+|---|---|---|
+| DDNE | 2017 (70%), 2018 (70%), 2019 (100%) | 2020-2024 (mostly 0%) |
+| BRTH | 2018 (90%), 2019 (60%) | 2020-2024 (mostly 0%) |
+| FORG | 2021 (30%) | 2017-2020, 2022-2025 |
+
+BRTH 2025-2026 ALSO show heavy fragmentation but are out-of-scope for this pipeline (live SeedLink, not eqserver-converted; that's a different team's concern).
+
+The transition around 2020 (from "intrinsically gappy" to "clean") is probably a recorder firmware update — worth confirming, but doesn't change recovery action.
+
+**Per-station-year class classification is needed to decide which units to re-convert** (only Class B units benefit from the engine fix; Class A units re-convert to the same gappy result). Pending tool (planned but not built).
+
 ---
 
 ## Schema reminder for next scan
