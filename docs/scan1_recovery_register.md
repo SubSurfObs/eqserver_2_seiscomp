@@ -533,6 +533,69 @@ Implementation cost: ~30 LOC in phase3_driver.py + per-station registry entries 
 
 ---
 
+## Issue 11 — Source-vs-LT gap audit (2026-06-18) — unintentional skips across VW
+
+- **Detected:** 2026-06-18 via `scan/source_lt_gap_audit.py` (DB-based, see also pending pure-NFS-walk task #48 for stronger validation). Audit was triggered after LOYU 2019's `write=13` recovery raised the question "is the sweep silently losing data?".
+- **Audit method:** Per-(net, sta, year) compares EqServer source-day count (from Level-1 station DBs, filtered `role=waveform AND exclude_reason IS NULL`) against LT day-file count (CIFS walk). Subtracts intentional skips (plan flagged_days, manifest `no_files`). Surviving gap is sub-classified by run-manifest `per_date_status`: `never_attempted` (date absent from manifest), `failed_status_*` (timeout/error/parse_error), `ok_but_zero_bytes` (silent failure — phase3 said ok but wrote nothing).
+- **Caveats / limits of method:** Inherits any bug in `level1.py`'s `exclude_reason` rules (circular reasoning class). Independent NFS walker queued as task #48 for pre-DU validation. The audit also can't detect partial-day data loss (e.g. midnight-boundary loss before Option C landed) — only full-day gaps.
+
+### Bug class A: test-run-clip (orchestrator marked complete after sub-year date range)
+
+- **Mechanism:** Phase3's `phase3_invocation.argv` carried `start_date/end_date` shorter than full-year, but the orchestrator nonetheless appended a `convert_done` event and promote.py promoted whatever was staged. Subsequent runs saw the unit "complete" in convert_done and skipped it.
+- **Detection:** Scan run_manifests for `argv.start_date != "YYYY-01-01"` or `argv.end_date != "YYYY-12-31"`.
+- **Scope (verified):** Across all 339 VW manifests, **3 have clipped ranges**:
+  | Unit | Asked | Days | Verdict |
+  |---|---|---|---|
+  | HOLS 2022 | 2022-01-01 → 2022-01-07 | 7 | leftover test run from 2026-05-31, never re-attempted |
+  | HOLS 2023 | 2023-01-01 → 2023-01-07 | 7 | same |
+  | LRNW 2019 | 2019-08-29 → 2019-12-31 | 125 | intentional — `run_recovery_register.py` sub-range |
+- **Affected scope:** ~680 day-channels for HOLS (358 days × 2 years). LRNW 2019 sub-range is intentional and covered elsewhere.
+- **Fix:** Re-convert HOLS 2022 and HOLS 2023 with full-year ranges. Use the same path as MOE re-conversion (clear convert_done + promote_done + cleanup_done entries, then run_production_convert.py --network VW --stations HOLS --year-min 2022 --year-max 2023).
+- **Hardening to land before next sweep:** run_production_convert.py should refuse to mark a unit complete if `argv.end_date - argv.start_date < 0.9 * (full year)` AND no `partial_completion_reason` is set. This is a one-line guard.
+
+### Bug class B: silent ok_but_zero_bytes clusters
+
+- **Mechanism:** Phase3 reports `status: ok` in `per_date_status` but `bytes_written: 0`. Day was "processed" but produced no output. Cause unknown — possibly classifier-vs-converter disagreement (classifier said clean, converter found nothing convertable in source). Predates current engine pins.
+- **Scope (from audit, partial — full pass still completing):**
+  | Unit | Cluster | Days |
+  |---|---|---|
+  | KRAN 2012 | scattered | 65 |
+  | DDSW 2017 | from 2017-10-04 | 16 |
+  | DDWK 2017 | from 2017-10-04 (same days as DDSW) | 16 |
+  | LOYU 2016 | 1 day | 1 |
+- **DDSW + DDWK 2017 same-day pattern** suggests a regional / upstream telemetry event that produced ambiguous files for both stations. Worth pulling 1-2 affected day's source files to characterise.
+- **Fix:** Per-day phase3 retry against engine 94ff229 (post-INT32-fallback + post-Echo) on the affected days. If still zero-bytes, capture the source for offline analysis.
+
+### Bug class C: timeout / parse_error / error (small isolated)
+
+- **Mechanism:** Phase3 day-job hit the SIGALRM 600s wall-clock, libmseed parse error, or generic error.
+- **Scope (partial):** 1-3 days each on BRTH 2020/2021/2024, CLIF 2018, DDSW 2019/2021, DDWK 2021, FORG 2021, HOGN 2019, LOYU 2017, LRSE 2021, plus the rc=-9 history on DDNE/DDSW/LOYU/LRNW/LRWS already in [[project-engine-provenance-incident-2026-06-01]] context.
+- **Fix:** Per-day retry on engine 94ff229. The INT32-fallback (88323ec) was specifically designed for the glitch-sample STEIM2 case which was a big share of these.
+
+### Bug class D: never_attempted (recovery date range too narrow)
+
+- **Mechanism:** Recovery script's date range was a strict subset of source coverage. Days outside the recovery range were never attempted.
+- **Scope:** LRNW 2019 (4 days), LRWS 2020 (4 days), DDSW 2019 (1 day), DDNE 2017 (1 day), LOYU 2016 (1 day), LOCU 2020 (1 day), LRWS 2019 (1 day), MRDN 2018/2019 (1 day each).
+- **Fix:** Targeted day-level retry with `phase3_driver.py --dates-file`.
+
+### Headline impact
+
+- **Total estimated recoverable: ~800 station-days** (dominated by HOLS 2022/2023 at 716 days; rest is ~100 days across small clusters and blips).
+- **Of those, ~98% recoverable cleanly via re-run** with current engine 94ff229. The remaining ~2% are silent-zero-byte cases where the source file behaviour itself may be ambiguous.
+- **No evidence of systemic data loss** across the rest of VW's 339 manifests. Most station-years were processed correctly.
+- **Final audit totals pending** — audit still running ~30 min away from completion.
+
+### Status
+
+- **PENDING — pre-DU recovery work:**
+  1. Re-convert HOLS 2022 + 2023 with full-year ranges (highest-impact).
+  2. Per-day retry of zero-byte clusters (KRAN 2012, DDSW/DDWK 2017).
+  3. Per-day retry of small timeout/error blips.
+  4. Land the test-run-clip guard in `run_production_convert.py` before any future sweep.
+  5. Pure-NFS-walk audit (task #48) before DU launch — independent validation that level1's exclude_reason rules aren't themselves hiding data.
+
+---
+
 ## Schema reminder for next scan
 
 When opening `scan2_DU_recovery_register.md`, copy the file header
