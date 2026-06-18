@@ -641,7 +641,34 @@ For DDNE 2019-03-02, the kelunjimeta `.ss` config shows the recorder is digitisi
 
 ### Decision still open (operator)
 
-Class A is genuine source loss. Choosing whether to interpolate-at-LT (filling synthetic samples ≤ ~10 samples wide) vs preserve-honest-and-fix-downstream is a data-philosophy decision (discussed 2026-06-18 with cost measurement: ~10 sec per day-channel downstream overhead per consumer per read vs one-time ~6 days CPU to re-convert all VW). Draft email to SRC peer organisation written but not sent — asking how they handled the same class of problem in their archive conversion.
+Class A is genuine source loss. Choosing whether to interpolate-at-LT (filling synthetic samples ≤ ~10 samples wide) vs preserve-honest-and-fix-downstream is a data-philosophy decision (discussed 2026-06-18 with cost measurement: ~10 sec per day-channel downstream overhead per consumer per read vs one-time ~6 days CPU to re-convert all VW). Draft email to SRC peer organisation written but not sent — asking how they handled the same class of problem in their archive conversion. **Operator interim decision 2026-06-18 night**: not going to do anything about Class A source-level loss — accept that those gaps are real and present in the LT archive.
+
+### Class B root cause RESOLVED 2026-06-18 (evening) — engine bug hypothesis DISPROVEN
+
+disk_to_sds team did end-to-end verification on the STBK 2022-10-23 test case (`~/Downloads/disk_to_sds_test_case/`). Findings:
+
+| Check | Result |
+|---|---|
+| Source files clean? | ✅ 0000/0001 exactly 1 sample apart, 31,070 samples total, no missing data |
+| Current `write_sds` (all-at-once + incremental) | ✅ 1 trace, 31,070 samples, 0 loss |
+| `convert_gecko_day` exact path (concat → read → merge → split → trim → write_sds) | ✅ 1 trace, 31,070 samples, 0 loss |
+| README acceptance test on current committed code | ✅ passes (`len == 1`, `npts == sum`) |
+| Real production LT `…2022.296` | ❌ 450 traces, 449 ~1.6 s gaps, ~148k samples lost |
+| Committed engine on LT's write date (2026-06-09) | functionally identical to current for this path — only Echo-naming (94ff229) + INT32-fallback (88323ec) landed since, neither relevant |
+
+**Conclusion (disk_to_sds, mirrored on our side):** the current committed engine code does NOT have this bug. The fragmented production LT was written by an engine that was NOT the committed merge-on-write code — i.e., a **stale or side-loaded engine** running on the VM during the LT write window. This is the same incident class as [[project-engine-provenance-incident-2026-06-01]]; see also [[feedback-git-synced-across-hosts]]. The provenance violations occurred "earlier this month, none since 2026-06-12" per the engine-provenance memory; LT mtime 2026-06-09 sits squarely in that side-load window.
+
+**Cancellations:**
+- Task #52 (Gecko/Minimus engine fix in disk_to_sds) — **NO LONGER NEEDED**. The committed code already does the right thing. Will close.
+- Task #53 (msrepack sweep over fragmented LT) — **WRONG TOOL**. Already known; for Class B the right remedy is re-conversion. Will close.
+
+**Real remedy:** re-convert the affected Gecko (and Minimus) station-years with the current pinned engine `94ff229` on a verified-current VM checkout. Blast radius scoping is **task #54** (new, see below). The genuine action item is **provenance discipline** — confirm the VM checkout SHA before any production run — and the git-synced-across-hosts memory has already been tightened post-2026-06-12.
+
+### Class B affected scope — to be determined via promote_done.jsonl walk
+
+Side-load contamination window: 2026-06-01 (first git-tracked engine `9a3b2ae`) through 2026-06-12 (git-synced rule tightened, current pin `94ff229` landed). Any (Gecko or Minimus) station-year whose convert ran in this window is a candidate for re-conversion. Walk produced 2026-06-18 night by `scan/side_load_window_audit.py`; results in [task #54 description].
+
+Class A station-years (DDNE/BRTH 2017-2019 etc) are NOT eligible — their source data is intrinsically gappy and re-conversion produces the same gappy result.
 
 ### Affected scope refinement (per-station-year)
 
