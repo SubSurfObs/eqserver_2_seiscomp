@@ -170,6 +170,14 @@ def main():
     ap.add_argument("--end-date", default=None,
                     help="Override the YYYY-12-31 default end of each "
                          "(sta, year) window. YYYY-MM-DD.")
+    ap.add_argument("--partial-completion-reason", default=None,
+                    help="Required when --start-date or --end-date is set. "
+                         "A short string explaining why every unit is being "
+                         "intentionally clipped to a partial range (smoke "
+                         "test, targeted recovery, etc). Without this flag, "
+                         "the driver refuses to run with date overrides — "
+                         "the HOLS 2022 clip-loss lesson, see "
+                         "[[feedback-orchestrator-must-validate-date-range]].")
     ap.add_argument("--station-dbs", default="/home/unimelb.edu.au/dsand/station_dbs")
     ap.add_argument("--plans", default=None,
                     help="Dir of per-station plan YAMLs. Defaults to the "
@@ -194,6 +202,23 @@ def main():
     ap.add_argument("--phase3", default=str(DEFAULT_PHASE3))
     ap.add_argument("--python", default=DEFAULT_VENV_PY)
     args = ap.parse_args()
+
+    # Clip-guard: --start-date / --end-date apply to EVERY (sta, year) the
+    # driver visits. Forgotten --year-min/--year-max with a partial range turns
+    # a 1-unit smoke test into a network-wide clip that silently records the
+    # partial as if it were the whole year (HOLS 2022 lost 357/365 days this
+    # way; see feedback-orchestrator-must-validate-date-range). Require an
+    # explicit acknowledgement that the partial is intentional.
+    if (args.start_date or args.end_date) and not args.partial_completion_reason:
+        print(
+            f"[convert] REFUSING TO RUN: --start-date={args.start_date} "
+            f"--end-date={args.end_date} but --partial-completion-reason not "
+            f"set. A partial range applies to every unit; without an "
+            f"explicit reason this is almost certainly an accident. Either "
+            f"remove the date overrides or pass --partial-completion-reason "
+            f"'<why>' to acknowledge.",
+            file=sys.stderr, flush=True)
+        return 2
 
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_sds).parent)
@@ -273,6 +298,15 @@ def main():
                 "net": args.network,
                 "sta": sta,
                 "year": year,
+                # Date range actually passed to phase3. For a normal full-year
+                # convert these are YYYY-01-01 / YYYY-12-31; for an explicit
+                # operator-clipped run they reflect the override. Recorded so
+                # post-hoc audits (sweep_status, source-vs-LT scans) can
+                # distinguish full-year completion from partial clips without
+                # spelunking through the log dir.
+                "start_date_used": args.start_date or f"{year:04d}-01-01",
+                "end_date_used": args.end_date or f"{year:04d}-12-31",
+                "partial_completion_reason": args.partial_completion_reason,
                 "run_manifest_path": r["run_manifest_path"],
                 "staging_root": args.staging_sds,
                 "items_succeeded": r["items_succeeded"],
