@@ -412,9 +412,13 @@ def cmd_add(args):
     if "error" in r4:
         return 2
 
-    print("  [time_idx] read trace headers from mirror ...", flush=True)
-    r3 = build_time_index(sta, year, month, day)
-    print(f"  [time_idx] {r3}", flush=True)
+    if args.no_time_index:
+        print("  [time_idx] skipped (--no-time-index)", flush=True)
+        r3 = {"n_rows": None}
+    else:
+        print("  [time_idx] read trace headers from mirror ...", flush=True)
+        r3 = build_time_index(sta, year, month, day)
+        print(f"  [time_idx] {r3}", flush=True)
 
     # register in catalogue (idempotent: replace if exists)
     entries = load_catalogue()
@@ -496,6 +500,9 @@ def main():
     p.add_argument("date", help="YYYY-MM-DD")
     p.add_argument("category", help="e.g. true_b2_canonical, clean_baseline, b1_isolation")
     p.add_argument("--notes", default="")
+    p.add_argument("--no-time-index", action="store_true",
+                   help="skip the per-trace time-index build (faster bulk-add). "
+                        "Run rebuild_time_index later to backfill.")
     p.set_defaults(func=cmd_add)
 
     p = sub.add_parser("list", help="show registered test days")
