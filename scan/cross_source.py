@@ -5,23 +5,12 @@ Pure-function policy module. Given the manifest rows for one station-day
 into the converter — without ever opening or reading any of the files.
 
 Policy summary (filename + size signals only; no I/O):
-    0. DAY-LEVEL DISK-COMPLETENESS PRE-PASS. If every HHMM slot in the day
-       has at least one disk "complete" candidate (channel_suffix=None),
-       disk is structurally complete for the day. In that case telemetry
-       is entirely dropped from the per-slot decisions — disk wins outright.
-       This matches the documented intent "clean disk day = use disk" and
-       avoids the size-ratio misfire when disk happens to be more compact
-       than telemetry (STEIM2 vs inbox-dispatched re-encoded variants).
-       Cf. test env STBK 2022-10-23 verified 2026-06-21 where the size
-       rule rejected disk in favour of two overlapping telemetry variants,
-       producing fragmented output.
     1. Per minute (HHMM) slot, one candidate -> use it.
     2. If a "complete" file (no channel_suffix) is present in the slot,
        use it. **Disk preferred unless disk is materially smaller than
        tele** (controlled by `disk_size_floor_ratio`, default 0.8 —
        disk wins down to 80% of tele's size). Single-channel stubs at
        this slot are dropped (the complete file covers their channel).
-       NOTE: this tier is skipped when disk-only mode (tier 0) is active.
     3. If only single-channel stubs are present in the slot, keep one PER
        distinct channel_suffix (no overlap — they are different components).
        Within same-channel candidates: disk wins ABSOLUTELY (no threshold
@@ -107,45 +96,9 @@ def select_files_for_day(
         print(f"[cross_source] skipped {n_skipped_null_hhmm} row(s) with NULL hhmm",
               file=sys.stderr)
 
-    # Tier 0: dispatcher-glitch detection. EqServer's telemetry dispatcher
-    # sometimes emits two overlapping telemetry variants of the same minute
-    # (e.g. STBK 2022-10-23: '2022-10-23 0001 STBK.ms.zip' and
-    # '2022-10-23 0001 00 STBK.ms.zip'). Both come from the same upstream
-    # real-time stream — they are NOT independent uploads (telemetry has
-    # only one arrival path: real-time network). When this happens, picking
-    # one telemetry variant per slot via size comparison produces an
-    # inconsistent time-coverage mix that ObsPy can't safely merge, causing
-    # fragmentation. The fix: when multi-variant telemetry is present AND
-    # disk has full slot coverage, drop telemetry entirely and use disk —
-    # the legitimate operator-intended record. Single-variant telemetry
-    # remains handled by the documented size-ratio fallback in tier 2.
-    disk_only_mode = False
-    if by_slot:
-        slots_with_disk_complete = sum(
-            1 for cands in by_slot.values()
-            if any(c["source_type"] == "disk" and c["channel_suffix"] is None
-                   for c in cands)
-        )
-        disk_covers_every_slot = (slots_with_disk_complete == len(by_slot))
-        has_multi_tele_complete = any(
-            sum(1 for c in cands
-                if c["source_type"] == "telemetry" and c["channel_suffix"] is None) > 1
-            for cands in by_slot.values()
-        )
-        if disk_covers_every_slot and has_multi_tele_complete:
-            disk_only_mode = True
-            import sys
-            print(f"[cross_source] disk-only mode: dispatcher-glitch "
-                  f"detected (multi-variant telemetry) and disk covers "
-                  f"all {len(by_slot)} slots; dropping telemetry",
-                  file=sys.stderr)
-
     selected = []
     for hhmm in sorted(by_slot):
         cands = by_slot[hhmm]
-        # Tier 0: in disk-only mode, restrict candidates to disk.
-        if disk_only_mode:
-            cands = [c for c in cands if c["source_type"] == "disk"]
 
         # Tier 1: single candidate → trivial use.
         if len(cands) == 1:
