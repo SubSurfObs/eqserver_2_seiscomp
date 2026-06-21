@@ -119,39 +119,18 @@ def read_channels(path: str, fmt: str) -> set | str:
 # Sampling: monthly + bisection
 # --------------------------------------------------------------------------
 
-def daterange_months(d_start: date, d_end: date):
-    """Yield first-of-month dates from d_start inclusive to d_end inclusive."""
-    y, m = d_start.year, d_start.month
-    while True:
-        cur = date(y, m, 1)
-        if cur > d_end:
-            return
-        yield cur
-        m += 1
-        if m > 12:
-            m = 1
-            y += 1
-
-
 def pick_file(conn: sqlite3.Connection, sta: str, kind: str,
-              fmt: str, d: date, allow_offset: int = 14) -> str | None:
-    """Find one file at or near `d` (within ± allow_offset days) for this
-    (sta, kind). Uses filename regex on the path basename."""
-    # Choose a small window centred on d
-    d0 = d - timedelta(days=allow_offset)
-    d1 = d + timedelta(days=allow_offset)
+              fmt: str, year: int, month: int) -> str | None:
+    """Find any file for (sta, year, month) whose basename matches `kind`'s
+    filename pattern. Filter in Python — keeps SQL trivial (uses the
+    station+year+month index) so this stays fast even on multi-GB DBs."""
     rows = conn.execute(
         "SELECT path FROM files "
-        "WHERE station = ? AND role != 'metadata' AND exclude_reason IS NULL "
-        "  AND ((dir_year > ?) OR (dir_year = ? AND dir_month >= ?)) "
-        "  AND ((dir_year < ?) OR (dir_year = ? AND dir_month <= ?)) "
-        "ORDER BY ABS(julianday(dir_year || '-' || "
-        "  printf('%02d', dir_month) || '-' || printf('%02d', dir_day)) "
-        "  - julianday(?))",
-        (sta, d0.year, d0.year, d0.month, d1.year, d1.year, d1.month,
-         d.strftime("%Y-%m-%d"))
+        "WHERE station = ? AND dir_year = ? AND dir_month = ? "
+        "  AND role != 'metadata' AND exclude_reason IS NULL "
+        "LIMIT 200",
+        (sta, year, month)
     ).fetchall()
-    # Filter by filename pattern
     for (path,) in rows:
         name = path.split("/")[-1]
         m = classify_kind(name)
@@ -162,33 +141,42 @@ def pick_file(conn: sqlite3.Connection, sta: str, kind: str,
 
 def scan_station_kind(conn: sqlite3.Connection, sta: str, kind: str,
                       fmt: str) -> list[dict]:
-    """Sample files monthly for this (sta, kind), detect channel-set
-    epochs."""
-    # Determine the date range present in the manifest for this kind
-    # (rough — use station-level extent of dir dates having any file of this kind)
+    """Yearly sampling: pick one file from month 7 (or any month) per year
+    for this (sta, kind). Detect channel-set changes year-over-year.
+
+    Monthly bisection within years where a change is detected is a future
+    extension — for the first cut, year-level resolution is enough to
+    catch the major epoch transitions documented in the project."""
+    # Quick range query — just min/max year that the station has data for
     rows = conn.execute(
-        "SELECT MIN(dir_year), MIN(dir_month), MAX(dir_year), MAX(dir_month) "
-        "FROM files WHERE station = ?",
+        "SELECT MIN(dir_year), MAX(dir_year) FROM files WHERE station = ? "
+        "AND role != 'metadata'",
         (sta,)
     ).fetchone()
     if not rows or not rows[0]:
         return []
-    d_start = date(rows[0], rows[1], 1)
-    d_end = date(rows[2], rows[3], 28)  # 28 is safe end-of-month
+    y_min, y_max = rows[0], rows[1]
+    if y_min < 2010:
+        # Manifest sometimes contains bogus pre-2010 dirs (e.g. 1900);
+        # skip them
+        y_min = max(y_min, 2010)
 
-    # Sample monthly
     samples = []
-    for d in daterange_months(d_start, d_end):
-        path = pick_file(conn, sta, kind, fmt, d)
+    for year in range(y_min, y_max + 1):
+        # Try month 7 first (mid-year); fall back to other months if 7 has nothing
+        path = None
+        for month in (7, 1, 4, 10, 6, 12, 2, 11, 3, 9, 5, 8):
+            path = pick_file(conn, sta, kind, fmt, year, month)
+            if path:
+                break
         if not path:
             continue
         channels = read_channels(path, fmt)
         if isinstance(channels, str):
-            # read error — record but continue
-            samples.append({"date": d.isoformat(), "path": path,
+            samples.append({"date": f"{year:04d}-07-01", "path": path,
                             "channels": None, "error": channels})
         else:
-            samples.append({"date": d.isoformat(), "path": path,
+            samples.append({"date": f"{year:04d}-07-01", "path": path,
                             "channels": sorted(channels), "error": None})
 
     if not samples:
