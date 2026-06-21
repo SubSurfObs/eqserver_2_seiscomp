@@ -160,9 +160,19 @@ def preflight(sta: str, year: int, month: int, day: int) -> dict:
 
     conn.close()
 
-    # Decide overall status
-    has_anomalies = any(v for v in findings["anomalies"].values())
-    findings["has_anomalies"] = has_anomalies
+    # Blocking anomalies — truly unfamiliar classifications. These are the
+    # ones that should refuse to proceed without --force.
+    blocking_buckets = ("unknown_recorder_type", "null_recorder_type",
+                        "unknown_source_type", "null_source_type",
+                        "non_standard_role", "non_standard_exclude_reason")
+    has_blocking_anomalies = any(findings["anomalies"][b] for b in blocking_buckets)
+    # date_mismatch is a known per-row flag (session boundary files etc.) — note
+    # it but don't block on it.
+    has_informational = any(
+        findings["anomalies"][b] for b in findings["anomalies"]
+        if b not in blocking_buckets)
+    findings["has_blocking_anomalies"] = has_blocking_anomalies
+    findings["has_informational_anomalies"] = has_informational
     findings["count_mismatch"] = (
         findings["n_files_on_disk"] != findings["total_manifest_rows"])
     return findings
@@ -176,14 +186,26 @@ def print_preflight(f: dict) -> None:
     print(f"  [preflight] by source_type:     {f['by_source_type']}", flush=True)
     print(f"  [preflight] by role:            {f['by_role']}", flush=True)
     print(f"  [preflight] by exclude_reason:  {f['by_exclude_reason']}", flush=True)
-    if f.get("has_anomalies"):
-        print(f"  [preflight] ANOMALIES FOUND:", flush=True)
-        for bucket, samples in f["anomalies"].items():
+    blocking_buckets = ("unknown_recorder_type", "null_recorder_type",
+                        "unknown_source_type", "null_source_type",
+                        "non_standard_role", "non_standard_exclude_reason")
+    if f.get("has_blocking_anomalies"):
+        print(f"  [preflight] BLOCKING ANOMALIES:", flush=True)
+        for bucket in blocking_buckets:
+            samples = f["anomalies"].get(bucket, [])
             if samples:
                 print(f"               {bucket} ({len(samples)} sample{'s' if len(samples)!=1 else ''}):")
                 for s in samples:
                     print(f"                 - {s}")
-    else:
+    if f.get("has_informational_anomalies"):
+        print(f"  [preflight] informational:", flush=True)
+        for bucket, samples in f["anomalies"].items():
+            if bucket in blocking_buckets or not samples:
+                continue
+            print(f"               {bucket} ({len(samples)} sample{'s' if len(samples)!=1 else ''}):")
+            for s in samples:
+                print(f"                 - {s}")
+    if not f.get("has_blocking_anomalies") and not f.get("has_informational_anomalies"):
         print(f"  [preflight] no anomalies", flush=True)
 
 
@@ -293,11 +315,11 @@ def cmd_convert(args):
         print(f"  preflight error: {f['error']}", flush=True)
         return 2
     print_preflight(f)
-    if f["has_anomalies"] and not args.force_anomalies:
-        print(f"  REFUSING TO PROCEED: pre-flight found anomalies. "
-              f"Re-run with --force-anomalies if intentional, or update "
-              f"test_env_build.py / level1.py classification to handle "
-              f"the new patterns.", flush=True)
+    if f["has_blocking_anomalies"] and not args.force_anomalies:
+        print(f"  REFUSING TO PROCEED: pre-flight found UNKNOWN classifications "
+              f"(unfamiliar recorder_type/source_type/role/exclude_reason).\n"
+              f"  Re-run with --force-anomalies to ignore, or update level1.py / "
+              f"test_env_build.py to recognise the new pattern.", flush=True)
         return 2
 
     # 2. Wipe prior staging output for this day
