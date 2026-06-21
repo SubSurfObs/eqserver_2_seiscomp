@@ -1,0 +1,357 @@
+{
+  "buckets_total": {
+    "AB_mixed": 607,
+    "A_pure": 1321,
+    "C_partial": 113,
+    "D_pure": 6,
+    "sparse": 29,
+    "weird": 342
+  },
+  "by_year": {
+    "2001": {
+      "buckets": {
+        "sparse": 8
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 8
+    },
+    "2014": {
+      "buckets": {
+        "A_pure": 20,
+        "weird": 1
+      },
+      "full_any": 20,
+      "full_both": 0,
+      "full_disk": 20,
+      "full_tele": 0,
+      "total": 21
+    },
+    "2015": {
+      "buckets": {
+        "A_pure": 347,
+        "sparse": 1,
+        "weird": 2
+      },
+      "full_any": 347,
+      "full_both": 0,
+      "full_disk": 347,
+      "full_tele": 0,
+      "total": 350
+    },
+    "2016": {
+      "buckets": {
+        "A_pure": 219,
+        "C_partial": 11,
+        "sparse": 11,
+        "weird": 70
+      },
+      "full_any": 271,
+      "full_both": 0,
+      "full_disk": 271,
+      "full_tele": 0,
+      "total": 311
+    },
+    "2017": {
+      "buckets": {
+        "A_pure": 32,
+        "C_partial": 7,
+        "sparse": 2,
+        "weird": 105
+      },
+      "full_any": 135,
+      "full_both": 0,
+      "full_disk": 135,
+      "full_tele": 0,
+      "total": 146
+    },
+    "2018": {
+      "buckets": {
+        "AB_mixed": 9,
+        "C_partial": 35,
+        "sparse": 1,
+        "weird": 78
+      },
+      "full_any": 83,
+      "full_both": 8,
+      "full_disk": 81,
+      "full_tele": 10,
+      "total": 123
+    },
+    "2019": {
+      "buckets": {
+        "AB_mixed": 55,
+        "A_pure": 113,
+        "C_partial": 52,
+        "sparse": 1,
+        "weird": 40
+      },
+      "full_any": 199,
+      "full_both": 54,
+      "full_disk": 199,
+      "full_tele": 54,
+      "total": 261
+    },
+    "2020": {
+      "buckets": {
+        "AB_mixed": 136,
+        "A_pure": 117,
+        "C_partial": 1,
+        "weird": 8
+      },
+      "full_any": 250,
+      "full_both": 129,
+      "full_disk": 250,
+      "full_tele": 129,
+      "total": 262
+    },
+    "2021": {
+      "buckets": {
+        "AB_mixed": 112,
+        "C_partial": 1,
+        "D_pure": 6,
+        "sparse": 2,
+        "weird": 4
+      },
+      "full_any": 118,
+      "full_both": 103,
+      "full_disk": 107,
+      "full_tele": 114,
+      "total": 125
+    },
+    "2022": {
+      "buckets": {
+        "AB_mixed": 114,
+        "A_pure": 103,
+        "C_partial": 5,
+        "sparse": 2,
+        "weird": 15
+      },
+      "full_any": 202,
+      "full_both": 95,
+      "full_disk": 200,
+      "full_tele": 97,
+      "total": 239
+    },
+    "2023": {
+      "buckets": {
+        "AB_mixed": 114,
+        "A_pure": 143,
+        "C_partial": 1,
+        "weird": 5
+      },
+      "full_any": 254,
+      "full_both": 109,
+      "full_disk": 254,
+      "full_tele": 109,
+      "total": 263
+    },
+    "2024": {
+      "buckets": {
+        "AB_mixed": 21,
+        "A_pure": 227,
+        "weird": 14
+      },
+      "full_any": 247,
+      "full_both": 20,
+      "full_disk": 247,
+      "full_tele": 20,
+      "total": 262
+    },
+    "2025": {
+      "buckets": {
+        "AB_mixed": 46,
+        "sparse": 1
+      },
+      "full_any": 43,
+      "full_both": 43,
+      "full_disk": 43,
+      "full_tele": 43,
+      "total": 47
+    }
+  },
+  "coverage_pct": {
+    "full_any": 89.7,
+    "full_both": 23.2,
+    "full_disk": 89.08,
+    "full_tele": 23.82
+  },
+  "coverage_total": {
+    "full_any": 2169,
+    "full_both": 561,
+    "full_disk": 2154,
+    "full_tele": 576
+  },
+  "generated_at_utc": "2026-06-21T06:22:36Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.OUTU.db",
+  "samples_for_inspection": {
+    "sparse": [
+      {
+        "bucket": "sparse",
+        "date": "2001-10-25",
+        "n_disk": 38,
+        "n_excluded": 12,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-10-26",
+        "n_disk": 9,
+        "n_excluded": 3,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-10-27",
+        "n_disk": 8,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-10-28",
+        "n_disk": 19,
+        "n_excluded": 6,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-10-29",
+        "n_disk": 10,
+        "n_excluded": 9,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-10-30",
+        "n_disk": 7,
+        "n_excluded": 4,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-10-31",
+        "n_disk": 8,
+        "n_excluded": 5,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2001-11-01",
+        "n_disk": 4,
+        "n_excluded": 1,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2015-04-15",
+        "n_disk": 273,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "sparse",
+        "date": "2016-02-20",
+        "n_disk": 18,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      }
+    ],
+    "weird": [
+      {
+        "bucket": "weird",
+        "date": "2014-12-11",
+        "n_disk": 1300,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2015-04-14",
+        "n_disk": 926,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2015-05-01",
+        "n_disk": 1331,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-07-12",
+        "n_disk": 724,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-07-29",
+        "n_disk": 1190,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-08-13",
+        "n_disk": 550,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-08-16",
+        "n_disk": 1168,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-08-21",
+        "n_disk": 772,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-08-22",
+        "n_disk": 1190,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2016-08-24",
+        "n_disk": 569,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      }
+    ]
+  },
+  "station": "OUTU",
+  "total_days": 2418
+}

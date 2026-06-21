@@ -1,0 +1,395 @@
+{
+  "buckets_total": {
+    "AB_mixed": 2005,
+    "A_pure": 197,
+    "C_partial": 403,
+    "D_pure": 27,
+    "sparse": 365,
+    "weird": 659
+  },
+  "by_year": {
+    "1970": {
+      "buckets": {
+        "sparse": 1
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 1
+    },
+    "1980": {
+      "buckets": {
+        "sparse": 7
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 7
+    },
+    "1989": {
+      "buckets": {
+        "sparse": 2
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 2
+    },
+    "1999": {
+      "buckets": {
+        "sparse": 8,
+        "weird": 8
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 16
+    },
+    "2013": {
+      "buckets": {
+        "AB_mixed": 81,
+        "A_pure": 2,
+        "C_partial": 2,
+        "sparse": 17
+      },
+      "full_any": 81,
+      "full_both": 76,
+      "full_disk": 81,
+      "full_tele": 76,
+      "total": 102
+    },
+    "2014": {
+      "buckets": {
+        "AB_mixed": 192,
+        "A_pure": 11,
+        "C_partial": 1,
+        "D_pure": 23,
+        "sparse": 53,
+        "weird": 21
+      },
+      "full_any": 225,
+      "full_both": 188,
+      "full_disk": 202,
+      "full_tele": 211,
+      "total": 301
+    },
+    "2015": {
+      "buckets": {
+        "AB_mixed": 211,
+        "A_pure": 105,
+        "C_partial": 3,
+        "weird": 13
+      },
+      "full_any": 320,
+      "full_both": 201,
+      "full_disk": 311,
+      "full_tele": 210,
+      "total": 332
+    },
+    "2016": {
+      "buckets": {
+        "AB_mixed": 229,
+        "A_pure": 64,
+        "C_partial": 20,
+        "sparse": 6,
+        "weird": 23
+      },
+      "full_any": 312,
+      "full_both": 226,
+      "full_disk": 302,
+      "full_tele": 236,
+      "total": 342
+    },
+    "2017": {
+      "buckets": {
+        "AB_mixed": 205,
+        "C_partial": 27,
+        "sparse": 21,
+        "weird": 29
+      },
+      "full_any": 230,
+      "full_both": 197,
+      "full_disk": 215,
+      "full_tele": 212,
+      "total": 282
+    },
+    "2018": {
+      "buckets": {
+        "AB_mixed": 326,
+        "C_partial": 13,
+        "sparse": 2,
+        "weird": 3
+      },
+      "full_any": 316,
+      "full_both": 313,
+      "full_disk": 316,
+      "full_tele": 313,
+      "total": 344
+    },
+    "2019": {
+      "buckets": {
+        "AB_mixed": 282,
+        "C_partial": 43,
+        "sparse": 2,
+        "weird": 19
+      },
+      "full_any": 260,
+      "full_both": 257,
+      "full_disk": 260,
+      "full_tele": 257,
+      "total": 346
+    },
+    "2020": {
+      "buckets": {
+        "AB_mixed": 238,
+        "C_partial": 98,
+        "weird": 29
+      },
+      "full_any": 201,
+      "full_both": 190,
+      "full_disk": 201,
+      "full_tele": 190,
+      "total": 365
+    },
+    "2021": {
+      "buckets": {
+        "AB_mixed": 128,
+        "A_pure": 2,
+        "C_partial": 39,
+        "sparse": 90,
+        "weird": 35
+      },
+      "full_any": 105,
+      "full_both": 91,
+      "full_disk": 105,
+      "full_tele": 91,
+      "total": 294
+    },
+    "2022": {
+      "buckets": {
+        "AB_mixed": 95,
+        "A_pure": 13,
+        "C_partial": 148,
+        "sparse": 28,
+        "weird": 73
+      },
+      "full_any": 85,
+      "full_both": 52,
+      "full_disk": 85,
+      "full_tele": 52,
+      "total": 357
+    },
+    "2023": {
+      "buckets": {
+        "AB_mixed": 18,
+        "C_partial": 8,
+        "sparse": 49,
+        "weird": 208
+      },
+      "full_any": 99,
+      "full_both": 12,
+      "full_disk": 34,
+      "full_tele": 77,
+      "total": 283
+    },
+    "2024": {
+      "buckets": {
+        "C_partial": 1,
+        "D_pure": 4,
+        "sparse": 79,
+        "weird": 198
+      },
+      "full_any": 41,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 41,
+      "total": 282
+    }
+  },
+  "coverage_pct": {
+    "full_any": 62.23,
+    "full_both": 49.32,
+    "full_disk": 57.77,
+    "full_tele": 53.77
+  },
+  "coverage_total": {
+    "full_any": 2275,
+    "full_both": 1803,
+    "full_disk": 2112,
+    "full_tele": 1966
+  },
+  "generated_at_utc": "2026-06-21T06:23:54Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.CLIF.db",
+  "samples_for_inspection": {
+    "sparse": [
+      {
+        "bucket": "sparse",
+        "date": "1970-01-01",
+        "n_disk": 0,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-06",
+        "n_disk": 0,
+        "n_excluded": 6,
+        "n_tele_noss": 0,
+        "n_tele_ss": 9
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-07",
+        "n_disk": 0,
+        "n_excluded": 1,
+        "n_tele_noss": 0,
+        "n_tele_ss": 9
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-08",
+        "n_disk": 0,
+        "n_excluded": 6,
+        "n_tele_noss": 0,
+        "n_tele_ss": 9
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-09",
+        "n_disk": 0,
+        "n_excluded": 1,
+        "n_tele_noss": 0,
+        "n_tele_ss": 9
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-10",
+        "n_disk": 0,
+        "n_excluded": 4,
+        "n_tele_noss": 0,
+        "n_tele_ss": 18
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-11",
+        "n_disk": 0,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 9
+      },
+      {
+        "bucket": "sparse",
+        "date": "1980-01-12",
+        "n_disk": 0,
+        "n_excluded": 2,
+        "n_tele_noss": 0,
+        "n_tele_ss": 9
+      },
+      {
+        "bucket": "sparse",
+        "date": "1989-08-17",
+        "n_disk": 0,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 7
+      },
+      {
+        "bucket": "sparse",
+        "date": "1989-08-18",
+        "n_disk": 0,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1
+      }
+    ],
+    "weird": [
+      {
+        "bucket": "weird",
+        "date": "1999-09-09",
+        "n_disk": 10,
+        "n_excluded": 58,
+        "n_tele_noss": 0,
+        "n_tele_ss": 723
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-10",
+        "n_disk": 8,
+        "n_excluded": 80,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1349
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-12",
+        "n_disk": 4,
+        "n_excluded": 180,
+        "n_tele_noss": 0,
+        "n_tele_ss": 556
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-13",
+        "n_disk": 4,
+        "n_excluded": 168,
+        "n_tele_noss": 0,
+        "n_tele_ss": 909
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-14",
+        "n_disk": 6,
+        "n_excluded": 79,
+        "n_tele_noss": 0,
+        "n_tele_ss": 684
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-15",
+        "n_disk": 3,
+        "n_excluded": 59,
+        "n_tele_noss": 0,
+        "n_tele_ss": 749
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-18",
+        "n_disk": 5,
+        "n_excluded": 251,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1023
+      },
+      {
+        "bucket": "weird",
+        "date": "1999-09-19",
+        "n_disk": 6,
+        "n_excluded": 136,
+        "n_tele_noss": 0,
+        "n_tele_ss": 654
+      },
+      {
+        "bucket": "weird",
+        "date": "2014-02-26",
+        "n_disk": 1328,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      },
+      {
+        "bucket": "weird",
+        "date": "2014-02-27",
+        "n_disk": 1004,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      }
+    ]
+  },
+  "station": "CLIF",
+  "total_days": 3656
+}

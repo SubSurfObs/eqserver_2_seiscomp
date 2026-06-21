@@ -1,0 +1,231 @@
+{
+  "buckets_total": {
+    "AB_mixed": 1269,
+    "A_pure": 464,
+    "C_partial": 3,
+    "D_pure": 24,
+    "E_multivar": 339,
+    "sparse": 2,
+    "weird": 48
+  },
+  "by_year": {
+    "2012": {
+      "buckets": {
+        "sparse": 1
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 1
+    },
+    "2018": {
+      "buckets": {
+        "AB_mixed": 297,
+        "C_partial": 1,
+        "D_pure": 10,
+        "weird": 5
+      },
+      "full_any": 312,
+      "full_both": 284,
+      "full_disk": 284,
+      "full_tele": 312,
+      "total": 313
+    },
+    "2019": {
+      "buckets": {
+        "AB_mixed": 228,
+        "D_pure": 2,
+        "E_multivar": 131,
+        "weird": 4
+      },
+      "full_any": 365,
+      "full_both": 345,
+      "full_disk": 349,
+      "full_tele": 361,
+      "total": 365
+    },
+    "2020": {
+      "buckets": {
+        "AB_mixed": 271,
+        "A_pure": 2,
+        "D_pure": 12,
+        "E_multivar": 79,
+        "weird": 2
+      },
+      "full_any": 365,
+      "full_both": 311,
+      "full_disk": 319,
+      "full_tele": 357,
+      "total": 366
+    },
+    "2021": {
+      "buckets": {
+        "AB_mixed": 230,
+        "A_pure": 100,
+        "weird": 2
+      },
+      "full_any": 329,
+      "full_both": 227,
+      "full_disk": 327,
+      "full_tele": 229,
+      "total": 332
+    },
+    "2022": {
+      "buckets": {
+        "AB_mixed": 184,
+        "A_pure": 18,
+        "C_partial": 1,
+        "E_multivar": 129,
+        "weird": 33
+      },
+      "full_any": 365,
+      "full_both": 295,
+      "full_disk": 314,
+      "full_tele": 346,
+      "total": 365
+    },
+    "2023": {
+      "buckets": {
+        "AB_mixed": 59,
+        "A_pure": 305,
+        "C_partial": 1
+      },
+      "full_any": 365,
+      "full_both": 59,
+      "full_disk": 365,
+      "full_tele": 59,
+      "total": 365
+    },
+    "2024": {
+      "buckets": {
+        "A_pure": 39,
+        "sparse": 1,
+        "weird": 2
+      },
+      "full_any": 39,
+      "full_both": 0,
+      "full_disk": 39,
+      "full_tele": 0,
+      "total": 42
+    }
+  },
+  "coverage_pct": {
+    "full_any": 99.58,
+    "full_both": 70.78,
+    "full_disk": 92.93,
+    "full_tele": 77.43
+  },
+  "coverage_total": {
+    "full_any": 2140,
+    "full_both": 1521,
+    "full_disk": 1997,
+    "full_tele": 1664
+  },
+  "generated_at_utc": "2026-06-21T06:22:33Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.STBK.db",
+  "samples_for_inspection": {
+    "sparse": [
+      {
+        "bucket": "sparse",
+        "date": "2012-01-01",
+        "n_disk": 0,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1
+      },
+      {
+        "bucket": "sparse",
+        "date": "2024-01-21",
+        "n_disk": 103,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 0
+      }
+    ],
+    "weird": [
+      {
+        "bucket": "weird",
+        "date": "2018-06-10",
+        "n_disk": 412,
+        "n_excluded": 4,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1440
+      },
+      {
+        "bucket": "weird",
+        "date": "2018-08-22",
+        "n_disk": 841,
+        "n_excluded": 3569,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1441
+      },
+      {
+        "bucket": "weird",
+        "date": "2018-08-24",
+        "n_disk": 38,
+        "n_excluded": 8680,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1440
+      },
+      {
+        "bucket": "weird",
+        "date": "2018-08-25",
+        "n_disk": 48,
+        "n_excluded": 8511,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1440
+      },
+      {
+        "bucket": "weird",
+        "date": "2018-08-26",
+        "n_disk": 35,
+        "n_excluded": 8542,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1440
+      },
+      {
+        "bucket": "weird",
+        "date": "2019-02-24",
+        "n_disk": 1440,
+        "n_excluded": 5,
+        "n_tele_noss": 0,
+        "n_tele_ss": 720
+      },
+      {
+        "bucket": "weird",
+        "date": "2019-04-21",
+        "n_disk": 1440,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 486
+      },
+      {
+        "bucket": "weird",
+        "date": "2019-05-02",
+        "n_disk": 249,
+        "n_excluded": 1,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1440
+      },
+      {
+        "bucket": "weird",
+        "date": "2019-05-06",
+        "n_disk": 398,
+        "n_excluded": 1,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1440
+      },
+      {
+        "bucket": "weird",
+        "date": "2020-03-21",
+        "n_disk": 1439,
+        "n_excluded": 0,
+        "n_tele_noss": 0,
+        "n_tele_ss": 1
+      }
+    ]
+  },
+  "station": "STBK",
+  "total_days": 2149
+}

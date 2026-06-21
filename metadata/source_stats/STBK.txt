@@ -1,0 +1,31 @@
+# Source categorization: STBK
+# Generated: 2026-06-21T06:22:33Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.STBK.db
+# Total day-entries: 2149
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    92.9%
+  full tele available  (>=1400 single var):    77.4%
+  FULL FROM EITHER kind:                        99.6%
+  full from BOTH (redundancy):                 70.8%
+
+## Buckets
+  A_pure      :    464  ( 21.6%)
+  D_pure      :     24  (  1.1%)
+  E_multivar  :    339  ( 15.8%)
+  C_partial   :      3  (  0.1%)
+  AB_mixed    :   1269  ( 59.1%)
+  sparse      :      2  (  0.1%)
+  weird       :     48  (  2.2%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2012           0          0          0       0       0       0       0      0 | 1
+   2018         284        312        312       0      10       0     297      5 | 313
+   2019         349        361        365       0       2     131     228      4 | 365
+   2020         319        357        365       2      12      79     271      2 | 366
+   2021         327        229        329     100       0       0     230      2 | 332
+   2022         314        346        365      18       0     129     184     33 | 365
+   2023         365         59        365     305       0       0      59      0 | 365
+   2024          39          0         39      39       0       0       0      2 | 42

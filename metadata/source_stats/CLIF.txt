@@ -1,0 +1,39 @@
+# Source categorization: CLIF
+# Generated: 2026-06-21T06:23:54Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.CLIF.db
+# Total day-entries: 3656
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    57.8%
+  full tele available  (>=1400 single var):    53.8%
+  FULL FROM EITHER kind:                        62.2%
+  full from BOTH (redundancy):                 49.3%
+
+## Buckets
+  A_pure      :    197  (  5.4%)
+  D_pure      :     27  (  0.7%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :    403  ( 11.0%)
+  AB_mixed    :   2005  ( 54.8%)
+  sparse      :    365  ( 10.0%)
+  weird       :    659  ( 18.0%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1970           0          0          0       0       0       0       0      0 | 1
+   1980           0          0          0       0       0       0       0      0 | 7
+   1989           0          0          0       0       0       0       0      0 | 2
+   1999           0          0          0       0       0       0       0      8 | 16
+   2013          81         76         81       2       0       0      81      0 | 102
+   2014         202        211        225      11      23       0     192     21 | 301
+   2015         311        210        320     105       0       0     211     13 | 332
+   2016         302        236        312      64       0       0     229     23 | 342
+   2017         215        212        230       0       0       0     205     29 | 282
+   2018         316        313        316       0       0       0     326      3 | 344
+   2019         260        257        260       0       0       0     282     19 | 346
+   2020         201        190        201       0       0       0     238     29 | 365
+   2021         105         91        105       2       0       0     128     35 | 294
+   2022          85         52         85      13       0       0      95     73 | 357
+   2023          34         77         99       0       0       0      18    208 | 283
+   2024           0         41         41       0       4       0       0    198 | 282
