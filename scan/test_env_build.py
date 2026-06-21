@@ -54,13 +54,21 @@ from pathlib import Path
 
 import yaml
 
-TEST_ENV = Path("/mnt/seiscomp_staging/test_env_classb")
-MIRROR_SRC = TEST_ENV / "mirror_src"
-MANIFEST_DBS = TEST_ENV / "manifest_dbs"
-TIME_INDEX = TEST_ENV / "time_index"
-PLANS = TEST_ENV / "plans"
-LOGS = TEST_ENV / "logs"
-CATALOGUE = TEST_ENV / "catalogue.yaml"
+# Local-disk root: SQLite + yaml live here because CIFS locking is broken.
+# This matches production: station_dbs are on local disk for the same reason.
+TEST_ENV_LOCAL = Path("/home/unimelb.edu.au/dsand/test_env_classb")
+MIRROR_SRC = TEST_ENV_LOCAL / "mirror_src"
+MANIFEST_DBS = TEST_ENV_LOCAL / "manifest_dbs"
+TIME_INDEX = TEST_ENV_LOCAL / "time_index"
+PLANS = TEST_ENV_LOCAL / "plans"
+LOGS = TEST_ENV_LOCAL / "logs"
+QUEUE = TEST_ENV_LOCAL / "queue"
+CATALOGUE = TEST_ENV_LOCAL / "catalogue.yaml"
+
+# Shared-mount root: only used for staging_sds output (so dev1 can read for
+# apply.py dry-runs). Created on-demand by the run step, not by add.
+TEST_ENV_SHARED = Path("/mnt/seiscomp_staging/test_env_classb")
+STAGING_SDS = TEST_ENV_SHARED / "staging_sds"
 
 EQSERVER_ROOT = Path("/mnt/eqserver_archive/shared/data/repository/archive")
 PROD_PLANS = Path("/home/unimelb.edu.au/dsand/projects/SubSurfObs/eqserver_2_seiscomp/plans/VW")
