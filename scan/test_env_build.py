@@ -242,18 +242,24 @@ def _detect_source_kind(name: str) -> tuple[str, str]:
      tele_noss_suds, unknown}, format in {mseed, suds, unknown}.
 
     Disk grammar: underscore-separated, no spaces.
-      - EchoPro disk: YYYYMMDD_HHMM_SS_STA.dmx[.gz]      (3 underscores)
-      - Gecko   disk: YYYYMMDD_HHMM_STA.ms.zip           (2 underscores)
+      - EchoPro disk: YYYY-MM-DD_HHMM_SS_STA.dmx[.gz]   (dashed date! 3 underscores)
+      - Gecko   disk: YYYYMMDD_HHMM_STA.ms.zip           (numeric date, 2 underscores)
 
     Telemetry grammar: space-separated, dashed date.
       - EchoPro tele: 'YYYY-MM-DD HHMM SS STA.dmx[.gz]'  (has SS)
                       'YYYY-MM-DD HHMM STA.dmx[.gz]'     (no SS)
       - Gecko   tele: 'YYYY-MM-DD HHMM SS STA.ms.zip'    (has SS)
                       'YYYY-MM-DD HHMM STA.ms.zip'       (no SS)
+
+    Triggered EchoPro: '... STA.N.dmx' where N is event-index. Skip — these
+    are accelerometer triggers, not continuous waveform.
     """
     import re
+    # Triggered EchoPro — exclude
+    if re.match(r"^.+\.\d+\.dmx(\.gz)?$", name):
+        return ("triggered_suds", "unknown")
     # SUDS — EchoPro
-    if re.match(r"^\d{8}_\d{4}_\d{2}_\w+\.dmx(\.gz)?$", name):
+    if re.match(r"^\d{4}-\d{2}-\d{2}_\d{4}_\d{2}_\w+\.dmx(\.gz)?$", name):
         return ("disk_suds", "suds")
     if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \d{2} \w+\.dmx(\.gz)?$", name):
         return ("tele_ss_suds", "suds")
@@ -308,29 +314,33 @@ def _index_mseed(path: Path, sta: str, kind: str, conn) -> int:
 
 
 def _index_suds(path: Path, sta: str, kind: str, conn) -> int:
-    """Use sudspy.scan_suds_file to read SUDS headers and insert time-index
-    rows. SUDS scan is header-only by design — no data decode, no decompress
-    of the data payload, but for .gz files the whole stream must be inflated
-    to walk the blocks."""
+    """Use sudspy.scan_suds_file to read SUDS headers (no data decode) and
+    insert time-index rows. Returns List[Dict] with keys:
+    channel, start_time, end_time, npts, sample_rate.
+
+    Channel is the SUDS-native form 'NET.STA.cNN' (e.g. 'AB.HOLS.c02'). We
+    store just the component (c01/c02/c03) to keep the time-index uniform
+    with the mseed branch which stores plain channel names (CHZ/CHN/CHE).
+    The original channel can be recovered by joining with the manifest
+    `channel_suffix` column if needed.
+    """
     import sudspy
     n = 0
-    info = sudspy.scan_suds_file(str(path))
-    # scan_suds_file returns a dict-like with per-channel time-ranges.
-    # Schema (from sudspy): channels = list of {channel, starttime, endtime,
-    # npts, sampling_rate}. If sudspy returns something different, adapt.
-    channels = info.get("channels", info.get("traces", []))
-    for ch in channels:
-        chan = ch.get("channel") or ch.get("name") or ""
-        start = ch.get("starttime") or ch.get("start") or ""
-        end = ch.get("endtime") or ch.get("end") or ""
+    entries = sudspy.scan_suds_file(str(path))
+    for ch in entries:
+        chan_full = ch.get("channel", "")
+        # Extract trailing component if 'NET.STA.cNN' shape; else use as-is.
+        chan = chan_full.split(".")[-1] if "." in chan_full else chan_full
+        start = str(ch.get("start_time", ""))
+        end = str(ch.get("end_time", ""))
         npts = int(ch.get("npts") or 0)
-        rate = float(ch.get("sampling_rate") or ch.get("rate") or 0)
+        rate = float(ch.get("sample_rate") or 0)
         conn.execute(
             "INSERT OR REPLACE INTO time_index VALUES "
             "(?, ?, ?, ?, ?, ?, ?, ?)",
             (sta, chan, kind, str(path),
-             str(start).rstrip("Z") + "Z" if start else "",
-             str(end).rstrip("Z") + "Z" if end else "",
+             start.rstrip("Z") + "Z" if start else "",
+             end.rstrip("Z") + "Z" if end else "",
              npts, rate))
         n += 1
     return n
