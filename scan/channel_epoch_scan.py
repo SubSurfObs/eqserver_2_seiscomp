@@ -139,14 +139,159 @@ def pick_file(conn: sqlite3.Connection, sta: str, kind: str,
     return None
 
 
+def pick_file_for_day(conn: sqlite3.Connection, sta: str, kind: str,
+                     fmt: str, year: int, month: int, day: int) -> str | None:
+    """Like pick_file but constrained to a single day."""
+    rows = conn.execute(
+        "SELECT path FROM files "
+        "WHERE station = ? AND dir_year = ? AND dir_month = ? AND dir_day = ? "
+        "  AND role != 'metadata' AND exclude_reason IS NULL "
+        "LIMIT 200",
+        (sta, year, month, day)
+    ).fetchall()
+    for (path,) in rows:
+        name = path.split("/")[-1]
+        m = classify_kind(name)
+        if m and m[0] == kind:
+            return path
+    return None
+
+
+def pick_file_near_month(conn: sqlite3.Connection, sta: str, kind: str,
+                        fmt: str, target_year: int, target_month: int,
+                        window_months: int = 2) -> tuple[str | None, int | None, int | None]:
+    """Try (target_year, target_month) first, then expand outward by month
+    up to ±window_months. Returns (path, found_year, found_month)."""
+    candidates: list[tuple[int, int]] = [(target_year, target_month)]
+    for offset in range(1, window_months + 1):
+        for sign in (-1, 1):
+            ym = target_year * 12 + (target_month - 1) + sign * offset
+            y = ym // 12
+            m = (ym % 12) + 1
+            candidates.append((y, m))
+    for (y, m) in candidates:
+        path = pick_file(conn, sta, kind, fmt, y, m)
+        if path:
+            return path, y, m
+    return None, None, None
+
+
+def pick_file_near_day(conn: sqlite3.Connection, sta: str, kind: str,
+                      fmt: str, target_year: int, target_month: int,
+                      target_day: int, window_days: int = 7) -> tuple[str | None, date | None]:
+    """Probe target day, then expand outward up to ±window_days."""
+    target = date(target_year, target_month, target_day)
+    for offset in range(0, window_days + 1):
+        for sign in (1, -1) if offset > 0 else (1,):
+            probe = target + timedelta(days=sign * offset)
+            path = pick_file_for_day(conn, sta, kind, fmt,
+                                     probe.year, probe.month, probe.day)
+            if path:
+                return path, probe
+    return None, None
+
+
+def bisect_transition(conn: sqlite3.Connection, sta: str, kind: str, fmt: str,
+                     lo_date: date, hi_date: date,
+                     lo_channels: tuple, hi_channels: tuple,
+                     target_resolution_days: int = 30) -> dict:
+    """Pin a channel-set transition between two sampled dates.
+
+    Phase 1: bisect by months. Each probe samples a file from the middle
+    month and classifies as matching lo_channels, hi_channels, or a third
+    set (ambiguous → stop).
+
+    Phase 2: once the window is ≤ ~60 days, drill to day-level probes to
+    pin the boundary to the requested resolution.
+
+    Returns: dict with the bisection window, probe trace, and resolution.
+    """
+    lo = lo_date
+    hi = hi_date
+    probes: list[dict] = []
+    ambiguous: list[dict] = []
+    max_probes = 16   # generous cap; typically resolves in 4-7
+
+    while (hi - lo).days > target_resolution_days and len(probes) < max_probes:
+        span_days = (hi - lo).days
+
+        if span_days > 60:
+            # Month-level probing
+            mid = lo + timedelta(days=span_days // 2)
+            path, found_y, found_m = pick_file_near_month(
+                conn, sta, kind, fmt, mid.year, mid.month)
+            if not path:
+                break
+            channels = read_channels(path, fmt)
+            probe_date = date(found_y, found_m, 15)
+            if isinstance(channels, str):
+                probes.append({"date": probe_date.isoformat(),
+                              "path": path, "level": "month",
+                              "error": channels})
+                break
+            ch_tuple = tuple(sorted(channels))
+            probes.append({"date": probe_date.isoformat(), "path": path,
+                          "level": "month", "channels": sorted(channels)})
+            if ch_tuple == lo_channels:
+                if probe_date <= lo:
+                    break
+                lo = probe_date
+            elif ch_tuple == hi_channels:
+                if probe_date >= hi:
+                    break
+                hi = probe_date
+            else:
+                ambiguous.append({"date": probe_date.isoformat(),
+                                 "channels": sorted(channels), "path": path})
+                break
+        else:
+            # Day-level probing
+            mid = lo + timedelta(days=span_days // 2)
+            path, found_d = pick_file_near_day(
+                conn, sta, kind, fmt, mid.year, mid.month, mid.day)
+            if not path:
+                break
+            channels = read_channels(path, fmt)
+            if isinstance(channels, str):
+                probes.append({"date": found_d.isoformat(), "path": path,
+                              "level": "day", "error": channels})
+                break
+            ch_tuple = tuple(sorted(channels))
+            probes.append({"date": found_d.isoformat(), "path": path,
+                          "level": "day", "channels": sorted(channels)})
+            if ch_tuple == lo_channels:
+                if found_d <= lo:
+                    break
+                lo = found_d
+            elif ch_tuple == hi_channels:
+                if found_d >= hi:
+                    break
+                hi = found_d
+            else:
+                ambiguous.append({"date": found_d.isoformat(),
+                                 "channels": sorted(channels), "path": path})
+                break
+
+    return {
+        "boundary_lo_date": lo.isoformat(),
+        "boundary_hi_date": hi.isoformat(),
+        "resolution_days": (hi - lo).days,
+        "n_probes": len(probes),
+        "probes": probes,
+        "ambiguous": ambiguous,
+    }
+
+
 def scan_station_kind(conn: sqlite3.Connection, sta: str, kind: str,
-                      fmt: str) -> list[dict]:
+                      fmt: str, bisect: bool = True,
+                      target_resolution_days: int = 30) -> list[dict]:
     """Yearly sampling: pick one file from month 7 (or any month) per year
     for this (sta, kind). Detect channel-set changes year-over-year.
 
-    Monthly bisection within years where a change is detected is a future
-    extension — for the first cut, year-level resolution is enough to
-    catch the major epoch transitions documented in the project."""
+    When `bisect` is true (default), each transition detected at yearly
+    resolution is bisected via month/day probes down to
+    `target_resolution_days`. Cheap stations (single epoch across their
+    lifetime) pay no bisection cost; only transition stations do."""
     # Quick range query — just min/max year that the station has data for
     rows = conn.execute(
         "SELECT MIN(dir_year), MAX(dir_year) FROM files WHERE station = ? "
@@ -208,23 +353,53 @@ def scan_station_kind(conn: sqlite3.Connection, sta: str, kind: str,
     if current is not None:
         epochs.append(current)
 
+    # Bisect transitions
+    if bisect and len(epochs) > 1:
+        for i in range(len(epochs) - 1):
+            ep_a = epochs[i]
+            ep_b = epochs[i + 1]
+            lo_d = date.fromisoformat(ep_a["end"])
+            hi_d = date.fromisoformat(ep_b["start"])
+            lo_ch = tuple(ep_a["channels"])
+            hi_ch = tuple(ep_b["channels"])
+            print(f"    bisecting {kind} transition "
+                  f"{ep_a['end']}→{ep_b['start']} "
+                  f"{lo_ch}→{hi_ch}", flush=True)
+            bnd = bisect_transition(
+                conn, sta, kind, fmt, lo_d, hi_d, lo_ch, hi_ch,
+                target_resolution_days=target_resolution_days)
+            ep_a["end"] = bnd["boundary_lo_date"]
+            ep_b["start"] = bnd["boundary_hi_date"]
+            ep_a["boundary_after"] = bnd
+            ep_b["boundary_before"] = bnd
+            ep_a["boundary_resolution_days"] = bnd["resolution_days"]
+            ep_b["boundary_resolution_days"] = bnd["resolution_days"]
+            print(f"      → window {bnd['boundary_lo_date']}..{bnd['boundary_hi_date']} "
+                  f"({bnd['resolution_days']}d, {bnd['n_probes']} probes)",
+                  flush=True)
+
     # Strip helper field, return
     for e in epochs:
         e.pop("channel_tuple", None)
     return epochs
 
 
-def scan_station(sta: str, db_path: Path) -> dict:
+def scan_station(sta: str, db_path: Path, bisect: bool = True,
+                 target_resolution_days: int = 30) -> dict:
     conn = sqlite3.connect(db_path)
     out: dict = {
         "station": sta,
         "generated_at_utc": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "manifest_db": str(db_path),
+        "bisection_enabled": bisect,
+        "target_resolution_days": target_resolution_days,
         "by_source_kind": {},
     }
     for kind, _regex, fmt in SOURCE_KINDS:
         print(f"  scanning {kind} ({fmt}) ...", flush=True)
-        epochs = scan_station_kind(conn, sta, kind, fmt)
+        epochs = scan_station_kind(conn, sta, kind, fmt,
+                                  bisect=bisect,
+                                  target_resolution_days=target_resolution_days)
         if epochs:
             out["by_source_kind"][kind] = epochs
             print(f"    found {len(epochs)} epoch(s) "
@@ -245,8 +420,15 @@ def format_text(d: dict) -> str:
     for kind, epochs in d["by_source_kind"].items():
         lines.append(f"## {kind}")
         for e in epochs:
+            res = e.get("boundary_resolution_days")
+            res_str = f"  [boundary ±{res}d]" if res is not None else ""
             lines.append(f"  {e['start']} → {e['end']}  channels={e['channels']}  "
-                         f"(n_samples={e['samples_used']})")
+                         f"(n_samples={e['samples_used']}){res_str}")
+            bnd_a = e.get("boundary_after")
+            if bnd_a and bnd_a.get("ambiguous"):
+                for amb in bnd_a["ambiguous"]:
+                    lines.append(f"    ⚠ ambiguous channel set at {amb['date']}: "
+                                 f"{amb['channels']}")
         lines.append("")
     return "\n".join(lines) + "\n"
 
@@ -257,6 +439,11 @@ def main():
     ap.add_argument("--db-dir", type=Path, default=DEFAULT_DB_DIR)
     ap.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     ap.add_argument("--network", default="VW")
+    ap.add_argument("--no-bisect", action="store_true",
+                   help="Disable per-transition bisection (yearly granularity only)")
+    ap.add_argument("--target-resolution-days", type=int, default=30,
+                   help="Stop bisecting once boundary window ≤ this many days "
+                        "(default 30)")
     args = ap.parse_args()
 
     db_path = args.db_dir / f"{args.network}.{args.sta}.db"
@@ -265,7 +452,9 @@ def main():
         return 2
 
     print(f"[channel_epoch_scan] {args.sta}", flush=True)
-    out = scan_station(args.sta, db_path)
+    out = scan_station(args.sta, db_path,
+                       bisect=not args.no_bisect,
+                       target_resolution_days=args.target_resolution_days)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     json_path = args.out_dir / f"{args.sta}.json"
     txt_path = args.out_dir / f"{args.sta}.txt"
