@@ -1,0 +1,68 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2012/07/01/2012-07-01_0022_23_HOLS.dmx.gz",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2013/07/01/2013-07-01_0545_52_HOLS.dmx.gz",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2014/07/17/2014-07-17_0815_42_HOLS.dmx.gz"
+        ],
+        "samples_used": 9,
+        "start": "2012-07-01"
+      },
+      {
+        "channels": [
+          "c04",
+          "c05",
+          "c06"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/10/21/2021-10-21_0623_18_HOLS.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2021-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2022/07/01/2022-07-01_1018_19_HOLS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2023/07/01/2023-07-01_1000_15_HOLS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2024/01/01/2024-01-01_1000_43_HOLS.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2022-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2017/07/01/2017-07-01 2307 23 HOLS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2018/07/01/2018-07-01 0416 47 HOLS.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2017-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:33:40Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HOLS.db",
+  "station": "HOLS"
+}

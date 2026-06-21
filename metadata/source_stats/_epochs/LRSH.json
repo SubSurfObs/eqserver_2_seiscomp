@@ -1,0 +1,88 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2020/07/01/20200701_0000_LRSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/07/01/20210701_0000_LRSH.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2020-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/01/01/20220101_0000_LRSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2022-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2023/07/01/20230701_0001_LRSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2023-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/07/01/20240701_0000_LRSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/04/01/2022-04-01 0001 LRSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2022-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/07/25/2022-07-25 1223 49 LRSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2022-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:41:57Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LRSH.db",
+  "station": "LRSH"
+}

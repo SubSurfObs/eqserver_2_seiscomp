@@ -1,0 +1,119 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/11/01/20171101_0602_DDWK.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/07/01/20180701_0001_DDWK.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2019/07/01/20190701_0000_DDWK.ms.zip"
+        ],
+        "samples_used": 3,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2021/12/16/20211216_0121_DDWK.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2021-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2023/10/01/20231001_0001_DDWK.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2023-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2024/07/01/20240701_0000_DDWK.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/04/01/2018-04-01 0310 DDWK.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2019/04/04/2019-04-04 2350 DDWK.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2021/12/16/2021-12-16 0111 DDWK.ms.zip"
+        ],
+        "samples_used": 3,
+        "start": "2018-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/12/01/2017-12-01 0300 00 DDWK.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/01/01/2018-01-01 0002 00 DDWK.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2019/01/01/2019-01-01 0001 00 DDWK.ms.zip"
+        ],
+        "samples_used": 5,
+        "start": "2017-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2017-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 0908 59 DDWK.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/01/01/2018-01-01 0146 07 DDWK.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:27:43Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDWK.db",
+  "station": "DDWK"
+}

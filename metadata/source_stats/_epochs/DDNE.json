@@ -1,0 +1,109 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2017/12/01/20171201_0949_DDNE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/07/01/20180701_0003_DDNE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2019/07/01/20190701_0000_DDNE.ms.zip"
+        ],
+        "samples_used": 4,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2021/12/15/20211215_2209_DDNE.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2021-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2023/10/01/20231001_0000_DDNE.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2023-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2024/01/01/20240101_0000_DDNE.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/06/01/2018-06-01 0057 DDNE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2019/04/01/2019-04-01 0027 DDNE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2020/07/01/2020-07-01 0001 DDNE.ms.zip"
+        ],
+        "samples_used": 4,
+        "start": "2018-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2017/10/07/2018-11-22 0049 00 DDNE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/04/01/2018-04-01 0751 00 DDNE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2019/04/01/2019-04-01 0000 00 DDNE.ms.zip"
+        ],
+        "samples_used": 6,
+        "start": "2017-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2017/10/04/2017-10-04 0234 59 DDNE.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/02/06/2018-02-06 0015 59 DDNE.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2017-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:26:34Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDNE.db",
+  "station": "DDNE"
+}

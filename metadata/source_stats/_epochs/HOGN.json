@@ -1,0 +1,65 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "HHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2019/07/01/20190701_0000_HOGN.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2020/01/01/20200101_1413_HOGN.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2018/08/14/2018-08-14 0130 HOGN.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "HHE",
+          "HHN",
+          "HHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2019/04/01/2019-04-01 0709 HOGN.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "HHE",
+          "HHN",
+          "HHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2019/04/01/2019-04-02 0000 00 HOGN.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2020/01/01/2020-01-01 0001 00 HOGN.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:33:10Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HOGN.db",
+  "station": "HOGN"
+}

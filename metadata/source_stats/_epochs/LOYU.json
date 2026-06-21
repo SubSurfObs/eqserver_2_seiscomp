@@ -1,0 +1,43 @@
+{
+  "by_source_kind": {
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "HHZ"
+        ],
+        "end": "2016-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2016/05/06/2016-05-06 2347 LOYU.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2016-07-01"
+      },
+      {
+        "channels": [
+          "001",
+          "004"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/05/03/2018-05-03 0847 LOYU.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "HH2"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2019/04/13/2019-04-13 1832 LOYU.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:38:54Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOYU.db",
+  "station": "LOYU"
+}

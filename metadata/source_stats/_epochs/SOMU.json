@@ -1,0 +1,50 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2014/12/12/2014-12-12_0649_40_SOMU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2015/07/01/2015-07-01_0442_01_SOMU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2016/01/01/2016-01-01_0018_34_SOMU.dmx"
+        ],
+        "samples_used": 4,
+        "start": "2014-07-01"
+      },
+      {
+        "channels": [
+          "c04",
+          "c05",
+          "c06"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/07/01/2019-07-01_0000_45_SOMU.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2014-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2014/01/26/2014-01-26 1544 45 SOMU.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2014-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:53:43Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SOMU.db",
+  "station": "SOMU"
+}

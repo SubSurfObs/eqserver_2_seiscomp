@@ -1,0 +1,4 @@
+# Channel-epoch scan: SGWU
+# Generated: 2026-06-21T07:53:28Z
+
+(no source kinds had readable files in this station)

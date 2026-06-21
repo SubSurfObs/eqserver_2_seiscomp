@@ -1,0 +1,50 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/07/01/20210701_0000_LRSE.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2021-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/01/01/20220101_0743_LRSE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2023/04/01/20230401_0141_LRSE.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2022-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/07/01/2022-07-02 0000 00 LRSE.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2023/07/01/2023-07-02 0000 00 LRSE.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2022-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:41:48Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LRSE.db",
+  "station": "LRSE"
+}

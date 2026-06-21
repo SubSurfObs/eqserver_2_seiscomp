@@ -1,0 +1,77 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2014-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2012/12/01/2012-12-01_0237_10_MRDN.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2013/07/04/2013-07-04_0756_35_MRDN.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2014/07/17/2014-07-17_1118_43_MRDN.dmx.gz"
+        ],
+        "samples_used": 3,
+        "start": "2012-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2015-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/10/01/2015-10-01_2232_24_MRDN.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2015-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2016/12/01/2016-12-01_2015_05_MRDN.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2017/01/01/2017-01-01_2347_23_MRDN.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2018/11/20/2018-11-20_0047_08_MRDN.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2016-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2019/01/11/2019-01-11_0210_41_MRDN.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2012/12/01/2012-12-01 0957 10 MRDN.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2013/07/04/2013-07-04 2227 54 MRDN.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2014/01/01/2014-01-01 1953 00 MRDN.dmx"
+        ],
+        "samples_used": 8,
+        "start": "2012-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:42:42Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.MRDN.db",
+  "station": "MRDN"
+}

@@ -1,0 +1,74 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "HHE",
+          "HHN",
+          "HHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/10/01/20181001_1700_DEAL.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "HHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2019/07/01/20190701_0000_DEAL.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2020/07/12/20200712_0138_DEAL.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2021/07/01/20210701_0000_DEAL.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2022/01/01/20220101_0001_DEAL.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2021-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/08/22/2018-08-22 0152 19 DEAL.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "HHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2019/07/01/2019-07-01 0238 00 DEAL.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:27:54Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DEAL.db",
+  "station": "DEAL"
+}

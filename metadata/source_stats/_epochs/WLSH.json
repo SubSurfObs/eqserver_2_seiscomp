@@ -1,0 +1,93 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CDO",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/07/18/20180718_0333_WLSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/07/01/20190701_0000_WLSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2020/01/01/20200101_0008_WLSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2021/12/15/20211215_0257_WLSH.ms.zip"
+        ],
+        "samples_used": 5,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/07/01/20240701_0054_WLSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2020/07/01/2020-07-01 0048 WLSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2022/07/01/2022-07-01 0446 WLSH.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2020-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CDO",
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/07/16/2018-07-16 0400 00 WLSH.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/04/01/2019-04-01 0009 00 WLSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2023/07/01/2023-07-02 0000 00 WLSH.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:55:45Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WLSH.db",
+  "station": "WLSH"
+}

@@ -1,0 +1,11 @@
+# Channel-epoch scan: OUTU
+# Generated: 2026-06-21T07:50:40Z
+
+## disk_suds
+  2014-07-01 → 2024-07-01  channels=['c01', 'c02', 'c03']  (n_samples=11)
+  2025-07-01 → 2025-07-01  channels=['c03']  (n_samples=1)
+
+## tele_ss_suds
+  2016-07-01 → 2018-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)
+  2019-07-01 → 2025-07-01  channels=['c03']  (n_samples=6)
+

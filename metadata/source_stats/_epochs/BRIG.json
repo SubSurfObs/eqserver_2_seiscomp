@@ -1,0 +1,51 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2017/12/01/2017-12-01_0143_32_BRIG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2018/01/01/2018-01-01_0149_48_BRIG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/07/01/2019-07-01_0019_08_BRIG.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/07/02/2023-07-02_0242_09_BRIG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2024/01/01/2024-01-01_0001_27_BRIG.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2023-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2018/07/01/2018-07-01 2020 07 BRIG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/07/01/2019-07-01 0000 08 BRIG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2020/01/01/2020-01-01 0004 57 BRIG.dmx"
+        ],
+        "samples_used": 7,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:22:44Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.BRIG.db",
+  "station": "BRIG"
+}

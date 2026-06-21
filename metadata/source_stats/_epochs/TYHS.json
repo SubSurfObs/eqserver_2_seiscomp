@@ -1,0 +1,77 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/01/21/2019-01-21_0539_57_TYHS.dmx.gz"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2020/07/01/2020-07-01_0250_14_TYHS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2021/07/01/2021-07-01_0023_00_TYHS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/07/01/2022-07-01_0126_22_TYHS.dmx"
+        ],
+        "samples_used": 4,
+        "start": "2020-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/07/01/2024-07-01_0033_01_TYHS.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/07/24/2019-07-24 2359 00 TYHS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2020/07/01/2020-07-01 0000 14 TYHS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2021/07/01/2021-07-01 0000 00 TYHS.dmx"
+        ],
+        "samples_used": 4,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/07/01/2023-07-01 0000 50 TYHS.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/07/01/2024-07-01 0000 01 TYHS.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2023-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:55:13Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TYHS.db",
+  "station": "TYHS"
+}

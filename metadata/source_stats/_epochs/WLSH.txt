@@ -1,0 +1,15 @@
+# Channel-epoch scan: WLSH
+# Generated: 2026-06-21T07:55:45Z
+
+## disk_mseed
+  2018-07-01 → 2018-07-01  channels=['CDO', 'CHZ']  (n_samples=1)
+  2019-07-01 → 2023-07-01  channels=['CHZ']  (n_samples=5)
+  2024-07-01 → 2024-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+
+## tele_ss_mseed
+  2018-07-01 → 2018-07-01  channels=['CDO', 'CHE', 'CHN', 'CHZ']  (n_samples=1)
+  2019-07-01 → 2023-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)
+
+## tele_noss_mseed
+  2020-07-01 → 2022-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)
+

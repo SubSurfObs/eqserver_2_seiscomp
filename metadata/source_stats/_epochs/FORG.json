@@ -1,0 +1,99 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2017/12/11/20171211_2308_FORG.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/01/01/20180101_1247_FORG.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2020/07/01/20200701_0000_FORG.ms.zip"
+        ],
+        "samples_used": 6,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/07/07/20240707_0408_FORG.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/07/01/2018-07-01_0010_06_FORG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2019/07/01/2019-07-01_0240_18_FORG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2020/02/01/2020-02-01_0038_54_FORG.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2018-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2021/07/31/2021-07-31 1814 FORG.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/07/02/2024-07-02 0816 FORG.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2021-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2021/07/31/2021-07-31 1814 25 FORG.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2022/07/01/2022-07-02 0000 00 FORG.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2021-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/07/01/2018-07-01 1440 06 FORG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2019/07/01/2019-07-01 0000 18 FORG.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2020/01/01/2020-01-01 0002 57 FORG.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:27:59Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.FORG.db",
+  "station": "FORG"
+}

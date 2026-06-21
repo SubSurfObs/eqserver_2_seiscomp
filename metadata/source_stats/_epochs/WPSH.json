@@ -1,0 +1,50 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2018/01/24/2018-01-24_1230_01_WPSH.dmx.gz",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2019/07/01/2019-07-01_0016_01_WPSH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2020/07/01/2020-07-01_0000_08_WPSH.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2024/07/12/2024-07-12_0220_05_WPSH.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2018/07/01/2018-07-01 0428 24 WPSH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2019/07/01/2019-07-01 0000 01 WPSH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPSH/continuous/2020/01/01/2020-01-01 0004 31 WPSH.dmx"
+        ],
+        "samples_used": 7,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:56:03Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WPSH.db",
+  "station": "WPSH"
+}

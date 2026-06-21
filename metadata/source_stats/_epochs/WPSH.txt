@@ -1,0 +1,10 @@
+# Channel-epoch scan: WPSH
+# Generated: 2026-06-21T07:56:03Z
+
+## disk_suds
+  2018-07-01 → 2023-07-01  channels=['c01', 'c02', 'c03']  (n_samples=6)
+  2024-07-01 → 2024-07-01  channels=['c03']  (n_samples=1)
+
+## tele_ss_suds
+  2018-07-01 → 2024-07-01  channels=['c03']  (n_samples=7)
+

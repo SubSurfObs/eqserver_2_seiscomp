@@ -1,0 +1,19 @@
+# Channel-epoch scan: DDWK
+# Generated: 2026-06-21T07:27:43Z
+
+## tele_ss_suds
+  2017-07-01 → 2017-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+  2018-07-01 → 2018-07-01  channels=['CHZ']  (n_samples=1)
+
+## disk_mseed
+  2017-07-01 → 2019-07-01  channels=['CHZ']  (n_samples=3)
+  2021-07-01 → 2021-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+  2023-07-01 → 2023-07-01  channels=['CHZ']  (n_samples=1)
+  2024-07-01 → 2024-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+
+## tele_ss_mseed
+  2017-07-01 → 2023-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=5)
+
+## tele_noss_mseed
+  2018-07-01 → 2021-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=3)
+

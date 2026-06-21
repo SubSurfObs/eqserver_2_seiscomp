@@ -1,0 +1,8 @@
+# Channel-epoch scan: LOYU
+# Generated: 2026-06-21T07:38:54Z
+
+## tele_noss_mseed
+  2016-07-01 → 2016-07-01  channels=['HHZ']  (n_samples=1)
+  2018-07-01 → 2018-07-01  channels=['001', '004']  (n_samples=1)
+  2019-07-01 → 2019-07-01  channels=['HH2']  (n_samples=1)
+

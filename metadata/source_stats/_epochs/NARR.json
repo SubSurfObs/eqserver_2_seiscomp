@@ -1,0 +1,39 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2012/07/01/2012-07-01_2041_56_NARR.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2013/07/01/2013-07-01_0442_07_NARR.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2014/07/02/2014-07-02_0712_41_NARR.dmx"
+        ],
+        "samples_used": 13,
+        "start": "2012-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2012/10/01/2012-10-01 1041 03 NARR.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2013/07/01/2013-07-01 1223 52 NARR.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2014/07/02/2014-07-02 0403 41 NARR.dmx"
+        ],
+        "samples_used": 14,
+        "start": "2012-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:43:03Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.NARR.db",
+  "station": "NARR"
+}

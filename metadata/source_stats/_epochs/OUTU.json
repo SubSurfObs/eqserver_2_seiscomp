@@ -1,0 +1,65 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2014/12/11/2014-12-11_1856_35_OUTU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2015/07/01/2015-07-01_0009_49_OUTU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2016/07/01/2016-07-01_1805_14_OUTU.dmx"
+        ],
+        "samples_used": 11,
+        "start": "2014-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2025/01/01/2025-01-01_0316_50_OUTU.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2025-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2016/12/01/2016-12-01 0003 35 OUTU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2017/01/11/2017-01-11 0424 28 OUTU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2018/01/01/2018-01-01 0549 44 OUTU.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2016-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2019/12/01/2019-12-01 0000 27 OUTU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2020/01/01/2020-01-01 0000 14 OUTU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2021/01/01/2021-01-01 0000 12 OUTU.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:50:40Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.OUTU.db",
+  "station": "OUTU"
+}

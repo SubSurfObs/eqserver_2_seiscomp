@@ -1,0 +1,51 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17_0639_17_SCMB.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2020/07/01/2020-07-01_0017_08_SCMB.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/07/01/2021-07-01_0137_08_SCMB.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2022/01/01/2022-01-01_0121_05_SCMB.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2023/01/02/2023-01-02_0339_09_SCMB.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2022-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17 0442 17 SCMB.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2020/07/01/2020-07-01 0000 08 SCMB.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/07/01/2021-07-01 0000 08 SCMB.dmx"
+        ],
+        "samples_used": 5,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:53:22Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SCMB.db",
+  "station": "SCMB"
+}

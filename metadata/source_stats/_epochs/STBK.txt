@@ -1,5 +1,5 @@
 # Channel-epoch scan: STBK
-# Generated: 2026-06-21T07:20:48Z
+# Generated: 2026-06-21T07:53:47Z
 
 ## disk_mseed
   2018-07-01 → 2018-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)

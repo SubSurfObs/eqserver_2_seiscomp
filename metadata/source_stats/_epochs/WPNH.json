@@ -1,0 +1,64 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2018/12/01/2018-12-01_0000_23_WPNH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2019/07/01/2019-07-01_0013_36_WPNH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2020/07/01/2020-07-01_0157_02_WPNH.dmx"
+        ],
+        "samples_used": 4,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/01/01/2022-01-01_0011_53_WPNH.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2022-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2023/01/01/2023-01-01_0007_57_WPNH.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2023-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2018/07/01/2018-07-01 0046 56 WPNH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2019/07/01/2019-07-01 0000 36 WPNH.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2020/07/01/2020-07-01 0000 45 WPNH.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:55:54Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WPNH.db",
+  "station": "WPNH"
+}

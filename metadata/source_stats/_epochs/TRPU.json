@@ -1,0 +1,23 @@
+{
+  "by_source_kind": {
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "HH1",
+          "HH2",
+          "HHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2021/08/08/2021-08-08 0200 TRPU.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2022/04/01/2022-04-01 0300 TRPU.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2021-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:55:04Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TRPU.db",
+  "station": "TRPU"
+}

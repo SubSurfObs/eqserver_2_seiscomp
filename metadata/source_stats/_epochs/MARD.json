@@ -1,0 +1,50 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2018/12/01/2018-12-01_0000_54_MARD.dmx.gz"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/07/01/2019-07-01_0210_27_MARD.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2020/12/01/2020-12-01_0242_05_MARD.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2021/04/01/2021-04-01_0055_49_MARD.dmx"
+        ],
+        "samples_used": 7,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2018/07/01/2018-07-01 0000 33 MARD.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/07/01/2019-07-01 0000 27 MARD.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2020/01/01/2020-01-01 0003 38 MARD.dmx"
+        ],
+        "samples_used": 8,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:42:20Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.MARD.db",
+  "station": "MARD"
+}

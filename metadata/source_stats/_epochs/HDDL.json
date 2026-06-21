@@ -1,0 +1,78 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2018/05/01/2018-05-01_0047_33_HDDL.dmx.gz"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/07/01/2019-07-01_0003_10_HDDL.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2020/07/01/2020-07-01_0110_13_HDDL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2021/07/14/2021-07-14_2247_51_HDDL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2022/01/01/2022-01-01_0200_04_HDDL.dmx"
+        ],
+        "samples_used": 5,
+        "start": "2020-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2025/07/01/2025-07-01 0049 00 HDDL.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2025-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2018/07/01/2018-07-01 0903 55 HDDL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/07/01/2019-07-01 0000 10 HDDL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2020/07/01/2020-07-01 0000 13 HDDL.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2018-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:28:14Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HDDL.db",
+  "station": "HDDL"
+}

@@ -1,0 +1,19 @@
+# Channel-epoch scan: BEST
+# Generated: 2026-06-21T07:22:18Z
+
+## disk_suds
+  2017-07-01 → 2019-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)
+  2020-07-01 → 2021-07-01  channels=['c03']  (n_samples=2)
+  2022-07-01 → 2025-07-01  channels=['c01', 'c02', 'c03']  (n_samples=4)
+
+## tele_ss_suds
+  2017-07-01 → 2018-07-01  channels=['c03']  (n_samples=2)
+  2019-07-01 → 2019-07-01  channels=['CHZ']  (n_samples=1)
+  2020-07-01 → 2025-07-01  channels=['c03']  (n_samples=6)
+
+## disk_mseed
+  2019-07-01 → 2020-07-01  channels=['CHZ']  (n_samples=2)
+
+## tele_noss_mseed
+  2019-07-01 → 2019-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+

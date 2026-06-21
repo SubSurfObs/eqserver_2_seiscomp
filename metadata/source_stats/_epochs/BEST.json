@@ -1,0 +1,118 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/07/01/20190701_0000_BEST.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/01/01/20200101_0006_BEST.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2019-07-01"
+      }
+    ],
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2017/12/01/2017-12-01_0421_41_BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2018/07/01/2018-07-01_0005_19_BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/01/01/2019-01-01_0000_44_BEST.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/04/01/2020-04-01_0009_08_BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/01/01/2021-01-01_0241_54_BEST.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2020-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2022/07/01/2022-07-01_0044_09_BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2023/07/01/2023-07-01_1010_53_BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2024/01/01/2024-01-01_0147_42_BEST.dmx"
+        ],
+        "samples_used": 4,
+        "start": "2022-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/05/02/2019-05-02 0312 BEST.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2017/12/01/2017-12-01 1138 41 BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2018/07/01/2018-07-01 0733 19 BEST.dmx"
+        ],
+        "samples_used": 2,
+        "start": "2017-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/07/01/2019-07-01 0108 01 BEST.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/07/01/2020-07-01 0000 41 BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/01/01/2021-01-01 0000 54 BEST.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2022/07/01/2022-07-01 0000 09 BEST.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2020-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:22:18Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.BEST.db",
+  "station": "BEST"
+}

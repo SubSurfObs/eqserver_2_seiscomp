@@ -1,0 +1,6 @@
+# Channel-epoch scan: TRPU
+# Generated: 2026-06-21T07:55:04Z
+
+## tele_noss_mseed
+  2021-07-01 → 2022-07-01  channels=['HH1', 'HH2', 'HHZ']  (n_samples=2)
+

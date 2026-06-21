@@ -1,0 +1,76 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2021/01/01/2021-01-01_0008_46_LOCU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2022/07/01/2022-07-01_0033_56_LOCU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2023/07/01/2023-07-01_0025_54_LOCU.dmx"
+        ],
+        "samples_used": 3,
+        "start": "2021-07-01"
+      },
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/07/01/2024-07-01_1038_27_LOCU.dmx.gz"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      },
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2025/06/01/2025-06-01_0303_08_LOCU.dmx"
+        ],
+        "samples_used": 1,
+        "start": "2025-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "DLE",
+          "DLN",
+          "DLZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2021/07/01/2021-07-01 0000 51 LOCU.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2021-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2021/01/01/2021-01-01 0000 46 LOCU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2022/07/01/2022-07-01 0000 56 LOCU.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2023/07/01/2023-07-01 0000 54 LOCU.dmx"
+        ],
+        "samples_used": 5,
+        "start": "2021-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:38:07Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOCU.db",
+  "station": "LOCU"
+}

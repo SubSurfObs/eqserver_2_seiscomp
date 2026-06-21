@@ -1,0 +1,39 @@
+{
+  "by_source_kind": {
+    "disk_suds": [
+      {
+        "channels": [
+          "c01",
+          "c02",
+          "c03"
+        ],
+        "end": "2017-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2012/11/01/2012-11-01_2343_06_HODL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2013/07/01/2013-07-01_2316_13_HODL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2014/07/01/2014-07-01_0000_21_HODL.dmx.gz"
+        ],
+        "samples_used": 5,
+        "start": "2012-07-01"
+      }
+    ],
+    "tele_ss_suds": [
+      {
+        "channels": [
+          "c03"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2012/10/12/2012-10-12 0440 23 HODL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2013/01/01/2013-01-01 0920 18 HODL.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2014/07/01/2014-07-01 0540 21 HODL.dmx"
+        ],
+        "samples_used": 6,
+        "start": "2012-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:31:22Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HODL.db",
+  "station": "HODL"
+}

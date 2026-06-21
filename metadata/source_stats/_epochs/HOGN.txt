@@ -1,0 +1,13 @@
+# Channel-epoch scan: HOGN
+# Generated: 2026-06-21T07:33:10Z
+
+## disk_mseed
+  2019-07-01 → 2020-07-01  channels=['HHZ']  (n_samples=2)
+
+## tele_ss_mseed
+  2019-07-01 → 2020-07-01  channels=['HHE', 'HHN', 'HHZ']  (n_samples=2)
+
+## tele_noss_mseed
+  2018-07-01 → 2018-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+  2019-07-01 → 2019-07-01  channels=['HHE', 'HHN', 'HHZ']  (n_samples=1)
+

@@ -1,0 +1,110 @@
+{
+  "by_source_kind": {
+    "disk_mseed": [
+      {
+        "channels": [
+          "CDO",
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/20180701_0349_WDSD.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/07/01/20190701_0000_WDSD.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/07/01/20200701_0000_WDSD.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/07/14/20210714_0520_WDSD.ms.zip"
+        ],
+        "samples_used": 5,
+        "start": "2019-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2024/07/01/20240701_0000_WDSD.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2024-07-01"
+      }
+    ],
+    "tele_noss_mseed": [
+      {
+        "channels": [
+          "CDO",
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/2018-07-01 0558 WDSD.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/01/01/2019-01-01 0103 WDSD.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2022/04/01/2022-04-01 0044 WDSD.ms.zip"
+        ],
+        "samples_used": 2,
+        "start": "2019-07-01"
+      }
+    ],
+    "tele_ss_mseed": [
+      {
+        "channels": [
+          "CDO",
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/2018-07-01 0347 00 WDSD.ms.zip"
+        ],
+        "samples_used": 1,
+        "start": "2018-07-01"
+      },
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/01/01/2019-01-01 0001 00 WDSD.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2022/07/01/2022-07-02 0000 00 WDSD.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2024/12/01/2024-12-02 0000 00 WDSD.ms.zip"
+        ],
+        "samples_used": 4,
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-21T07:55:26Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WDSD.db",
+  "station": "WDSD"
+}

@@ -1,0 +1,10 @@
+# Channel-epoch scan: KRAN
+# Generated: 2026-06-21T07:37:27Z
+
+## disk_suds
+  2012-07-01 → 2012-07-01  channels=['c04', 'c05', 'c06']  (n_samples=1)
+  2013-07-01 → 2014-07-01  channels=['c01', 'c02', 'c03']  (n_samples=2)
+
+## tele_ss_suds
+  2012-07-01 → 2014-07-01  channels=['c03']  (n_samples=3)
+
