@@ -71,7 +71,11 @@ TEST_ENV_SHARED = Path("/mnt/seiscomp_staging/test_env_classb")
 STAGING_SDS = TEST_ENV_SHARED / "staging_sds"
 
 EQSERVER_ROOT = Path("/mnt/eqserver_archive/shared/data/repository/archive")
-PROD_PLANS = Path("/home/unimelb.edu.au/dsand/projects/SubSurfObs/eqserver_2_seiscomp/plans/VW")
+REPO = Path("/home/unimelb.edu.au/dsand/projects/SubSurfObs/eqserver_2_seiscomp")
+LEVEL1 = REPO / "scan" / "level1.py"
+PLAN_GENERATOR = REPO / "scan" / "plan_generator.py"
+REGISTRY = REPO / "metadata" / "station_registry.yaml"
+PYTHON = "/home/unimelb.edu.au/dsand/projects/SubSurfObs/disk_to_sds/.venv/bin/python3"
 
 
 # --------------------------------------------------------------------------
@@ -140,78 +144,75 @@ def verify_mirror(sta: str, year: int, month: int, day: int) -> dict:
 
 
 # --------------------------------------------------------------------------
-# Mini manifest DB — same schema as production Level-1 DBs.
-# We don't fully recreate Level-1 here; we copy rows from prod station_db
-# for the (station, year, month, day) we mirrored. That guarantees schema
-# compatibility with phase3 and avoids re-implementing the classifier.
+# Manifest DB — REBUILT FROM SCRATCH by invoking scan/level1.py against the
+# mirror. We do NOT copy from prod station_dbs. Reason: if a fix touches
+# Level-1 scan logic (classifier, source-type tagging, ss-field handling),
+# the test env must exercise it. Copying prod artifacts would test stale
+# state.
 # --------------------------------------------------------------------------
 
-PROD_DBS = Path("/home/unimelb.edu.au/dsand/station_dbs")
+def run_level1(sta: str) -> dict:
+    """Invoke scan/level1.py against mirror_src for one station.
+    Writes the per-station DB to manifest_dbs/VW.<STA>.db. Scans the WHOLE
+    mirror tree for that station, so if multiple days are mirrored, all
+    are indexed in the same DB."""
+    # level1.py expects the archive root to look like archive/<STA>/continuous/...
+    # The mirror already has that shape. Just pass it.
+    # level1.py also wants a `--db` for the global manifest. We pass a
+    # throwaway under logs/ since we only care about the per-station DB.
+    throwaway_db = LOGS / f"level1_throwaway_{sta}.db"
+    if throwaway_db.exists():
+        throwaway_db.unlink()
+    cmd = [PYTHON, "-u", str(LEVEL1),
+           "--archive", str(MIRROR_SRC),
+           "--db", str(throwaway_db),
+           "--per-station-dbs", str(MANIFEST_DBS),
+           "--stations", sta,
+           "--registry", str(REGISTRY)]
+    log_path = LOGS / f"level1_{sta}.log"
+    with log_path.open("w") as logf:
+        proc = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT, text=True)
+    if proc.returncode != 0:
+        return {"error": f"level1 failed rc={proc.returncode}; see {log_path}"}
+    # Count rows in the produced per-station DB
+    db_path = MANIFEST_DBS / f"VW.{sta}.db"
+    if not db_path.exists():
+        return {"error": f"level1 produced no DB at {db_path}"}
+    conn = sqlite3.connect(db_path)
+    n = conn.execute("SELECT COUNT(*) FROM files").fetchone()[0]
+    conn.close()
+    return {"n_rows": n, "log_path": str(log_path)}
 
 
-def build_mini_db(sta: str, year: int, month: int, day: int) -> dict:
-    """Build/update mini manifest DB by copying rows from prod station DB.
-
-    We also rewrite the `path` column to point at mirror_src instead of the
-    EqServer NFS source — phase3 will read FROM the mirror, not the original.
-    """
-    prod_db = PROD_DBS / f"VW.{sta}.db"
-    if not prod_db.exists():
-        return {"error": f"prod DB not found: {prod_db}"}
-    mini_db = MANIFEST_DBS / f"VW.{sta}.db"
-
-    # 1. If mini DB doesn't exist, copy the schema (no rows) from prod
-    if not mini_db.exists():
-        # Open prod, dump schema only
-        src_conn = sqlite3.connect(prod_db)
-        schema_rows = src_conn.execute(
-            "SELECT sql FROM sqlite_master WHERE type IN ('table', 'index') "
-            "AND name NOT LIKE 'sqlite_%' AND sql IS NOT NULL"
-        ).fetchall()
-        src_conn.close()
-        dst_conn = sqlite3.connect(mini_db)
-        for (sql,) in schema_rows:
-            dst_conn.execute(sql)
-        dst_conn.commit()
-        dst_conn.close()
-
-    # 2. Copy rows for this (sta, year, month, day) from prod, rewriting path
-    src_conn = sqlite3.connect(prod_db)
-    rows = src_conn.execute(
-        "SELECT * FROM files WHERE station = ? AND dir_year = ? "
-        "AND dir_month = ? AND dir_day = ?",
-        (sta, year, month, day)
-    ).fetchall()
-    cols = [d[0] for d in src_conn.execute("SELECT * FROM files LIMIT 1").description]
-    src_conn.close()
-    if not rows:
-        return {"error": f"no rows in prod DB for {sta} {year}-{month:02d}-{day:02d}"}
-
-    path_idx = cols.index("path")
-    rewritten = []
-    for r in rows:
-        r = list(r)
-        # Original path: /mnt/eqserver_archive/.../STA/continuous/YYYY/MM/DD/<file>
-        # Rewrite to:    /mnt/seiscomp_staging/test_env_classb/mirror_src/STA/continuous/YYYY/MM/DD/<file>
-        if r[path_idx] and "/mnt/eqserver_archive/" in r[path_idx]:
-            fname = Path(r[path_idx]).name
-            new_path = str(MIRROR_SRC / sta / "continuous" / f"{year:04d}" /
-                           f"{month:02d}" / f"{day:02d}" / fname)
-            r[path_idx] = new_path
-        rewritten.append(tuple(r))
-
-    dst_conn = sqlite3.connect(mini_db)
-    # Delete any existing rows for this day first (idempotent)
-    dst_conn.execute(
-        "DELETE FROM files WHERE station = ? AND dir_year = ? "
-        "AND dir_month = ? AND dir_day = ?",
-        (sta, year, month, day)
-    )
-    ph = ",".join("?" * len(cols))
-    dst_conn.executemany(f"INSERT INTO files VALUES ({ph})", rewritten)
-    dst_conn.commit()
-    dst_conn.close()
-    return {"n_rows": len(rewritten)}
+def run_plan_generator(sta: str) -> dict:
+    """Invoke scan/plan_generator.py against the rebuilt manifest DB.
+    Writes plan to plans/VW.<STA>.plan.yaml.
+    The plan generator reads cross_source decisions implicitly via the
+    classifier — so any change to check_manifest.py or cross_source.py
+    surfaces here."""
+    db_path = MANIFEST_DBS / f"VW.{sta}.db"
+    if not db_path.exists():
+        return {"error": f"manifest DB missing — run level1 first: {db_path}"}
+    cmd = [PYTHON, "-u", str(PLAN_GENERATOR), str(db_path),
+           "--registry", str(REGISTRY),
+           "--out", str(PLANS.parent),  # plan_generator writes to <out>/<NET>/<NET>.<STA>.plan.yaml
+           "--stations", sta]
+    log_path = LOGS / f"plan_generator_{sta}.log"
+    with log_path.open("w") as logf:
+        proc = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT, text=True)
+    if proc.returncode != 0:
+        return {"error": f"plan_generator failed rc={proc.returncode}; see {log_path}"}
+    # plan_generator writes to <out>/VW/VW.<STA>.plan.yaml; we want
+    # plans/VW.<STA>.plan.yaml flat. Move it.
+    nested = PLANS.parent / "VW" / f"VW.{sta}.plan.yaml"
+    if nested.exists():
+        target = PLANS / f"VW.{sta}.plan.yaml"
+        nested.replace(target)
+        return {"ok": True, "plan_path": str(target)}
+    flat = PLANS / f"VW.{sta}.plan.yaml"
+    if flat.exists():
+        return {"ok": True, "plan_path": str(flat)}
+    return {"error": f"plan_generator produced no output for {sta}; see {log_path}"}
 
 
 # --------------------------------------------------------------------------
@@ -391,19 +392,6 @@ def build_time_index(sta: str, year: int, month: int, day: int) -> dict:
 
 
 # --------------------------------------------------------------------------
-# Plans: borrow from prod
-# --------------------------------------------------------------------------
-
-def copy_plan(sta: str) -> dict:
-    src = PROD_PLANS / f"VW.{sta}.plan.yaml"
-    if not src.exists():
-        return {"error": f"prod plan not found: {src}"}
-    dst = PLANS / f"VW.{sta}.plan.yaml"
-    dst.write_bytes(src.read_bytes())
-    return {"ok": True, "src": str(src), "dst": str(dst)}
-
-
-# --------------------------------------------------------------------------
 # Subcommands
 # --------------------------------------------------------------------------
 
@@ -419,17 +407,21 @@ def cmd_add(args):
     if "error" in r:
         return 2
 
-    print("  [mini_db]  copy rows from prod ...", flush=True)
-    r2 = build_mini_db(sta, year, month, day)
-    print(f"  [mini_db]  {r2}", flush=True)
+    print("  [level1]   run scan/level1.py against mirror ...", flush=True)
+    r2 = run_level1(sta)
+    print(f"  [level1]   {r2}", flush=True)
+    if "error" in r2:
+        return 2
 
-    print("  [time_idx] read trace headers ...", flush=True)
+    print("  [plan]     run scan/plan_generator.py against rebuilt manifest ...", flush=True)
+    r4 = run_plan_generator(sta)
+    print(f"  [plan]     {r4}", flush=True)
+    if "error" in r4:
+        return 2
+
+    print("  [time_idx] read trace headers from mirror ...", flush=True)
     r3 = build_time_index(sta, year, month, day)
     print(f"  [time_idx] {r3}", flush=True)
-
-    print("  [plan]     copy from prod ...", flush=True)
-    r4 = copy_plan(sta)
-    print(f"  [plan]     {r4}", flush=True)
 
     # register in catalogue (idempotent: replace if exists)
     entries = load_catalogue()
@@ -448,6 +440,27 @@ def cmd_add(args):
     })
     save_catalogue(entries)
     print(f"  [catalog]  registered: {key}", flush=True)
+    return 0
+
+
+def cmd_rebuild(args):
+    """Re-run level1 + plan_generator for a station, against the existing
+    mirror. Use after fixing scanner / classifier / plan-generator code to
+    re-test against the same mirrored source bytes."""
+    sta = args.sta
+    print(f"[rebuild] {sta}  (mirror unchanged; re-running level1 + plan_generator)",
+          flush=True)
+    print("  [level1]   ...", flush=True)
+    r2 = run_level1(sta)
+    print(f"  [level1]   {r2}", flush=True)
+    if "error" in r2:
+        return 2
+    print("  [plan]     ...", flush=True)
+    r4 = run_plan_generator(sta)
+    print(f"  [plan]     {r4}", flush=True)
+    if "error" in r4:
+        return 2
+    print("  [done] manifest + plan rebuilt", flush=True)
     return 0
 
 
@@ -504,6 +517,10 @@ def main():
     p.add_argument("sta")
     p.add_argument("date", help="YYYY-MM-DD")
     p.set_defaults(func=cmd_rebuild_time_index)
+
+    p = sub.add_parser("rebuild", help="re-run level1+plan_generator against current mirror (use after code changes)")
+    p.add_argument("sta")
+    p.set_defaults(func=cmd_rebuild)
 
     args = ap.parse_args()
     sys.exit(args.func(args))
