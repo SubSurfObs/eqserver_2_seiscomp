@@ -46,6 +46,27 @@ DATE_COMPACT = re.compile(r"^(\d{8})$")
 HHMM = re.compile(r"^\d{3,4}$")
 SS = re.compile(r"^\d{1,2}$")
 
+# Mixed-separator filename shapes surfaced 2026-06-22 (~1.7M files
+# network-wide). All are minute-resolution mseed; no SS field. They
+# don't survive the standard space/underscore tokenizer below — we
+# recognise them explicitly here and tag flags='mixed_separator'.
+#
+# Concentration by shape (2026-06-22 count):
+#  - underscore_tele:  SGWU 995k, TRPU 550k, LOYU 110k, DDWB 31k (1.69M)
+#  - dash_around_sta:  WPSH 29k  (only WPSH 2019; surfaced WPSH silent loss)
+#  - all_dash_date:    SGWU 5.8k, TRPU 4.3k  (10k)
+MIXED_SHAPES = [
+    # 2019-02-11 2300_SGWU
+    ("underscore_tele",
+     re.compile(r"^(?P<y>\d{4})-(?P<mo>\d{2})-(?P<d>\d{2}) (?P<hhmm>\d{4})_(?P<sta>\w+)$")),
+    # 2019-05-20_2243-WPSH
+    ("dash_around_sta",
+     re.compile(r"^(?P<y>\d{4})-(?P<mo>\d{2})-(?P<d>\d{2})_(?P<hhmm>\d{4})-(?P<sta>\w+)$")),
+    # 2016-10-05-0000_SGWU
+    ("all_dash_date",
+     re.compile(r"^(?P<y>\d{4})-(?P<mo>\d{2})-(?P<d>\d{2})-(?P<hhmm>\d{4})_(?P<sta>\w+)$")),
+]
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS files (
     path            TEXT PRIMARY KEY,
@@ -124,6 +145,26 @@ def parse_filename(name: str, dir_station: str) -> dict:
             rec["flags"] = ",".join(sorted(flags))
         if "trig" in flags:
             rec["exclude_reason"] = "triggered"
+
+        # Mixed-separator shape pre-pass (see MIXED_SHAPES above). These
+        # don't fit space-vs-underscore tokenisation; recognise them
+        # explicitly and tag for the planner.
+        for shape_name, shape_re in MIXED_SHAPES:
+            mm = shape_re.match(stem)
+            if mm:
+                rec["source_type"] = "telemetry"
+                rec["file_year"] = int(mm["y"])
+                rec["file_month"] = int(mm["mo"])
+                rec["file_day"] = int(mm["d"])
+                rec["hhmm"] = mm["hhmm"]
+                rec["filename_station"] = mm["sta"]
+                tag = f"mixed_separator:{shape_name}"
+                rec["flags"] = f"{rec['flags']},{tag}" if rec["flags"] else tag
+                if dir_station:
+                    rec["station_mismatch"] = int(rec["filename_station"] != dir_station)
+                if rec["exclude_reason"] is None and rec["station_mismatch"]:
+                    rec["exclude_reason"] = "wrong_station"
+                return rec
 
         if " " in stem:
             rec["source_type"] = "telemetry"
