@@ -125,11 +125,13 @@ ORDER BY dir_year, dir_month, dir_day
             "bucket": b,
         })
 
-    # Sample weird/sparse days for inspection
-    samples = {"weird": [], "sparse": []}
+    # Pick one representative day per bucket for test-env work — first
+    # day of each bucket as encountered (deterministic).
+    representatives: dict = {}
     for d in bucketed_days:
-        if d["bucket"] in samples and len(samples[d["bucket"]]) < 10:
-            samples[d["bucket"]].append(d)
+        b = d["bucket"]
+        if b not in representatives:
+            representatives[b] = d
 
     return {
         "station": sta,
@@ -153,7 +155,11 @@ ORDER BY dir_year, dir_month, dir_day
             }
             for yr, yc in by_year_coverage.items()
         },
-        "samples_for_inspection": samples,
+        "representatives": representatives,
+        # Full day classification list — every day with its bucket and counts.
+        # Used by downstream tooling to pick days deterministically by class.
+        # ~80 bytes/day; 3000 days = ~250 KB. Acceptable.
+        "day_classifications": bucketed_days,
     }
 
 
