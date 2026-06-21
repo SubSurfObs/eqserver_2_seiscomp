@@ -62,6 +62,11 @@ SOURCE_KINDS = [
     ("disk_mseed",     re.compile(r"^\d{8}_\d{4}_\w+\.ms\.zip$"),                     "mseed"),
     ("tele_ss_mseed",  re.compile(r"^\d{4}-\d{2}-\d{2} \d{4} \d{2} \w+\.ms\.zip$"),    "mseed"),
     ("tele_noss_mseed",re.compile(r"^\d{4}-\d{2}-\d{2} \d{4} \w+\.ms\.zip$"),          "mseed"),
+    # Mixed-separator MSEED — surfaced 2026-06-22 (~1.73M files at the
+    # RT130 cohort + WPSH + DDWB). See MIXED_SHAPES in scan/level1.py.
+    ("tele_underscore_mseed", re.compile(r"^\d{4}-\d{2}-\d{2} \d{4}_\w+\.ms\.zip$"),    "mseed"),
+    ("tele_dasharound_mseed", re.compile(r"^\d{4}-\d{2}-\d{2}_\d{4}-\w+\.ms\.zip$"),    "mseed"),
+    ("tele_alldash_mseed",    re.compile(r"^\d{4}-\d{2}-\d{2}-\d{4}_\w+\.ms\.zip$"),    "mseed"),
 ]
 
 

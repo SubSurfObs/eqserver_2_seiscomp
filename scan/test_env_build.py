@@ -269,6 +269,16 @@ def _detect_source_kind(name: str) -> tuple[str, str]:
         return ("tele_ss_mseed", "mseed")
     if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \w+\.ms\.zip$", name):
         return ("tele_noss_mseed", "mseed")
+    # Mixed-separator shapes (surfaced 2026-06-22; ~1.73M files network-wide
+    # at SGWU/TRPU/LOYU/DDWB/WPSH). Mirrors MIXED_SHAPES in scan/level1.py.
+    # All three carry full 3-channel mseed; we group under one kind here
+    # and let downstream branch on the flags column.
+    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4}_\w+\.ms\.zip$", name):       # underscore_tele
+        return ("tele_mixed_mseed", "mseed")
+    if re.match(r"^\d{4}-\d{2}-\d{2}_\d{4}-\w+\.ms\.zip$", name):       # dash_around_sta
+        return ("tele_mixed_mseed", "mseed")
+    if re.match(r"^\d{4}-\d{2}-\d{2}-\d{4}_\w+\.ms\.zip$", name):       # all_dash_date
+        return ("tele_mixed_mseed", "mseed")
     # Per-channel mseed stubs (gecko/minimus) — single-channel, in .mseed.zip
     if re.match(r"^.+\.mseed(\.zip)?$", name):
         return ("perchan_mseed", "mseed")
