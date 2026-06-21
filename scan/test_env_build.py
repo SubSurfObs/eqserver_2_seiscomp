@@ -236,22 +236,110 @@ ON time_index(sta, chan, trace_start_iso, trace_end_iso);
 """
 
 
-def _detect_source_kind(name: str) -> str:
-    """Return disk | tele_ss00 | tele_noss | unknown based on filename grammar."""
+def _detect_source_kind(name: str) -> tuple[str, str]:
+    """Return (source_kind, format) — source_kind in
+    {disk_mseed, disk_suds, tele_ss_mseed, tele_noss_mseed, tele_ss_suds,
+     tele_noss_suds, unknown}, format in {mseed, suds, unknown}.
+
+    Disk grammar: underscore-separated, no spaces.
+      - EchoPro disk: YYYYMMDD_HHMM_SS_STA.dmx[.gz]      (3 underscores)
+      - Gecko   disk: YYYYMMDD_HHMM_STA.ms.zip           (2 underscores)
+
+    Telemetry grammar: space-separated, dashed date.
+      - EchoPro tele: 'YYYY-MM-DD HHMM SS STA.dmx[.gz]'  (has SS)
+                      'YYYY-MM-DD HHMM STA.dmx[.gz]'     (no SS)
+      - Gecko   tele: 'YYYY-MM-DD HHMM SS STA.ms.zip'    (has SS)
+                      'YYYY-MM-DD HHMM STA.ms.zip'       (no SS)
+    """
     import re
-    if re.match(r"^\d{8}_\d{4}_\w+\.ms(\.zip)?$", name):
-        return "disk"
-    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \d{2} \w+\.ms(\.zip)?$", name):
-        return "tele_ss00"
-    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \w+\.ms(\.zip)?$", name):
-        return "tele_noss"
-    return "unknown"
+    # SUDS — EchoPro
+    if re.match(r"^\d{8}_\d{4}_\d{2}_\w+\.dmx(\.gz)?$", name):
+        return ("disk_suds", "suds")
+    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \d{2} \w+\.dmx(\.gz)?$", name):
+        return ("tele_ss_suds", "suds")
+    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \w+\.dmx(\.gz)?$", name):
+        return ("tele_noss_suds", "suds")
+    # MSEED — Gecko-family (gecko, RT130-via-gecko, minimus per-chan)
+    if re.match(r"^\d{8}_\d{4}_\w+\.ms\.zip$", name):
+        return ("disk_mseed", "mseed")
+    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \d{2} \w+\.ms\.zip$", name):
+        return ("tele_ss_mseed", "mseed")
+    if re.match(r"^\d{4}-\d{2}-\d{2} \d{4} \w+\.ms\.zip$", name):
+        return ("tele_noss_mseed", "mseed")
+    # Per-channel mseed stubs (gecko/minimus) — single-channel, in .mseed.zip
+    if re.match(r"^.+\.mseed(\.zip)?$", name):
+        return ("perchan_mseed", "mseed")
+    return ("unknown", "unknown")
+
+
+def _index_mseed(path: Path, sta: str, kind: str, conn) -> int:
+    """Read mseed bytes (raw or zipped) and insert time-index rows.
+    Returns count of rows inserted."""
+    from obspy import read
+    n = 0
+    if str(path).endswith(".zip"):
+        with zipfile.ZipFile(path) as zf:
+            for member in zf.namelist():
+                if not member.endswith((".ms", ".mseed")):
+                    continue
+                st = read(io.BytesIO(zf.read(member)),
+                          format="MSEED", headonly=True)
+                for tr in st:
+                    conn.execute(
+                        "INSERT OR REPLACE INTO time_index VALUES "
+                        "(?, ?, ?, ?, ?, ?, ?, ?)",
+                        (sta, tr.stats.channel, kind, str(path),
+                         str(tr.stats.starttime).rstrip("Z") + "Z",
+                         str(tr.stats.endtime).rstrip("Z") + "Z",
+                         tr.stats.npts, tr.stats.sampling_rate))
+                    n += 1
+    else:
+        st = read(str(path), format="MSEED", headonly=True)
+        for tr in st:
+            conn.execute(
+                "INSERT OR REPLACE INTO time_index VALUES "
+                "(?, ?, ?, ?, ?, ?, ?, ?)",
+                (sta, tr.stats.channel, kind, str(path),
+                 str(tr.stats.starttime).rstrip("Z") + "Z",
+                 str(tr.stats.endtime).rstrip("Z") + "Z",
+                 tr.stats.npts, tr.stats.sampling_rate))
+            n += 1
+    return n
+
+
+def _index_suds(path: Path, sta: str, kind: str, conn) -> int:
+    """Use sudspy.scan_suds_file to read SUDS headers and insert time-index
+    rows. SUDS scan is header-only by design — no data decode, no decompress
+    of the data payload, but for .gz files the whole stream must be inflated
+    to walk the blocks."""
+    import sudspy
+    n = 0
+    info = sudspy.scan_suds_file(str(path))
+    # scan_suds_file returns a dict-like with per-channel time-ranges.
+    # Schema (from sudspy): channels = list of {channel, starttime, endtime,
+    # npts, sampling_rate}. If sudspy returns something different, adapt.
+    channels = info.get("channels", info.get("traces", []))
+    for ch in channels:
+        chan = ch.get("channel") or ch.get("name") or ""
+        start = ch.get("starttime") or ch.get("start") or ""
+        end = ch.get("endtime") or ch.get("end") or ""
+        npts = int(ch.get("npts") or 0)
+        rate = float(ch.get("sampling_rate") or ch.get("rate") or 0)
+        conn.execute(
+            "INSERT OR REPLACE INTO time_index VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?)",
+            (sta, chan, kind, str(path),
+             str(start).rstrip("Z") + "Z" if start else "",
+             str(end).rstrip("Z") + "Z" if end else "",
+             npts, rate))
+        n += 1
+    return n
 
 
 def build_time_index(sta: str, year: int, month: int, day: int) -> dict:
-    """Read each mirrored mseed file and record per-trace time ranges."""
+    """Read each mirrored source file and record per-trace time ranges.
+    Handles SUDS (EchoPro) and MSEED (Gecko/Minimus/RT130) formats."""
     warnings.filterwarnings("ignore")
-    from obspy import read
 
     day_dir = MIRROR_SRC / sta / "continuous" / f"{year:04d}" / f"{month:02d}" / f"{day:02d}"
     if not day_dir.exists():
@@ -261,59 +349,35 @@ def build_time_index(sta: str, year: int, month: int, day: int) -> dict:
     conn = sqlite3.connect(db_path)
     conn.executescript(TIME_INDEX_SCHEMA)
 
-    # Clear any existing rows for this day (idempotent)
-    iso_day_start = f"{year:04d}-{month:02d}-{day:02d}T00:00:00Z"
-    iso_day_end = f"{year:04d}-{month:02d}-{day:02d}T23:59:59.999Z"
+    # Clear any existing rows for this day's mirror path (idempotent)
     conn.execute(
         "DELETE FROM time_index WHERE sta=? AND source_path LIKE ?",
-        (sta, str(day_dir) + "/%")
-    )
+        (sta, str(day_dir) + "/%"))
 
     n_rows = 0
     n_read_errors = 0
+    n_skipped_unknown = 0
+    by_kind: dict = {}
     for f in sorted(day_dir.iterdir()):
         if not f.is_file():
             continue
-        name = f.name
-        kind = _detect_source_kind(name)
-        if kind == "unknown":
+        kind, fmt = _detect_source_kind(f.name)
+        by_kind[kind] = by_kind.get(kind, 0) + 1
+        if fmt == "unknown":
+            n_skipped_unknown += 1
             continue
         try:
-            if name.endswith(".zip"):
-                with zipfile.ZipFile(f) as zf:
-                    for member in zf.namelist():
-                        if not member.endswith((".ms", ".mseed")):
-                            continue
-                        st = read(io.BytesIO(zf.read(member)),
-                                  format="MSEED", headonly=True)
-                        for tr in st:
-                            conn.execute(
-                                "INSERT OR REPLACE INTO time_index VALUES "
-                                "(?, ?, ?, ?, ?, ?, ?, ?)",
-                                (sta, tr.stats.channel, kind, str(f),
-                                 str(tr.stats.starttime).rstrip("Z") + "Z",
-                                 str(tr.stats.endtime).rstrip("Z") + "Z",
-                                 tr.stats.npts, tr.stats.sampling_rate)
-                            )
-                            n_rows += 1
-            else:
-                st = read(str(f), format="MSEED", headonly=True)
-                for tr in st:
-                    conn.execute(
-                        "INSERT OR REPLACE INTO time_index VALUES "
-                        "(?, ?, ?, ?, ?, ?, ?, ?)",
-                        (sta, tr.stats.channel, kind, str(f),
-                         str(tr.stats.starttime).rstrip("Z") + "Z",
-                         str(tr.stats.endtime).rstrip("Z") + "Z",
-                         tr.stats.npts, tr.stats.sampling_rate)
-                    )
-                    n_rows += 1
-        except Exception as e:
+            if fmt == "mseed":
+                n_rows += _index_mseed(f, sta, kind, conn)
+            elif fmt == "suds":
+                n_rows += _index_suds(f, sta, kind, conn)
+        except Exception:
             n_read_errors += 1
             continue
     conn.commit()
     conn.close()
-    return {"n_rows": n_rows, "read_errors": n_read_errors}
+    return {"n_rows": n_rows, "read_errors": n_read_errors,
+            "skipped_unknown": n_skipped_unknown, "files_by_kind": by_kind}
 
 
 # --------------------------------------------------------------------------
