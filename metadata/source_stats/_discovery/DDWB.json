@@ -1,0 +1,504 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 6695053,
+      "pattern": "perchan_mseed_zip",
+      "pct": 99.537
+    },
+    {
+      "count": 31149,
+      "pattern": "UNMATCHED",
+      "pct": 0.463
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:52:47Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDWB.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2019": 390242,
+        "2020": 1581251,
+        "2021": 1485586,
+        "2022": 1562091,
+        "2023": 1576470,
+        "2024": 99413
+      },
+      "row_count": 6695053,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 41967,
+        "min": 237,
+        "n_samples": 6695053,
+        "p10": 11949,
+        "p50": 15989,
+        "p90": 16274
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 31014,
+        "2023": 135
+      },
+      "row_count": 31149,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 82500,
+        "min": 10053,
+        "n_samples": 31149,
+        "p10": 27764,
+        "p50": 39706,
+        "p90": 51901
+      },
+      "unmatched_filename_count": 31149
+    }
+  ],
+  "n_distinct_signatures": 2,
+  "station": "DDWB",
+  "total_rows": 6726202,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2021-06-20 2355_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-20 2339_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-20 2347_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-20 2343_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-20 2342_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-20 2348_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-20 2337_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0003_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0046_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0120_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0053_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0216_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0058_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0303_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0117_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0334_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0513_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0405_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0534_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0013_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0258_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0052_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0505_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0149_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0112_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0504_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0021_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0109_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0152_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-21 0625_DDWB.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

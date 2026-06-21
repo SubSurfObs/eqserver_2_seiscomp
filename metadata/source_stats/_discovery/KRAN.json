@@ -1,0 +1,82 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 634734,
+      "pattern": "disk_suds_dashed",
+      "pct": 51.328
+    },
+    {
+      "count": 601881,
+      "pattern": "tele_ss_suds",
+      "pct": 48.672
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:22:55Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.KRAN.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2012": 203363,
+        "2013": 228667,
+        "2014": 202704
+      },
+      "row_count": 634734,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 181822,
+        "min": 1388,
+        "n_samples": 634734,
+        "p10": 47440,
+        "p50": 151822,
+        "p90": 181822
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1970": 23,
+        "2012": 32329,
+        "2013": 352913,
+        "2014": 216616
+      },
+      "row_count": 601881,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61200,
+        "min": 13880,
+        "n_samples": 601879,
+        "p10": 25217,
+        "p50": 61114,
+        "p90": 61114
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 2,
+  "station": "KRAN",
+  "total_rows": 1236615,
+  "unmatched_filename_samples": []
+}

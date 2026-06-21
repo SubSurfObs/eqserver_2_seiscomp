@@ -1,0 +1,677 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 2264611,
+      "pattern": "disk_mseed_dashed_date",
+      "pct": 62.406
+    },
+    {
+      "count": 940574,
+      "pattern": "UNMATCHED",
+      "pct": 25.919
+    },
+    {
+      "count": 399795,
+      "pattern": "triggered_suds_trig",
+      "pct": 11.017
+    },
+    {
+      "count": 23856,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.657
+    },
+    {
+      "count": 11,
+      "pattern": "tele_noss_mseed",
+      "pct": 0.0
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:55:46Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TRPU.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2000": 2285,
+        "2015": 310947,
+        "2016": 306345,
+        "2017": 474995,
+        "2018": 516218,
+        "2019": 419882,
+        "2020": 233939
+      },
+      "row_count": 2264611,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 58584,
+        "min": 2227,
+        "n_samples": 2264611,
+        "p10": 19419,
+        "p50": 21286,
+        "p90": 26089
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 255269,
+        "2021": 286949,
+        "2022": 7817
+      },
+      "row_count": 550035,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 58466,
+        "min": 3622,
+        "n_samples": 550035,
+        "p10": 18130,
+        "p50": 22348,
+        "p90": 27331
+      },
+      "unmatched_filename_count": 550035
+    },
+    {
+      "by_year": {
+        "2015": 411,
+        "2016": 85649,
+        "2017": 109668,
+        "2018": 125118,
+        "2019": 35762,
+        "2020": 9606,
+        "2021": 21181,
+        "2022": 22675
+      },
+      "row_count": 410070,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 562426,
+        "min": 256,
+        "n_samples": 410070,
+        "p10": 15622,
+        "p50": 34816,
+        "p90": 40448
+      },
+      "unmatched_filename_count": 386214
+    },
+    {
+      "by_year": {
+        "2015": 30688,
+        "2016": 58460,
+        "2017": 95818,
+        "2018": 64355,
+        "2019": 52015,
+        "2020": 55954,
+        "2021": 40502,
+        "2022": 2003
+      },
+      "row_count": 399795,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 220642,
+        "min": 19376,
+        "n_samples": 399795,
+        "p10": 145986,
+        "p50": 145986,
+        "p90": 147286
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2015": 2,
+        "2016": 1,
+        "2017": 4321
+      },
+      "row_count": 4324,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 38202,
+        "min": 3676,
+        "n_samples": 4324,
+        "p10": 19662,
+        "p50": 21973,
+        "p90": 25180
+      },
+      "unmatched_filename_count": 4324
+    },
+    {
+      "by_year": {
+        "2015": 2,
+        "2017": 2,
+        "2019": 3,
+        "2020": 1,
+        "2021": 1,
+        "2022": 2
+      },
+      "row_count": 11,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1970,
+        "min": 162,
+        "n_samples": 11,
+        "p10": 162,
+        "p50": 1175,
+        "p90": 1892
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 24576,
+        "min": 24576,
+        "n_samples": 1,
+        "p10": 24576,
+        "p50": 24576,
+        "p90": 24576
+      },
+      "unmatched_filename_count": 1
+    }
+  ],
+  "n_distinct_signatures": 7,
+  "station": "TRPU",
+  "total_rows": 3628847,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2015-07-01 0005 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0006 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0007 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0008 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0009 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0010 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0011 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0012 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0013 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0014 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0015 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0016 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0017 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0018 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0019 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0020 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0021 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0022 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0023 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0024 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0025 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0026 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0027 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0028 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0029 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0030 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0031 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0032 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0033 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015-07-01 0034 00 TRPU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

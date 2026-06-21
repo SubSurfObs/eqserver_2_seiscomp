@@ -1,0 +1,615 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 5624085,
+      "pattern": "disk_suds_dashed",
+      "pct": 93.917
+    },
+    {
+      "count": 152856,
+      "pattern": "UNMATCHED",
+      "pct": 2.553
+    },
+    {
+      "count": 104278,
+      "pattern": "triggered_suds_trig",
+      "pct": 1.741
+    },
+    {
+      "count": 88463,
+      "pattern": "tele_ss_suds",
+      "pct": 1.477
+    },
+    {
+      "count": 18692,
+      "pattern": "triggered_suds_numeric",
+      "pct": 0.312
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:20:47Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HOLS.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2012": 275615,
+        "2013": 523751,
+        "2014": 419353,
+        "2015": 524929,
+        "2016": 518659,
+        "2017": 525798,
+        "2018": 499534,
+        "2019": 326728,
+        "2020": 502482,
+        "2021": 223698,
+        "2022": 597066,
+        "2023": 533819,
+        "2024": 152653
+      },
+      "row_count": 5624085,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 553015,
+        "min": 30708,
+        "n_samples": 5624085,
+        "p10": 63874,
+        "p50": 91911,
+        "p90": 93323
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 152856
+      },
+      "row_count": 152856,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "wrno",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 130722,
+        "min": 53307,
+        "n_samples": 152856,
+        "p10": 58436,
+        "p50": 64011,
+        "p90": 70793
+      },
+      "unmatched_filename_count": 152856
+    },
+    {
+      "by_year": {
+        "2019": 12511,
+        "2020": 27259,
+        "2021": 17241,
+        "2022": 24160,
+        "2023": 17955,
+        "2024": 5152
+      },
+      "row_count": 104278,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 200425,
+        "min": 54933,
+        "n_samples": 104278,
+        "p10": 92835,
+        "p50": 92925,
+        "p90": 152925
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2016": 2054,
+        "2017": 65502,
+        "2018": 19718,
+        "2019": 1189
+      },
+      "row_count": 88463,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 622345,
+        "min": 92315,
+        "n_samples": 88463,
+        "p10": 92430,
+        "p50": 182321,
+        "p90": 182432
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2017": 11782,
+        "2018": 6910
+      },
+      "row_count": 18692,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 182435,
+        "min": 92315,
+        "n_samples": 18692,
+        "p10": 92427,
+        "p50": 92430,
+        "p90": 182430
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 5,
+  "station": "HOLS",
+  "total_rows": 5988374,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2021-07-15 0320 11 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0321 53 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0323 23 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0000 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0001 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0002 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0003 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0004 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0005 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0006 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0007 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0008 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0009 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0010 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0011 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0012 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0013 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0014 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0015 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0016 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0017 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0018 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0019 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0020 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0021 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0022 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0023 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0024 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0025 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-07-15 0026 32 HOLS.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    }
+  ]
+}

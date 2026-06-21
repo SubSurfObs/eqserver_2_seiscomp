@@ -1,0 +1,737 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 1820786,
+      "pattern": "disk_suds_dashed",
+      "pct": 45.482
+    },
+    {
+      "count": 1739822,
+      "pattern": "tele_ss_suds",
+      "pct": 43.459
+    },
+    {
+      "count": 228954,
+      "pattern": "triggered_suds_trig",
+      "pct": 5.719
+    },
+    {
+      "count": 116888,
+      "pattern": "tele_ss_mseed",
+      "pct": 2.92
+    },
+    {
+      "count": 94610,
+      "pattern": "triggered_suds_numeric",
+      "pct": 2.363
+    },
+    {
+      "count": 1297,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.032
+    },
+    {
+      "count": 998,
+      "pattern": "UNMATCHED",
+      "pct": 0.025
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:54:42Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HDDL.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2018": 357733,
+        "2019": 328831,
+        "2020": 444313,
+        "2021": 150752,
+        "2022": 250663,
+        "2023": 275020,
+        "2024": 13473
+      },
+      "row_count": 1820785,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 181960,
+        "min": 354,
+        "n_samples": 1820785,
+        "p10": 61335,
+        "p50": 91875,
+        "p90": 91880
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 377064,
+        "2019": 484736,
+        "2020": 439835,
+        "2021": 87840,
+        "2022": 192396,
+        "2023": 157950,
+        "2024": 1
+      },
+      "row_count": 1739822,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 185015,
+        "min": 1388,
+        "n_samples": 1739822,
+        "p10": 31167,
+        "p50": 31172,
+        "p90": 31175
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 31840,
+        "2020": 92582,
+        "2021": 28899,
+        "2022": 33213,
+        "2023": 31765,
+        "2024": 776,
+        "2025": 9879
+      },
+      "row_count": 228954,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1754319,
+        "min": 3262,
+        "n_samples": 228954,
+        "p10": 31130,
+        "p50": 92721,
+        "p90": 92787
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2025": 116809
+      },
+      "row_count": 116809,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 262141,
+        "min": 524,
+        "n_samples": 116809,
+        "p10": 23474,
+        "p50": 25917,
+        "p90": 31937
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 52778,
+        "2019": 41832
+      },
+      "row_count": 94610,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182754,
+        "min": 19678,
+        "n_samples": 94610,
+        "p10": 31139,
+        "p50": 92748,
+        "p90": 92751
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 126,
+        "2019": 498,
+        "2020": 707,
+        "2021": 161,
+        "2022": 219,
+        "2023": 182
+      },
+      "row_count": 1893,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 534200,
+        "min": 734,
+        "n_samples": 1893,
+        "p10": 1286,
+        "p50": 1416,
+        "p90": 2319
+      },
+      "unmatched_filename_count": 596
+    },
+    {
+      "by_year": {
+        "2018": 244,
+        "2019": 158
+      },
+      "row_count": 402,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91,
+        "min": 90,
+        "n_samples": 402,
+        "p10": 90,
+        "p50": 90,
+        "p90": 90
+      },
+      "unmatched_filename_count": 402
+    },
+    {
+      "by_year": {
+        "2025": 79
+      },
+      "row_count": 79,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 45022,
+        "min": 23607,
+        "n_samples": 79,
+        "p10": 24445,
+        "p50": 27195,
+        "p90": 34136
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91875,
+        "min": 91875,
+        "n_samples": 1,
+        "p10": 91875,
+        "p50": 91875,
+        "p90": 91875
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 9,
+  "station": "HDDL",
+  "total_rows": 4003355,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2018-04-21 0511 44 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-22 0511 48 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-24 0203 05 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-25 0203 09 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-26 0203 12 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-27 0203 15 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-28 0427 45 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-29 0427 48 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-04-30 0427 51 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-01 0427 55 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-02 0427 58 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-03 0428 02 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-04 0428 05 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-05 0428 08 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-06 0428 11 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-07 0428 14 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-08 0428 17 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-09 0428 20 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-10 0428 24 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-11 0428 27 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-12 0428 30 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-13 0428 33 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-14 0428 36 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-15 0428 39 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-16 0629 22 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-17 0629 25 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-18 0629 28 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-19 0629 31 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-20 0629 34 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-05-21 0629 37 HDDL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

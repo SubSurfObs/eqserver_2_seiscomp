@@ -1,0 +1,40 @@
+# Discovery audit: MOSU
+# Generated: 2026-06-21T07:40:24Z
+# Total rows: 55623
+# Distinct signatures: 4
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_mseed_dashed_date                54859   98.63%
+  perchan_mseed_zip                       721    1.30%
+  UNMATCHED                                39    0.07%
+  tele_noss_mseed                           4    0.01%
+
+## Sample UNMATCHED filenames
+  2014-10-09_2224-MOSU-HHZ.ms.zip
+  2015-07-28 0327 03 MOSU_HH1.mseed.zip
+  2015-07-28 0327 03 MOSU_HH2.mseed.zip
+  2015-07-07 0246 05 MOSU_HH1.mseed.zip
+  2015-07-07 0246 05 MOSU_HH2.mseed.zip
+  2015-07-15 0120 09 MOSU_HH1.mseed.zip
+  2015-07-15 0120 09 MOSU_HH2.mseed.zip
+  2015-07-22 0115 18 MOSU_HH1.mseed.zip
+  2015-07-22 0115 18 MOSU_HH2.mseed.zip
+  2015-06-18 0409 31 MOSU_HH1.mseed.zip
+  2015-06-18 0409 31 MOSU_HH2.mseed.zip
+  2015-08-02 0118 09 MOSU_HH1.mseed.zip
+  2015-08-02 0118 09 MOSU_HH2.mseed.zip
+  2015-08-04 0326 08 MOSU_HH1.mseed.zip
+  2015-08-04 0326 08 MOSU_HH2.mseed.zip
+
+## Top signatures (by row count)
+  rows=     54859  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=3717  p10=37641  p50=39089  p90=40143  max=55345
+  rows=       759  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=1180  p10=15407  p50=16107  p90=16315  max=959810
+  rows=         4  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=1010  p10=1227  p50=1992  p90=2829  max=3078
+  rows=         1  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=32959  p10=32959  p50=32959  p90=32959  max=32959

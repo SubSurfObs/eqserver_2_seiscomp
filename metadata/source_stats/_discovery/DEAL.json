@@ -1,0 +1,424 @@
+{
+  "ambiguous_signature_pairs": [
+    {
+      "differing_signatures": [
+        {
+          "row_count": 437962,
+          "ss_is_null": false
+        },
+        {
+          "row_count": 23,
+          "ss_is_null": true
+        }
+      ],
+      "shared_columns": {
+        "channel_suffix_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "station_mismatch": false
+      },
+      "total_rows": 437985
+    }
+  ],
+  "filename_grammar": [
+    {
+      "count": 1460847,
+      "pattern": "disk_mseed_numeric_date",
+      "pct": 73.288
+    },
+    {
+      "count": 438263,
+      "pattern": "tele_ss_mseed",
+      "pct": 21.987
+    },
+    {
+      "count": 42562,
+      "pattern": "perchan_mseed_zip",
+      "pct": 2.135
+    },
+    {
+      "count": 42007,
+      "pattern": "triggered_suds_trig",
+      "pct": 2.107
+    },
+    {
+      "count": 7815,
+      "pattern": "kelunjimeta_ss",
+      "pct": 0.392
+    },
+    {
+      "count": 1779,
+      "pattern": "tele_ss_suds",
+      "pct": 0.089
+    },
+    {
+      "count": 23,
+      "pattern": "tele_noss_mseed",
+      "pct": 0.001
+    },
+    {
+      "count": 4,
+      "pattern": "UNMATCHED",
+      "pct": 0.0
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:53:43Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DEAL.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2018": 182579,
+        "2019": 508210,
+        "2020": 366876,
+        "2021": 385730,
+        "2022": 17431
+      },
+      "row_count": 1460826,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 111294,
+        "min": 1100,
+        "n_samples": 1460826,
+        "p10": 11530,
+        "p50": 14527,
+        "p90": 21664
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 184291,
+        "2019": 253671
+      },
+      "row_count": 437962,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 70340,
+        "min": 2263,
+        "n_samples": 437962,
+        "p10": 27693,
+        "p50": 33803,
+        "p90": 52779
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 37079,
+        "2019": 3255,
+        "2020": 873,
+        "2021": 1221,
+        "2022": 134
+      },
+      "row_count": 42562,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 65255,
+        "min": 554,
+        "n_samples": 42562,
+        "p10": 1148,
+        "p50": 1444,
+        "p90": 6497
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 6278,
+        "2019": 12834,
+        "2020": 10253,
+        "2021": 12389,
+        "2022": 253
+      },
+      "row_count": 42007,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 189191,
+        "min": 6055,
+        "n_samples": 42007,
+        "p10": 48076,
+        "p50": 59641,
+        "p90": 146462
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 3097,
+        "2019": 4718
+      },
+      "row_count": 7815,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "metadata",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 2675,
+        "min": 180,
+        "n_samples": 7815,
+        "p10": 180,
+        "p50": 2660,
+        "p90": 2661
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 1779
+      },
+      "row_count": 1779,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 147902,
+        "min": 44263,
+        "n_samples": 1779,
+        "p10": 47055,
+        "p50": 49024,
+        "p90": 50779
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 129,
+        "2019": 172
+      },
+      "row_count": 301,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 65900,
+        "min": 23674,
+        "n_samples": 301,
+        "p10": 27639,
+        "p50": 33974,
+        "p90": 49820
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 1,
+        "2019": 19,
+        "2021": 3
+      },
+      "row_count": 23,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 4405,
+        "min": 1313,
+        "n_samples": 23,
+        "p10": 1455,
+        "p50": 1724,
+        "p90": 3246
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 6,
+        "2019": 9,
+        "2021": 6
+      },
+      "row_count": 21,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61159,
+        "min": 3303,
+        "n_samples": 21,
+        "p10": 10513,
+        "p50": 33915,
+        "p90": 52113
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 2,
+        "2021": 2
+      },
+      "row_count": 4,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 7597,
+        "min": 3036,
+        "n_samples": 4,
+        "p10": 3121,
+        "p50": 3472,
+        "p90": 6404
+      },
+      "unmatched_filename_count": 4
+    }
+  ],
+  "n_distinct_signatures": 10,
+  "station": "DEAL",
+  "total_rows": 1993300,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2018-08-21 2219.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2018-11-13 0307.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-10 0401.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2021-06-29 0731.ms.zip",
+      "signature": [
+        "gecko",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

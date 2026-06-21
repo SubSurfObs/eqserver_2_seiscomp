@@ -1,0 +1,59 @@
+# Discovery audit: FORG
+# Generated: 2026-06-21T06:54:14Z
+# Total rows: 4769181
+# Distinct signatures: 13
+
+## Ambiguous signature pairs (CHECK THESE)
+  source_type=telemetry, exclude_reason=None, role=waveform: 1137828 rows split as:
+    ss_is_null=False → 853387 rows
+    ss_is_null=True → 284441 rows
+
+## Filename grammar coverage
+  disk_mseed_numeric_date             1501344   31.48%
+  disk_suds_dashed                    1055126   22.12%
+  tele_ss_suds                        1034218   21.68%
+  tele_ss_mseed                        853966   17.91%
+  tele_noss_mseed                      284441    5.96%
+  perchan_mseed_zip                     19315    0.41%
+  kelunjimeta_ss                        14555    0.30%
+  perchan_mseed                          4063    0.09%
+  UNMATCHED                              2153    0.04%
+
+## Sample UNMATCHED filenames
+  2019-04-04 1109 25 FORG_DLZ.mseed.zip
+  2019-04-04 1533 25 FORG_DLZ.mseed.zip
+  2019-04-04 2251 25 FORG_DLZ.mseed.zip
+  2019-04-05 1745 25 FORG_DLZ.mseed.zip
+  2019-04-05 2318 25 FORG_DLZ.mseed.zip
+  2019-04-06 1430 25 FORG_DLZ.mseed.zip
+  2019-04-07 1754 25 FORG_DLZ.mseed.zip
+  2019-04-08 0440 25 FORG_DLZ.mseed.zip
+  2019-04-08 0610 25 FORG_DLZ.mseed.zip
+  2019-04-09 0148 25 FORG_DLZ.mseed.zip
+  2019-04-09 1308 25 FORG_DLZ.mseed.zip
+  2019-04-09 1517 25 FORG_DLZ.mseed.zip
+  2019-04-09 1624 25 FORG_DLZ.mseed.zip
+  2019-04-09 1945 25 FORG_DLZ.mseed.zip
+  2019-04-10 0044 25 FORG_DLZ.mseed.zip
+
+## Top signatures (by row count)
+  rows=   1501337  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=332  p10=11576  p50=14116  p90=19220  max=103664
+  rows=   1055126  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=10944  p10=91876  p50=91876  p90=121876  max=181877
+  rows=   1034218  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=31167  p10=31168  p50=31168  p90=31168  max=61248
+  rows=    853387  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=22  p10=32083  p50=34503  p90=40010  max=135477
+  rows=    284441  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=386  p10=32114  p50=34734  p90=40810  max=125022
+  rows=     24105  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=572  p10=8498  p50=11956  p90=20480  max=328147
+  rows=      8732  recorder=gecko    src=telemetry  role=metadata  ss_null=False chan_null=True  excl=None
+           size:  min=1863  p10=1871  p50=1872  p90=1880  max=1884 ⚠ BIMODAL
+  rows=      5823  recorder=gecko    src=telemetry  role=metadata  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=1893  p10=1898  p50=1900  p90=1909  max=1915
+  rows=      1421  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=triggered  flags=trig
+           size:  min=10860  p10=34241  p50=35920  p90=41741  max=52833 ⚠ BIMODAL
+  rows=       579  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=30476  p10=33175  p50=35423  p90=41091  max=68502

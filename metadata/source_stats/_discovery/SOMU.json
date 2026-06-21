@@ -1,0 +1,81 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 1341005,
+      "pattern": "disk_suds_dashed",
+      "pct": 99.931
+    },
+    {
+      "count": 926,
+      "pattern": "tele_ss_suds",
+      "pct": 0.069
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:54:18Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SOMU.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2014": 31616,
+        "2015": 391535,
+        "2016": 94075,
+        "2018": 404252,
+        "2019": 419527
+      },
+      "row_count": 1341005,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 145932,
+        "min": 4344,
+        "n_samples": 1341005,
+        "p10": 73878,
+        "p50": 73912,
+        "p90": 73912
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2014": 926
+      },
+      "row_count": 926,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 49224,
+        "min": 49150,
+        "n_samples": 926,
+        "p10": 49150,
+        "p50": 49150,
+        "p90": 49150
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 2,
+  "station": "SOMU",
+  "total_rows": 1341931,
+  "unmatched_filename_samples": []
+}

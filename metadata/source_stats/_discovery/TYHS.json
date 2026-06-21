@@ -1,0 +1,646 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 2428669,
+      "pattern": "tele_ss_suds",
+      "pct": 58.005
+    },
+    {
+      "count": 1721978,
+      "pattern": "disk_suds_dashed",
+      "pct": 41.127
+    },
+    {
+      "count": 33093,
+      "pattern": "triggered_suds_trig",
+      "pct": 0.79
+    },
+    {
+      "count": 2890,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.069
+    },
+    {
+      "count": 359,
+      "pattern": "UNMATCHED",
+      "pct": 0.009
+    },
+    {
+      "count": 28,
+      "pattern": "triggered_suds_numeric",
+      "pct": 0.001
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:56:07Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TYHS.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2019": 320420,
+        "2020": 384469,
+        "2021": 427647,
+        "2022": 520832,
+        "2023": 354527,
+        "2024": 420774
+      },
+      "row_count": 2428669,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 181878,
+        "min": 31136,
+        "n_samples": 2428669,
+        "p10": 31169,
+        "p50": 31170,
+        "p90": 91878
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 207323,
+        "2020": 2598,
+        "2021": 239374,
+        "2022": 528709,
+        "2023": 367583,
+        "2024": 376391
+      },
+      "row_count": 1721978,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 181932,
+        "min": 1348,
+        "n_samples": 1721978,
+        "p10": 73794,
+        "p50": 80319,
+        "p90": 91875
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 2301,
+        "2020": 3163,
+        "2021": 5901,
+        "2022": 6805,
+        "2023": 7574,
+        "2024": 7349
+      },
+      "row_count": 33093,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182781,
+        "min": 5970,
+        "n_samples": 33093,
+        "p10": 31149,
+        "p50": 92721,
+        "p90": 152781
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 406,
+        "2020": 427,
+        "2021": 436,
+        "2022": 504,
+        "2023": 471,
+        "2024": 1004
+      },
+      "row_count": 3248,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 5537,
+        "min": 756,
+        "n_samples": 3248,
+        "p10": 919,
+        "p50": 1136,
+        "p90": 2268
+      },
+      "unmatched_filename_count": 358
+    },
+    {
+      "by_year": {
+        "2019": 28
+      },
+      "row_count": 28,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61083,
+        "min": 31082,
+        "n_samples": 28,
+        "p10": 31082,
+        "p50": 31082,
+        "p90": 61082
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "wrno",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 41425,
+        "min": 41425,
+        "n_samples": 1,
+        "p10": 41425,
+        "p50": 41425,
+        "p90": 41425
+      },
+      "unmatched_filename_count": 1
+    }
+  ],
+  "n_distinct_signatures": 6,
+  "station": "TYHS",
+  "total_rows": 4187017,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2019-04-06 1840 36 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-07 0330 05 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-08 1136 54 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-08 2009 14 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-09 2108 07 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 1157 02 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 1314 02 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-12 1118 30 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-13 1246 34 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-14 1549 44 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 0436 20 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 1614 54 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 1739 54 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-16 1203 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-17 0449 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-17 1212 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-17 1902 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-17 2109 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-18 0124 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-18 2017 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-19 0315 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-19 2009 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-20 0131 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-20 1358 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-20 1424 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-20 2057 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-21 1348 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-21 1510 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-21 1635 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-21 1817 32 TYHS_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

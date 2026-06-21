@@ -1,0 +1,32 @@
+# Discovery audit: DDBE
+# Generated: 2026-06-21T06:48:40Z
+# Total rows: 818479
+# Distinct signatures: 1
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  perchan_mseed_zip                    818385   99.99%
+  UNMATCHED                                94    0.01%
+
+## Sample UNMATCHED filenames
+  2019-11-09 0944 24 DDBE_HNE.mseed.zip
+  2019-11-09 0950 19 DDBE_HNE.mseed.zip
+  2019-11-09 0957 31 DDBE_HNE.mseed.zip
+  2019-11-09 0951 38 DDBE_HNE.mseed.zip
+  2019-11-09 0955 33 DDBE_HNE.mseed.zip
+  2019-11-09 0954 15 DDBE_HNE.mseed.zip
+  2019-11-09 0948 21 DDBE_HNE.mseed.zip
+  2019-11-09 0952 17 DDBE_HNE.mseed.zip
+  2019-11-09 0953 35 DDBE_HNE.mseed.zip
+  2019-11-09 0949 01 DDBE_HNE.mseed.zip
+  2019-11-09 0956 13 DDBE_HNE.mseed.zip
+  2019-11-09 0945 04 DDBE_HNE.mseed.zip
+  2019-11-09 0947 02 DDBE_HNE.mseed.zip
+  2019-11-09 0946 22 DDBE_HNE.mseed.zip
+  2019-11-09 0958 11 DDBE_HNE.mseed.zip
+
+## Top signatures (by row count)
+  rows=    818479  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=301  p10=12225  p50=16201  p90=20278  max=32902 ⚠ BIMODAL

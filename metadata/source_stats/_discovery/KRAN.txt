@@ -1,0 +1,17 @@
+# Discovery audit: KRAN
+# Generated: 2026-06-21T07:22:55Z
+# Total rows: 1236615
+# Distinct signatures: 2
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_suds_dashed                     634734   51.33%
+  tele_ss_suds                         601881   48.67%
+
+## Top signatures (by row count)
+  rows=    634734  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=1388  p10=47440  p50=151822  p90=181822  max=181822
+  rows=    601881  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=13880  p10=25217  p50=61114  p90=61114  max=61200

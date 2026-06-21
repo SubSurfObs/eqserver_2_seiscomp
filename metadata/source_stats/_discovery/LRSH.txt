@@ -1,0 +1,59 @@
+# Discovery audit: LRSH
+# Generated: 2026-06-21T07:35:29Z
+# Total rows: 2837174
+# Distinct signatures: 12
+
+## Ambiguous signature pairs (CHECK THESE)
+  source_type=telemetry, exclude_reason=None, role=waveform: 960283 rows split as:
+    ss_is_null=True → 433414 rows
+    ss_is_null=False → 526869 rows
+  source_type=telemetry, exclude_reason=None, role=waveform: 347 rows split as:
+    ss_is_null=True → 2 rows
+    ss_is_null=False → 345 rows
+
+## Filename grammar coverage
+  disk_mseed_numeric_date             1858068   65.49%
+  tele_ss_mseed                        527214   18.58%
+  tele_noss_mseed                      433416   15.28%
+  kelunjimeta_ss                         8612    0.30%
+  perchan_mseed_zip                      7971    0.28%
+  UNMATCHED                              1893    0.07%
+
+## Sample UNMATCHED filenames
+  2020-0~1.MS
+  2020-0~4.MS
+  20200925_0140_LRSH.trig.ms.zip
+  20200925_0139_LRSH.trig.ms.zip
+  20200925_0138_LRSH.trig.ms.zip
+  20200925_0137_LRSH.trig.ms.zip
+  20200925_1547_LRSH.trig.ms.zip
+  20200925_1546_LRSH.trig.ms.zip
+  20200925_1545_LRSH.trig.ms.zip
+  20200925_1544_LRSH.trig.ms.zip
+  20200926_1527_LRSH.trig.ms.zip
+  20200926_1526_LRSH.trig.ms.zip
+  20200926_1525_LRSH.trig.ms.zip
+  20200926_1524_LRSH.trig.ms.zip
+  20200926_1523_LRSH.trig.ms.zip
+
+## Top signatures (by row count)
+  rows=   1858001  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=346  p10=14493  p50=17532  p90=45764  max=108555 ⚠ BIMODAL
+  rows=    526869  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=367  p10=36852  p50=41273  p90=53026  max=457837
+  rows=    433414  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=288  p10=35240  p50=40318  p90=52634  max=102645
+  rows=      8612  recorder=gecko    src=telemetry  role=metadata  ss_null=False chan_null=True  excl=None
+           size:  min=1862  p10=1877  p50=1878  p90=1879  max=1881
+  rows=      7971  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=22  p10=3007  p50=10240  p90=13630  max=26378
+  rows=      1873  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=triggered  flags=trig
+           size:  min=10051  p10=39881  p50=44953  p90=60127  max=78800
+  rows=       345  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=1196  p10=38092  p50=41746  p90=55336  max=76879 ⚠ BIMODAL
+  rows=        67  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None  date_mismatch
+           size:  min=3926  p10=38018  p50=44275  p90=54411  max=66579
+  rows=        13  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=375  p10=1655  p50=2344  p90=3310  max=4120
+  rows=         4  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=55296  p10=55603  p50=56320  p90=56678  max=56832

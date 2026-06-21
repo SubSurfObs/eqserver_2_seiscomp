@@ -1,0 +1,46 @@
+# Discovery audit: TYHS
+# Generated: 2026-06-21T07:56:07Z
+# Total rows: 4187017
+# Distinct signatures: 6
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  tele_ss_suds                        2428669   58.01%
+  disk_suds_dashed                    1721978   41.13%
+  triggered_suds_trig                   33093    0.79%
+  perchan_mseed_zip                      2890    0.07%
+  UNMATCHED                               359    0.01%
+  triggered_suds_numeric                   28    0.00%
+
+## Sample UNMATCHED filenames
+  2019-04-06 1840 36 TYHS_DLZ.mseed.zip
+  2019-04-07 0330 05 TYHS_DLZ.mseed.zip
+  2019-04-08 1136 54 TYHS_DLZ.mseed.zip
+  2019-04-08 2009 14 TYHS_DLZ.mseed.zip
+  2019-04-09 2108 07 TYHS_DLZ.mseed.zip
+  2019-04-10 1157 02 TYHS_DLZ.mseed.zip
+  2019-04-10 1314 02 TYHS_DLZ.mseed.zip
+  2019-04-12 1118 30 TYHS_DLZ.mseed.zip
+  2019-04-13 1246 34 TYHS_DLZ.mseed.zip
+  2019-04-14 1549 44 TYHS_DLZ.mseed.zip
+  2019-04-15 0436 20 TYHS_DLZ.mseed.zip
+  2019-04-15 1614 54 TYHS_DLZ.mseed.zip
+  2019-04-15 1739 54 TYHS_DLZ.mseed.zip
+  2019-04-16 1203 32 TYHS_DLZ.mseed.zip
+  2019-04-17 0449 32 TYHS_DLZ.mseed.zip
+
+## Top signatures (by row count)
+  rows=   2428669  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=31136  p10=31169  p50=31170  p90=91878  max=181878 ⚠ BIMODAL
+  rows=   1721978  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=1348  p10=73794  p50=80319  p90=91875  max=181932 ⚠ BIMODAL
+  rows=     33093  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=5970  p10=31149  p50=92721  p90=152781  max=182781
+  rows=      3248  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=756  p10=919  p50=1136  p90=2268  max=5537 ⚠ BIMODAL
+  rows=        28  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=31082  p10=31082  p50=31082  p90=61082  max=61083
+  rows=         1  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
+           size:  min=41425  p10=41425  p50=41425  p90=41425  max=41425

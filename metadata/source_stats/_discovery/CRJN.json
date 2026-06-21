@@ -1,0 +1,577 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 2100128,
+      "pattern": "tele_ss_suds",
+      "pct": 58.936
+    },
+    {
+      "count": 1459705,
+      "pattern": "disk_suds_dashed",
+      "pct": 40.964
+    },
+    {
+      "count": 3402,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.095
+    },
+    {
+      "count": 177,
+      "pattern": "UNMATCHED",
+      "pct": 0.005
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:48:18Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.CRJN.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2019": 59790,
+        "2020": 357437,
+        "2021": 319932,
+        "2022": 472463,
+        "2023": 492432,
+        "2024": 398074
+      },
+      "row_count": 2100128,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61258,
+        "min": 31170,
+        "n_samples": 2100128,
+        "p10": 31171,
+        "p50": 31172,
+        "p90": 31172
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 60225,
+        "2020": 371694,
+        "2021": 401702,
+        "2022": 476506,
+        "2023": 146832,
+        "2024": 2745
+      },
+      "row_count": 1459704,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 181881,
+        "min": 1348,
+        "n_samples": 1459704,
+        "p10": 91880,
+        "p50": 91880,
+        "p90": 91880
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 61,
+        "2020": 795,
+        "2021": 558,
+        "2022": 765,
+        "2023": 729,
+        "2024": 671
+      },
+      "row_count": 3579,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 5048,
+        "min": 678,
+        "n_samples": 3579,
+        "p10": 741,
+        "p50": 936,
+        "p90": 1749
+      },
+      "unmatched_filename_count": 177
+    },
+    {
+      "by_year": {
+        "2022": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91904,
+        "min": 91904,
+        "n_samples": 1,
+        "p10": 91904,
+        "p50": 91904,
+        "p90": 91904
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 4,
+  "station": "CRJN",
+  "total_rows": 3563412,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2019-11-20 0523 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-22 0113 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-22 0248 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-24 0212 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-24 0901 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-24 1253 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-25 1127 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-25 1220 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-26 0750 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-26 0858 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-27 0621 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-27 1128 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-27 1818 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-28 0845 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-28 1023 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-28 1420 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-29 1342 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-30 0458 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-30 1107 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-11-30 2106 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-01 1322 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-02 0400 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-02 1653 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-02 2243 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-03 0618 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-04 0411 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-04 1123 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-05 1406 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-06 0220 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-12-06 0336 42 CRJN_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Discovery audit: SOMU
+# Generated: 2026-06-21T07:54:18Z
+# Total rows: 1341931
+# Distinct signatures: 2
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_suds_dashed                    1341005   99.93%
+  tele_ss_suds                            926    0.07%
+
+## Top signatures (by row count)
+  rows=   1341005  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=4344  p10=73878  p50=73912  p90=73912  max=145932
+  rows=       926  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=49150  p10=49150  p50=49150  p90=49150  max=49224

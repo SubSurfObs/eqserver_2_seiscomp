@@ -1,0 +1,47 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 3060588,
+      "pattern": "perchan_mseed_zip",
+      "pct": 100.0
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:53:30Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SCM2.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2019": 240872,
+        "2020": 1477770,
+        "2021": 1341946
+      },
+      "row_count": 3060588,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 49479,
+        "min": 255,
+        "n_samples": 3060588,
+        "p10": 19900,
+        "p50": 25291,
+        "p90": 29344
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 1,
+  "station": "SCM2",
+  "total_rows": 3060588,
+  "unmatched_filename_samples": []
+}

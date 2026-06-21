@@ -1,0 +1,28 @@
+# Discovery audit: MRDN
+# Generated: 2026-06-21T07:43:12Z
+# Total rows: 3590712
+# Distinct signatures: 5
+
+## Ambiguous signature pairs (CHECK THESE)
+  source_type=telemetry, exclude_reason=None, role=waveform: 1932625 rows split as:
+    ss_is_null=False → 1932624 rows
+    ss_is_null=True → 1 rows
+
+## Filename grammar coverage
+  tele_ss_suds                        1932624   53.82%
+  disk_suds_dashed                    1618801   45.08%
+  triggered_suds_numeric                39195    1.09%
+  perchan_mseed_zip                        91    0.00%
+  tele_noss_suds                            1    0.00%
+
+## Top signatures (by row count)
+  rows=   1932624  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=5552  p10=21698  p50=25217  p90=61114  max=182651 ⚠ BIMODAL
+  rows=   1618801  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=354  p10=48586  p50=59491  p90=181822  max=181917 ⚠ BIMODAL
+  rows=     39195  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=30850  p10=61105  p50=92648  p90=182648  max=182651 ⚠ BIMODAL
+  rows=        91  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=15022  p10=15685  p50=17263  p90=23772  max=25998 ⚠ BIMODAL
+  rows=         1  recorder=echopro  src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=297646  p10=297646  p50=297646  p90=297646  max=297646

@@ -1,0 +1,651 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 3307345,
+      "pattern": "disk_mseed_dashed_date",
+      "pct": 63.747
+    },
+    {
+      "count": 1402532,
+      "pattern": "UNMATCHED",
+      "pct": 27.033
+    },
+    {
+      "count": 476772,
+      "pattern": "triggered_suds_trig",
+      "pct": 9.19
+    },
+    {
+      "count": 1553,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.03
+    },
+    {
+      "count": 2,
+      "pattern": "tele_noss_mseed",
+      "pct": 0.0
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:54:12Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SGWU.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2014": 120645,
+        "2015": 510631,
+        "2016": 495799,
+        "2017": 511970,
+        "2018": 520884,
+        "2019": 289435,
+        "2020": 424171,
+        "2021": 12960,
+        "2022": 196740,
+        "2023": 224110
+      },
+      "row_count": 3307345,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 55768,
+        "min": 1958,
+        "n_samples": 3307345,
+        "p10": 18799,
+        "p50": 19473,
+        "p90": 21549
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 158798,
+        "2021": 508020,
+        "2022": 328560
+      },
+      "row_count": 995378,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 79876,
+        "min": 8969,
+        "n_samples": 995378,
+        "p10": 14821,
+        "p50": 21079,
+        "p90": 22338
+      },
+      "unmatched_filename_count": 995378
+    },
+    {
+      "by_year": {
+        "2014": 19864,
+        "2015": 105718,
+        "2016": 71668,
+        "2017": 48826,
+        "2018": 48434,
+        "2019": 51462,
+        "2020": 40088,
+        "2021": 33196,
+        "2022": 43122,
+        "2023": 14394
+      },
+      "row_count": 476772,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 8641974,
+        "min": 48884,
+        "n_samples": 476772,
+        "p10": 145986,
+        "p50": 145986,
+        "p90": 152323
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2015": 27470,
+        "2016": 119404,
+        "2017": 120851,
+        "2018": 96174,
+        "2019": 36973,
+        "2020": 56,
+        "2022": 15,
+        "2023": 6
+      },
+      "row_count": 400949,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 391485,
+        "min": 249,
+        "n_samples": 400949,
+        "p10": 26224,
+        "p50": 34816,
+        "p90": 35328
+      },
+      "unmatched_filename_count": 399396
+    },
+    {
+      "by_year": {
+        "2015": 990,
+        "2016": 5760,
+        "2019": 1008
+      },
+      "row_count": 7758,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 1461317,
+        "min": 18614,
+        "n_samples": 7758,
+        "p10": 19039,
+        "p50": 20139,
+        "p90": 1141831
+      },
+      "unmatched_filename_count": 7758
+    },
+    {
+      "by_year": {
+        "2015": 1,
+        "2016": 1
+      },
+      "row_count": 2,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1028,
+        "min": 690,
+        "n_samples": 2,
+        "p10": 723,
+        "p50": 859,
+        "p90": 994
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 6,
+  "station": "SGWU",
+  "total_rows": 5188204,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2015286_0000.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0055.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0059.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0615.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0619.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0623.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0633.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0643.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0647.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0651.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0655.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0659.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0706.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0711.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0715.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0719.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0723.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0727.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0731.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0735.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0739.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0743.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0747.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0751.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0955.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_0959.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_1006.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_1011.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_1015.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2015286_1019.1.ms",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

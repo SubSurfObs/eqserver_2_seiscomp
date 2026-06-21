@@ -1,0 +1,45 @@
+# Discovery audit: HODL
+# Generated: 2026-06-21T07:03:54Z
+# Total rows: 3295842
+# Distinct signatures: 6
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_suds_dashed                    1685476   51.14%
+  tele_ss_suds                        1489534   45.19%
+  triggered_suds_numeric               120435    3.65%
+  UNMATCHED                               272    0.01%
+  perchan_mseed_zip                       125    0.00%
+
+## Sample UNMATCHED filenames
+   013-09-01_1121_50_HODL.dmx
+  2017-07-01 0339 44 HODL.soh
+  2017-07-02 0339 47 HODL.soh
+  2017-07-03 0339 50 HODL.soh
+  2017-07-04 0339 54 HODL.soh
+  2017-07-05 0339 58 HODL.soh
+  2017-07-06 0340 01 HODL.soh
+  2017-07-08 0340 08 HODL.soh
+  2017-07-07 0340 04 HODL.soh
+  2017-07-09 0340 11 HODL.soh
+  2017-07-10 0340 15 HODL.soh
+  2017-07-11 0340 18 HODL.soh
+  2017-07-12 0340 21 HODL.soh
+  2017-07-13 0340 25 HODL.soh
+  2017-07-14 0340 28 HODL.soh
+
+## Top signatures (by row count)
+  rows=   1685476  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=354  p10=57488  p50=66805  p90=181822  max=181896 ⚠ BIMODAL
+  rows=   1489533  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=6940  p10=31201  p50=31203  p90=61114  max=203040 ⚠ BIMODAL
+  rows=    120436  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=14022  p10=31106  p50=92646  p90=122649  max=185040
+  rows=       271  recorder=unknown  src=unknown    role=unknown   ss_null=True  chan_null=True  excl=unknown_extension
+           size:  min=90  p10=90  p50=90  p90=90  max=90
+  rows=       125  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=15233  p10=16130  p50=18730  p90=22665  max=273668
+  rows=         1  recorder=echopro  src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=145062  p10=145062  p50=145062  p90=145062  max=145062

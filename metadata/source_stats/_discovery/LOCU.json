@@ -1,0 +1,669 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 1643541,
+      "pattern": "disk_suds_dashed",
+      "pct": 47.546
+    },
+    {
+      "count": 1513218,
+      "pattern": "tele_ss_suds",
+      "pct": 43.776
+    },
+    {
+      "count": 104424,
+      "pattern": "UNMATCHED",
+      "pct": 3.021
+    },
+    {
+      "count": 97508,
+      "pattern": "triggered_suds_trig",
+      "pct": 2.821
+    },
+    {
+      "count": 96307,
+      "pattern": "tele_ss_mseed",
+      "pct": 2.786
+    },
+    {
+      "count": 1728,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.05
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:24:50Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOCU.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2021": 287143,
+        "2022": 463139,
+        "2023": 500726,
+        "2024": 391985,
+        "2025": 547
+      },
+      "row_count": 1643540,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 126432,
+        "min": 354,
+        "n_samples": 1643540,
+        "p10": 56905,
+        "p50": 60897,
+        "p90": 66871
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 248520,
+        "2022": 438466,
+        "2023": 511904,
+        "2024": 92317,
+        "2025": 222011
+      },
+      "row_count": 1513218,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61173,
+        "min": 31138,
+        "n_samples": 1513218,
+        "p10": 31172,
+        "p50": 31172,
+        "p90": 31172
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 22038,
+        "2022": 26146,
+        "2023": 31158,
+        "2024": 13886,
+        "2025": 4280
+      },
+      "row_count": 97508,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182790,
+        "min": 3342,
+        "n_samples": 97508,
+        "p10": 31151,
+        "p50": 61150,
+        "p90": 152787
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 96307
+      },
+      "row_count": 96307,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 88070,
+        "min": 36841,
+        "n_samples": 96307,
+        "p10": 39035,
+        "p50": 59183,
+        "p90": 70549
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 88040
+      },
+      "row_count": 88040,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "wrno",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 92419,
+        "min": 16693,
+        "n_samples": 88040,
+        "p10": 19308,
+        "p50": 64202,
+        "p90": 67906
+      },
+      "unmatched_filename_count": 88040
+    },
+    {
+      "by_year": {
+        "2021": 16809,
+        "2022": 581,
+        "2023": 556,
+        "2024": 88,
+        "2025": 78
+      },
+      "row_count": 18112,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 27559,
+        "min": 693,
+        "n_samples": 18112,
+        "p10": 23576,
+        "p50": 24263,
+        "p90": 25056
+      },
+      "unmatched_filename_count": 16384
+    },
+    {
+      "by_year": {
+        "2021": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61980,
+        "min": 61980,
+        "n_samples": 1,
+        "p10": 61980,
+        "p50": 61980,
+        "p90": 61980
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 7,
+  "station": "LOCU",
+  "total_rows": 3456726,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2021-05-30 0002 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0003 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0004 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0005 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0006 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0007 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0008 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0009 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0010 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0011 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0012 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0013 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0014 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0015 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0016 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0017 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0018 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0019 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0020 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0021 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0022 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0023 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0024 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0025 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0026 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0027 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0028 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0029 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0030 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "2021-05-30 0031 40 LOCU.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    }
+  ]
+}

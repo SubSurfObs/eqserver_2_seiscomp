@@ -1,0 +1,42 @@
+# Discovery audit: LOYU
+# Generated: 2026-06-21T07:27:04Z
+# Total rows: 1569144
+# Distinct signatures: 5
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_mseed_dashed_date              1079501   68.80%
+  UNMATCHED                            427060   27.22%
+  perchan_mseed_zip                     62503    3.98%
+  tele_noss_mseed                          80    0.01%
+
+## Sample UNMATCHED filenames
+  2014-11-02 1419 01 LOYU_HH2.mseed.zip
+  2014-11-02 1420 01 LOYU_HH2.mseed.zip
+  2014-11-02 1421 01 LOYU_HH2.mseed.zip
+  2014-11-02 1422 01 LOYU_HH2.mseed.zip
+  2014-11-02 1423 01 LOYU_HH2.mseed.zip
+  2014-11-02 1424 01 LOYU_HH2.mseed.zip
+  2014-11-02 1425 01 LOYU_HH2.mseed.zip
+  2014-11-02 1426 01 LOYU_HH2.mseed.zip
+  2014-11-02 1427 01 LOYU_HH2.mseed.zip
+  2014-11-02 1428 01 LOYU_HH2.mseed.zip
+  2014-11-02 1429 01 LOYU_HH2.mseed.zip
+  2014-11-02 1430 01 LOYU_HH2.mseed.zip
+  2014-11-02 1431 01 LOYU_HH2.mseed.zip
+  2014-11-02 1432 01 LOYU_HH2.mseed.zip
+  2014-11-02 1433 01 LOYU_HH2.mseed.zip
+
+## Top signatures (by row count)
+  rows=   1079501  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=48926  p10=61276  p50=63506  p90=66903  max=108046
+  rows=    378903  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=231  p10=11313  p50=47104  p90=60416  max=529408
+  rows=    110310  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=1358  p10=35298  p50=50436  p90=66475  max=85246
+  rows=       350  recorder=unknown  src=unknown    role=unknown   ss_null=True  chan_null=True  excl=unknown_extension
+           size:  min=12288  p10=12288  p50=12288  p90=16384  max=73728 ⚠ BIMODAL
+  rows=        80  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=162  p10=162  p50=162  p90=3376  max=13372 ⚠ BIMODAL

@@ -1,0 +1,40 @@
+# Discovery audit: CRJN
+# Generated: 2026-06-21T06:48:18Z
+# Total rows: 3563412
+# Distinct signatures: 4
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  tele_ss_suds                        2100128   58.94%
+  disk_suds_dashed                    1459705   40.96%
+  perchan_mseed_zip                      3402    0.10%
+  UNMATCHED                               177    0.01%
+
+## Sample UNMATCHED filenames
+  2019-11-20 0523 42 CRJN_DLZ.mseed.zip
+  2019-11-22 0113 42 CRJN_DLZ.mseed.zip
+  2019-11-22 0248 42 CRJN_DLZ.mseed.zip
+  2019-11-24 0212 42 CRJN_DLZ.mseed.zip
+  2019-11-24 0901 42 CRJN_DLZ.mseed.zip
+  2019-11-24 1253 42 CRJN_DLZ.mseed.zip
+  2019-11-25 1127 42 CRJN_DLZ.mseed.zip
+  2019-11-25 1220 42 CRJN_DLZ.mseed.zip
+  2019-11-26 0750 42 CRJN_DLZ.mseed.zip
+  2019-11-26 0858 42 CRJN_DLZ.mseed.zip
+  2019-11-27 0621 42 CRJN_DLZ.mseed.zip
+  2019-11-27 1128 42 CRJN_DLZ.mseed.zip
+  2019-11-27 1818 42 CRJN_DLZ.mseed.zip
+  2019-11-28 0845 42 CRJN_DLZ.mseed.zip
+  2019-11-28 1023 42 CRJN_DLZ.mseed.zip
+
+## Top signatures (by row count)
+  rows=   2100128  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=31170  p10=31171  p50=31172  p90=31172  max=61258
+  rows=   1459704  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=1348  p10=91880  p50=91880  p90=91880  max=181881
+  rows=      3579  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=678  p10=741  p50=936  p90=1749  max=5048 ⚠ BIMODAL
+  rows=         1  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=wrong_station  date_mismatch,station_mismatch
+           size:  min=91904  p10=91904  p50=91904  p90=91904  max=91904

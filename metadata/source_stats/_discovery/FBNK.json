@@ -1,0 +1,75 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 2,
+      "pattern": "UNMATCHED",
+      "pct": 100.0
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:53:43Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.FBNK.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2013": 1,
+        "2014": 1
+      },
+      "row_count": 2,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 9216,
+        "min": 9216,
+        "n_samples": 2,
+        "p10": 9216,
+        "p50": 9216,
+        "p90": 9216
+      },
+      "unmatched_filename_count": 2
+    }
+  ],
+  "n_distinct_signatures": 1,
+  "station": "FBNK",
+  "total_rows": 2,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2013-08-20 0713 FBNK.ka2",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-09-22 2256 FBNK.ka2",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

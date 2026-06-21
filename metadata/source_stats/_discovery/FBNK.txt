@@ -1,0 +1,18 @@
+# Discovery audit: FBNK
+# Generated: 2026-06-21T06:53:43Z
+# Total rows: 2
+# Distinct signatures: 1
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  UNMATCHED                                 2  100.00%
+
+## Sample UNMATCHED filenames
+  2013-08-20 0713 FBNK.ka2
+  2014-09-22 2256 FBNK.ka2
+
+## Top signatures (by row count)
+  rows=         2  recorder=unknown  src=unknown    role=unknown   ss_null=True  chan_null=True  excl=unknown_extension
+           size:  min=9216  p10=9216  p50=9216  p90=9216  max=9216

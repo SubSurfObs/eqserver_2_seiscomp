@@ -1,0 +1,47 @@
+# Discovery audit: TRPU
+# Generated: 2026-06-21T07:55:46Z
+# Total rows: 3628847
+# Distinct signatures: 7
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_mseed_dashed_date              2264611   62.41%
+  UNMATCHED                            940574   25.92%
+  triggered_suds_trig                  399795   11.02%
+  perchan_mseed_zip                     23856    0.66%
+  tele_noss_mseed                          11    0.00%
+
+## Sample UNMATCHED filenames
+  2015-07-01 0005 00 TRPU_HH2.mseed.zip
+  2015-07-01 0006 00 TRPU_HH2.mseed.zip
+  2015-07-01 0007 00 TRPU_HH2.mseed.zip
+  2015-07-01 0008 00 TRPU_HH2.mseed.zip
+  2015-07-01 0009 00 TRPU_HH2.mseed.zip
+  2015-07-01 0010 00 TRPU_HH2.mseed.zip
+  2015-07-01 0011 00 TRPU_HH2.mseed.zip
+  2015-07-01 0012 00 TRPU_HH2.mseed.zip
+  2015-07-01 0013 00 TRPU_HH2.mseed.zip
+  2015-07-01 0014 00 TRPU_HH2.mseed.zip
+  2015-07-01 0015 00 TRPU_HH2.mseed.zip
+  2015-07-01 0016 00 TRPU_HH2.mseed.zip
+  2015-07-01 0017 00 TRPU_HH2.mseed.zip
+  2015-07-01 0018 00 TRPU_HH2.mseed.zip
+  2015-07-01 0019 00 TRPU_HH2.mseed.zip
+
+## Top signatures (by row count)
+  rows=   2264611  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=2227  p10=19419  p50=21286  p90=26089  max=58584
+  rows=    550035  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=3622  p10=18130  p50=22348  p90=27331  max=58466
+  rows=    410070  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=256  p10=15622  p50=34816  p90=40448  max=562426
+  rows=    399795  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=19376  p10=145986  p50=145986  p90=147286  max=220642
+  rows=      4324  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=3676  p10=19662  p50=21973  p90=25180  max=38202
+  rows=        11  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=162  p10=162  p50=1175  p90=1892  max=1970
+  rows=         1  recorder=unknown  src=unknown    role=unknown   ss_null=True  chan_null=True  excl=unknown_extension
+           size:  min=24576  p10=24576  p50=24576  p90=24576  max=24576

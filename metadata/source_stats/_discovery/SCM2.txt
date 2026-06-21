@@ -1,0 +1,14 @@
+# Discovery audit: SCM2
+# Generated: 2026-06-21T07:53:30Z
+# Total rows: 3060588
+# Distinct signatures: 1
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  perchan_mseed_zip                   3060588  100.00%
+
+## Top signatures (by row count)
+  rows=   3060588  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=255  p10=19900  p50=25291  p90=29344  max=49479

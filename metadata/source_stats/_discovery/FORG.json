@@ -1,0 +1,883 @@
+{
+  "ambiguous_signature_pairs": [
+    {
+      "differing_signatures": [
+        {
+          "row_count": 853387,
+          "ss_is_null": false
+        },
+        {
+          "row_count": 284441,
+          "ss_is_null": true
+        }
+      ],
+      "shared_columns": {
+        "channel_suffix_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "station_mismatch": false
+      },
+      "total_rows": 1137828
+    }
+  ],
+  "filename_grammar": [
+    {
+      "count": 1501344,
+      "pattern": "disk_mseed_numeric_date",
+      "pct": 31.48
+    },
+    {
+      "count": 1055126,
+      "pattern": "disk_suds_dashed",
+      "pct": 22.124
+    },
+    {
+      "count": 1034218,
+      "pattern": "tele_ss_suds",
+      "pct": 21.685
+    },
+    {
+      "count": 853966,
+      "pattern": "tele_ss_mseed",
+      "pct": 17.906
+    },
+    {
+      "count": 284441,
+      "pattern": "tele_noss_mseed",
+      "pct": 5.964
+    },
+    {
+      "count": 19315,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.405
+    },
+    {
+      "count": 14555,
+      "pattern": "kelunjimeta_ss",
+      "pct": 0.305
+    },
+    {
+      "count": 4063,
+      "pattern": "perchan_mseed",
+      "pct": 0.085
+    },
+    {
+      "count": 2153,
+      "pattern": "UNMATCHED",
+      "pct": 0.045
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:54:14Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.FORG.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2017": 25543,
+        "2018": 50962,
+        "2019": 1,
+        "2020": 414166,
+        "2021": 172812,
+        "2022": 201209,
+        "2023": 525097,
+        "2024": 111547
+      },
+      "row_count": 1501337,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 103664,
+        "min": 332,
+        "n_samples": 1501337,
+        "p10": 11576,
+        "p50": 14116,
+        "p90": 19220
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 473104,
+        "2019": 502869,
+        "2020": 79153
+      },
+      "row_count": 1055126,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 181877,
+        "min": 10944,
+        "n_samples": 1055126,
+        "p10": 91876,
+        "p50": 91876,
+        "p90": 121876
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 459891,
+        "2019": 495774,
+        "2020": 78553
+      },
+      "row_count": 1034218,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61248,
+        "min": 31167,
+        "n_samples": 1034218,
+        "p10": 31168,
+        "p50": 31168,
+        "p90": 31168
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 393168,
+        "2021": 154147,
+        "2022": 306072
+      },
+      "row_count": 853387,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 135477,
+        "min": 22,
+        "n_samples": 853387,
+        "p10": 32083,
+        "p50": 34503,
+        "p90": 40010
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 21271,
+        "2021": 263162,
+        "2022": 4,
+        "2024": 4
+      },
+      "row_count": 284441,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 125022,
+        "min": 386,
+        "n_samples": 284441,
+        "p10": 32114,
+        "p50": 34734,
+        "p90": 40810
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2017": 921,
+        "2018": 3930,
+        "2019": 867,
+        "2020": 241,
+        "2021": 566,
+        "2022": 17313,
+        "2023": 265,
+        "2024": 2
+      },
+      "row_count": 24105,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 328147,
+        "min": 572,
+        "n_samples": 24105,
+        "p10": 8498,
+        "p50": 11956,
+        "p90": 20480
+      },
+      "unmatched_filename_count": 727
+    },
+    {
+      "by_year": {
+        "2020": 6576,
+        "2021": 2156
+      },
+      "row_count": 8732,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "metadata",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 1884,
+        "min": 1863,
+        "n_samples": 8732,
+        "p10": 1871,
+        "p50": 1872,
+        "p90": 1880
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1900": 5823
+      },
+      "row_count": 5823,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "metadata",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1915,
+        "min": 1893,
+        "n_samples": 5823,
+        "p10": 1898,
+        "p50": 1900,
+        "p90": 1909
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 279,
+        "2021": 1142
+      },
+      "row_count": 1421,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 52833,
+        "min": 10860,
+        "n_samples": 1421,
+        "p10": 34241,
+        "p50": 35920,
+        "p90": 41741
+      },
+      "unmatched_filename_count": 1421
+    },
+    {
+      "by_year": {
+        "2020": 263,
+        "2021": 105,
+        "2022": 211
+      },
+      "row_count": 579,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 68502,
+        "min": 30476,
+        "n_samples": 579,
+        "p10": 33175,
+        "p50": 35423,
+        "p90": 41091
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2018": 5,
+        "2020": 1,
+        "2021": 1
+      },
+      "row_count": 7,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 42930,
+        "min": 27367,
+        "n_samples": 7,
+        "p10": 27385,
+        "p50": 27459,
+        "p90": 42020
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2020": 4
+      },
+      "row_count": 4,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 56832,
+        "min": 55296,
+        "n_samples": 4,
+        "p10": 55603,
+        "p50": 56320,
+        "p90": 56678
+      },
+      "unmatched_filename_count": 4
+    },
+    {
+      "by_year": {
+        "2021": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 56320,
+        "min": 56320,
+        "n_samples": 1,
+        "p10": 56320,
+        "p50": 56320,
+        "p90": 56320
+      },
+      "unmatched_filename_count": 1
+    }
+  ],
+  "n_distinct_signatures": 13,
+  "station": "FORG",
+  "total_rows": 4769181,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2019-04-04 1109 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-04 1533 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-04 2251 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-05 1745 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-05 2318 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-06 1430 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-07 1754 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-08 0440 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-08 0610 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-09 0148 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-09 1308 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-09 1517 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-09 1624 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-09 1945 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 0044 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 1518 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 1945 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 2155 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-10 2240 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-12 0520 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-12 1607 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-12 2200 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-13 1507 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-14 1618 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-14 2000 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-14 2143 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 0314 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 0733 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 1135 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2019-04-15 1311 25 FORG_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

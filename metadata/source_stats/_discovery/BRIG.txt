@@ -1,0 +1,49 @@
+# Discovery audit: BRIG
+# Generated: 2026-06-21T06:46:01Z
+# Total rows: 5553922
+# Distinct signatures: 7
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  tele_ss_suds                        2829398   50.94%
+  disk_suds_dashed                    2459918   44.29%
+  triggered_suds_trig                  168351    3.03%
+  UNMATCHED                             46607    0.84%
+  tele_ss_mseed                         39446    0.71%
+  perchan_mseed_zip                      7945    0.14%
+  triggered_suds_numeric                 2257    0.04%
+
+## Sample UNMATCHED filenames
+  1989-08-17 2359 36 BRIG.wrno.dmx.gz
+  1989-08-17 2359 33 BRIG.wrno.dmx.gz
+  1989-08-17 2359 55 BRIG.wrno.dmx.gz
+  1989-08-18 0000 55 BRIG.wrno.dmx.gz
+  1989-08-18 0001 55 BRIG.wrno.dmx.gz
+  1989-08-18 0002 55 BRIG.wrno.dmx.gz
+  1989-08-18 0003 55 BRIG.wrno.dmx.gz
+  1989-08-18 0004 55 BRIG.wrno.dmx.gz
+  1989-08-18 0005 55 BRIG.wrno.dmx.gz
+  1989-08-18 0006 55 BRIG.wrno.dmx.gz
+  1989-08-18 0007 55 BRIG.wrno.dmx.gz
+  1989-08-18 0008 55 BRIG.wrno.dmx.gz
+  1989-08-18 0009 55 BRIG.wrno.dmx.gz
+  1989-08-18 0010 55 BRIG.wrno.dmx.gz
+  1989-08-18 0011 55 BRIG.wrno.dmx.gz
+
+## Top signatures (by row count)
+  rows=   2829398  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=22146  p10=31172  p50=31172  p90=31172  max=65194
+  rows=   2459918  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=4084  p10=91880  p50=91880  p90=91880  max=181933
+  rows=    168351  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=1874  p10=31150  p50=31151  p90=92787  max=182790 ⚠ BIMODAL
+  rows=     45064  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
+           size:  min=16046  p10=16970  p50=18341  p90=22693  max=35475 ⚠ BIMODAL
+  rows=     39446  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=36326  p10=37047  p50=41052  p90=73033  max=89990 ⚠ BIMODAL
+  rows=      9488  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=660  p10=707  p50=1179  p90=2866  max=138564
+  rows=      2257  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=31119  p10=31120  p50=31121  p90=31121  max=61122

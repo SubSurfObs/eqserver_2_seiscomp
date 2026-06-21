@@ -1,0 +1,43 @@
+# Discovery audit: HOLS
+# Generated: 2026-06-21T07:20:47Z
+# Total rows: 5988374
+# Distinct signatures: 5
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_suds_dashed                    5624085   93.92%
+  UNMATCHED                            152856    2.55%
+  triggered_suds_trig                  104278    1.74%
+  tele_ss_suds                          88463    1.48%
+  triggered_suds_numeric                18692    0.31%
+
+## Sample UNMATCHED filenames
+  2021-07-15 0320 11 HOLS.wrno.dmx.gz
+  2021-07-15 0321 53 HOLS.wrno.dmx.gz
+  2021-07-15 0323 23 HOLS.wrno.dmx.gz
+  2021-07-15 0000 32 HOLS.wrno.dmx.gz
+  2021-07-15 0001 32 HOLS.wrno.dmx.gz
+  2021-07-15 0002 32 HOLS.wrno.dmx.gz
+  2021-07-15 0003 32 HOLS.wrno.dmx.gz
+  2021-07-15 0004 32 HOLS.wrno.dmx.gz
+  2021-07-15 0005 32 HOLS.wrno.dmx.gz
+  2021-07-15 0006 32 HOLS.wrno.dmx.gz
+  2021-07-15 0007 32 HOLS.wrno.dmx.gz
+  2021-07-15 0008 32 HOLS.wrno.dmx.gz
+  2021-07-15 0009 32 HOLS.wrno.dmx.gz
+  2021-07-15 0010 32 HOLS.wrno.dmx.gz
+  2021-07-15 0011 32 HOLS.wrno.dmx.gz
+
+## Top signatures (by row count)
+  rows=   5624085  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=30708  p10=63874  p50=91911  p90=93323  max=553015
+  rows=    152856  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
+           size:  min=53307  p10=58436  p50=64011  p90=70793  max=130722
+  rows=    104278  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=54933  p10=92835  p50=92925  p90=152925  max=200425 ⚠ BIMODAL
+  rows=     88463  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=92315  p10=92430  p50=182321  p90=182432  max=622345
+  rows=     18692  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=92315  p10=92427  p50=92430  p90=182430  max=182435 ⚠ BIMODAL

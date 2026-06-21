@@ -1,0 +1,40 @@
+# Discovery audit: WILU
+# Generated: 2026-06-21T07:56:47Z
+# Total rows: 1203302
+# Distinct signatures: 4
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_mseed_dashed_date               983032   81.69%
+  UNMATCHED                            146918   12.21%
+  perchan_mseed_zip                     73338    6.09%
+  tele_noss_mseed                          14    0.00%
+
+## Sample UNMATCHED filenames
+  2016-04-05 0504 26 WILU_001.mseed
+  2016-04-05 0506 57 WILU_001.mseed
+  2016-04-05 0510 57 WILU_001.mseed
+  2016-04-05 0514 59 WILU_001.mseed
+  2016-04-05 0518 59 WILU_001.mseed
+  2016-04-05 0522 58 WILU_001.mseed
+  2016-04-05 0526 59 WILU_001.mseed
+  2016-04-05 0530 59 WILU_001.mseed
+  2016-04-05 0534 58 WILU_001.mseed
+  2016-04-05 0538 58 WILU_001.mseed
+  2016-04-05 0542 58 WILU_001.mseed
+  2016-04-05 0546 58 WILU_001.mseed
+  2016-04-05 0550 57 WILU_001.mseed
+  2016-04-05 0554 58 WILU_001.mseed
+  2016-04-05 0558 59 WILU_001.mseed
+
+## Top signatures (by row count)
+  rows=    983032  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=4895  p10=18809  p50=19731  p90=22325  max=53588
+  rows=    220254  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=512  p10=6621  p50=34816  p90=36352  max=406528
+  rows=        14  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=162  p10=162  p50=162  p90=1250  max=1484
+  rows=         2  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=1295  p10=1297  p50=1305  p90=1313  max=1315

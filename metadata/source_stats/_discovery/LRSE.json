@@ -1,0 +1,736 @@
+{
+  "ambiguous_signature_pairs": [
+    {
+      "differing_signatures": [
+        {
+          "row_count": 445683,
+          "ss_is_null": true
+        },
+        {
+          "row_count": 1003884,
+          "ss_is_null": false
+        }
+      ],
+      "shared_columns": {
+        "channel_suffix_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "station_mismatch": false
+      },
+      "total_rows": 1449567
+    }
+  ],
+  "filename_grammar": [
+    {
+      "count": 1004576,
+      "pattern": "tele_ss_mseed",
+      "pct": 45.038
+    },
+    {
+      "count": 761451,
+      "pattern": "disk_mseed_numeric_date",
+      "pct": 34.138
+    },
+    {
+      "count": 445683,
+      "pattern": "tele_noss_mseed",
+      "pct": 19.981
+    },
+    {
+      "count": 13924,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.624
+    },
+    {
+      "count": 4849,
+      "pattern": "UNMATCHED",
+      "pct": 0.217
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:33:14Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LRSE.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2022": 517570,
+        "2023": 486314
+      },
+      "row_count": 1003884,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 88112,
+        "min": 3080,
+        "n_samples": 1003884,
+        "p10": 46518,
+        "p50": 58265,
+        "p90": 68676
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 484283,
+        "2022": 245611,
+        "2023": 31324
+      },
+      "row_count": 761218,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 108157,
+        "min": 3369,
+        "n_samples": 761218,
+        "p10": 18312,
+        "p50": 24007,
+        "p90": 67911
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 445311,
+        "2022": 278,
+        "2023": 94
+      },
+      "row_count": 445683,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 103353,
+        "min": 1066,
+        "n_samples": 445683,
+        "p10": 46662,
+        "p50": 58282,
+        "p90": 68481
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 4664,
+        "2022": 8545,
+        "2023": 715
+      },
+      "row_count": 13924,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 30418,
+        "min": 625,
+        "n_samples": 13924,
+        "p10": 4062,
+        "p50": 12112,
+        "p90": 20496
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 4847
+      },
+      "row_count": 4847,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 80051,
+        "min": 6580,
+        "n_samples": 4847,
+        "p10": 45768,
+        "p50": 60056,
+        "p90": 68473
+      },
+      "unmatched_filename_count": 4847
+    },
+    {
+      "by_year": {
+        "2022": 357,
+        "2023": 335
+      },
+      "row_count": 692,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 76434,
+        "min": 4648,
+        "n_samples": 692,
+        "p10": 46405,
+        "p50": 59192,
+        "p90": 69415
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 70,
+        "2022": 145,
+        "2023": 18
+      },
+      "row_count": 233,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91648,
+        "min": 7271,
+        "n_samples": 233,
+        "p10": 48252,
+        "p50": 63942,
+        "p90": 73338
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2021": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 61665,
+        "min": 61665,
+        "n_samples": 1,
+        "p10": 61665,
+        "p50": 61665,
+        "p90": 61665
+      },
+      "unmatched_filename_count": 1
+    },
+    {
+      "by_year": {
+        "2022": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 5679,
+        "min": 5679,
+        "n_samples": 1,
+        "p10": 5679,
+        "p50": 5679,
+        "p90": 5679
+      },
+      "unmatched_filename_count": 1
+    }
+  ],
+  "n_distinct_signatures": 9,
+  "station": "LRSE",
+  "total_rows": 2230483,
+  "unmatched_filename_samples": [
+    {
+      "basename": "20210101_0645_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_0644_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_0643_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_0642_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2005_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2004_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2003_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2023_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2022_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2021_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2020_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2019_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2052_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2051_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2050_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2049_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2139_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2138_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2137_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2136_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2200_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2159_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2158_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2157_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2156_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2155_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2154_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2153_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2152_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    },
+    {
+      "basename": "20210101_2151_LRSE.trig.ms.zip",
+      "signature": [
+        "gecko",
+        "disk",
+        "waveform",
+        true,
+        true,
+        "triggered",
+        false,
+        false,
+        "trig"
+      ]
+    }
+  ]
+}

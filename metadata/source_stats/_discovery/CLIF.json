@@ -1,0 +1,785 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 3708171,
+      "pattern": "disk_suds_dashed",
+      "pct": 47.01
+    },
+    {
+      "count": 3641291,
+      "pattern": "tele_ss_suds",
+      "pct": 46.162
+    },
+    {
+      "count": 321780,
+      "pattern": "triggered_suds_trig",
+      "pct": 4.079
+    },
+    {
+      "count": 213999,
+      "pattern": "triggered_suds_numeric",
+      "pct": 2.713
+    },
+    {
+      "count": 2414,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.031
+    },
+    {
+      "count": 452,
+      "pattern": "UNMATCHED",
+      "pct": 0.006
+    },
+    {
+      "count": 23,
+      "pattern": "tele_ss_mseed",
+      "pct": 0.0
+    }
+  ],
+  "generated_at_utc": "2026-06-21T06:47:51Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.CLIF.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "1999": 55,
+        "2013": 119888,
+        "2014": 311068,
+        "2015": 464231,
+        "2016": 460643,
+        "2017": 344091,
+        "2018": 477023,
+        "2019": 441167,
+        "2020": 412438,
+        "2021": 250527,
+        "2022": 311985,
+        "2023": 114108,
+        "2024": 943
+      },
+      "row_count": 3708167,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 369104,
+        "min": 354,
+        "n_samples": 3708167,
+        "p10": 73924,
+        "p50": 91910,
+        "p90": 91910
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1970": 1,
+        "1980": 72,
+        "1999": 8062,
+        "2013": 120390,
+        "2014": 314299,
+        "2015": 318460,
+        "2016": 348404,
+        "2017": 324314,
+        "2018": 474819,
+        "2019": 439213,
+        "2020": 409999,
+        "2021": 219174,
+        "2022": 236036,
+        "2023": 195446,
+        "2024": 232600
+      },
+      "row_count": 3641289,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182832,
+        "min": 3262,
+        "n_samples": 3641285,
+        "p10": 25216,
+        "p50": 31202,
+        "p90": 31202
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1999": 2,
+        "2019": 66844,
+        "2020": 91458,
+        "2021": 49577,
+        "2022": 54119,
+        "2023": 33232,
+        "2024": 26548
+      },
+      "row_count": 321780,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 371580,
+        "min": 3262,
+        "n_samples": 321780,
+        "p10": 31195,
+        "p50": 31196,
+        "p90": 92922
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1980": 20,
+        "1999": 1170,
+        "2016": 18,
+        "2017": 68903,
+        "2018": 115080,
+        "2019": 28810
+      },
+      "row_count": 214001,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182835,
+        "min": 19574,
+        "n_samples": 214001,
+        "p10": 31106,
+        "p50": 61106,
+        "p90": 92832
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1999": 8,
+        "2018": 511,
+        "2019": 406,
+        "2020": 300,
+        "2021": 167,
+        "2022": 314,
+        "2023": 1021,
+        "2024": 56
+      },
+      "row_count": 2783,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 405355,
+        "min": 646,
+        "n_samples": 2783,
+        "p10": 707,
+        "p50": 1340,
+        "p90": 4609
+      },
+      "unmatched_filename_count": 369
+    },
+    {
+      "by_year": {
+        "1989": 8,
+        "1999": 58,
+        "2021": 16
+      },
+      "row_count": 82,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "wrno",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 37392,
+        "min": 19030,
+        "n_samples": 82,
+        "p10": 19939,
+        "p50": 23524,
+        "p90": 26836
+      },
+      "unmatched_filename_count": 82
+    },
+    {
+      "by_year": {
+        "2021": 23
+      },
+      "row_count": 23,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 115709,
+        "min": 44254,
+        "n_samples": 23,
+        "p10": 53203,
+        "p50": 63232,
+        "p90": 112787
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2016": 2
+      },
+      "row_count": 2,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91910,
+        "min": 91910,
+        "n_samples": 2,
+        "p10": 91910,
+        "p50": 91910,
+        "p90": 91910
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 2
+      },
+      "row_count": 2,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": true,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 77138,
+        "min": 72107,
+        "n_samples": 2,
+        "p10": 72610,
+        "p50": 74622,
+        "p90": 76634
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2023": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91910,
+        "min": 91910,
+        "n_samples": 1,
+        "p10": 91910,
+        "p50": 91910,
+        "p90": 91910
+      },
+      "unmatched_filename_count": 1
+    }
+  ],
+  "n_distinct_signatures": 10,
+  "station": "CLIF",
+  "total_rows": 7888130,
+  "unmatched_filename_samples": [
+    {
+      "basename": "1989-08-17 2359 40 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 33 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 27 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 39 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 38 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 47 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 09 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1989-08-18 0000 47 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-09-10 1822 14 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-12 0529 17 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-13 0849 44 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-13 1637 44 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-15 0926 43 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-18 0352 37 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-18 0410 37 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-09-19 0842 43 CLIF_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-08-22 2340 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2341 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2342 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2343 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2344 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2345 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2346 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2347 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2348 42 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2332 21 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2333 21 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2334 21 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2335 21 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 2336 21 CLIF.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,688 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 2387740,
+      "pattern": "tele_ss_suds",
+      "pct": 48.834
+    },
+    {
+      "count": 2207697,
+      "pattern": "disk_suds_dashed",
+      "pct": 45.152
+    },
+    {
+      "count": 188874,
+      "pattern": "triggered_suds_trig",
+      "pct": 3.863
+    },
+    {
+      "count": 80004,
+      "pattern": "UNMATCHED",
+      "pct": 1.636
+    },
+    {
+      "count": 20122,
+      "pattern": "triggered_suds_numeric",
+      "pct": 0.412
+    },
+    {
+      "count": 5080,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.104
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:57:48Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WPSH.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "1970": 3,
+        "1980": 170,
+        "1999": 3277,
+        "2018": 405545,
+        "2019": 326769,
+        "2020": 442697,
+        "2021": 294476,
+        "2022": 220663,
+        "2023": 409664,
+        "2024": 284474
+      },
+      "row_count": 2387738,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182694,
+        "min": 3272,
+        "n_samples": 2387738,
+        "p10": 31167,
+        "p50": 31170,
+        "p90": 31170
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1980": 5,
+        "1999": 4421,
+        "2018": 428569,
+        "2019": 326006,
+        "2020": 457828,
+        "2021": 299067,
+        "2022": 272122,
+        "2023": 416151,
+        "2024": 3528
+      },
+      "row_count": 2207697,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 181879,
+        "min": 354,
+        "n_samples": 2207697,
+        "p10": 57987,
+        "p50": 91878,
+        "p90": 91878
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2019": 23533,
+        "2020": 42233,
+        "2021": 51637,
+        "2022": 27313,
+        "2023": 34435,
+        "2024": 9723
+      },
+      "row_count": 188874,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 182784,
+        "min": 1934,
+        "n_samples": 188874,
+        "p10": 31148,
+        "p50": 92688,
+        "p90": 92781
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1970": 1,
+        "1980": 2,
+        "1999": 78,
+        "2018": 899,
+        "2019": 24611,
+        "2020": 1027,
+        "2021": 825,
+        "2022": 575,
+        "2023": 1053,
+        "2024": 717
+      },
+      "row_count": 29788,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 222290,
+        "min": 470,
+        "n_samples": 29788,
+        "p10": 483,
+        "p50": 718,
+        "p90": 1187
+      },
+      "unmatched_filename_count": 24708
+    },
+    {
+      "by_year": {
+        "2019": 29243
+      },
+      "row_count": 29243,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 96323,
+        "min": 36540,
+        "n_samples": 29243,
+        "p10": 37458,
+        "p50": 48067,
+        "p90": 71800
+      },
+      "unmatched_filename_count": 29243
+    },
+    {
+      "by_year": {
+        "1989": 1,
+        "1999": 350,
+        "2019": 25702
+      },
+      "row_count": 26053,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "wrno",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 58064,
+        "min": 17067,
+        "n_samples": 26053,
+        "p10": 18816,
+        "p50": 21208,
+        "p90": 23089
+      },
+      "unmatched_filename_count": 26053
+    },
+    {
+      "by_year": {
+        "1999": 35,
+        "2018": 13700,
+        "2019": 6389
+      },
+      "row_count": 20124,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 182700,
+        "min": 8666,
+        "n_samples": 20124,
+        "p10": 31118,
+        "p50": 31119,
+        "p90": 92691
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 7,
+  "station": "WPSH",
+  "total_rows": 4889517,
+  "unmatched_filename_samples": [
+    {
+      "basename": "1970-01-01 2359 38 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1980-01-10 0221 02 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1980-01-10 0152 08 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1989-08-17 2359 05 WPSH.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-10-05 0059 06 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-05 1740 44 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-05 1837 44 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-05 2132 44 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-06 0056 37 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-06 0813 37 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-06 1606 37 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-06 1620 37 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-06 1738 37 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-08 0540 13 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-08 0917 13 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-08 1102 13 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-08 1119 13 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-09 0441 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-09 1545 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-09 1745 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-09 1808 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-09 2336 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-10 1252 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-10 1321 01 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-11 0016 49 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-11 0454 49 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-11 1509 42 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-12 1330 12 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-12 1850 12 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "1999-10-13 1050 12 WPSH_DLZ.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

@@ -1,0 +1,570 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 983032,
+      "pattern": "disk_mseed_dashed_date",
+      "pct": 81.695
+    },
+    {
+      "count": 146918,
+      "pattern": "UNMATCHED",
+      "pct": 12.21
+    },
+    {
+      "count": 73338,
+      "pattern": "perchan_mseed_zip",
+      "pct": 6.095
+    },
+    {
+      "count": 14,
+      "pattern": "tele_noss_mseed",
+      "pct": 0.001
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:56:47Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WILU.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2014": 122179,
+        "2015": 131112,
+        "2016": 299108,
+        "2017": 430633
+      },
+      "row_count": 983032,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 53588,
+        "min": 4895,
+        "n_samples": 983032,
+        "p10": 18809,
+        "p50": 19731,
+        "p90": 22325
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2015": 72141,
+        "2016": 50796,
+        "2017": 97317
+      },
+      "row_count": 220254,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 406528,
+        "min": 512,
+        "n_samples": 220254,
+        "p10": 6621,
+        "p50": 34816,
+        "p90": 36352
+      },
+      "unmatched_filename_count": 146916
+    },
+    {
+      "by_year": {
+        "2014": 1,
+        "2016": 10,
+        "2017": 3
+      },
+      "row_count": 14,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1484,
+        "min": 162,
+        "n_samples": 14,
+        "p10": 162,
+        "p50": 162,
+        "p90": 1250
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2016": 1,
+        "2017": 1
+      },
+      "row_count": 2,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1315,
+        "min": 1295,
+        "n_samples": 2,
+        "p10": 1297,
+        "p50": 1305,
+        "p90": 1313
+      },
+      "unmatched_filename_count": 2
+    }
+  ],
+  "n_distinct_signatures": 4,
+  "station": "WILU",
+  "total_rows": 1203302,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2016-04-05 0504 26 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0506 57 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0510 57 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0514 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0518 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0522 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0526 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0530 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0534 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0538 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0542 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0546 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0550 57 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0554 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0558 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0602 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0606 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0610 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0614 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0618 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0621 57 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0630 57 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0634 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0638 56 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0642 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0646 58 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0650 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0654 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0658 56 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2016-04-05 0702 59 WILU_001.mseed",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

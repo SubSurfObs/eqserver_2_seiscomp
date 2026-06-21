@@ -1,0 +1,48 @@
+# Discovery audit: LOCU
+# Generated: 2026-06-21T07:24:50Z
+# Total rows: 3456726
+# Distinct signatures: 7
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_suds_dashed                    1643541   47.55%
+  tele_ss_suds                        1513218   43.78%
+  UNMATCHED                            104424    3.02%
+  triggered_suds_trig                   97508    2.82%
+  tele_ss_mseed                         96307    2.79%
+  perchan_mseed_zip                      1728    0.05%
+
+## Sample UNMATCHED filenames
+  2021-05-30 0002 40 LOCU.wrno.dmx.gz
+  2021-05-30 0003 40 LOCU.wrno.dmx.gz
+  2021-05-30 0004 40 LOCU.wrno.dmx.gz
+  2021-05-30 0005 40 LOCU.wrno.dmx.gz
+  2021-05-30 0006 40 LOCU.wrno.dmx.gz
+  2021-05-30 0007 40 LOCU.wrno.dmx.gz
+  2021-05-30 0008 40 LOCU.wrno.dmx.gz
+  2021-05-30 0009 40 LOCU.wrno.dmx.gz
+  2021-05-30 0010 40 LOCU.wrno.dmx.gz
+  2021-05-30 0011 40 LOCU.wrno.dmx.gz
+  2021-05-30 0012 40 LOCU.wrno.dmx.gz
+  2021-05-30 0013 40 LOCU.wrno.dmx.gz
+  2021-05-30 0014 40 LOCU.wrno.dmx.gz
+  2021-05-30 0015 40 LOCU.wrno.dmx.gz
+  2021-05-30 0016 40 LOCU.wrno.dmx.gz
+
+## Top signatures (by row count)
+  rows=   1643540  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=354  p10=56905  p50=60897  p90=66871  max=126432
+  rows=   1513218  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=31138  p10=31172  p50=31172  p90=31172  max=61173
+  rows=     97508  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=3342  p10=31151  p50=61150  p90=152787  max=182790
+  rows=     96307  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=36841  p10=39035  p50=59183  p90=70549  max=88070
+  rows=     88040  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
+           size:  min=16693  p10=19308  p50=64202  p90=67906  max=92419
+  rows=     18112  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=693  p10=23576  p50=24263  p90=25056  max=27559
+  rows=         1  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=61980  p10=61980  p50=61980  p90=61980  max=61980

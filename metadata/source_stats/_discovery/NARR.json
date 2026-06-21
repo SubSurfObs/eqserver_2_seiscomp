@@ -1,0 +1,739 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 4834048,
+      "pattern": "tele_ss_suds",
+      "pct": 48.189
+    },
+    {
+      "count": 4685597,
+      "pattern": "disk_suds_dashed",
+      "pct": 46.709
+    },
+    {
+      "count": 185475,
+      "pattern": "UNMATCHED",
+      "pct": 1.849
+    },
+    {
+      "count": 162652,
+      "pattern": "tele_ss_mseed",
+      "pct": 1.621
+    },
+    {
+      "count": 96773,
+      "pattern": "triggered_suds_trig",
+      "pct": 0.965
+    },
+    {
+      "count": 65806,
+      "pattern": "triggered_suds_numeric",
+      "pct": 0.656
+    },
+    {
+      "count": 1020,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.01
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:50:20Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.NARR.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "1970": 47,
+        "2001": 19269,
+        "2012": 155734,
+        "2013": 235752,
+        "2014": 448608,
+        "2015": 371508,
+        "2016": 451677,
+        "2017": 442157,
+        "2018": 354089,
+        "2019": 433993,
+        "2020": 316914,
+        "2021": 291787,
+        "2022": 499420,
+        "2023": 458879,
+        "2024": 246079,
+        "2025": 108134
+      },
+      "row_count": 4834047,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 224040,
+        "min": 11246,
+        "n_samples": 4834027,
+        "p10": 31201,
+        "p50": 31201,
+        "p90": 49223
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2001": 84,
+        "2002": 175,
+        "2012": 239183,
+        "2013": 265557,
+        "2014": 395656,
+        "2015": 373752,
+        "2016": 465997,
+        "2017": 437709,
+        "2018": 401120,
+        "2019": 416998,
+        "2020": 194306,
+        "2021": 238091,
+        "2022": 542432,
+        "2023": 487033,
+        "2024": 227457,
+        "2025": 47
+      },
+      "row_count": 4685597,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 212040,
+        "min": 354,
+        "n_samples": 4685597,
+        "p10": 91909,
+        "p50": 91909,
+        "p90": 145931
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1989": 1,
+        "1999": 27,
+        "2021": 184850
+      },
+      "row_count": 184878,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "wrno",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 152294,
+        "min": 19026,
+        "n_samples": 184878,
+        "p10": 24202,
+        "p50": 67390,
+        "p90": 73041
+      },
+      "unmatched_filename_count": 184878
+    },
+    {
+      "by_year": {
+        "2021": 162652
+      },
+      "row_count": 162652,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 131756,
+        "min": 40783,
+        "n_samples": 162652,
+        "p10": 49902,
+        "p50": 65732,
+        "p90": 76171
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2002": 2,
+        "2019": 13087,
+        "2020": 8513,
+        "2021": 24720,
+        "2022": 22611,
+        "2023": 18042,
+        "2024": 8034,
+        "2025": 1764
+      },
+      "row_count": 96773,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "triggered",
+        "flags": "trig",
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 212922,
+        "min": 5970,
+        "n_samples": 96773,
+        "p10": 31194,
+        "p50": 92826,
+        "p90": 181974
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2016": 1496,
+        "2017": 47209,
+        "2018": 12070,
+        "2019": 5032
+      },
+      "row_count": 65807,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 185040,
+        "min": 22364,
+        "n_samples": 65806,
+        "p10": 31106,
+        "p50": 61106,
+        "p90": 182645
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2001": 36,
+        "2002": 43,
+        "2018": 200,
+        "2019": 208,
+        "2020": 191,
+        "2021": 107,
+        "2022": 200,
+        "2023": 199,
+        "2024": 88,
+        "2025": 8
+      },
+      "row_count": 1280,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 776557,
+        "min": 694,
+        "n_samples": 1280,
+        "p10": 813,
+        "p50": 1170,
+        "p90": 17253
+      },
+      "unmatched_filename_count": 260
+    },
+    {
+      "by_year": {
+        "2012": 1,
+        "2016": 2,
+        "2017": 318,
+        "2018": 16
+      },
+      "row_count": 337,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 91,
+        "min": 90,
+        "n_samples": 331,
+        "p10": 90,
+        "p50": 91,
+        "p90": 91
+      },
+      "unmatched_filename_count": 337
+    }
+  ],
+  "n_distinct_signatures": 8,
+  "station": "NARR",
+  "total_rows": 10031371,
+  "unmatched_filename_samples": [
+    {
+      "basename": "1989-08-17 2359 50 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0203 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0204 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0205 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0206 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0207 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0208 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0209 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0210 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0211 42 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0238 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0239 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0240 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0241 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0242 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0243 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0244 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0245 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0246 41 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0206 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0207 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0205 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0204 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0208 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0203 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0209 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0210 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": "1999-08-22 0211 12 NARR.wrno.dmx.gz",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        false,
+        true,
+        null,
+        false,
+        false,
+        "wrno"
+      ]
+    },
+    {
+      "basename": ".2012-08-25_0409_25_NARR.dmx.RTrwTJ",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "jim",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

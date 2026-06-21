@@ -1,0 +1,62 @@
+# Discovery audit: BEST
+# Generated: 2026-06-21T06:43:31Z
+# Total rows: 5632669
+# Distinct signatures: 13
+
+## Ambiguous signature pairs (CHECK THESE)
+  source_type=telemetry, exclude_reason=None, role=waveform: 448016 rows split as:
+    ss_is_null=True → 438108 rows
+    ss_is_null=False → 9908 rows
+  source_type=telemetry, exclude_reason=None, role=waveform: 8 rows split as:
+    ss_is_null=False → 7 rows
+    ss_is_null=True → 1 rows
+
+## Filename grammar coverage
+  disk_suds_dashed                    2302494   40.88%
+  tele_ss_suds                        2170577   38.53%
+  tele_noss_mseed                      434607    7.72%
+  disk_mseed_numeric_date              428333    7.60%
+  triggered_suds_trig                  243656    4.33%
+  UNMATCHED                             39065    0.69%
+  tele_ss_mseed                          9915    0.18%
+  perchan_mseed_zip                      3849    0.07%
+  kelunjimeta_ss                          173    0.00%
+
+## Sample UNMATCHED filenames
+  1989-08-17 2359 31 BEST.wrno.dmx.gz
+  1989-08-17 2359 36 BEST.wrno.dmx.gz
+  1989-08-17 2359 35 BEST.wrno.dmx.gz
+  1989-08-17 2359 19 BEST.wrno.dmx.gz
+  1989-08-17 2359 33 BEST.wrno.dmx.gz
+  1999-09-08 0727 36 BEST_DLZ.mseed.zip
+  1999-09-08 1454 36 BEST_DLZ.mseed.zip
+  1999-09-09 1732 36 BEST_DLZ.mseed.zip
+  1999-09-09 2056 36 BEST_DLZ.mseed.zip
+  1999-09-10 0350 36 BEST_DLZ.mseed.zip
+  1999-09-10 2009 36 BEST_DLZ.mseed.zip
+  1999-09-10 2227 36 BEST_DLZ.mseed.zip
+  1999-09-11 0639 36 BEST_DLZ.mseed.zip
+  1999-09-11 1651 36 BEST_DLZ.mseed.zip
+  1999-09-11 1726 36 BEST_DLZ.mseed.zip
+
+## Top signatures (by row count)
+  rows=   2302490  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=354  p10=64488  p50=91878  p90=91878  max=181881
+  rows=   2170577  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=11152  p10=31170  p50=31170  p90=31172  max=183574
+  rows=    438108  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=995  p10=41937  p50=62522  p90=85315  max=5800337
+  rows=    428328  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=4272  p10=16771  p50=23977  p90=31199  max=98596
+  rows=    243656  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=1934  p10=31149  p50=63504  p90=181214  max=10805414
+  rows=     35485  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
+           size:  min=17001  p10=19342  p50=21941  p90=25439  max=40800
+  rows=      9908  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=9422  p10=43424  p50=56629  p90=79092  max=97970
+  rows=      3927  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=573  p10=787  p50=1280  p90=11066  max=235929 ⚠ BIMODAL
+  rows=       173  recorder=gecko    src=telemetry  role=metadata  ss_null=False chan_null=True  excl=None
+           size:  min=2925  p10=2927  p50=2928  p90=2928  max=2934
+  rows=         7  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=51775  p10=57649  p50=65145  p90=85180  max=92984

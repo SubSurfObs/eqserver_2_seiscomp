@@ -1,0 +1,34 @@
+# Discovery audit: DDWB
+# Generated: 2026-06-21T06:52:47Z
+# Total rows: 6726202
+# Distinct signatures: 2
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  perchan_mseed_zip                   6695053   99.54%
+  UNMATCHED                             31149    0.46%
+
+## Sample UNMATCHED filenames
+  2021-06-20 2355_DDWB.ms.zip
+  2021-06-20 2339_DDWB.ms.zip
+  2021-06-20 2347_DDWB.ms.zip
+  2021-06-20 2343_DDWB.ms.zip
+  2021-06-20 2342_DDWB.ms.zip
+  2021-06-20 2348_DDWB.ms.zip
+  2021-06-20 2337_DDWB.ms.zip
+  2021-06-21 0003_DDWB.ms.zip
+  2021-06-21 0046_DDWB.ms.zip
+  2021-06-21 0120_DDWB.ms.zip
+  2021-06-21 0053_DDWB.ms.zip
+  2021-06-21 0216_DDWB.ms.zip
+  2021-06-21 0058_DDWB.ms.zip
+  2021-06-21 0303_DDWB.ms.zip
+  2021-06-21 0117_DDWB.ms.zip
+
+## Top signatures (by row count)
+  rows=   6695053  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=237  p10=11949  p50=15989  p90=16274  max=41967
+  rows=     31149  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=10053  p10=27764  p50=39706  p90=51901  max=82500

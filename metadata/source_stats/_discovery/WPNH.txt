@@ -1,0 +1,50 @@
+# Discovery audit: WPNH
+# Generated: 2026-06-21T07:57:24Z
+# Total rows: 3344463
+# Distinct signatures: 8
+
+## Ambiguous signature pairs (CHECK THESE)
+  (none)
+
+## Filename grammar coverage
+  disk_suds_dashed                    1703230   50.93%
+  tele_ss_suds                        1504838   44.99%
+  triggered_suds_trig                  103891    3.11%
+  triggered_suds_numeric                29647    0.89%
+  perchan_mseed_zip                      1888    0.06%
+  UNMATCHED                               969    0.03%
+
+## Sample UNMATCHED filenames
+  1989-08-17 2359 34 WPNH.wrno.dmx.gz
+  2019-04-04 0254 55 WPNH_DLZ.mseed.zip
+  2019-04-04 0300 55 WPNH_DLZ.mseed.zip
+  2019-04-04 0830 55 WPNH_DLZ.mseed.zip
+  2019-04-04 0902 55 WPNH_DLZ.mseed.zip
+  2019-04-04 1031 55 WPNH_DLZ.mseed.zip
+  2019-04-04 1511 55 WPNH_DLZ.mseed.zip
+  2019-04-04 1718 55 WPNH_DLZ.mseed.zip
+  2019-04-04 1803 55 WPNH_DLZ.mseed.zip
+  2019-04-04 1840 55 WPNH_DLZ.mseed.zip
+  2019-04-04 2123 55 WPNH_DLZ.mseed.zip
+  2019-04-05 1452 55 WPNH_DLZ.mseed.zip
+  2019-04-05 1536 55 WPNH_DLZ.mseed.zip
+  2019-04-05 1734 55 WPNH_DLZ.mseed.zip
+  2019-04-05 2102 55 WPNH_DLZ.mseed.zip
+
+## Top signatures (by row count)
+  rows=   1703229  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=4104  p10=91878  p50=91878  p90=91878  max=181900
+  rows=   1504838  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=1894  p10=31170  p50=31170  p90=31170  max=92697
+  rows=    103891  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=triggered  flags=trig
+           size:  min=3262  p10=31119  p50=92691  p90=92781  max=182784
+  rows=     29647  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=4622  p10=31118  p50=31119  p90=92691  max=182697 ⚠ BIMODAL
+  rows=      2855  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=677  p10=719  p50=1087  p90=2247  max=179122
+  rows=         1  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
+           size:  min=18740  p10=18740  p50=18740  p90=18740  max=18740
+  rows=         1  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=91878  p10=91878  p50=91878  p90=91878  max=91878
+  rows=         1  recorder=echopro  src=disk       role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=91875  p10=91875  p50=91875  p90=91875  max=91875

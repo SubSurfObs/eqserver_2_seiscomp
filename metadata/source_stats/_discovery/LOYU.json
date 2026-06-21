@@ -1,0 +1,607 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 1079501,
+      "pattern": "disk_mseed_dashed_date",
+      "pct": 68.796
+    },
+    {
+      "count": 427060,
+      "pattern": "UNMATCHED",
+      "pct": 27.216
+    },
+    {
+      "count": 62503,
+      "pattern": "perchan_mseed_zip",
+      "pct": 3.983
+    },
+    {
+      "count": 80,
+      "pattern": "tele_noss_mseed",
+      "pct": 0.005
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:27:04Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOYU.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2014": 450543,
+        "2015": 150998,
+        "2016": 191340,
+        "2017": 218040,
+        "2018": 68580
+      },
+      "row_count": 1079501,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 108046,
+        "min": 48926,
+        "n_samples": 1079501,
+        "p10": 61276,
+        "p50": 63506,
+        "p90": 66903
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2014": 142,
+        "2015": 888,
+        "2016": 92921,
+        "2017": 98972,
+        "2018": 32233,
+        "2019": 153747
+      },
+      "row_count": 378903,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 529408,
+        "min": 231,
+        "n_samples": 378903,
+        "p10": 11313,
+        "p50": 47104,
+        "p90": 60416
+      },
+      "unmatched_filename_count": 316400
+    },
+    {
+      "by_year": {
+        "2015": 2,
+        "2016": 1,
+        "2019": 110307
+      },
+      "row_count": 110310,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 85246,
+        "min": 1358,
+        "n_samples": 110310,
+        "p10": 35298,
+        "p50": 50436,
+        "p90": 66475
+      },
+      "unmatched_filename_count": 110310
+    },
+    {
+      "by_year": {
+        "2014": 1,
+        "2015": 157,
+        "2016": 109,
+        "2017": 83
+      },
+      "row_count": 350,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 73728,
+        "min": 12288,
+        "n_samples": 350,
+        "p10": 12288,
+        "p50": 12288,
+        "p90": 16384
+      },
+      "unmatched_filename_count": 350
+    },
+    {
+      "by_year": {
+        "2015": 2,
+        "2016": 10,
+        "2017": 45,
+        "2018": 13,
+        "2019": 10
+      },
+      "row_count": 80,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 13372,
+        "min": 162,
+        "n_samples": 80,
+        "p10": 162,
+        "p50": 162,
+        "p90": 3376
+      },
+      "unmatched_filename_count": 0
+    }
+  ],
+  "n_distinct_signatures": 5,
+  "station": "LOYU",
+  "total_rows": 1569144,
+  "unmatched_filename_samples": [
+    {
+      "basename": "2014-11-02 1419 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1420 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1421 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1422 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1423 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1424 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1425 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1426 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1427 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1428 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1429 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1430 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1431 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1432 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1433 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1434 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1435 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1436 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1437 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1438 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1439 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1440 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1441 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1442 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1443 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1444 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1445 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1446 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1447 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2014-11-02 1448 01 LOYU_HH2.mseed.zip",
+      "signature": [
+        "mseed",
+        "telemetry",
+        "waveform",
+        false,
+        false,
+        "single_channel",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}

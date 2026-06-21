@@ -1,0 +1,62 @@
+# Discovery audit: DDSW
+# Generated: 2026-06-21T06:51:33Z
+# Total rows: 6635618
+# Distinct signatures: 17
+
+## Ambiguous signature pairs (CHECK THESE)
+  source_type=telemetry, exclude_reason=None, role=waveform: 977 rows split as:
+    ss_is_null=False → 972 rows
+    ss_is_null=True → 5 rows
+  source_type=telemetry, exclude_reason=None, role=waveform: 2926350 rows split as:
+    ss_is_null=False → 1470325 rows
+    ss_is_null=True → 1456025 rows
+
+## Filename grammar coverage
+  disk_mseed_numeric_date             3552767   53.54%
+  tele_ss_mseed                       1471297   22.17%
+  tele_noss_mseed                     1456030   21.94%
+  perchan_mseed_zip                     86501    1.30%
+  perchan_mseed                         30494    0.46%
+  kelunjimeta_ss                        27839    0.42%
+  UNMATCHED                              8104    0.12%
+  tele_ss_suds                           2360    0.04%
+  triggered_suds_numeric                  226    0.00%
+
+## Sample UNMATCHED filenames
+  20180113_2130_00_DDSW.csv
+  2018-05-30 0141 31 .ms.zip
+  201~39BB.MS
+  201~9136.MS
+  201~2629.MS
+  2019-0~4.MS
+  2019-1~4.MS
+  2019-1~4.MS
+  2019-1~4.MS
+  201~801D.MS
+  2019-1~4.MS
+  20200925_0139_DDSW.trig.ms.zip
+  20200925_0138_DDSW.trig.ms.zip
+  20200925_0137_DDSW.trig.ms.zip
+  20200925_1956_DDSW.trig.ms.zip
+
+## Top signatures (by row count)
+  rows=   3552575  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=1799  p10=14630  p50=17472  p90=43093  max=302543 ⚠ BIMODAL
+  rows=   1470325  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=3349  p10=37280  p50=43125  p90=58374  max=365093
+  rows=   1456025  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
+           size:  min=866  p10=35606  p50=41059  p90=55243  max=86854
+  rows=    116995  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
+           size:  min=22  p10=3387  p50=7843  p90=56832  max=116736 ⚠ BIMODAL
+  rows=     21829  recorder=gecko    src=telemetry  role=metadata  ss_null=False chan_null=True  excl=None
+           size:  min=159  p10=180  p50=2545  p90=2638  max=2650
+  rows=      8081  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=triggered  flags=trig
+           size:  min=6034  p10=40548  p50=47153  p90=62850  max=80774
+  rows=      6008  recorder=gecko    src=telemetry  role=metadata  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=1904  p10=1905  p50=1906  p90=1907  max=2609
+  rows=      2360  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None
+           size:  min=19850  p10=57575  p50=179520  p90=183636  max=197190
+  rows=       972  recorder=gecko    src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  date_mismatch
+           size:  min=28030  p10=38409  p50=44202  p90=60423  max=79224
+  rows=       226  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=wrong_station  station_mismatch
+           size:  min=47360  p10=56992  p50=179206  p90=183394  max=185334

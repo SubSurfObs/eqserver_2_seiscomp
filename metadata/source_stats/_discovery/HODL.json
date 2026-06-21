@@ -1,0 +1,635 @@
+{
+  "ambiguous_signature_pairs": [],
+  "filename_grammar": [
+    {
+      "count": 1685476,
+      "pattern": "disk_suds_dashed",
+      "pct": 51.139
+    },
+    {
+      "count": 1489534,
+      "pattern": "tele_ss_suds",
+      "pct": 45.194
+    },
+    {
+      "count": 120435,
+      "pattern": "triggered_suds_numeric",
+      "pct": 3.654
+    },
+    {
+      "count": 272,
+      "pattern": "UNMATCHED",
+      "pct": 0.008
+    },
+    {
+      "count": 125,
+      "pattern": "perchan_mseed_zip",
+      "pct": 0.004
+    }
+  ],
+  "generated_at_utc": "2026-06-21T07:03:54Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HODL.db",
+  "manifest_signatures": [
+    {
+      "by_year": {
+        "2012": 144158,
+        "2013": 302897,
+        "2014": 291665,
+        "2016": 344144,
+        "2017": 449739,
+        "2018": 152873
+      },
+      "row_count": 1685476,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 181896,
+        "min": 354,
+        "n_samples": 1685475,
+        "p10": 57488,
+        "p50": 66805,
+        "p90": 181822
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "1970": 11,
+        "2002": 8,
+        "2012": 116804,
+        "2013": 96100,
+        "2014": 271699,
+        "2016": 340052,
+        "2017": 484337,
+        "2018": 180522
+      },
+      "row_count": 1489533,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": true,
+      "size_stats": {
+        "max": 203040,
+        "min": 6940,
+        "n_samples": 1489523,
+        "p10": 31201,
+        "p50": 31203,
+        "p90": 61114
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2017": 73867,
+        "2018": 46569
+      },
+      "row_count": 120436,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "wrong_station",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": true
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 185040,
+        "min": 14022,
+        "n_samples": 120436,
+        "p10": 31106,
+        "p50": 92646,
+        "p90": 122649
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2017": 174,
+        "2018": 97
+      },
+      "row_count": 271,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unknown_extension",
+        "flags": null,
+        "recorder_type": "unknown",
+        "role": "unknown",
+        "source_type": "unknown",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 90,
+        "min": 90,
+        "n_samples": 271,
+        "p10": 90,
+        "p50": 90,
+        "p90": 90
+      },
+      "unmatched_filename_count": 271
+    },
+    {
+      "by_year": {
+        "2018": 125
+      },
+      "row_count": 125,
+      "signature": {
+        "channel_suffix_is_null": false,
+        "date_mismatch": false,
+        "exclude_reason": "single_channel",
+        "flags": null,
+        "recorder_type": "mseed",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": false,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 273668,
+        "min": 15233,
+        "n_samples": 125,
+        "p10": 16130,
+        "p50": 18730,
+        "p90": 22665
+      },
+      "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2013": 1
+      },
+      "row_count": 1,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "echopro",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 145062,
+        "min": 145062,
+        "n_samples": 1,
+        "p10": 145062,
+        "p50": 145062,
+        "p90": 145062
+      },
+      "unmatched_filename_count": 1
+    }
+  ],
+  "n_distinct_signatures": 6,
+  "station": "HODL",
+  "total_rows": 3295842,
+  "unmatched_filename_samples": [
+    {
+      "basename": " 013-09-01_1121_50_HODL.dmx",
+      "signature": [
+        "echopro",
+        "telemetry",
+        "waveform",
+        true,
+        true,
+        "unparsed",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-01 0339 44 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-02 0339 47 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-03 0339 50 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-04 0339 54 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-05 0339 58 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-06 0340 01 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-08 0340 08 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-07 0340 04 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-09 0340 11 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-10 0340 15 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-11 0340 18 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-12 0340 21 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-13 0340 25 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-14 0340 28 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-15 0340 32 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-16 0340 35 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-17 0340 38 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-18 0340 42 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-19 0340 45 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-20 1311 07 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-21 1311 11 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-22 1311 14 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-23 1311 18 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-24 1311 21 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-25 1311 25 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-26 1311 28 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-27 1311 32 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-28 1311 35 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    },
+    {
+      "basename": "2017-07-29 1311 39 HODL.soh",
+      "signature": [
+        "unknown",
+        "unknown",
+        "unknown",
+        true,
+        true,
+        "unknown_extension",
+        false,
+        false,
+        null
+      ]
+    }
+  ]
+}
