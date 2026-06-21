@@ -1,0 +1,132 @@
+{
+  "n_distinct_shapes": 8,
+  "station": "WDSD",
+  "top_directories": [
+    {
+      "count": 578,
+      "year_month": "2020/11"
+    },
+    {
+      "count": 430,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 329,
+      "year_month": "2020/10"
+    },
+    {
+      "count": 327,
+      "year_month": "2020/12"
+    },
+    {
+      "count": 229,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 202,
+      "year_month": "2020/09"
+    },
+    {
+      "count": 20,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 9,
+      "year_month": "2018/08"
+    },
+    {
+      "count": 6,
+      "year_month": "2018/07"
+    },
+    {
+      "count": 6,
+      "year_month": "2018/11"
+    },
+    {
+      "count": 3,
+      "year_month": "2020/03"
+    },
+    {
+      "count": 2,
+      "year_month": "2018/10"
+    },
+    {
+      "count": 1,
+      "year_month": "2018/09"
+    },
+    {
+      "count": 1,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 1,
+      "year_month": "2020/01"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 2115,
+      "samples": [
+        "20200924_1835_WDSD.trig.ms.zip",
+        "20200924_1854_WDSD.trig.ms.zip",
+        "20200924_1857_WDSD.trig.ms.zip"
+      ],
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 17,
+      "samples": [
+        "2018-08-24 0152.ms.zip",
+        "2018-08-24 0320.ms.zip",
+        "2018-08-24 0419.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "count": 9,
+      "samples": [
+        "2018-07-05 1328 58 WDSD_CDO.mseed.zip",
+        "2018-07-13 2255 59 WDSD_CDO.mseed.zip",
+        "2018-07-17 0951 58 WDSD_CDO.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "202~A25A.MS",
+        "202~B11C.MS"
+      ],
+      "shape": "D3~H1D2H1.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2019-0~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202~AA39.MS"
+      ],
+      "shape": "D3~H2D2.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2020~A98.MS"
+      ],
+      "shape": "D4~H1D2.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202~D2EC.MS"
+      ],
+      "shape": "D3~H1D1H2.A2"
+    }
+  ],
+  "total_unmatched": 2147
+}

@@ -1,0 +1,110 @@
+{
+  "n_distinct_shapes": 5,
+  "station": "FORG",
+  "top_directories": [
+    {
+      "count": 435,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 414,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 294,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 145,
+      "year_month": "2020/10"
+    },
+    {
+      "count": 93,
+      "year_month": "2020/12"
+    },
+    {
+      "count": 88,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 84,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 82,
+      "year_month": "2019/11"
+    },
+    {
+      "count": 77,
+      "year_month": "2019/10"
+    },
+    {
+      "count": 72,
+      "year_month": "2019/04"
+    },
+    {
+      "count": 65,
+      "year_month": "2019/05"
+    },
+    {
+      "count": 63,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 58,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 48,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 45,
+      "year_month": "2019/12"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 1421,
+      "samples": [
+        "20200925_0137_FORG.trig.ms.zip",
+        "20200925_0138_FORG.trig.ms.zip",
+        "20200925_0139_FORG.trig.ms.zip"
+      ],
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 727,
+      "samples": [
+        "2019-04-04 1109 25 FORG_DLZ.mseed.zip",
+        "2019-04-04 1533 25 FORG_DLZ.mseed.zip",
+        "2019-04-04 2251 25 FORG_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "count": 3,
+      "samples": [
+        "2020-0~4.MS",
+        "2020-1~1.MS",
+        "2020-1~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202~DD72.MS"
+      ],
+      "shape": "D3~H2D2.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        ".2021-03-01 1108 FORG.ms.4On8Ft"
+      ],
+      "shape": ".D4-D2-D2 D4 A4.l2.D1A1l1D1H1l1"
+    }
+  ],
+  "total_unmatched": 2153
+}

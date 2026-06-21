@@ -1,0 +1,683 @@
+{
+  "deep_dive_shape_counts": [
+    {
+      "count": 1686872,
+      "shape": "D4-D2-D2 D4_A4.l2.l3"
+    },
+    {
+      "count": 970393,
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 856083,
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5"
+    },
+    {
+      "count": 312218,
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5.l3"
+    },
+    {
+      "count": 80625,
+      "shape": "D4-D2-D2 D4 D2 A4_A2D1.l5.l3"
+    },
+    {
+      "count": 44712,
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "count": 29243,
+      "shape": "D4-D2-D2_D4-A4.l2.l3"
+    },
+    {
+      "count": 27464,
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 11332,
+      "shape": "D4-D2-D2 D2l2 A4.l2.l3"
+    },
+    {
+      "count": 10080,
+      "shape": "D4-D2-D2-D4_A4.l2.l3"
+    },
+    {
+      "count": 990,
+      "shape": "D7_D4.D1.l2"
+    },
+    {
+      "count": 576,
+      "shape": "D4-D1-D2-D4-A4.l2.l3"
+    },
+    {
+      "count": 432,
+      "shape": "D4-D1-D1-D4-A4.l2.l3"
+    },
+    {
+      "count": 382,
+      "shape": "D4-D2-D2 D4 D2 A4.l3"
+    },
+    {
+      "count": 343,
+      "shape": "D16_A4__D1_D1.l3"
+    },
+    {
+      "count": 46,
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "count": 42,
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 3,
+      "shape": "D2"
+    },
+    {
+      "count": 3,
+      "shape": "D3~D4.A2"
+    },
+    {
+      "count": 3,
+      "shape": "D3~H2D2.A2"
+    },
+    {
+      "count": 3,
+      "shape": "D4 D3 D4 D4_A4__D1_D1.l3"
+    },
+    {
+      "count": 2,
+      "shape": "D3~D3H1.A2"
+    },
+    {
+      "count": 2,
+      "shape": "D4-D2-D2 D4 D2 A4.D1.l3"
+    },
+    {
+      "count": 2,
+      "shape": "D4 D3 D4 D5_A4__D1_D1.l3"
+    },
+    {
+      "count": 2,
+      "shape": "D4-D2-D2_D4-A4-A3.l2.l3"
+    }
+  ],
+  "deep_dive_stations": [
+    "BEST",
+    "BRIG",
+    "BRTH",
+    "DDNE",
+    "DDSW",
+    "DDWB",
+    "DDWK",
+    "FORG",
+    "HOLS",
+    "LOCU",
+    "LOYU",
+    "LRNW",
+    "LRSE",
+    "LRSH",
+    "LRWS",
+    "MARD",
+    "NARR",
+    "OUTU",
+    "SGWU",
+    "TRPU",
+    "WDSD",
+    "WILU",
+    "WLSH",
+    "WPSH"
+  ],
+  "generated_at_utc": "2026-06-21T08:31:57Z",
+  "n_stations": 41,
+  "pooled_sample_shape_counts": [
+    {
+      "examples": [
+        [
+          "BEST",
+          "1999-09-08 0727 36 BEST_DLZ.mseed.zip"
+        ],
+        [
+          "BEST",
+          "1999-09-08 1454 36 BEST_DLZ.mseed.zip"
+        ],
+        [
+          "BEST",
+          "1999-09-09 1732 36 BEST_DLZ.mseed.zip"
+        ]
+      ],
+      "n_samples": 255,
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "examples": [
+        [
+          "BEST",
+          "1989-08-17 2359 31 BEST.wrno.dmx.gz"
+        ],
+        [
+          "BEST",
+          "1989-08-17 2359 36 BEST.wrno.dmx.gz"
+        ],
+        [
+          "BEST",
+          "1989-08-17 2359 35 BEST.wrno.dmx.gz"
+        ]
+      ],
+      "n_samples": 172,
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "20200925_0139_DDSW.trig.ms.zip"
+        ],
+        [
+          "DDSW",
+          "20200925_0138_DDSW.trig.ms.zip"
+        ],
+        [
+          "DDSW",
+          "20200925_0137_DDSW.trig.ms.zip"
+        ]
+      ],
+      "n_samples": 129,
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "examples": [
+        [
+          "BRTH",
+          "2018-06-20 0558 47 BRTH.zip"
+        ],
+        [
+          "BRTH",
+          "2018-06-20 0559 17 BRTH.zip"
+        ],
+        [
+          "BRTH",
+          "2018-06-20 0600 17 BRTH.zip"
+        ]
+      ],
+      "n_samples": 95,
+      "shape": "D4-D2-D2 D4 D2 A4.l3"
+    },
+    {
+      "examples": [
+        [
+          "LOYU",
+          "2014-11-02 1419 01 LOYU_HH2.mseed.zip"
+        ],
+        [
+          "LOYU",
+          "2014-11-02 1420 01 LOYU_HH2.mseed.zip"
+        ],
+        [
+          "LOYU",
+          "2014-11-02 1421 01 LOYU_HH2.mseed.zip"
+        ]
+      ],
+      "n_samples": 89,
+      "shape": "D4-D2-D2 D4 D2 A4_A2D1.l5.l3"
+    },
+    {
+      "examples": [
+        [
+          "DDNE",
+          "2019-06-01 00hr DDNE.ms.zip"
+        ],
+        [
+          "DDNE",
+          "2019-06-01 01hr DDNE.ms.zip"
+        ],
+        [
+          "DDNE",
+          "2019-06-01 02hr DDNE.ms.zip"
+        ]
+      ],
+      "n_samples": 79,
+      "shape": "D4-D2-D2 D2l2 A4.l2.l3"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "2019-0~4.MS"
+        ],
+        [
+          "DDSW",
+          "2019-1~4.MS"
+        ],
+        [
+          "DDSW",
+          "2019-1~4.MS"
+        ]
+      ],
+      "n_samples": 34,
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "examples": [
+        [
+          "DDBE",
+          "2019-11-09 0944 24 DDBE_HNE.mseed.zip"
+        ],
+        [
+          "DDBE",
+          "2019-11-09 0950 19 DDBE_HNE.mseed.zip"
+        ],
+        [
+          "DDBE",
+          "2019-11-09 0957 31 DDBE_HNE.mseed.zip"
+        ]
+      ],
+      "n_samples": 30,
+      "shape": "D4-D2-D2 D4 D2 H4_A3.l5.l3"
+    },
+    {
+      "examples": [
+        [
+          "DDWB",
+          "2021-06-20 2355_DDWB.ms.zip"
+        ],
+        [
+          "DDWB",
+          "2021-06-20 2339_DDWB.ms.zip"
+        ],
+        [
+          "DDWB",
+          "2021-06-20 2347_DDWB.ms.zip"
+        ]
+      ],
+      "n_samples": 30,
+      "shape": "D4-D2-D2 D4_A4.l2.l3"
+    },
+    {
+      "examples": [
+        [
+          "SGWU",
+          "2015286_0000.1.ms"
+        ],
+        [
+          "SGWU",
+          "2015286_0055.1.ms"
+        ],
+        [
+          "SGWU",
+          "2015286_0059.1.ms"
+        ]
+      ],
+      "n_samples": 30,
+      "shape": "D7_D4.D1.l2"
+    },
+    {
+      "examples": [
+        [
+          "WILU",
+          "2016-04-05 0504 26 WILU_001.mseed"
+        ],
+        [
+          "WILU",
+          "2016-04-05 0506 57 WILU_001.mseed"
+        ],
+        [
+          "WILU",
+          "2016-04-05 0510 57 WILU_001.mseed"
+        ]
+      ],
+      "n_samples": 30,
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5"
+    },
+    {
+      "examples": [
+        [
+          "DEAL",
+          "2018-08-21 2219.ms.zip"
+        ],
+        [
+          "DEAL",
+          "2018-11-13 0307.ms.zip"
+        ],
+        [
+          "DEAL",
+          "2021-06-10 0401.ms.zip"
+        ]
+      ],
+      "n_samples": 21,
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "examples": [
+        [
+          "LRNW",
+          "202~A331.MS"
+        ],
+        [
+          "STBK",
+          "201~E384.MS"
+        ],
+        [
+          "STBK",
+          "202~E421.MS"
+        ]
+      ],
+      "n_samples": 3,
+      "shape": "D3~H1D3.A2"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "201~9136.MS"
+        ],
+        [
+          "DDSW",
+          "201~2629.MS"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D3~D4.A2"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "201~801D.MS"
+        ],
+        [
+          "LRNW",
+          "202~160C.MS"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D3~D3H1.A2"
+    },
+    {
+      "examples": [
+        [
+          "DDWK",
+          "2018-10-30 0052 07 DDWK.1.zip"
+        ],
+        [
+          "DDWK",
+          "2018-10-30 0050 32 DDWK.1.zip"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D4-D2-D2 D4 D2 A4.D1.l3"
+    },
+    {
+      "examples": [
+        [
+          "FBNK",
+          "2013-08-20 0713 FBNK.ka2"
+        ],
+        [
+          "FBNK",
+          "2014-09-22 2256 FBNK.ka2"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D4-D2-D2 D4 A4.l2D1"
+    },
+    {
+      "examples": [
+        [
+          "LRNW",
+          "01"
+        ],
+        [
+          "LRWS",
+          "07"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D2"
+    },
+    {
+      "examples": [
+        [
+          "STBK",
+          "202~A2FE.MS"
+        ],
+        [
+          "WDSD",
+          "202~D2EC.MS"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D3~H1D1H2.A2"
+    },
+    {
+      "examples": [
+        [
+          "WDSD",
+          "202~A25A.MS"
+        ],
+        [
+          "WDSD",
+          "202~B11C.MS"
+        ]
+      ],
+      "n_samples": 2,
+      "shape": "D3~H1D2H1.A2"
+    },
+    {
+      "examples": [
+        [
+          "DDNE",
+          "20180216_0106.uom.all.sud.gz"
+        ]
+      ],
+      "n_samples": 1,
+      "shape": "D8_D4.l3.l3.l3.l2"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "20180113_2130_00_DDSW.csv"
+        ]
+      ],
+      "n_samples": 1,
+      "shape": "D8_D4_D2_A4.l3"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "2018-05-30 0141 31 .ms.zip"
+        ]
+      ],
+      "n_samples": 1,
+      "shape": "D4-D2-D2 D4 D2 .l2.l3"
+    },
+    {
+      "examples": [
+        [
+          "DDSW",
+          "201~39BB.MS"
+        ]
+      ],
+      "n_samples": 1,
+      "shape": "D3~D2H2.A2"
+    },
+    {
+      "examples": [
+        [
+          "HODL",
+          " 013-09-01_1121_50_HODL.dmx"
+        ]
+      ],
+      "n_samples": 1,
+      "shape": " D3-D2-D2_D4_D2_A4.l3"
+    }
+  ],
+  "stations_by_unmatched_count": [
+    [
+      "SGWU",
+      1402532
+    ],
+    [
+      "TRPU",
+      940574
+    ],
+    [
+      "MARD",
+      428245
+    ],
+    [
+      "LOYU",
+      427060
+    ],
+    [
+      "NARR",
+      185475
+    ],
+    [
+      "HOLS",
+      152856
+    ],
+    [
+      "WILU",
+      146918
+    ],
+    [
+      "LOCU",
+      104424
+    ],
+    [
+      "WPSH",
+      80004
+    ],
+    [
+      "BRIG",
+      46607
+    ],
+    [
+      "BEST",
+      39065
+    ],
+    [
+      "DDWB",
+      31149
+    ],
+    [
+      "OUTU",
+      10782
+    ],
+    [
+      "DDSW",
+      8104
+    ],
+    [
+      "LRWS",
+      5067
+    ],
+    [
+      "LRSE",
+      4849
+    ],
+    [
+      "WLSH",
+      3702
+    ],
+    [
+      "LRNW",
+      3047
+    ],
+    [
+      "DDNE",
+      2312
+    ],
+    [
+      "FORG",
+      2153
+    ],
+    [
+      "WDSD",
+      2147
+    ],
+    [
+      "LRSH",
+      1893
+    ],
+    [
+      "DDWK",
+      1835
+    ],
+    [
+      "BRTH",
+      1083
+    ],
+    [
+      "HDDL",
+      998
+    ],
+    [
+      "WPNH",
+      969
+    ],
+    [
+      "STBK",
+      484
+    ],
+    [
+      "CLIF",
+      452
+    ],
+    [
+      "TYHS",
+      359
+    ],
+    [
+      "SCMB",
+      281
+    ],
+    [
+      "HODL",
+      272
+    ],
+    [
+      "CRJN",
+      177
+    ],
+    [
+      "DDBE",
+      94
+    ],
+    [
+      "MOSU",
+      39
+    ],
+    [
+      "DEAL",
+      4
+    ],
+    [
+      "FBNK",
+      2
+    ],
+    [
+      "HOGN",
+      0
+    ],
+    [
+      "KRAN",
+      0
+    ],
+    [
+      "MRDN",
+      0
+    ],
+    [
+      "SCM2",
+      0
+    ],
+    [
+      "SOMU",
+      0
+    ]
+  ],
+  "total_unmatched_in_manifest": 4036014
+}

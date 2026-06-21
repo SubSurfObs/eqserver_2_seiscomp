@@ -1,0 +1,120 @@
+{
+  "n_distinct_shapes": 7,
+  "station": "LRWS",
+  "top_directories": [
+    {
+      "count": 2109,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 864,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 610,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 590,
+      "year_month": "2020/12"
+    },
+    {
+      "count": 522,
+      "year_month": "2020/10"
+    },
+    {
+      "count": 325,
+      "year_month": "2020/11"
+    },
+    {
+      "count": 34,
+      "year_month": "2020/09"
+    },
+    {
+      "count": 3,
+      "year_month": "2020/03"
+    },
+    {
+      "count": 3,
+      "year_month": "2020/07"
+    },
+    {
+      "count": 2,
+      "year_month": "2020/08"
+    },
+    {
+      "count": 2,
+      "year_month": "2021/05"
+    },
+    {
+      "count": 1,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 1,
+      "year_month": "2020/02"
+    },
+    {
+      "count": 1,
+      "year_month": "2021/04"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 5048,
+      "samples": [
+        "20200925_0137_LRWS.trig.ms.zip",
+        "20200925_0138_LRWS.trig.ms.zip",
+        "20200925_0139_LRWS.trig.ms.zip"
+      ],
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 9,
+      "samples": [
+        "2020-0~4.MS",
+        "2020-0~4.MS",
+        "2020-0~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 6,
+      "samples": [
+        "2020-09-08 0157.ms.zip",
+        "2020-09-08 0317.ms.zip",
+        "2021-03-09 2108.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2020-02-12 2303 00 LRWS.MS"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "07"
+      ],
+      "shape": "D2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202~1DE7.MS"
+      ],
+      "shape": "D3~D1H2D1.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202~DC77.MS"
+      ],
+      "shape": "D3~H2D2.A2"
+    }
+  ],
+  "total_unmatched": 5067
+}

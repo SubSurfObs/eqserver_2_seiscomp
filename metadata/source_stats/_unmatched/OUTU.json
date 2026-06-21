@@ -1,0 +1,94 @@
+{
+  "n_distinct_shapes": 7,
+  "station": "OUTU",
+  "top_directories": [
+    {
+      "count": 10487,
+      "year_month": "2021/06"
+    },
+    {
+      "count": 70,
+      "year_month": "2020/02"
+    },
+    {
+      "count": 64,
+      "year_month": "2019/11"
+    },
+    {
+      "count": 63,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 44,
+      "year_month": "2019/12"
+    },
+    {
+      "count": 33,
+      "year_month": "2020/03"
+    },
+    {
+      "count": 16,
+      "year_month": "2021/07"
+    },
+    {
+      "count": 5,
+      "year_month": "2019/09"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 10503,
+      "samples": [
+        "2021-06-10 0457 08 OUTU.wrno.dmx.gz",
+        "2021-06-10 0458 08 OUTU.wrno.dmx.gz",
+        "2021-06-10 0459 08 OUTU.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 274,
+      "samples": [
+        "2019-11-07 0828 27 OUTU_DLZ.mseed.zip",
+        "2019-11-07 1337 27 OUTU_DLZ.mseed.zip",
+        "2019-11-07 1711 27 OUTU_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2019-09-14_03"
+      ],
+      "shape": "D4-D2-D2_D2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2019-09-19_0415_10_OUTU.dMx"
+      ],
+      "shape": "D4-D2-D2_D4_D2_A4.h1A1l1"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202475~2.DMX"
+      ],
+      "shape": "D6~D1.A3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2081F8~2.DMX"
+      ],
+      "shape": "D4H1D1~D1.A3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2019%09-30_1512_10_OUTU.dmx"
+      ],
+      "shape": "D4%D2-D2_D4_D2_A4.l3"
+    }
+  ],
+  "total_unmatched": 10782
+}

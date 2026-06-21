@@ -1,0 +1,117 @@
+{
+  "n_distinct_shapes": 6,
+  "station": "NARR",
+  "top_directories": [
+    {
+      "count": 48938,
+      "year_month": "2021/08"
+    },
+    {
+      "count": 46802,
+      "year_month": "2021/09"
+    },
+    {
+      "count": 31464,
+      "year_month": "2021/10"
+    },
+    {
+      "count": 29510,
+      "year_month": "2021/06"
+    },
+    {
+      "count": 24960,
+      "year_month": "2021/07"
+    },
+    {
+      "count": 3176,
+      "year_month": "2021/05"
+    },
+    {
+      "count": 68,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 46,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 31,
+      "year_month": "2017/05"
+    },
+    {
+      "count": 31,
+      "year_month": "2017/10"
+    },
+    {
+      "count": 30,
+      "year_month": "2017/03"
+    },
+    {
+      "count": 30,
+      "year_month": "2017/04"
+    },
+    {
+      "count": 30,
+      "year_month": "2017/06"
+    },
+    {
+      "count": 30,
+      "year_month": "2017/07"
+    },
+    {
+      "count": 30,
+      "year_month": "2017/11"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 184878,
+      "samples": [
+        "1989-08-17 2359 50 NARR.wrno.dmx.gz",
+        "1999-08-22 0203 12 NARR.wrno.dmx.gz",
+        "1999-08-22 0203 42 NARR.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 334,
+      "samples": [
+        "2017-01-19 2358 32 NARR.soh",
+        "2017-01-20 2358 36 NARR.soh",
+        "2017-01-21 2358 40 NARR.soh"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l3"
+    },
+    {
+      "count": 260,
+      "samples": [
+        "2019-04-04 1024 35 NARR_DLZ.mseed.zip",
+        "2019-04-06 2250 31 NARR_DLZ.mseed.zip",
+        "2019-04-08 1108 16 NARR_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        ".2012-08-25_0409_25_NARR.dmx.RTrwTJ"
+      ],
+      "shape": ".D4-D2-D2_D4_D2_A4.l3.A2l2A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "jim"
+      ],
+      "shape": "l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "fred"
+      ],
+      "shape": "l4"
+    }
+  ],
+  "total_unmatched": 185475
+}

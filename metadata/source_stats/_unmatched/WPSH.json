@@ -1,0 +1,96 @@
+{
+  "n_distinct_shapes": 3,
+  "station": "WPSH",
+  "top_directories": [
+    {
+      "count": 44441,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 34350,
+      "year_month": "2019/05"
+    },
+    {
+      "count": 350,
+      "year_month": "1999/08"
+    },
+    {
+      "count": 131,
+      "year_month": "2019/10"
+    },
+    {
+      "count": 129,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 99,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 93,
+      "year_month": "2019/11"
+    },
+    {
+      "count": 82,
+      "year_month": "2020/02"
+    },
+    {
+      "count": 79,
+      "year_month": "2019/12"
+    },
+    {
+      "count": 77,
+      "year_month": "2019/04"
+    },
+    {
+      "count": 64,
+      "year_month": "1999/10"
+    },
+    {
+      "count": 56,
+      "year_month": "2020/03"
+    },
+    {
+      "count": 35,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 14,
+      "year_month": "1999/11"
+    },
+    {
+      "count": 2,
+      "year_month": "1980/01"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 29243,
+      "samples": [
+        "2019-05-20_2243-WPSH.ms.zip",
+        "2019-05-20_2244-WPSH.ms.zip",
+        "2019-05-20_2245-WPSH.ms.zip"
+      ],
+      "shape": "D4-D2-D2_D4-A4.l2.l3"
+    },
+    {
+      "count": 26053,
+      "samples": [
+        "1989-08-17 2359 05 WPSH.wrno.dmx.gz",
+        "1999-08-22 0102 59 WPSH.wrno.dmx.gz",
+        "1999-08-22 0103 59 WPSH.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 24708,
+      "samples": [
+        "1970-01-01 2359 38 WPSH_DLZ.mseed.zip",
+        "1980-01-10 0152 08 WPSH_DLZ.mseed.zip",
+        "1980-01-10 0221 02 WPSH_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    }
+  ],
+  "total_unmatched": 80004
+}

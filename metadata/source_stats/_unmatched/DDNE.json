@@ -1,0 +1,85 @@
+{
+  "n_distinct_shapes": 5,
+  "station": "DDNE",
+  "top_directories": [
+    {
+      "count": 744,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 744,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 720,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 97,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 2,
+      "year_month": "2018/09"
+    },
+    {
+      "count": 2,
+      "year_month": "2019/12"
+    },
+    {
+      "count": 1,
+      "year_month": "2018/02"
+    },
+    {
+      "count": 1,
+      "year_month": "2018/10"
+    },
+    {
+      "count": 1,
+      "year_month": "2021/12"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 2305,
+      "samples": [
+        "2019-06-01 00hr DDNE.ms.zip",
+        "2019-06-01 01hr DDNE.ms.zip",
+        "2019-06-01 02hr DDNE.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D2l2 A4.l2.l3"
+    },
+    {
+      "count": 3,
+      "samples": [
+        "2018-09-13 1131 04 DDNE.zip",
+        "2018-09-29 1131 00 DDNE.zip",
+        "2018-10-30 0152 14 DDNE.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2019-12-17 1043.ms.zip",
+        "2019-12-23 0106.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "20180216_0106.uom.all.sud.gz"
+      ],
+      "shape": "D8_D4.l3.l3.l3.l2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2021-1~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    }
+  ],
+  "total_unmatched": 2312
+}

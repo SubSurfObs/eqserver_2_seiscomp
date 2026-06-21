@@ -1,0 +1,60 @@
+# Unmatched-filename investigation network summary
+# Generated: 2026-06-21T08:31:57Z
+# Stations: 41
+# Total unmatched basenames in manifests: 4,036,014
+
+## Stations with the most unmatched (top 15)
+  SGWU       1,402,532
+  TRPU         940,574
+  MARD         428,245
+  LOYU         427,060
+  NARR         185,475
+  HOLS         152,856
+  WILU         146,918
+  LOCU         104,424
+  WPSH          80,004
+  BRIG          46,607
+  BEST          39,065
+  DDWB          31,149
+  OUTU          10,782
+  DDSW           8,104
+  LRWS           5,067
+
+## Pooled-sample shapes (from 30-sample-per-station discovery)
+  shape=D4-D2-D2 D4 D2 A4_A3.l5.l3      n_samples= 255  e.g. BEST:1999-09-08 0727 36 BEST_DLZ.mseed.zip, BEST:1999-09-08 1454 36 BEST_DLZ.mseed.zip, BEST:1999-09-09 1732 36 BEST_DLZ.mseed.zip
+  shape=D4-D2-D2 D4 D2 A4.l4.l3.l2      n_samples= 172  e.g. BEST:1989-08-17 2359 31 BEST.wrno.dmx.gz, BEST:1989-08-17 2359 36 BEST.wrno.dmx.gz, BEST:1989-08-17 2359 35 BEST.wrno.dmx.gz
+  shape=D8_D4_A4.l4.l2.l3               n_samples= 129  e.g. DDSW:20200925_0139_DDSW.trig.ms.zip, DDSW:20200925_0138_DDSW.trig.ms.zip, DDSW:20200925_0137_DDSW.trig.ms.zip
+  shape=D4-D2-D2 D4 D2 A4.l3            n_samples=  95  e.g. BRTH:2018-06-20 0558 47 BRTH.zip, BRTH:2018-06-20 0559 17 BRTH.zip, BRTH:2018-06-20 0600 17 BRTH.zip
+  shape=D4-D2-D2 D4 D2 A4_A2D1.l5.l3    n_samples=  89  e.g. LOYU:2014-11-02 1419 01 LOYU_HH2.mseed.zip, LOYU:2014-11-02 1420 01 LOYU_HH2.mseed.zip, LOYU:2014-11-02 1421 01 LOYU_HH2.mseed.zip
+  shape=D4-D2-D2 D2l2 A4.l2.l3          n_samples=  79  e.g. DDNE:2019-06-01 00hr DDNE.ms.zip, DDNE:2019-06-01 01hr DDNE.ms.zip, DDNE:2019-06-01 02hr DDNE.ms.zip
+  shape=D4-D1~D1.A2                     n_samples=  34  e.g. DDSW:2019-0~4.MS, DDSW:2019-1~4.MS, DDSW:2019-1~4.MS
+  shape=D4-D2-D2 D4 D2 H4_A3.l5.l3      n_samples=  30  e.g. DDBE:2019-11-09 0944 24 DDBE_HNE.mseed.zip, DDBE:2019-11-09 0950 19 DDBE_HNE.mseed.zip, DDBE:2019-11-09 0957 31 DDBE_HNE.mseed.zip
+  shape=D4-D2-D2 D4_A4.l2.l3            n_samples=  30  e.g. DDWB:2021-06-20 2355_DDWB.ms.zip, DDWB:2021-06-20 2339_DDWB.ms.zip, DDWB:2021-06-20 2347_DDWB.ms.zip
+  shape=D7_D4.D1.l2                     n_samples=  30  e.g. SGWU:2015286_0000.1.ms, SGWU:2015286_0055.1.ms, SGWU:2015286_0059.1.ms
+  shape=D4-D2-D2 D4 D2 A4_D3.l5         n_samples=  30  e.g. WILU:2016-04-05 0504 26 WILU_001.mseed, WILU:2016-04-05 0506 57 WILU_001.mseed, WILU:2016-04-05 0510 57 WILU_001.mseed
+  shape=D4-D2-D2 D4.l2.l3               n_samples=  21  e.g. DEAL:2018-08-21 2219.ms.zip, DEAL:2018-11-13 0307.ms.zip, DEAL:2021-06-10 0401.ms.zip
+  shape=D3~H1D3.A2                      n_samples=   3  e.g. LRNW:202~A331.MS, STBK:201~E384.MS, STBK:202~E421.MS
+  shape=D3~D4.A2                        n_samples=   2  e.g. DDSW:201~9136.MS, DDSW:201~2629.MS
+  shape=D3~D3H1.A2                      n_samples=   2  e.g. DDSW:201~801D.MS, LRNW:202~160C.MS
+
+## Deep-dive shapes (from full manifest scan of top offenders)
+  shape=D4-D2-D2 D4_A4.l2.l3            count= 1,686,872
+  shape=D4-D2-D2 D4 D2 A4.l4.l3.l2      count=   970,393
+  shape=D4-D2-D2 D4 D2 A4_D3.l5         count=   856,083
+  shape=D4-D2-D2 D4 D2 A4_D3.l5.l3      count=   312,218
+  shape=D4-D2-D2 D4 D2 A4_A2D1.l5.l3    count=    80,625
+  shape=D4-D2-D2 D4 D2 A4_A3.l5.l3      count=    44,712
+  shape=D4-D2-D2_D4-A4.l2.l3            count=    29,243
+  shape=D8_D4_A4.l4.l2.l3               count=    27,464
+  shape=D4-D2-D2 D2l2 A4.l2.l3          count=    11,332
+  shape=D4-D2-D2-D4_A4.l2.l3            count=    10,080
+  shape=D7_D4.D1.l2                     count=       990
+  shape=D4-D1-D2-D4-A4.l2.l3            count=       576
+  shape=D4-D1-D1-D4-A4.l2.l3            count=       432
+  shape=D4-D2-D2 D4 D2 A4.l3            count=       382
+  shape=D16_A4__D1_D1.l3                count=       343
+  shape=D4-D2-D2 D4.l2.l3               count=        46
+  shape=D4-D1~D1.A2                     count=        42
+  shape=D2                              count=         3
+  shape=D3~D4.A2                        count=         3
+  shape=D3~H2D2.A2                      count=         3

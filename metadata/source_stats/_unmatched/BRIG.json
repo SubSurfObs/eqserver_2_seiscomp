@@ -1,0 +1,87 @@
+{
+  "n_distinct_shapes": 2,
+  "station": "BRIG",
+  "top_directories": [
+    {
+      "count": 38089,
+      "year_month": "2020/09"
+    },
+    {
+      "count": 6172,
+      "year_month": "1989/08"
+    },
+    {
+      "count": 795,
+      "year_month": "2020/08"
+    },
+    {
+      "count": 212,
+      "year_month": "2019/11"
+    },
+    {
+      "count": 190,
+      "year_month": "2019/10"
+    },
+    {
+      "count": 164,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 155,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 139,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 138,
+      "year_month": "2019/04"
+    },
+    {
+      "count": 111,
+      "year_month": "2019/05"
+    },
+    {
+      "count": 110,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 103,
+      "year_month": "2020/02"
+    },
+    {
+      "count": 89,
+      "year_month": "2019/12"
+    },
+    {
+      "count": 89,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 43,
+      "year_month": "2020/03"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 45064,
+      "samples": [
+        "1989-08-17 2359 33 BRIG.wrno.dmx.gz",
+        "1989-08-17 2359 36 BRIG.wrno.dmx.gz",
+        "1989-08-17 2359 55 BRIG.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 1543,
+      "samples": [
+        "2019-04-04 0818 51 BRIG_DLZ.mseed.zip",
+        "2019-04-04 1241 51 BRIG_DLZ.mseed.zip",
+        "2019-04-04 1436 51 BRIG_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    }
+  ],
+  "total_unmatched": 46607
+}

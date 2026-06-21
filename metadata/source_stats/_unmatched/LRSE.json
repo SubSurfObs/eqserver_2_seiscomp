@@ -1,0 +1,41 @@
+{
+  "n_distinct_shapes": 2,
+  "station": "LRSE",
+  "top_directories": [
+    {
+      "count": 3091,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 1102,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 655,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 1,
+      "year_month": "2022/02"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 4848,
+      "samples": [
+        "20210101_0642_LRSE.trig.ms.zip",
+        "20210101_0643_LRSE.trig.ms.zip",
+        "20210101_0644_LRSE.trig.ms.zip"
+      ],
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2022-02-09 0829.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    }
+  ],
+  "total_unmatched": 4849
+}

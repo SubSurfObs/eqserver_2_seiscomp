@@ -1,0 +1,123 @@
+{
+  "n_distinct_shapes": 7,
+  "station": "DDSW",
+  "top_directories": [
+    {
+      "count": 2218,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 1551,
+      "year_month": "2020/11"
+    },
+    {
+      "count": 1380,
+      "year_month": "2020/12"
+    },
+    {
+      "count": 1232,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 926,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 618,
+      "year_month": "2020/10"
+    },
+    {
+      "count": 166,
+      "year_month": "2020/09"
+    },
+    {
+      "count": 4,
+      "year_month": "2019/11"
+    },
+    {
+      "count": 2,
+      "year_month": "2019/04"
+    },
+    {
+      "count": 2,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 1,
+      "year_month": "2018/01"
+    },
+    {
+      "count": 1,
+      "year_month": "2018/05"
+    },
+    {
+      "count": 1,
+      "year_month": "2019/12"
+    },
+    {
+      "count": 1,
+      "year_month": "2023/07"
+    },
+    {
+      "count": 1,
+      "year_month": "2023/08"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 8091,
+      "samples": [
+        "20200925_0137_DDSW.trig.ms.zip",
+        "20200925_0138_DDSW.trig.ms.zip",
+        "20200925_0139_DDSW.trig.ms.zip"
+      ],
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 7,
+      "samples": [
+        "2019-0~4.MS",
+        "2019-1~4.MS",
+        "2019-1~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "201~9136.MS",
+        "201~2629.MS"
+      ],
+      "shape": "D3~D4.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "20180113_2130_00_DDSW.csv"
+      ],
+      "shape": "D8_D4_D2_A4.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2018-05-30 0141 31 .ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 .l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "201~39BB.MS"
+      ],
+      "shape": "D3~D2H2.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "201~801D.MS"
+      ],
+      "shape": "D3~D3H1.A2"
+    }
+  ],
+  "total_unmatched": 8104
+}

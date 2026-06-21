@@ -1,0 +1,85 @@
+{
+  "n_distinct_shapes": 6,
+  "station": "DDWK",
+  "top_directories": [
+    {
+      "count": 744,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 744,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 241,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 98,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 5,
+      "year_month": "2018/10"
+    },
+    {
+      "count": 2,
+      "year_month": "2021/12"
+    },
+    {
+      "count": 1,
+      "year_month": "2024/06"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 1826,
+      "samples": [
+        "2019-06-21 00hr DDWK.ms.zip",
+        "2019-06-21 01hr DDWK.ms.zip",
+        "2019-06-21 02hr DDWK.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D2l2 A4.l2.l3"
+    },
+    {
+      "count": 3,
+      "samples": [
+        "2018-10-30 0050 32 DDWK.zip",
+        "2018-10-30 0051 02 DDWK.zip",
+        "2018-10-30 0052 07 DDWK.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2018-10-30 0050 32 DDWK.1.zip",
+        "2018-10-30 0052 07 DDWK.1.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.D1.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2019-0~4.MS",
+        "2021-1~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "202~3117.MS"
+      ],
+      "shape": "D3~D4.A2"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2024-06-30 0851.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    }
+  ],
+  "total_unmatched": 1835
+}

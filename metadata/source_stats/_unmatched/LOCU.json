@@ -1,0 +1,51 @@
+{
+  "n_distinct_shapes": 2,
+  "station": "LOCU",
+  "top_directories": [
+    {
+      "count": 35716,
+      "year_month": "2021/06"
+    },
+    {
+      "count": 31192,
+      "year_month": "2021/08"
+    },
+    {
+      "count": 25351,
+      "year_month": "2021/07"
+    },
+    {
+      "count": 5371,
+      "year_month": "2021/10"
+    },
+    {
+      "count": 3946,
+      "year_month": "2021/09"
+    },
+    {
+      "count": 2848,
+      "year_month": "2021/05"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 88040,
+      "samples": [
+        "2021-05-30 0002 40 LOCU.wrno.dmx.gz",
+        "2021-05-30 0003 40 LOCU.wrno.dmx.gz",
+        "2021-05-30 0004 40 LOCU.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 16384,
+      "samples": [
+        "2021-07-31 0317 50 LOCU_DLZ.mseed.zip",
+        "2021-07-31 0318 50 LOCU_DLZ.mseed.zip",
+        "2021-07-31 0319 50 LOCU_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    }
+  ],
+  "total_unmatched": 104424
+}

@@ -1,0 +1,91 @@
+{
+  "n_distinct_shapes": 5,
+  "station": "BRTH",
+  "top_directories": [
+    {
+      "count": 328,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 315,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 250,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 142,
+      "year_month": "2020/12"
+    },
+    {
+      "count": 42,
+      "year_month": "2018/06"
+    },
+    {
+      "count": 2,
+      "year_month": "2020/11"
+    },
+    {
+      "count": 1,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 1,
+      "year_month": "2019/10"
+    },
+    {
+      "count": 1,
+      "year_month": "2021/05"
+    },
+    {
+      "count": 1,
+      "year_month": "2021/10"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 1035,
+      "samples": [
+        "20201217_0257_BRTH.trig.ms.zip",
+        "20201217_0258_BRTH.trig.ms.zip",
+        "20201217_0259_BRTH.trig.ms.zip"
+      ],
+      "shape": "D8_D4_A4.l4.l2.l3"
+    },
+    {
+      "count": 42,
+      "samples": [
+        "2018-06-20 0558 47 BRTH.zip",
+        "2018-06-20 0559 17 BRTH.zip",
+        "2018-06-20 0600 17 BRTH.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l3"
+    },
+    {
+      "count": 3,
+      "samples": [
+        "2019-0~4.MS",
+        "2019-1~4.MS",
+        "2021-0~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2020-11-16 0556_BRTH.ms.zip",
+        "2020-11-17 0734_BRTH.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4_A4.l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "01"
+      ],
+      "shape": "D2"
+    }
+  ],
+  "total_unmatched": 1083
+}

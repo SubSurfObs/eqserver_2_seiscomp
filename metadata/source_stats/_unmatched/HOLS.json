@@ -1,0 +1,38 @@
+{
+  "n_distinct_shapes": 1,
+  "station": "HOLS",
+  "top_directories": [
+    {
+      "count": 44640,
+      "year_month": "2021/05"
+    },
+    {
+      "count": 43200,
+      "year_month": "2021/06"
+    },
+    {
+      "count": 43198,
+      "year_month": "2021/04"
+    },
+    {
+      "count": 20358,
+      "year_month": "2021/07"
+    },
+    {
+      "count": 1460,
+      "year_month": "2021/03"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 152856,
+      "samples": [
+        "2021-03-30 2340 44 HOLS.wrno.dmx.gz",
+        "2021-03-30 2341 44 HOLS.wrno.dmx.gz",
+        "2021-03-30 2342 44 HOLS.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    }
+  ],
+  "total_unmatched": 152856
+}

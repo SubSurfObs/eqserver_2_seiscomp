@@ -1,0 +1,92 @@
+{
+  "n_distinct_shapes": 3,
+  "station": "BEST",
+  "top_directories": [
+    {
+      "count": 14686,
+      "year_month": "2021/05"
+    },
+    {
+      "count": 12513,
+      "year_month": "2021/06"
+    },
+    {
+      "count": 8247,
+      "year_month": "2021/04"
+    },
+    {
+      "count": 744,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 744,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 720,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 717,
+      "year_month": "2019/05"
+    },
+    {
+      "count": 577,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 44,
+      "year_month": "2020/03"
+    },
+    {
+      "count": 27,
+      "year_month": "1999/08"
+    },
+    {
+      "count": 26,
+      "year_month": "1999/09"
+    },
+    {
+      "count": 8,
+      "year_month": "2020/02"
+    },
+    {
+      "count": 7,
+      "year_month": "2021/07"
+    },
+    {
+      "count": 5,
+      "year_month": "1989/08"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 35485,
+      "samples": [
+        "1989-08-17 2359 19 BEST.wrno.dmx.gz",
+        "1989-08-17 2359 31 BEST.wrno.dmx.gz",
+        "1989-08-17 2359 33 BEST.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 3502,
+      "samples": [
+        "2019-05-02 03hr BEST.ms.zip",
+        "2019-05-02 04hr BEST.ms.zip",
+        "2019-05-02 05hr BEST.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D2l2 A4.l2.l3"
+    },
+    {
+      "count": 78,
+      "samples": [
+        "1999-09-08 0727 36 BEST_DLZ.mseed.zip",
+        "1999-09-08 1454 36 BEST_DLZ.mseed.zip",
+        "1999-09-09 1732 36 BEST_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    }
+  ],
+  "total_unmatched": 39065
+}

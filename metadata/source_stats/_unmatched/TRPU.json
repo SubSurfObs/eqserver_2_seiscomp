@@ -1,0 +1,137 @@
+{
+  "n_distinct_shapes": 8,
+  "station": "TRPU",
+  "top_directories": [
+    {
+      "count": 45433,
+      "year_month": "2021/03"
+    },
+    {
+      "count": 44753,
+      "year_month": "2020/08"
+    },
+    {
+      "count": 44707,
+      "year_month": "2020/10"
+    },
+    {
+      "count": 44461,
+      "year_month": "2020/11"
+    },
+    {
+      "count": 43886,
+      "year_month": "2021/04"
+    },
+    {
+      "count": 43593,
+      "year_month": "2020/09"
+    },
+    {
+      "count": 41713,
+      "year_month": "2020/07"
+    },
+    {
+      "count": 40367,
+      "year_month": "2020/12"
+    },
+    {
+      "count": 37823,
+      "year_month": "2021/05"
+    },
+    {
+      "count": 33124,
+      "year_month": "2021/10"
+    },
+    {
+      "count": 27708,
+      "year_month": "2021/08"
+    },
+    {
+      "count": 25016,
+      "year_month": "2021/02"
+    },
+    {
+      "count": 23774,
+      "year_month": "2021/09"
+    },
+    {
+      "count": 18608,
+      "year_month": "2021/01"
+    },
+    {
+      "count": 14005,
+      "year_month": "2021/07"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 550035,
+      "samples": [
+        "2020-07-03 0050_TRPU.ms.zip",
+        "2020-07-03 0051_TRPU.ms.zip",
+        "2020-07-03 0052_TRPU.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4_A4.l2.l3"
+    },
+    {
+      "count": 224187,
+      "samples": [
+        "2016-02-24 2339 08 TRPU_001.mseed",
+        "2016-02-24 2342 57 TRPU_001.mseed",
+        "2016-02-24 2346 58 TRPU_001.mseed"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5"
+    },
+    {
+      "count": 128754,
+      "samples": [
+        "2018-03-27 0014 59 TRPU_001.mseed.zip",
+        "2018-03-27 0018 58 TRPU_001.mseed.zip",
+        "2018-03-27 0022 57 TRPU_001.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5.l3"
+    },
+    {
+      "count": 33273,
+      "samples": [
+        "2015-07-01 0005 00 TRPU_HH2.mseed.zip",
+        "2015-07-01 0006 00 TRPU_HH2.mseed.zip",
+        "2015-07-01 0007 00 TRPU_HH2.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A2D1.l5.l3"
+    },
+    {
+      "count": 4320,
+      "samples": [
+        "2017-12-16-0000_TRPU.ms.zip",
+        "2017-12-16-0001_TRPU.ms.zip",
+        "2017-12-16-0002_TRPU.ms.zip"
+      ],
+      "shape": "D4-D2-D2-D4_A4.l2.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2015-07-03_0159-TRPU-HHZ.ms.zip",
+        "2015-07-18_0000-TRPU-HHZ.ms.zip"
+      ],
+      "shape": "D4-D2-D2_D4-A4-A3.l2.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2016-07-26-0059-TRPU-HHZ.ms.zip",
+        "2017-01-21-0059-TRPU-HHZ.ms.zip"
+      ],
+      "shape": "D4-D2-D2-D4-A4-A3.l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2000_316"
+      ],
+      "shape": "D4_D3"
+    }
+  ],
+  "total_unmatched": 940574
+}

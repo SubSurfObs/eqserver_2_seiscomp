@@ -1,0 +1,69 @@
+{
+  "n_distinct_shapes": 3,
+  "station": "WLSH",
+  "top_directories": [
+    {
+      "count": 744,
+      "year_month": "2019/07"
+    },
+    {
+      "count": 744,
+      "year_month": "2019/08"
+    },
+    {
+      "count": 721,
+      "year_month": "2019/05"
+    },
+    {
+      "count": 720,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 720,
+      "year_month": "2019/09"
+    },
+    {
+      "count": 50,
+      "year_month": "2019/10"
+    },
+    {
+      "count": 1,
+      "year_month": "2019/04"
+    },
+    {
+      "count": 1,
+      "year_month": "2019/12"
+    },
+    {
+      "count": 1,
+      "year_month": "2024/09"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 3699,
+      "samples": [
+        "2019-05-01 23hr WLSH.ms.zip",
+        "2019-05-02 00hr WLSH.ms.zip",
+        "2019-05-02 01hr WLSH.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D2l2 A4.l2.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2019-12-21 1746.ms.zip",
+        "2024-09-21 1622.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2019-0~4.MS"
+      ],
+      "shape": "D4-D1~D1.A2"
+    }
+  ],
+  "total_unmatched": 3702
+}

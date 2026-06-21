@@ -1,0 +1,153 @@
+{
+  "n_distinct_shapes": 10,
+  "station": "LOYU",
+  "top_directories": [
+    {
+      "count": 75977,
+      "year_month": "2019/02"
+    },
+    {
+      "count": 62858,
+      "year_month": "2019/03"
+    },
+    {
+      "count": 33814,
+      "year_month": "2019/01"
+    },
+    {
+      "count": 28602,
+      "year_month": "2019/04"
+    },
+    {
+      "count": 20559,
+      "year_month": "2016/12"
+    },
+    {
+      "count": 20496,
+      "year_month": "2017/01"
+    },
+    {
+      "count": 19811,
+      "year_month": "2017/02"
+    },
+    {
+      "count": 16431,
+      "year_month": "2016/11"
+    },
+    {
+      "count": 14828,
+      "year_month": "2017/11"
+    },
+    {
+      "count": 13920,
+      "year_month": "2017/10"
+    },
+    {
+      "count": 13668,
+      "year_month": "2016/04"
+    },
+    {
+      "count": 11455,
+      "year_month": "2017/12"
+    },
+    {
+      "count": 11254,
+      "year_month": "2016/09"
+    },
+    {
+      "count": 10899,
+      "year_month": "2017/03"
+    },
+    {
+      "count": 9605,
+      "year_month": "2016/10"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 189101,
+      "samples": [
+        "2016-04-05 0210 31 LOYU_001.mseed",
+        "2016-04-05 0210 31 LOYU_004.mseed",
+        "2016-04-05 0210 58 LOYU_004.mseed"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5"
+    },
+    {
+      "count": 110308,
+      "samples": [
+        "2015-04-20 0045_LOYU.ms.zip",
+        "2019-01-05 1558_LOYU.ms.zip",
+        "2019-01-05 1559_LOYU.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4_A4.l2.l3"
+    },
+    {
+      "count": 80380,
+      "samples": [
+        "2018-03-28 0914 58 LOYU_004.mseed.zip",
+        "2018-03-28 0914 59 LOYU_001.mseed.zip",
+        "2018-03-28 0917 58 LOYU_001.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5.l3"
+    },
+    {
+      "count": 46919,
+      "samples": [
+        "2014-01-08 1241 44 LOYU_HH2.mseed.zip",
+        "2014-01-08 1242 44 LOYU_HH2.mseed.zip",
+        "2014-01-08 1243 44 LOYU_HH2.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A2D1.l5.l3"
+    },
+    {
+      "count": 343,
+      "samples": [
+        "2015060223232855_LOYU__1_1.msd",
+        "2015060223232855_LOYU__1_2.msd",
+        "2015060223232855_LOYU__1_3.msd"
+      ],
+      "shape": "D16_A4__D1_D1.l3"
+    },
+    {
+      "count": 3,
+      "samples": [
+        "2016 233 0134 0855_LOYU__1_3.msd",
+        "2016 233 0134 0855_LOYU__1_4.msd",
+        "2016 233 0134 0855_LOYU__1_5.msd"
+      ],
+      "shape": "D4 D3 D4 D4_A4__D1_D1.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2015-06-18 0057.ms.zip",
+        "2016-04-05 0215.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2016 233 0134 00855_LOYU__1_1.msd",
+        "2016 233 0134 00855_LOYU__1_2.msd"
+      ],
+      "shape": "D4 D3 D4 D5_A4__D1_D1.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2014311001157850_LOYU__1.msd"
+      ],
+      "shape": "D16_A4__D1.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2016 233 0134 855_LOYU__1_6.msd"
+      ],
+      "shape": "D4 D3 D4 D3_A4__D1_D1.l3"
+    }
+  ],
+  "total_unmatched": 427060
+}

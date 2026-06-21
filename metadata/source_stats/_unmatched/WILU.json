@@ -1,0 +1,95 @@
+{
+  "n_distinct_shapes": 3,
+  "station": "WILU",
+  "top_directories": [
+    {
+      "count": 10931,
+      "year_month": "2017/03"
+    },
+    {
+      "count": 10524,
+      "year_month": "2017/10"
+    },
+    {
+      "count": 10452,
+      "year_month": "2017/04"
+    },
+    {
+      "count": 10326,
+      "year_month": "2017/01"
+    },
+    {
+      "count": 10179,
+      "year_month": "2016/12"
+    },
+    {
+      "count": 10166,
+      "year_month": "2016/11"
+    },
+    {
+      "count": 10046,
+      "year_month": "2017/09"
+    },
+    {
+      "count": 9852,
+      "year_month": "2017/02"
+    },
+    {
+      "count": 8429,
+      "year_month": "2016/04"
+    },
+    {
+      "count": 7829,
+      "year_month": "2016/10"
+    },
+    {
+      "count": 7230,
+      "year_month": "2017/07"
+    },
+    {
+      "count": 6832,
+      "year_month": "2017/11"
+    },
+    {
+      "count": 6793,
+      "year_month": "2017/08"
+    },
+    {
+      "count": 6771,
+      "year_month": "2017/05"
+    },
+    {
+      "count": 4579,
+      "year_month": "2016/07"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 146613,
+      "samples": [
+        "2016-04-05 0504 26 WILU_001.mseed",
+        "2016-04-05 0506 57 WILU_001.mseed",
+        "2016-04-05 0510 57 WILU_001.mseed"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_D3.l5"
+    },
+    {
+      "count": 303,
+      "samples": [
+        "2016-04-29 1400 00 WILU_HH2.mseed.zip",
+        "2016-04-29 1401 00 WILU_HH2.mseed.zip",
+        "2016-04-29 1402 00 WILU_HH2.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A2D1.l5.l3"
+    },
+    {
+      "count": 2,
+      "samples": [
+        "2016-07-31 0012.ms.zip",
+        "2017-06-21 0229.ms.zip"
+      ],
+      "shape": "D4-D2-D2 D4.l2.l3"
+    }
+  ],
+  "total_unmatched": 146918
+}

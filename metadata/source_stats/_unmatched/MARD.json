@@ -1,0 +1,101 @@
+{
+  "n_distinct_shapes": 4,
+  "station": "MARD",
+  "top_directories": [
+    {
+      "count": 44574,
+      "year_month": "2020/05"
+    },
+    {
+      "count": 44546,
+      "year_month": "2020/03"
+    },
+    {
+      "count": 43771,
+      "year_month": "2020/10"
+    },
+    {
+      "count": 43569,
+      "year_month": "2020/07"
+    },
+    {
+      "count": 43140,
+      "year_month": "2020/06"
+    },
+    {
+      "count": 43139,
+      "year_month": "2020/04"
+    },
+    {
+      "count": 41700,
+      "year_month": "2020/02"
+    },
+    {
+      "count": 40711,
+      "year_month": "2020/09"
+    },
+    {
+      "count": 40522,
+      "year_month": "2020/08"
+    },
+    {
+      "count": 34407,
+      "year_month": "2020/11"
+    },
+    {
+      "count": 4106,
+      "year_month": "2020/01"
+    },
+    {
+      "count": 3346,
+      "year_month": "1999/08"
+    },
+    {
+      "count": 88,
+      "year_month": "2019/06"
+    },
+    {
+      "count": 87,
+      "year_month": "2019/05"
+    },
+    {
+      "count": 76,
+      "year_month": "2019/07"
+    }
+  ],
+  "top_shapes": [
+    {
+      "count": 427514,
+      "samples": [
+        "1989-08-17 0231 10 MARD.wrno.dmx.gz",
+        "1989-08-17 0232 10 MARD.wrno.dmx.gz",
+        "1989-08-17 0233 10 MARD.wrno.dmx.gz"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4.l4.l3.l2"
+    },
+    {
+      "count": 729,
+      "samples": [
+        "1980-01-07 0357 41 MARD_DLZ.mseed.zip",
+        "1980-01-07 1944 11 MARD_DLZ.mseed.zip",
+        "1980-01-07 2153 11 MARD_DLZ.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_A3.l5.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "2018-05-24 1205 51 MARD_c03.mseed.zip"
+      ],
+      "shape": "D4-D2-D2 D4 D2 A4_h1D2.l5.l3"
+    },
+    {
+      "count": 1,
+      "samples": [
+        "200119~2.GZ"
+      ],
+      "shape": "D6~D1.A2"
+    }
+  ],
+  "total_unmatched": 428245
+}
