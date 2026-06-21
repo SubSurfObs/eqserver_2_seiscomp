@@ -53,9 +53,34 @@ per-minute disk+tele stitching**. The hardest EchoPro shape we've seen.
   station has at least one signature where the size distribution
   suggests two populations we haven't yet distinguished.
 
-Detailed investigation of the unmatched filenames is in progress (see
-`scan/investigate_unmatched.py`; outputs land in
-`metadata/source_stats/_unmatched/`).
+Detailed investigation of the unmatched filenames completed 2026-06-21
+(see `metadata/source_stats/_unmatched/_network_summary.txt`). The
+breakdown, with operator-confirmed context where available:
+
+- **1.7M files with `'YYYY-MM-DD HHMM_STA.ms.zip'`** — mixed space/underscore
+  separator, violates the project's documented "space=tele, underscore=disk"
+  discriminator. Predominantly Minimus stations (DDWB, DDBE, SCM2).
+  **IN SCOPE for scan 2** — must be characterised. Note in
+  `project-underscore-tele-files` memory.
+- **970k `.wrno.dmx.gz` files** — GPS Week Number RollOver-corrected
+  cohort. Filename dates are uncorrected bogus dates (e.g. 1989-08-17);
+  real date = filename + 19.7 yr × N. Tagged by the EqServer ingest path
+  during the WNRO timing fix. May carry real seismic data; do not
+  auto-exclude on filename date. See `project-wrno-files` memory.
+- **1.2M per-channel mseed files** at RT130 borehole stations (LOYU,
+  WILU, TRPU, MOSU, SGWU). RefTek RT130 wrote single-channel files via
+  pre-ingest conversion. Currently invisible to the converter — **scan
+  1 silently dropped most of these stations' data**. Must aggregate
+  per-channel into 3-component output. See
+  `project-rt130-per-channel-files` memory.
+- **27k `.trig.ms.zip` files** — triggered Gecko mseed (we handle
+  `.trig.dmx` for EchoPro; not the Gecko equivalent). Cheap regex
+  addition.
+- **11k `XXhr STA.ms.zip` files** — hourly aggregates for some Gecko
+  stations. Cheap regex addition.
+- **Pre-2012 anything (1989, 1999)** — operator confirmed out of scope
+  for VW.
+- **~50 FAT 8.3 truncated names** — rare; ignorable for VW second pass.
 
 ### From `channel_epoch_scan.py` (all 41 VW stations)
 
