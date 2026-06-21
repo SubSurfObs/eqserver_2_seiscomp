@@ -195,24 +195,17 @@ def run_plan_generator(sta: str) -> dict:
         return {"error": f"manifest DB missing — run level1 first: {db_path}"}
     cmd = [PYTHON, "-u", str(PLAN_GENERATOR), str(db_path),
            "--registry", str(REGISTRY),
-           "--out", str(PLANS.parent),  # plan_generator writes to <out>/<NET>/<NET>.<STA>.plan.yaml
+           "--out", str(PLANS),  # plan_generator writes to <out>/VW.<STA>.plan.yaml flat
            "--stations", sta]
     log_path = LOGS / f"plan_generator_{sta}.log"
     with log_path.open("w") as logf:
         proc = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT, text=True)
     if proc.returncode != 0:
         return {"error": f"plan_generator failed rc={proc.returncode}; see {log_path}"}
-    # plan_generator writes to <out>/VW/VW.<STA>.plan.yaml; we want
-    # plans/VW.<STA>.plan.yaml flat. Move it.
-    nested = PLANS.parent / "VW" / f"VW.{sta}.plan.yaml"
-    if nested.exists():
-        target = PLANS / f"VW.{sta}.plan.yaml"
-        nested.replace(target)
-        return {"ok": True, "plan_path": str(target)}
-    flat = PLANS / f"VW.{sta}.plan.yaml"
-    if flat.exists():
-        return {"ok": True, "plan_path": str(flat)}
-    return {"error": f"plan_generator produced no output for {sta}; see {log_path}"}
+    plan_path = PLANS / f"VW.{sta}.plan.yaml"
+    if not plan_path.exists():
+        return {"error": f"plan_generator produced no output for {sta}; see {log_path}"}
+    return {"ok": True, "plan_path": str(plan_path)}
 
 
 # --------------------------------------------------------------------------
