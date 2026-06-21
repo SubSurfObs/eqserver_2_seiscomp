@@ -249,8 +249,11 @@ def _detect_source_kind(name: str) -> tuple[str, str]:
     are accelerometer triggers, not continuous waveform.
     """
     import re
-    # Triggered EchoPro — exclude
-    if re.match(r"^.+\.\d+\.dmx(\.gz)?$", name):
+    # Triggered EchoPro — exclude. Patterns observed:
+    #   STA.N.dmx[.gz]          (numbered triggered)
+    #   STA.trig.dmx[.gz]       (explicit triggered marker)
+    #   STA.N.trig.dmx[.gz]     (numbered explicit triggered)
+    if re.match(r"^.+\.(trig|\d+(\.trig)?)\.dmx(\.gz)?$", name):
         return ("triggered_suds", "unknown")
     # SUDS — EchoPro
     if re.match(r"^\d{4}-\d{2}-\d{2}_\d{4}_\d{2}_\w+\.dmx(\.gz)?$", name):
