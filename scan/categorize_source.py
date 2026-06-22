@@ -45,14 +45,33 @@ DEFAULT_DB_DIR = Path("/home/unimelb.edu.au/dsand/station_dbs")
 DEFAULT_OUT_DIR = Path(__file__).resolve().parent.parent / "metadata" / "source_stats"
 
 BUCKET_ORDER = ["A_pure", "D_pure", "E_multivar", "C_partial",
-                "AB_mixed", "sparse", "weird", "empty"]
+                "AB_mixed", "M_perchan", "M_partial",
+                "sparse", "weird", "empty"]
 
 
-def bucket(n_disk: int, n_tele_ss: int, n_tele_noss: int) -> str:
+def bucket(n_disk: int, n_tele_ss: int, n_tele_noss: int,
+           n_perchan: int = 0) -> str:
+    """Classify a station-day by file-source mix.
+
+    n_perchan counts per-channel-per-minute mseed files (Minimus borehole
+    pattern: ~4320 files/day = 3 chans x 1440 mins). These carry
+    exclude_reason='single_channel' in the manifest so were invisible to
+    earlier versions of this classifier — DDBE/SCM2 came out 100% 'empty'.
+
+    A clean Minimus day -> M_perchan; a partial Minimus day -> M_partial.
+    Falls through to the existing A/D/E/C/AB/sparse/weird logic when
+    n_perchan is negligible.
+    """
     n_tele = n_tele_ss + n_tele_noss
-    n_data = n_disk + n_tele
+    n_data = n_disk + n_tele + n_perchan
     if n_data == 0:
         return "empty"
+    # Minimus per-channel takes precedence: ~4320 = clean day; partial
+    # is anything substantial under that.
+    if n_perchan >= 4000:
+        return "M_perchan"
+    if n_perchan >= 500:
+        return "M_partial"
     if n_tele_ss >= 100 and n_tele_noss >= 100:
         return "E_multivar"
     if n_disk >= 1400 and n_tele == 0:
@@ -75,6 +94,7 @@ SELECT dir_year, dir_month, dir_day,
        SUM(CASE WHEN source_type='disk' AND exclude_reason IS NULL THEN 1 ELSE 0 END) AS n_disk,
        SUM(CASE WHEN source_type='telemetry' AND ss IS NOT NULL AND exclude_reason IS NULL THEN 1 ELSE 0 END) AS n_tele_ss,
        SUM(CASE WHEN source_type='telemetry' AND ss IS NULL AND exclude_reason IS NULL THEN 1 ELSE 0 END) AS n_tele_noss,
+       SUM(CASE WHEN exclude_reason = 'single_channel' AND recorder_type = 'mseed' THEN 1 ELSE 0 END) AS n_perchan,
        SUM(CASE WHEN exclude_reason IS NOT NULL THEN 1 ELSE 0 END) AS n_excluded
 FROM files
 WHERE role != 'metadata'
@@ -92,8 +112,8 @@ ORDER BY dir_year, dir_month, dir_day
 
     bucketed_days = []
     for r in rows:
-        yr, mo, dy, n_disk, n_tele_ss, n_tele_noss, n_excluded = r
-        b = bucket(n_disk, n_tele_ss, n_tele_noss)
+        yr, mo, dy, n_disk, n_tele_ss, n_tele_noss, n_perchan, n_excluded = r
+        b = bucket(n_disk, n_tele_ss, n_tele_noss, n_perchan)
         max_tele = max(n_tele_ss, n_tele_noss)
         full_disk = n_disk >= 1400
         full_tele = max_tele >= 1400
@@ -121,6 +141,7 @@ ORDER BY dir_year, dir_month, dir_day
             "n_disk": n_disk,
             "n_tele_ss": n_tele_ss,
             "n_tele_noss": n_tele_noss,
+            "n_perchan": n_perchan,
             "n_excluded": n_excluded,
             "bucket": b,
         })
