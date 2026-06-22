@@ -126,7 +126,87 @@ def group_epochs(daily_rows):
     return epochs
 
 
-def build_plan(station, registry_entry, daily_rows):
+def load_channel_epoch_data(sta: str, channel_epochs_dir):
+    """Load metadata/source_stats/_epochs/<STA>.json if present.
+
+    The JSON carries:
+      - by_source_kind: per-kind list of channel-availability epochs
+        (start, end, channels, samples_used, boundary_resolution_days,
+         size_stats: {p10, p25, p50, p75, p90, n_samples, ...})
+      - bisection_enabled, target_resolution_days
+
+    Returns the dict, or None if the file doesn't exist."""
+    import json
+    from pathlib import Path
+    if channel_epochs_dir is None:
+        return None
+    p = Path(channel_epochs_dir) / f"{sta}.json"
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except Exception:
+        return None
+
+
+def _channels_active_in_span(by_source_kind, start_str, end_str):
+    """For each source_kind, return the set of channels active during
+    [start_str, end_str] from channel_epochs that overlap the span."""
+    from datetime import date
+    try:
+        ep_start = date.fromisoformat(start_str)
+        ep_end = date.fromisoformat(end_str)
+    except (ValueError, TypeError):
+        return {}
+    out = {}
+    for kind, epochs in (by_source_kind or {}).items():
+        chans = set()
+        for ce in epochs:
+            try:
+                ce_start = date.fromisoformat(ce["start"])
+                ce_end = date.fromisoformat(ce["end"])
+            except (ValueError, KeyError):
+                continue
+            # Overlap test
+            if ce_start <= ep_end and ce_end >= ep_start:
+                chans.update(ce.get("channels", []))
+        if chans:
+            out[kind] = sorted(chans)
+    return out
+
+
+# Source-kind priority order for selecting whose channel "wins" when
+# multiple sources have it. Disk > standard tele > mixed-separator tele.
+# coverage_planner (Step 4) will consume this; for now it's just hinted
+# in the plan YAML.
+SOURCE_KIND_PRIORITY = [
+    "disk_mseed", "disk_suds",
+    "tele_ss_mseed", "tele_ss_suds",
+    "tele_noss_mseed", "tele_noss_suds",
+    "tele_underscore_mseed",
+    "tele_dasharound_mseed",
+    "tele_alldash_mseed",
+]
+
+
+def _source_priority_by_channel(active_by_kind):
+    """For each channel present in any source_kind during a recorder epoch,
+    list the source_kinds that have it, in SOURCE_KIND_PRIORITY order.
+    coverage_planner uses this at conversion time to pick which source to
+    read each minute from."""
+    all_channels = set()
+    for chans in active_by_kind.values():
+        all_channels.update(chans)
+    out = {}
+    for ch in sorted(all_channels):
+        kinds = [k for k in SOURCE_KIND_PRIORITY
+                 if ch in active_by_kind.get(k, [])]
+        if kinds:
+            out[ch] = kinds
+    return out
+
+
+def build_plan(station, registry_entry, daily_rows, channel_epoch_data=None):
     epochs = group_epochs(daily_rows)
     flagged = [
         {"date": d["date"], "classification": d["classification"],
@@ -174,6 +254,42 @@ def build_plan(station, registry_entry, daily_rows):
         ],
         "flagged_days": flagged[:MAX_FLAGGED_IN_YAML],
     }
+    # Step 3: enrich each recorder epoch with channel-availability and
+    # source-priority data from channel_epoch_scan + size_stats output.
+    # coverage_planner (Step 4) consumes this at conversion time.
+    if channel_epoch_data and "by_source_kind" in channel_epoch_data:
+        by_kind = channel_epoch_data["by_source_kind"]
+        for plan_epoch in plan["epochs"]:
+            active_by_kind = _channels_active_in_span(
+                by_kind, plan_epoch["start"], plan_epoch["end"])
+            plan_epoch["channels_by_source_kind"] = active_by_kind
+            plan_epoch["source_priority"] = _source_priority_by_channel(active_by_kind)
+            # Size-prior summary per kind (just p10/p50/p90 + n) — coverage_
+            # planner uses as a tiebreaker when sources tie.
+            size_prior = {}
+            for kind in active_by_kind:
+                for ce in by_kind.get(kind, []):
+                    ss = ce.get("size_stats", {})
+                    if not ss or ss.get("n_samples", 0) == 0:
+                        continue
+                    # Use the FIRST epoch with size data that overlaps the
+                    # recorder epoch — sufficient for the prior.
+                    size_prior[kind] = {
+                        "p10": ss.get("p10"),
+                        "p50": ss.get("p50"),
+                        "p90": ss.get("p90"),
+                        "n_samples": ss.get("n_samples"),
+                    }
+                    break
+            if size_prior:
+                plan_epoch["size_prior"] = size_prior
+        # Top-level channel_epoch metadata (provenance + global view).
+        plan["channel_epochs"] = {
+            "by_source_kind": by_kind,
+            "bisection_enabled": channel_epoch_data.get("bisection_enabled"),
+            "target_resolution_days": channel_epoch_data.get("target_resolution_days"),
+            "generated_at_utc": channel_epoch_data.get("generated_at_utc"),
+        }
     if len(flagged) > MAX_FLAGGED_IN_YAML:
         plan["flagged_days_truncated"] = len(flagged) - MAX_FLAGGED_IN_YAML
     if defer:
@@ -196,6 +312,10 @@ def main():
                     default=",".join(sorted(MINIMUS_STATIONS_DEFAULT)))
     ap.add_argument("--stations", default="",
                     help="comma-separated subset (default: all include:true with data)")
+    ap.add_argument("--channel-epochs-dir", default=None,
+                    help="dir of <STA>.json from channel_epoch_scan + size_stats "
+                         "(default: project metadata/source_stats/_epochs). "
+                         "Pass --channel-epochs-dir '' to disable.")
     args = ap.parse_args()
 
     import yaml
@@ -214,16 +334,34 @@ def main():
     else:
         target_stations = sorted(present & set(registry.keys()))
 
+    # Channel-epochs directory: explicit arg, else default to project's
+    # metadata/source_stats/_epochs. The default works when plan_generator
+    # is run from any sibling test_env (the file path is resolved relative
+    # to the script itself, not the cwd).
+    if args.channel_epochs_dir is None:
+        channel_epochs_dir = os.path.join(
+            os.path.dirname(HERE), "metadata", "source_stats", "_epochs")
+    elif args.channel_epochs_dir == "":
+        channel_epochs_dir = None
+    else:
+        channel_epochs_dir = args.channel_epochs_dir
+
     os.makedirs(args.out, exist_ok=True)
     print(f"[plan-gen] {len(target_stations)} stations to plan from {args.db}")
+    if channel_epochs_dir:
+        print(f"[plan-gen] reading channel epochs from {channel_epochs_dir}")
     by_status = Counter()
+    n_enriched = 0
 
     for sta in target_stations:
         reg_entry = registry.get(sta)
         daily = gather_station_days(conn, sta, reg_entry, minimus_set)
         if not daily:
             print(f"  {sta:6} no days in manifest, skipping"); continue
-        plan = build_plan(sta, reg_entry, daily)
+        ch_epoch_data = load_channel_epoch_data(sta, channel_epochs_dir)
+        if ch_epoch_data:
+            n_enriched += 1
+        plan = build_plan(sta, reg_entry, daily, channel_epoch_data=ch_epoch_data)
         net = plan["network"] or "UNK"
         path = os.path.join(args.out, f"{net}.{sta}.plan.yaml")
         with open(path, "w") as f:
@@ -236,6 +374,7 @@ def main():
 
     print(f"\n[plan-gen] wrote plan YAMLs to {args.out}/")
     print(f"  status breakdown: {dict(by_status)}")
+    print(f"  enriched with channel_epochs: {n_enriched}/{len(target_stations)}")
 
 
 if __name__ == "__main__":
