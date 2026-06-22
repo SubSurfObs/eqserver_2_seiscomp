@@ -63,6 +63,45 @@ DEFAULT_MIN_DATA_YEAR = 2012   # UoM VW/VX/DU operations didn't start before thi
                                 # — anything before is no-GPS-lock or bogus header
 
 
+def _seed_band(rate_hz: float) -> str:
+    """SEED band code by sample rate (Gecko convention, broadband side)."""
+    r = float(rate_hz or 0)
+    if r >= 1000: return "F"
+    if r >= 250:  return "C"
+    if r >= 80:   return "H"
+    if r >= 10:   return "B"
+    if r >= 1:    return "L"
+    if r >= 0.1:  return "V"
+    return "U"
+
+
+def _enforce_band_instrument(stream):
+    """Rewrite each trace's channel code to `band_by_rate + 'H' + orientation`.
+
+    The orientation (3rd letter) and station+network are preserved; only the
+    band code (1st letter) and instrument code (2nd letter) are normalised.
+    NOOP for traces whose source channel already conforms (e.g. Gecko 'CHZ' at
+    250 Hz, RT130 borehole 'HH1' at 200 Hz). Required for the mixed-separator
+    cohort at WPSH where the mseed headers carry Kelunji-native 'DL?' codes
+    (D=datalogger-numeric, L=Lowgain) — without this rewrite the staging SDS
+    files come out as DLE/DLN/DLZ instead of CHE/CHN/CHZ.
+
+    Instrument letter is hard-set to 'H' (velocity seismometer); accelerometers
+    are dropped upstream via channel_exclude, so we never see 'N' here.
+
+    Idempotent and safe to apply on every conversion.
+    """
+    for tr in stream:
+        ch = getattr(tr.stats, "channel", "") or ""
+        if len(ch) != 3:
+            continue
+        orient = ch[-1]
+        new_ch = _seed_band(tr.stats.sampling_rate) + "H" + orient
+        if new_ch != ch:
+            tr.stats.channel = new_ch
+    return stream
+
+
 def _filter_bogus_year_traces(stream, min_year, dropped_list):
     """Drop traces whose start-time year is below `min_year` (no-GPS-lock /
     bogus-SUDS-header guard).
@@ -375,6 +414,10 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
+    # Normalise channel codes: band by sample rate, instrument = H. NOOP for
+    # Gecko-conforming inputs; required for the mixed-separator cohort whose
+    # source mseed carries Kelunji-native 'DL?' codes.
+    st = _enforce_band_instrument(st)
     st.merge(method=1, fill_value=None)
     # split() breaks masked-array traces (with gaps) back into separate
     # non-masked traces — required because ObsPy MSEED writer rejects masked.
@@ -474,6 +517,9 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
+    # Normalise channel codes: band by sample rate, instrument = H. NOOP for
+    # Minimus per-channel inputs already at HH? at 200 Hz.
+    st = _enforce_band_instrument(st)
     st.merge(method=1, fill_value=None)
     st = st.split()
     st.sort(["starttime"])
