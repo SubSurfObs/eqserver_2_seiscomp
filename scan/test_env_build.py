@@ -504,6 +504,96 @@ def cmd_rebuild_time_index(args):
     return 0 if "error" not in r else 1
 
 
+# --------------------------------------------------------------------------
+# seed_from_categorize — bulk add representative days from categorize_source
+# --------------------------------------------------------------------------
+
+CATEGORIZE_DIR = REPO / "metadata" / "source_stats"
+
+
+def _iter_categorize_reps(categorize_dir: Path, buckets: list[str] | None,
+                          stations: set[str] | None):
+    """Yield (sta, year, month, day, bucket, rep) tuples from every
+    metadata/source_stats/<STA>.json that carries a 'representatives' dict."""
+    for jf in sorted(categorize_dir.glob("*.json")):
+        # Skip the sub-dirs we glob alongside (they have parent dirs, not
+        # files here, so this is just defensive).
+        sta = jf.stem
+        if stations and sta not in stations:
+            continue
+        try:
+            d = json.loads(jf.read_text())
+        except Exception:
+            continue
+        reps = d.get("representatives", {})
+        if not reps:
+            continue
+        for bucket, rep in reps.items():
+            if buckets and bucket not in buckets:
+                continue
+            if bucket == "empty":
+                continue   # no waveform files -> nothing to convert
+            try:
+                y, m, dd = (int(p) for p in rep["date"].split("-"))
+            except (KeyError, ValueError):
+                continue
+            yield sta, y, m, dd, bucket, rep
+
+
+def cmd_seed_from_categorize(args):
+    """Walk metadata/source_stats/<STA>.json and add one representative day
+    per (station, bucket) to the test env. Idempotent — skips entries
+    already in the catalogue."""
+    buckets = set(args.buckets.split(",")) if args.buckets else None
+    stations = set(args.stations.split(",")) if args.stations else None
+    src_dir = Path(args.source_stats_dir) if args.source_stats_dir else CATEGORIZE_DIR
+
+    entries = load_catalogue()
+    existing = {catalogue_key(e["sta"], e["year"], e["month"], e["day"])
+                for e in entries}
+
+    plan: list[tuple] = list(_iter_categorize_reps(src_dir, list(buckets) if buckets else None, stations))
+    if not plan:
+        print(f"[seed] no representatives found under {src_dir}")
+        print("       (have you run categorize_source.py on the stations?)")
+        return 1
+
+    print(f"[seed] found {len(plan)} (station, bucket) representative days")
+    todo = [t for t in plan
+            if catalogue_key(t[0], t[1], t[2], t[3]) not in existing]
+    print(f"[seed] {len(plan) - len(todo)} already in catalogue, {len(todo)} to add")
+    if args.dry_run:
+        for sta, y, m, d, bucket, rep in todo:
+            print(f"  WOULD-ADD  {sta:8s} {y}-{m:02d}-{d:02d}  {bucket:14s}  "
+                  f"(disk={rep.get('n_disk')}, tele_ss={rep.get('n_tele_ss')}, "
+                  f"tele_noss={rep.get('n_tele_noss')})")
+        return 0
+
+    n_ok = n_fail = 0
+    for i, (sta, y, m, d, bucket, rep) in enumerate(todo, 1):
+        print(f"\n[seed {i}/{len(todo)}] {sta} {y}-{m:02d}-{d:02d} bucket={bucket}", flush=True)
+        # Reuse cmd_add by constructing a faux args object
+        class _A: pass
+        a = _A()
+        a.sta = sta
+        a.date = f"{y}-{m:02d}-{d:02d}"
+        a.category = bucket
+        a.notes = f"categorize_source representative for {bucket}"
+        a.no_time_index = args.no_time_index
+        try:
+            rc = cmd_add(a)
+            if rc == 0:
+                n_ok += 1
+            else:
+                n_fail += 1
+                print(f"  [seed FAIL] cmd_add returned {rc}")
+        except Exception as exc:
+            n_fail += 1
+            print(f"  [seed FAIL] {type(exc).__name__}: {exc}")
+    print(f"\n[seed] DONE  added={n_ok}  failed={n_fail}")
+    return 0 if n_fail == 0 else 1
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -534,6 +624,20 @@ def main():
     p = sub.add_parser("rebuild", help="re-run level1+plan_generator against current mirror (use after code changes)")
     p.add_argument("sta")
     p.set_defaults(func=cmd_rebuild)
+
+    p = sub.add_parser("seed_from_categorize",
+                       help="bulk-add representative days from categorize_source output")
+    p.add_argument("--source-stats-dir", default=None,
+                   help="dir of <STA>.json files (default: metadata/source_stats)")
+    p.add_argument("--buckets", default=None,
+                   help="comma-separated bucket names to include (default: all except 'empty')")
+    p.add_argument("--stations", default=None,
+                   help="comma-separated stations to include (default: all)")
+    p.add_argument("--no-time-index", action="store_true",
+                   help="skip per-trace time-index build for speed")
+    p.add_argument("--dry-run", action="store_true",
+                   help="preview what would be added; don't mirror/level1/plan/catalogue")
+    p.set_defaults(func=cmd_seed_from_categorize)
 
     args = ap.parse_args()
     sys.exit(args.func(args))
