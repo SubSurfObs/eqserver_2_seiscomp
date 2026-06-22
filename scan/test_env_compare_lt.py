@@ -38,19 +38,61 @@ CATALOGUE_PATH = Path("/home/unimelb.edu.au/dsand/test_env_classb/catalogue.yaml
 MATCH_TOLERANCE_SAMPLES = 15000
 
 
+def file_md5(path: str, chunk: int = 1 << 20):
+    """Return md5 hex of a file's bytes, or None on error."""
+    import hashlib
+    h = hashlib.md5()
+    try:
+        with open(path, "rb") as f:
+            while True:
+                b = f.read(chunk)
+                if not b:
+                    break
+                h.update(b)
+        return h.hexdigest()
+    except OSError:
+        return None
+
+
 def trace_summary(path: str):
+    """Read SDS day-file and report:
+       - n_traces: number of mseed records (FRAGMENTATION SIGNAL — high
+         counts indicate Class B merge bug at convert time)
+       - n_samples: total sample count summed across traces
+       - rate_hz: sampling rate of first trace
+       - bytes_on_disk: file size (different sizes with same n_samples
+         indicate different encoding or fragmentation)
+       - md5: hex of file bytes for TRUE byte-equality comparison
+    """
+    import os
     from obspy import read
+    try:
+        bytes_on_disk = os.path.getsize(path)
+    except OSError:
+        bytes_on_disk = None
     try:
         st = read(path, format="MSEED")
     except Exception as e:
-        return {"error": f"{type(e).__name__}: {e}"}
+        return {"error": f"{type(e).__name__}: {e}",
+                "bytes_on_disk": bytes_on_disk}
     if not st:
-        return {"n_traces": 0, "n_samples": 0, "rate_hz": 0.0}
+        return {"n_traces": 0, "n_samples": 0, "rate_hz": 0.0,
+                "bytes_on_disk": bytes_on_disk,
+                "md5": file_md5(path)}
     return {
         "n_traces": len(st),
         "n_samples": sum(tr.stats.npts for tr in st),
         "rate_hz": float(st[0].stats.sampling_rate),
+        "bytes_on_disk": bytes_on_disk,
+        "md5": file_md5(path),
     }
+
+
+# Threshold for "n_traces materially different": if the lt has >=10x more
+# traces than staging at the SAME sample count, that's a Class B fix-visible
+# difference (rescan consolidated traces the broken scan-1 merge had left
+# fragmented). 10x is generous — actual Class B days had 1000s vs 1-3.
+N_TRACES_FRAGMENTATION_RATIO = 10
 
 
 def compare_channel(sta: str, year: int, doy: int, chan: str):
@@ -66,21 +108,53 @@ def compare_channel(sta: str, year: int, doy: int, chan: str):
         return {"chan": chan, "verdict": "ERROR_staging", "error": s["error"]}
     if not lt_path.exists():
         return {"chan": chan, "verdict": "WRITE",
-                "staging_samples": s["n_samples"], "lt_samples": 0,
+                "staging_samples": s["n_samples"],
+                "staging_n_traces": s.get("n_traces"),
+                "staging_bytes": s.get("bytes_on_disk"),
+                "lt_samples": 0,
                 "rate_hz": s["rate_hz"]}
     lt = trace_summary(str(lt_path))
     if "error" in lt:
         return {"chan": chan, "verdict": "ERROR_lt", "error": lt["error"]}
+
     diff = s["n_samples"] - lt["n_samples"]
-    if abs(diff) <= MATCH_TOLERANCE_SAMPLES:
-        verdict = "MATCH"
-    elif diff > 0:
-        verdict = "OVERRIDE"  # staging has more — apply.py would override LT
+
+    # Stage 1: classify by sample-count diff (the existing logic)
+    if diff > MATCH_TOLERANCE_SAMPLES:
+        sample_verdict = "OVERRIDE"
+    elif diff < -MATCH_TOLERANCE_SAMPLES:
+        sample_verdict = "CLIP"
     else:
-        verdict = "CLIP"      # staging has fewer — would lose LT data
+        sample_verdict = "SAMPLE_MATCH"   # placeholder — refined below
+
+    # Stage 2: when samples are equivalent, refine by byte-level equality
+    # and fragmentation signal.
+    if sample_verdict == "SAMPLE_MATCH":
+        if s.get("md5") and s.get("md5") == lt.get("md5"):
+            verdict = "BYTE_EQUAL"
+        else:
+            # Bytes differ even though samples match. Two sub-cases:
+            #  - LT was Class-B-fragmented and rescan consolidated traces
+            #  - Different encoding / record framing for unknown reason
+            lt_traces = lt.get("n_traces", 0) or 0
+            st_traces = s.get("n_traces", 0) or 0
+            if st_traces > 0 and lt_traces >= st_traces * N_TRACES_FRAGMENTATION_RATIO:
+                verdict = "DEFRAGMENTED"   # Class B fix visible
+            elif lt_traces > 0 and st_traces >= lt_traces * N_TRACES_FRAGMENTATION_RATIO:
+                verdict = "REFRAGMENTED"   # regression (rescan worse than LT) — should never happen
+            else:
+                verdict = "BYTES_DIFFER"   # ambiguous: same samples, diff bytes, similar n_traces
+    else:
+        verdict = sample_verdict
+
     return {"chan": chan, "verdict": verdict,
             "staging_samples": s["n_samples"], "lt_samples": lt["n_samples"],
-            "diff_samples": diff, "rate_hz": s["rate_hz"]}
+            "diff_samples": diff, "rate_hz": s["rate_hz"],
+            "staging_n_traces": s.get("n_traces"),
+            "lt_n_traces": lt.get("n_traces"),
+            "staging_bytes": s.get("bytes_on_disk"),
+            "lt_bytes": lt.get("bytes_on_disk"),
+            "byte_equal": s.get("md5") == lt.get("md5") if s.get("md5") and lt.get("md5") else None}
 
 
 def compare_day(sta: str, year: int, month: int, day: int):
@@ -109,8 +183,19 @@ def compare_day(sta: str, year: int, month: int, day: int):
 
     # Day verdict: worst of REAL channels by priority. If no real channels
     # for either side, the day is genuinely empty -> NO_STAGING.
-    severity = {"ERROR_staging": 6, "ERROR_lt": 5, "NO_STAGING": 4,
-                "CLIP": 3, "OVERRIDE": 2, "WRITE": 1, "MATCH": 0}
+    severity = {
+        "ERROR_staging":   10,
+        "ERROR_lt":         9,
+        "NO_STAGING":       8,
+        "REFRAGMENTED":     7,   # regression: rescan more fragmented than LT
+        "CLIP":             6,   # would lose LT data
+        "OVERRIDE":         5,   # needs held-queue review
+        "BYTES_DIFFER":     4,   # same samples, diff bytes, similar n_traces
+        "DEFRAGMENTED":     3,   # CLASS B FIX VISIBLE — rescan merged what scan-1 fragmented
+        "WRITE":            2,   # fresh write (recovery)
+        "BYTE_EQUAL":       1,   # true byte-equal output
+        "MATCH":            0,
+    }
     if real_channels:
         worst = max(real_channels, key=lambda r: severity.get(r["verdict"], 0))
         day_verdict = worst["verdict"]
@@ -168,12 +253,15 @@ def main():
         print(f"  {v:18s} {n:>4} ({pct:5.1f}%)")
 
     print(f"\n=== Verdict by bucket category ===")
+    cols = ["BYTE_EQUAL", "DEFRAGMENTED", "BYTES_DIFFER", "WRITE",
+            "OVERRIDE", "CLIP", "REFRAGMENTED", "NO_STAGING",
+            "ERROR_staging", "ERROR_lt"]
     print(f"  {'bucket':32s} {'total':>5s} " +
-          "  ".join(f"{v:9s}" for v in ["MATCH", "WRITE", "OVERRIDE", "CLIP", "NO_STAGING", "ERROR_staging", "ERROR_lt"]))
+          "  ".join(f"{v:>13s}" for v in cols))
     for bucket in sorted(by_bucket):
         d = by_bucket[bucket]
         total = sum(d.values())
-        cells = [f"{d.get(v, 0):9}" for v in ["MATCH", "WRITE", "OVERRIDE", "CLIP", "NO_STAGING", "ERROR_staging", "ERROR_lt"]]
+        cells = [f"{d.get(v, 0):>13}" for v in cols]
         print(f"  {bucket:32s} {total:>5} " + "  ".join(cells))
 
     if args.json:
