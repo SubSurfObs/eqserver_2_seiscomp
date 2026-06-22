@@ -512,12 +512,17 @@ CATEGORIZE_DIR = REPO / "metadata" / "source_stats"
 
 
 def _iter_categorize_reps(categorize_dir: Path, buckets: list[str] | None,
-                          stations: set[str] | None):
+                          stations: set[str] | None,
+                          min_year: int = 2012, max_year: int = 2030):
     """Yield (sta, year, month, day, bucket, rep) tuples from every
-    metadata/source_stats/<STA>.json that carries a 'representatives' dict."""
+    metadata/source_stats/<STA>.json that carries a 'representatives' dict.
+
+    Days outside [min_year, max_year] are filtered out — these are typically
+    bogus-date artifacts (.ss metadata under continuous/1900/01/01, WNRO-
+    tagged files dated 1989, pre-VW-operations days 2000-2011) that phase3's
+    _filter_bogus_year_traces would drop anyway, so they're useless test
+    cases."""
     for jf in sorted(categorize_dir.glob("*.json")):
-        # Skip the sub-dirs we glob alongside (they have parent dirs, not
-        # files here, so this is just defensive).
         sta = jf.stem
         if stations and sta not in stations:
             continue
@@ -532,10 +537,12 @@ def _iter_categorize_reps(categorize_dir: Path, buckets: list[str] | None,
             if buckets and bucket not in buckets:
                 continue
             if bucket == "empty":
-                continue   # no waveform files -> nothing to convert
+                continue
             try:
                 y, m, dd = (int(p) for p in rep["date"].split("-"))
             except (KeyError, ValueError):
+                continue
+            if y < min_year or y > max_year:
                 continue
             yield sta, y, m, dd, bucket, rep
 
@@ -552,7 +559,9 @@ def cmd_seed_from_categorize(args):
     existing = {catalogue_key(e["sta"], e["year"], e["month"], e["day"])
                 for e in entries}
 
-    plan: list[tuple] = list(_iter_categorize_reps(src_dir, list(buckets) if buckets else None, stations))
+    plan: list[tuple] = list(_iter_categorize_reps(
+        src_dir, list(buckets) if buckets else None, stations,
+        min_year=args.min_year, max_year=args.max_year))
     if not plan:
         print(f"[seed] no representatives found under {src_dir}")
         print("       (have you run categorize_source.py on the stations?)")
@@ -635,6 +644,11 @@ def main():
                    help="comma-separated stations to include (default: all)")
     p.add_argument("--no-time-index", action="store_true",
                    help="skip per-trace time-index build for speed")
+    p.add_argument("--min-year", type=int, default=2012,
+                   help="drop reps before this year (bogus-date artifacts) "
+                        "(default 2012)")
+    p.add_argument("--max-year", type=int, default=2030,
+                   help="drop reps after this year (default 2030)")
     p.add_argument("--dry-run", action="store_true",
                    help="preview what would be added; don't mirror/level1/plan/catalogue")
     p.set_defaults(func=cmd_seed_from_categorize)
