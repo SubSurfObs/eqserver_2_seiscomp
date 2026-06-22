@@ -63,10 +63,37 @@ def load_registry(path):
 
 
 def manifest_recorder(r):
-    """Manifest-inferred recorder from row's n_*_ok counts."""
-    rec_counts = {"echopro": r["n_echopro_ok"], "gecko": r["n_gecko_ok"], "mseed": r["n_mseed_ok"]}
-    if not any(rec_counts.values()):
+    """Manifest-inferred recorder from row's n_*_ok counts.
+
+    Coexistence rule (added 2026-06-22, post sidecar investigation):
+      EchoPro `.dmx` files and Gecko `.ms.zip` files frequently coexist
+      on the same station-day at Gecko stations because the EqServer
+      ingest path produces single-channel SUDS sidecars (1-channel
+      `UM.<STA>.CHZ`) alongside the Gecko's 3-channel mseed. Network-
+      wide scan found 19+ stations × 56 station-years with this dual
+      tagging. Picking `max(counts)` could route a sidecar-heavy day
+      to `convert_echopro_day`, which would produce a Z-only SDS and
+      silently drop CHN/CHE.
+
+      Therefore: when n_gecko_ok is substantial (>=100 files OR >=5%
+      of n_echopro_ok), gecko wins regardless of which side has more
+      files. Same protection for Minimus (n_mseed_ok >= 2000 — full
+      per-channel-per-minute day at that station).
+    """
+    n_e = r["n_echopro_ok"]
+    n_g = r["n_gecko_ok"]
+    n_m = r["n_mseed_ok"]
+    if not any([n_e, n_g, n_m]):
         return "unknown"
+    # Sidecar protection: gecko wins on any day where it has meaningful
+    # presence AND echopro also has files (the sidecar coexistence case).
+    if n_g >= 100 or (n_g > 0 and n_g >= 0.05 * n_e):
+        return "gecko"
+    # Minimus per-channel-per-minute — clean day = ~4320 files (3 channels x
+    # 1440 minutes). Preserve if substantial.
+    if n_m >= 2000:
+        return "minimus"
+    rec_counts = {"echopro": n_e, "gecko": n_g, "mseed": n_m}
     return max(rec_counts, key=rec_counts.get)
 
 
