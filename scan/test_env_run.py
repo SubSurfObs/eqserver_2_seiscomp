@@ -214,36 +214,22 @@ def print_preflight(f: dict) -> None:
 # --------------------------------------------------------------------------
 
 def wipe_staging_day(sta: str, year: int, doy: int | None = None) -> dict:
-    """Clear staging output for a specific day, NOT the whole year.
+    """NO-OP. Kept as a function so cmd_convert's call site keeps working.
 
-    When doy is given, removes only files matching
-    VW.<STA>.00.<CHAN>.D.<year>.<doy> across each channel dir under
-    staging_sds/<year>/VW/<STA>/. Other days' files remain untouched.
+    Removed 2026-06-23 after incident: a default rmtree of
+    staging_sds/<year>/VW/<STA>/ here caused convert_all to silently
+    clobber prior days' output. Rationale for removal entirely (not
+    "fix to per-day"): phase3's write_sds is already idempotent
+    (merge-with-existing); a re-convert of identical source produces
+    byte-equal output. So NO wipe is needed in the conversion path.
+    If an operator wants a clean slate for a specific debug run, they
+    can manually rm the directory outside this pipeline.
 
-    When doy is None, falls back to the old behaviour (wipe the entire
-    <STA>/ tree) — kept for single-day tests that explicitly want a
-    clean slate.
-
-    The per-day wipe matters for the bulk convert_all flow: without it,
-    each subsequent day in the same (sta, year) clobbers all previous
-    days' output, and compare_lt sees NO_STAGING for everything except
-    the last-converted day per station-year.
+    Rule (per [[feedback-no-default-wipe-in-loops]]): no rmtree/unlink
+    in any pipeline-adjacent code that could end up in production. The
+    test-env code IS the new production workflow under test.
     """
-    target = STAGING_SDS / f"{year:04d}" / "VW" / sta
-    if not target.exists():
-        return {"wiped": None}
-    if doy is None:
-        shutil.rmtree(target)
-        return {"wiped": str(target)}
-    removed = []
-    for chan_dir in target.glob("*.D"):
-        for f in chan_dir.glob(f"VW.{sta}.00.*.D.{year}.{doy:03d}"):
-            try:
-                f.unlink()
-                removed.append(str(f))
-            except OSError:
-                pass
-    return {"wiped_files": len(removed), "wiped_day": f"{year}-{doy:03d}"}
+    return {"wipe": "noop"}
 
 
 # --------------------------------------------------------------------------
@@ -420,13 +406,11 @@ def cmd_convert(args):
               f"test_env_build.py to recognise the new pattern.", flush=True)
         return 2
 
-    # 2. Wipe prior staging output for THIS DAY only (not the whole year —
-    #    other days in the same (sta, year) may also be test-env catalogued
-    #    and we don't want to clobber them).
-    doy = date(year, month, day).timetuple().tm_yday
-    print(f"  [wipe]      clearing test env staging for {sta} {year} DOY={doy}",
+    # 2. (no wipe) — phase3's write_sds is idempotent; merge-with-existing
+    #    produces byte-equal output on identical source. Removed 2026-06-23,
+    #    see wipe_staging_day docstring + [[feedback-no-default-wipe-in-loops]].
+    print(f"  [no-wipe]   relying on phase3 idempotent merge-with-existing",
           flush=True)
-    print(f"  [wipe]      {wipe_staging_day(sta, year, doy=doy)}", flush=True)
 
     # 3. Phase3
     run_id = f"test_VW_{sta}_{year}-{month:02d}-{day:02d}_{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}"
