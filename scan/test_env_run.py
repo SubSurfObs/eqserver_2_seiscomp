@@ -295,6 +295,80 @@ def cmd_preflight(args):
     return 0
 
 
+def cmd_convert_all(args):
+    """Walk the catalogue and convert every day. Idempotent: skips days
+    that already have non-empty staging output unless --force is passed."""
+    import json
+    entries = load_catalogue()
+    if args.stations:
+        wanted = set(args.stations.split(","))
+        entries = [e for e in entries if e["sta"] in wanted]
+    if args.buckets:
+        wanted = set(args.buckets.split(","))
+        entries = [e for e in entries if e.get("category") in wanted]
+    if args.max:
+        entries = entries[: args.max]
+
+    todo = []
+    skipped_existing = 0
+    for e in entries:
+        sta, y, m, d = e["sta"], e["year"], e["month"], e["day"]
+        doy = date(y, m, d).timetuple().tm_yday
+        if not args.force:
+            staging_dir = STAGING_SDS / f"{y:04d}" / "VW" / sta
+            if staging_dir.exists():
+                has_doy = any(
+                    f.name.endswith(f".{y}.{doy:03d}")
+                    for chan_dir in staging_dir.glob("*.D")
+                    for f in chan_dir.iterdir()
+                )
+                if has_doy:
+                    skipped_existing += 1
+                    continue
+        todo.append(e)
+
+    print(f"[convert_all] catalogue has {len(entries)} entries; "
+          f"{skipped_existing} already converted; {len(todo)} to do", flush=True)
+    if args.dry_run:
+        for e in todo:
+            print(f"  WOULD-CONVERT  {e['sta']:8s} {e['year']}-{e['month']:02d}-{e['day']:02d}  {e.get('category','')}")
+        return 0
+
+    results = []
+    t0 = datetime.utcnow()
+    for i, e in enumerate(todo, 1):
+        sta, y, m, d = e["sta"], e["year"], e["month"], e["day"]
+        date_iso = f"{y}-{m:02d}-{d:02d}"
+        print(f"\n[{i}/{len(todo)}] {sta} {date_iso} ({e.get('category','')})", flush=True)
+        class _A: pass
+        a = _A()
+        a.sta = sta
+        a.date = date_iso
+        a.force_anomalies = True
+        try:
+            rc = cmd_convert(a)
+        except Exception as exc:
+            print(f"  [FAIL] {type(exc).__name__}: {exc}")
+            rc = -1
+        results.append({"sta": sta, "date": date_iso, "rc": rc,
+                        "category": e.get("category", "")})
+
+    elapsed = (datetime.utcnow() - t0).total_seconds()
+    n_ok = sum(1 for r in results if r["rc"] == 0)
+    n_fail = sum(1 for r in results if r["rc"] != 0)
+    print(f"\n[convert_all] DONE  ok={n_ok}  failed={n_fail}  elapsed={elapsed:.0f}s")
+
+    summary_path = Path("/home/unimelb.edu.au/dsand/test_env_classb/logs") / \
+                   f"convert_all_{t0.strftime('%Y%m%dT%H%M%SZ')}.json"
+    summary_path.write_text(json.dumps({
+        "started_at_utc": t0.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "elapsed_s": elapsed, "n_ok": n_ok, "n_fail": n_fail,
+        "results": results,
+    }, indent=2))
+    print(f"[convert_all] summary written to {summary_path}")
+    return 0 if n_fail == 0 else 1
+
+
 def cmd_convert(args):
     sta = args.sta
     year, month, day = (int(p) for p in args.date.split("-"))
@@ -375,6 +449,21 @@ def main():
                         "(default: refuse so unfamiliar filename patterns "
                         "surface explicitly)")
     p.set_defaults(func=cmd_convert)
+
+    p = sub.add_parser("convert_all",
+                       help="walk the catalogue and convert every day "
+                            "(idempotent — skips days with existing staging output)")
+    p.add_argument("--stations", default=None,
+                   help="comma-separated station filter")
+    p.add_argument("--buckets", default=None,
+                   help="comma-separated bucket category filter")
+    p.add_argument("--max", type=int, default=None,
+                   help="limit to first N catalogue entries (after filters)")
+    p.add_argument("--force", action="store_true",
+                   help="re-convert days that already have staging output")
+    p.add_argument("--dry-run", action="store_true",
+                   help="print what would be converted; don't run phase3")
+    p.set_defaults(func=cmd_convert_all)
 
     args = ap.parse_args()
     sys.exit(args.func(args))
