@@ -93,21 +93,44 @@ def find_gaps(sds_path: Path, day_start, day_end, sample_rate: float,
 def query_source_for_span(time_index_db: Path, sta: str, chan: str,
                            span_start, span_end) -> list[dict]:
     """Return source files whose trace overlaps [span_start, span_end)
-    for this channel."""
+    for this channel.
+
+    Channel match is on the trailing orientation letter (Z/N/E/1/2/...) so
+    the verifier remains correct when the engine remaps band+instrument by
+    sample rate. E.g. WPSH staging CHE finds source DLE in time_index; SGWU
+    staging HH1 finds source HH1; STBK staging CHZ finds source CHZ.
+    """
     conn = sqlite3.connect(time_index_db)
-    rows = conn.execute(
-        "SELECT source_kind, source_path, trace_start_iso, trace_end_iso, "
-        "npts, sample_rate FROM time_index "
-        "WHERE sta = ? AND chan = ? "
-        "  AND trace_end_iso > ? AND trace_start_iso < ?",
-        (sta, chan, str(span_start).rstrip("Z") + "Z",
-         str(span_end).rstrip("Z") + "Z")
-    ).fetchall()
+    orient = chan[-1] if chan else ""
+    # Build a LIKE pattern matching any 3-letter channel code ending in
+    # this orientation. Falls back to exact match if chan isn't 3 letters.
+    if len(chan) == 3:
+        chan_pat = f"__{orient}"
+        rows = conn.execute(
+            "SELECT source_kind, source_path, trace_start_iso, trace_end_iso, "
+            "npts, sample_rate, chan FROM time_index "
+            "WHERE sta = ? AND chan LIKE ? "
+            "  AND trace_end_iso > ? AND trace_start_iso < ?",
+            (sta, chan_pat,
+             str(span_start).rstrip("Z") + "Z",
+             str(span_end).rstrip("Z") + "Z")
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT source_kind, source_path, trace_start_iso, trace_end_iso, "
+            "npts, sample_rate, chan FROM time_index "
+            "WHERE sta = ? AND chan = ? "
+            "  AND trace_end_iso > ? AND trace_start_iso < ?",
+            (sta, chan,
+             str(span_start).rstrip("Z") + "Z",
+             str(span_end).rstrip("Z") + "Z")
+        ).fetchall()
     conn.close()
     return [
         {"source_kind": r[0], "source_path": r[1],
          "trace_start": r[2], "trace_end": r[3],
-         "npts": r[4], "sample_rate": r[5]}
+         "npts": r[4], "sample_rate": r[5],
+         "source_chan": r[6]}
         for r in rows
     ]
 
@@ -177,7 +200,25 @@ def verify_channel(sta: str, chan: str, doy: int, year: int,
 # Main: verify one day, all channels
 # --------------------------------------------------------------------------
 
-def verify_day(sta: str, year: int, month: int, day: int) -> dict:
+def _discover_channels(sta: str, year: int) -> list[str]:
+    """Auto-discover which SDS channels exist on staging for (sta, year).
+
+    Returns sorted unique channel codes from any <CHAN>.D dir present. This
+    replaces the previous hardcoded ('CHZ','CHN','CHE') so RT130 borehole
+    stations (HH1/HH2/HHZ), Minimus and historical band codes also verify
+    correctly."""
+    base = STAGING_SDS / f"{year:04d}" / "VW" / sta
+    if not base.exists():
+        return []
+    chans = set()
+    for d in base.iterdir():
+        if d.is_dir() and d.name.endswith(".D"):
+            chans.add(d.name[:-2])
+    return sorted(chans)
+
+
+def verify_day(sta: str, year: int, month: int, day: int,
+               channels: list[str] | None = None) -> dict:
     from obspy import UTCDateTime
     day_start = UTCDateTime(year, month, day, 0, 0, 0)
     day_end = day_start + 86400
@@ -188,10 +229,17 @@ def verify_day(sta: str, year: int, month: int, day: int) -> dict:
         return {"error": f"time_index missing: {time_index_db}. "
                 f"Run test_env_build add or rebuild_time_index first."}
 
+    # Auto-discover channels from staging output unless an explicit set was
+    # passed. Falls back to ('CHZ','CHN','CHE') only if staging has no dirs
+    # — that signals phase3 never ran (FAIL_missing_channels:* below).
+    if channels is None:
+        channels = _discover_channels(sta, year) or ["CHZ", "CHN", "CHE"]
+
     out = {
         "sta": sta,
         "date": f"{year:04d}-{month:02d}-{day:02d}",
         "doy": doy,
+        "channels_inspected": channels,
         "channels": {},
         "summary": {},
     }
@@ -200,7 +248,7 @@ def verify_day(sta: str, year: int, month: int, day: int) -> dict:
     total_source_gap = 0
     total_actual = 0
     total_expected = 0
-    for chan in ("CHZ", "CHN", "CHE"):
+    for chan in channels:
         r = verify_channel(sta, chan, doy, year, day_start, day_end,
                            DEFAULT_SAMPLE_RATE, time_index_db)
         out["channels"][chan] = r
