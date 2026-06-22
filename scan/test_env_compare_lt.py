@@ -92,12 +92,30 @@ def compare_day(sta: str, year: int, month: int, day: int):
     chans = sorted({d.name[:-2] for d in staging_dir.iterdir()
                     if d.is_dir() and d.name.endswith(".D")})
     channel_results = [compare_channel(sta, year, doy, c) for c in chans]
-    # Day verdict: worst of channels by a priority
+
+    # Filter out empty-channel-dir artefacts: leftover <CHAN>.D directories
+    # from a previous catalogue's sample-rate epoch. A channel result is
+    # "real" only if EITHER side has data for THIS specific DOY.
+    real_channels = []
+    for r in channel_results:
+        staging_present = (
+            r.get("staging_samples") is not None and r.get("staging_samples", 0) > 0
+        )
+        lt_present = (
+            r.get("lt_samples") is not None and r.get("lt_samples", 0) > 0
+        ) or r.get("verdict") in ("WRITE",)
+        if staging_present or lt_present:
+            real_channels.append(r)
+
+    # Day verdict: worst of REAL channels by priority. If no real channels
+    # for either side, the day is genuinely empty -> NO_STAGING.
     severity = {"ERROR_staging": 6, "ERROR_lt": 5, "NO_STAGING": 4,
                 "CLIP": 3, "OVERRIDE": 2, "WRITE": 1, "MATCH": 0}
-    if channel_results:
-        worst = max(channel_results, key=lambda r: severity.get(r["verdict"], 0))
+    if real_channels:
+        worst = max(real_channels, key=lambda r: severity.get(r["verdict"], 0))
         day_verdict = worst["verdict"]
+    elif channel_results:
+        day_verdict = "NO_STAGING"
     else:
         day_verdict = "NO_CHANNELS"
     return {"sta": sta, "year": year, "month": month, "day": day,
