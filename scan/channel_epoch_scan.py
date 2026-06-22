@@ -67,7 +67,58 @@ SOURCE_KINDS = [
     ("tele_underscore_mseed", re.compile(r"^\d{4}-\d{2}-\d{2} \d{4}_\w+\.ms\.zip$"),    "mseed"),
     ("tele_dasharound_mseed", re.compile(r"^\d{4}-\d{2}-\d{2}_\d{4}-\w+\.ms\.zip$"),    "mseed"),
     ("tele_alldash_mseed",    re.compile(r"^\d{4}-\d{2}-\d{2}-\d{4}_\w+\.ms\.zip$"),    "mseed"),
+    # Per-channel MSEED — Minimus borehole stations (DDBE/DDWB/SCM2).
+    # One file = one channel per minute. Tagged exclude_reason='single_channel'
+    # in the manifest. We derive the channel SET from manifest filename
+    # suffixes (channel_suffix column) instead of opening files — see
+    # read_channels_perchan_from_manifest below. The fmt 'perchan' triggers
+    # the special path.
+    ("perchan_mseed",  re.compile(r"^.+_[A-Z][A-Z][A-Z0-9]\.mseed(\.zip)?$"),           "perchan"),
 ]
+
+
+# --------------------------------------------------------------------------
+# Velocity-channel filter
+# --------------------------------------------------------------------------
+
+def is_velocity_channel(ch: str) -> bool:
+    """Return True for the velocity-seismometer channels we care about.
+
+    Handles the three naming families on the EqServer archive:
+      - SUDS native (EchoPro): c01/c02/c03 are velocity; c04+ are aux/mic
+      - Echo native:            Up-T/North-T/East-T = velocity (translation);
+                                Up-A/North-A/East-A = accelerometer (drop)
+      - SEED format (Gecko/Minimus/Reftek): 3-letter XYZ where instrument
+                                code (2nd letter) tells us H=velocity vs
+                                N=accelerometer etc. Microphone CDO etc.
+                                fall out.
+    """
+    if not ch:
+        return False
+    # Echo translation channels — keep
+    if ch.endswith("-T"):
+        return True
+    if ch.endswith("-A"):
+        return False
+    # SUDS native c01/c02/c03 — keep; c04+ drop
+    if len(ch) == 3 and ch[0].lower() == "c" and ch[1:].isdigit():
+        try:
+            return 1 <= int(ch[1:]) <= 3
+        except ValueError:
+            return False
+    # SEED format: instrument code (2nd letter) must be H (high-gain
+    # velocity seismometer). Other letters: N=accel, L=lowgain, D=pressure,
+    # O=outdoor-mic, J=rotation, Y=displacement.
+    if len(ch) == 3 and ch[1].upper() == "H":
+        return True
+    return False
+
+
+def filter_velocity(channels) -> set:
+    """Drop non-velocity channels from a set."""
+    if isinstance(channels, str):  # error string passthrough
+        return channels
+    return {c for c in channels if is_velocity_channel(c)}
 
 
 def classify_kind(name: str) -> tuple[str, str] | None:
@@ -114,10 +165,38 @@ def read_channels_suds(path: str) -> set | str:
         return f"read_error: {type(e).__name__}"
 
 
-def read_channels(path: str, fmt: str) -> set | str:
+def read_channels_perchan_from_manifest(conn, sta: str, year: int, month: int) -> set | str:
+    """For Minimus per-channel mseed: collect distinct channel_suffix values
+    in the month. Each file carries ONE channel; the set across files is
+    the recorder's channel complement.
+
+    Reads single_channel-tagged rows (which the standard pick_file SQL
+    filter rejects), so this bypasses the normal flow."""
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT channel_suffix FROM files "
+            "WHERE station = ? AND dir_year = ? AND dir_month = ? "
+            "  AND exclude_reason = 'single_channel' "
+            "  AND recorder_type = 'mseed' "
+            "  AND channel_suffix IS NOT NULL",
+            (sta, year, month)
+        ).fetchall()
+        return {r[0] for r in rows if r[0]}
+    except Exception as e:
+        return f"read_error: {type(e).__name__}"
+
+
+def read_channels(path: str, fmt: str, conn=None, sta=None,
+                  year=None, month=None) -> set | str:
+    if fmt == "perchan":
+        # No file open — use the manifest's channel_suffix column.
+        if conn is None or sta is None or year is None or month is None:
+            return "read_error: perchan needs (conn, sta, year, month)"
+        chs = read_channels_perchan_from_manifest(conn, sta, year, month)
+        return filter_velocity(chs)
     if fmt == "suds":
-        return read_channels_suds(path)
-    return read_channels_mseed(path)
+        return filter_velocity(read_channels_suds(path))
+    return filter_velocity(read_channels_mseed(path))
 
 
 # --------------------------------------------------------------------------
@@ -128,12 +207,21 @@ def pick_file(conn: sqlite3.Connection, sta: str, kind: str,
               fmt: str, year: int, month: int) -> str | None:
     """Find any file for (sta, year, month) whose basename matches `kind`'s
     filename pattern. Filter in Python — keeps SQL trivial (uses the
-    station+year+month index) so this stays fast even on multi-GB DBs."""
+    station+year+month index) so this stays fast even on multi-GB DBs.
+
+    For kind='perchan_mseed' the manifest tags files exclude_reason=
+    'single_channel'; we allow those through here so the perchan reader
+    (which only checks for presence, not the file's contents) sees them.
+    """
+    if kind == "perchan_mseed":
+        excl_clause = "(exclude_reason IS NULL OR exclude_reason = 'single_channel')"
+    else:
+        excl_clause = "exclude_reason IS NULL"
     rows = conn.execute(
-        "SELECT path FROM files "
-        "WHERE station = ? AND dir_year = ? AND dir_month = ? "
-        "  AND role != 'metadata' AND exclude_reason IS NULL "
-        "LIMIT 200",
+        f"SELECT path FROM files "
+        f"WHERE station = ? AND dir_year = ? AND dir_month = ? "
+        f"  AND role != 'metadata' AND {excl_clause} "
+        f"LIMIT 200",
         (sta, year, month)
     ).fetchall()
     for (path,) in rows:
@@ -227,7 +315,8 @@ def bisect_transition(conn: sqlite3.Connection, sta: str, kind: str, fmt: str,
                 conn, sta, kind, fmt, mid.year, mid.month)
             if not path:
                 break
-            channels = read_channels(path, fmt)
+            channels = read_channels(path, fmt, conn=conn, sta=sta,
+                                     year=found_y, month=found_m)
             probe_date = date(found_y, found_m, 15)
             if isinstance(channels, str):
                 probes.append({"date": probe_date.isoformat(),
@@ -256,7 +345,8 @@ def bisect_transition(conn: sqlite3.Connection, sta: str, kind: str, fmt: str,
                 conn, sta, kind, fmt, mid.year, mid.month, mid.day)
             if not path:
                 break
-            channels = read_channels(path, fmt)
+            channels = read_channels(path, fmt, conn=conn, sta=sta,
+                                     year=found_d.year, month=found_d.month)
             if isinstance(channels, str):
                 probes.append({"date": found_d.isoformat(), "path": path,
                               "level": "day", "error": channels})
@@ -315,13 +405,16 @@ def scan_station_kind(conn: sqlite3.Connection, sta: str, kind: str,
     for year in range(y_min, y_max + 1):
         # Try month 7 first (mid-year); fall back to other months if 7 has nothing
         path = None
+        found_month = None
         for month in (7, 1, 4, 10, 6, 12, 2, 11, 3, 9, 5, 8):
             path = pick_file(conn, sta, kind, fmt, year, month)
             if path:
+                found_month = month
                 break
         if not path:
             continue
-        channels = read_channels(path, fmt)
+        channels = read_channels(path, fmt, conn=conn, sta=sta,
+                                 year=year, month=found_month)
         if isinstance(channels, str):
             samples.append({"date": f"{year:04d}-07-01", "path": path,
                             "channels": None, "error": channels})
