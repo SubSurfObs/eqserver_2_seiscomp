@@ -40,7 +40,7 @@ import subprocess
 import sys
 import time
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
 
 # Re-use test_env_build's constants — same module on disk
