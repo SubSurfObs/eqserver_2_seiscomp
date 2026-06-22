@@ -213,13 +213,37 @@ def print_preflight(f: dict) -> None:
 # Staging wipe
 # --------------------------------------------------------------------------
 
-def wipe_staging_day(sta: str, year: int) -> dict:
-    """Clear the test-env staging SDS subtree for one (sta, year)."""
+def wipe_staging_day(sta: str, year: int, doy: int | None = None) -> dict:
+    """Clear staging output for a specific day, NOT the whole year.
+
+    When doy is given, removes only files matching
+    VW.<STA>.00.<CHAN>.D.<year>.<doy> across each channel dir under
+    staging_sds/<year>/VW/<STA>/. Other days' files remain untouched.
+
+    When doy is None, falls back to the old behaviour (wipe the entire
+    <STA>/ tree) — kept for single-day tests that explicitly want a
+    clean slate.
+
+    The per-day wipe matters for the bulk convert_all flow: without it,
+    each subsequent day in the same (sta, year) clobbers all previous
+    days' output, and compare_lt sees NO_STAGING for everything except
+    the last-converted day per station-year.
+    """
     target = STAGING_SDS / f"{year:04d}" / "VW" / sta
-    if target.exists():
+    if not target.exists():
+        return {"wiped": None}
+    if doy is None:
         shutil.rmtree(target)
         return {"wiped": str(target)}
-    return {"wiped": None}
+    removed = []
+    for chan_dir in target.glob("*.D"):
+        for f in chan_dir.glob(f"VW.{sta}.00.*.D.{year}.{doy:03d}"):
+            try:
+                f.unlink()
+                removed.append(str(f))
+            except OSError:
+                pass
+    return {"wiped_files": len(removed), "wiped_day": f"{year}-{doy:03d}"}
 
 
 # --------------------------------------------------------------------------
@@ -396,9 +420,13 @@ def cmd_convert(args):
               f"test_env_build.py to recognise the new pattern.", flush=True)
         return 2
 
-    # 2. Wipe prior staging output for this day
-    print(f"  [wipe]      clearing test env staging for {sta} {year}", flush=True)
-    print(f"  [wipe]      {wipe_staging_day(sta, year)}", flush=True)
+    # 2. Wipe prior staging output for THIS DAY only (not the whole year —
+    #    other days in the same (sta, year) may also be test-env catalogued
+    #    and we don't want to clobber them).
+    doy = date(year, month, day).timetuple().tm_yday
+    print(f"  [wipe]      clearing test env staging for {sta} {year} DOY={doy}",
+          flush=True)
+    print(f"  [wipe]      {wipe_staging_day(sta, year, doy=doy)}", flush=True)
 
     # 3. Phase3
     run_id = f"test_VW_{sta}_{year}-{month:02d}-{day:02d}_{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}"
