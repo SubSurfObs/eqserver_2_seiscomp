@@ -1,9 +1,57 @@
-# Workflow consolidation architecture (proposal)
+# Workflow consolidation architecture
 
-**Status**: design proposal, not yet built. Drafted 2026-06-23 after a full
-VW MVP test exposed that the eight individually-invoked stages of the
-existing workflow are operationally fiddly even though they're logically
-coherent.
+**Status**: locked vocabulary, partial implementation (2026-06-23).
+
+The pipeline is **5 executable stages + 1 manual foundation (Stage 0)**.
+Every workflow change must slot into one of these stages or articulate
+why it can't — "we need a Stage 6" should be very rare.
+
+This doc covers the architectural model, the dependency matrix, and the
+phased implementation plan. The locked vocabulary section below is the
+authoritative reference; the older "five logical phases" narrative
+further down is retained for context but uses the now-superseded
+"DIAGNOSE/INVENTORY" names — read the locked vocabulary first.
+
+## Locked vocabulary (authoritative)
+
+| # | Stage | Type | Host | Project repos required | What |
+|---|---|---|---|---|---|
+| **0** | **REGISTRY** | manual / curated | Mac | eqserver_2_seiscomp (YAML files) | `metadata/station_registry.yaml` + (DU only) `metadata/uploaded/<NET>.xml` |
+| 1 | MANIFEST | pipeline | Staging VM | eqserver_2_seiscomp | Walk NFS, parse filenames, build per-station DB |
+| 2 | PROFILE | pipeline | Staging VM | eqserver_2_seiscomp, sudspy | Per-station analytics from manifest |
+| 3 | PLAN | pipeline | Staging VM | eqserver_2_seiscomp | Per-station conversion contract YAML |
+| 4 | CONVERT | pipeline | Staging VM | eqserver_2_seiscomp, disk_to_sds, sudspy | Source bytes → staging SDS |
+| 5 | PROMOTE | pipeline, **WRITE-HOST INVARIANT** | **dev1 only** | sds_staging_ledger, eqserver_2_seiscomp | Staging → LT atomic copy + ledger event |
+
+Stage 0 is operator-curated; stages 1-5 are machine-executable and
+re-runnable. See `CLAUDE.md` "Pipeline stages and their dependencies"
+section for the canonical reference + the per-stage commit-hash
+discipline.
+
+## Why a fixed stage count
+
+A fresh network sweep (e.g. the pending DU launch) currently requires
+invoking ~5–8 separate scripts per station to get from "EqServer source
+exists" to "ready to convert." Each script has its own CLI surface,
+output location convention, and re-run semantics. The result is:
+
+- Operator drift (forgetting which step produced what, in what order)
+- Wasteful re-runs (an intermediate diagnostic re-runs even if its
+  inputs are unchanged)
+- Hard-to-audit state (after a partial sweep, what's been done?)
+- Mistakes like the wipe-in-loop incident (2026-06-22) where a state-
+  modifying convenience designed for one stage breaks when re-used by
+  another
+
+A locked 5-stage model gives operators (and reviewers) one bounded
+thing per stage: clear inputs, clear outputs, a clear re-run rule.
+
+---
+
+## (Below: superseded "five logical phases" narrative — names like DIAGNOSE
+##  / INVENTORY have been replaced by PROFILE / MANIFEST. The architectural
+##  model is unchanged; only the names migrated. Read the locked vocabulary
+##  above for current terminology.)
 
 The goal: collapse the eight current stages into **five logical phases**
 with clear data-handoff boundaries, and consolidate the chatty internal

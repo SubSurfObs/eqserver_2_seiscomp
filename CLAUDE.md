@@ -1,5 +1,57 @@
 # eqserver_2_seiscomp — Design Notes
 
+## Pipeline stages and their dependencies
+
+The pipeline is **5 executable stages + 1 manual foundation** (Stage 0). Every workflow change must slot into one of these stages or articulate why it can't — "we need a Stage 6" should be very rare.
+
+| # | Stage | Type | Host | Project repos | Python packages |
+|---|---|---|---|---|---|
+| **0** | **REGISTRY** | manual / curated | Mac (operator editor) | eqserver_2_seiscomp (for YAML) | pyyaml |
+| 1 | MANIFEST | pipeline (re-runnable) | Staging VM | eqserver_2_seiscomp | stdlib only (sqlite3, multiprocessing) + pyyaml |
+| 2 | PROFILE | pipeline (re-runnable) | Staging VM | eqserver_2_seiscomp, **sudspy** | obspy, sudspy, pyyaml |
+| 3 | PLAN | pipeline (re-runnable) | Staging VM | eqserver_2_seiscomp | pyyaml (+ obspy via FDSN snapshot loader, future) |
+| 4 | CONVERT | pipeline (re-runnable) | Staging VM | eqserver_2_seiscomp, **disk_to_sds**, **sudspy** | obspy, sudspy, numpy |
+| 5 | PROMOTE | pipeline, ledger-gated, **WRITE-HOST INVARIANT** | **dev1 only** | **sds_staging_ledger**, eqserver_2_seiscomp (provenance manifest) | obspy |
+
+Bold project repos are external dependencies that must be SHA-pinned. The pipeline reads from them; if the on-disk code drifts from the committed code, results drift silently — this is exactly the failure mode behind the 2026-06 side-load contamination incident.
+
+### Commit-hash discipline (per-stage pre-flight)
+
+Before any production run of stage N, the operator (or the orchestrator script) must verify that every repo listed in row N is at a known, committed SHA — no uncommitted changes, no local edits. The pinning rule:
+
+```
+Stage 0 (REGISTRY)        : eqserver_2_seiscomp SHA must be clean (no uncommitted YAML edits)
+Stage 1 (MANIFEST)        : eqserver_2_seiscomp SHA verified
+Stage 2 (PROFILE)         : eqserver_2_seiscomp + sudspy SHAs verified
+Stage 3 (PLAN)            : eqserver_2_seiscomp SHA verified
+Stage 4 (CONVERT)         : eqserver_2_seiscomp + disk_to_sds + sudspy SHAs verified
+Stage 5 (PROMOTE)         : sds_staging_ledger + eqserver_2_seiscomp SHAs verified; running on dev1
+```
+
+The pre-flight script (TODO — track as a workflow-tools task) should:
+1. `git -C <repo> rev-parse HEAD` for each pinned repo.
+2. `git -C <repo> status --porcelain` — abort if non-empty (uncommitted changes).
+3. Compare against an expected-SHA YAML (e.g. `config/pinned_repo_shas.yaml`) — abort if mismatch.
+4. Record the verified SHAs into the run manifest written for that stage so post-hoc audits can confirm what code produced what bytes.
+
+Stage 4 is the most critical to pin, because it's where the 2026-06-01 to 2026-06-12 side-loaded `disk_to_sds/scripts/suds_convert.py` silently wrote ~320 station-years of LT bytes with a code path that wasn't in the committed repo. The fix at the code level was provenance discipline, not engine changes — the committed engine was always correct. See [[project-engine-provenance-incident-2026-06-01]] in agent memory.
+
+Stage 5 has the **WRITE-HOST INVARIANT**: it must run on `dev1` because that's the only host with `/mnt/seiscomp_archive` mounted rw. The staging VM has it mounted ro and a stage-5 run there fails fast on the first commit attempt (`OSError: [Errno 30] Read-only file system`) — this is the failsafe that caught the wrong-host launch on 2026-06-04.
+
+### Current canonical filenames per stage (transitional)
+
+The stage names above are the locked semantic vocabulary. Filenames will follow in a separate non-functional renaming pass; current historical names are:
+
+| Stage | Current script | Future name (post-rename) |
+|---|---|---|
+| 1 MANIFEST | `scan/level1.py` | `scan/manifest.py` |
+| 2 PROFILE | `scan/diagnose.py` (wraps 5 sub-scripts) | `scan/profile.py` |
+| 3 PLAN | `scan/plan_generator.py` | `scan/plan.py` |
+| 4 CONVERT | `scan/phase3_driver.py` | `scan/convert.py` |
+| 5 PROMOTE | `sds_staging_ledger/apply.py` | `sds_staging_ledger/promote.py` |
+
+See `docs/workflow_consolidation_architecture.md` for the full consolidation rationale.
+
 ## Goal
 
 Replace the legacy bash + Java EqConvert pipeline (in `legacy/`) with a Python pipeline that converts a decade-scale EqServer waveform archive into a clean SeisComP SDS archive.
