@@ -418,10 +418,13 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     # Gecko-conforming inputs; required for the mixed-separator cohort whose
     # source mseed carries Kelunji-native 'DL?' codes.
     st = _enforce_band_instrument(st)
-    st.merge(method=1, fill_value=None)
-    # split() breaks masked-array traces (with gaps) back into separate
-    # non-masked traces — required because ObsPy MSEED writer rejects masked.
-    st = st.split()
+    # Replaces obspy Stream.merge(method=1, fill_value=None) + split() with
+    # sudspy.fast_merge_split — O(N log N) vs O(N^2). 492x speedup measured
+    # on HOLS 2018-06-15 (1440-file SUDS day), byte-equal output. Preserves
+    # int dtype throughout (no float32 round-trip). See sudspy handoff
+    # 2026-06-22 + commits 81dbd1a / 20c48b4.
+    import sudspy as _sudspy
+    st = _sudspy.fast_merge_split(st)
     st.sort(["starttime"])
     # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
     bogus = []
@@ -520,8 +523,10 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     # Normalise channel codes: band by sample rate, instrument = H. NOOP for
     # Minimus per-channel inputs already at HH? at 200 Hz.
     st = _enforce_band_instrument(st)
-    st.merge(method=1, fill_value=None)
-    st = st.split()
+    # sudspy.fast_merge_split replaces stream.merge + split (492x speedup, see
+    # convert_gecko_day for full rationale).
+    import sudspy as _sudspy
+    st = _sudspy.fast_merge_split(st)
     st.sort(["starttime"])
     # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
     bogus = []
