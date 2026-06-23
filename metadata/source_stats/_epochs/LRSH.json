@@ -1,19 +1,134 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-12-30",
+          "boundary_lo_date": "2021-12-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/12/01/20211201_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/03/01/20220301_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/01/01/20220101_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/12/30/20211230_0000_LRSH.ms.zip"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHZ"
         ],
-        "end": "2021-07-01",
+        "end": "2021-12-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2020/07/01/20200701_0000_LRSH.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/07/01/20210701_0000_LRSH.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 54675,
+          "min": 12914,
+          "n_samples": 25488,
+          "p10": 14783,
+          "p25": 15578,
+          "p50": 16671,
+          "p75": 17618,
+          "p90": 18464
+        },
         "start": "2020-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-12-30",
+          "boundary_lo_date": "2021-12-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/12/01/20211201_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/03/01/20220301_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/01/01/20220101_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/12/30/20211230_0000_LRSH.ms.zip"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 365,
         "channels": [
           "CHE",
           "CHN",
@@ -24,20 +139,140 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/01/01/20220101_0000_LRSH.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2022-07-01"
+        "size_stats": {
+          "max": 99142,
+          "min": 364,
+          "n_samples": 49980,
+          "p10": 39642,
+          "p25": 41923,
+          "p50": 44373,
+          "p75": 48812,
+          "p90": 57183
+        },
+        "start": "2021-12-30"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-02-14",
+          "boundary_lo_date": "2024-01-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2023/12/01/20231201_0001_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/03/01/20240301_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/01/24/20240124_0137_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-02-14",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/02/14/20240214_2300_LRSH.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHZ"
         ],
-        "end": "2023-07-01",
+        "end": "2024-01-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2023/07/01/20230701_0001_LRSH.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 84719,
+          "min": 5927,
+          "n_samples": 49946,
+          "p10": 12900,
+          "p25": 14193,
+          "p50": 16236,
+          "p75": 17811,
+          "p90": 19263
+        },
         "start": "2023-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-02-14",
+          "boundary_lo_date": "2024-01-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2023/12/01/20231201_0001_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/03/01/20240301_0000_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/01/24/20240124_0137_LRSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-02-14",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/02/14/20240214_2300_LRSH.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHE",
           "CHN",
@@ -48,7 +283,36 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2024/07/01/20240701_0000_LRSH.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 95347,
+          "min": 3446,
+          "n_samples": 49996,
+          "p10": 38366,
+          "p25": 40634,
+          "p50": 43905,
+          "p75": 46958,
+          "p90": 54133
+        },
+        "start": "2024-02-14"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2020/06/01/2020-06-01 0233 01 LRSH_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2021/04/01/2021-04-01 0045 00 LRSH_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2023/04/12/2023-04-12 0741 14 LRSH_CHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-07-01"
       }
     ],
     "tele_noss_mseed": [
@@ -63,6 +327,9 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/04/01/2022-04-01 0001 LRSH.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2022-07-01"
       }
     ],
@@ -78,11 +345,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSH/continuous/2022/07/25/2022-07-25 1223 49 LRSH.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2022-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:41:57Z",
+  "generated_at_utc": "2026-06-23T03:34:39Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LRSH.db",
-  "station": "LRSH"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "LRSH",
+  "target_resolution_days": 30
 }

@@ -1,32 +1,123 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-02-14",
+          "boundary_lo_date": "2024-01-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2023/12/01/20231201_0001_WLSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/03/01/20240301_0000_WLSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/01/01/20240101_0001_WLSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-02-14",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/02/14/20240214_0000_WLSH.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
-          "CDO",
           "CHZ"
         ],
-        "end": "2018-07-01",
+        "end": "2024-01-15",
         "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/07/18/20180718_0333_WLSH.ms.zip"
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/07/18/20180718_0333_WLSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/07/01/20190701_0000_WLSH.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2020/01/01/20200101_0008_WLSH.ms.zip"
         ],
-        "samples_used": 1,
+        "samples_used": 6,
+        "size_stats": {
+          "max": 66760,
+          "min": 4355,
+          "n_samples": 25144,
+          "p10": 12665,
+          "p25": 13304,
+          "p50": 14534,
+          "p75": 15986,
+          "p90": 17535
+        },
         "start": "2018-07-01"
       },
       {
-        "channels": [
-          "CHZ"
-        ],
-        "end": "2023-07-01",
-        "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/07/01/20190701_0000_WLSH.ms.zip",
-          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2020/01/01/20200101_0008_WLSH.ms.zip",
-          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2021/12/15/20211215_0257_WLSH.ms.zip"
-        ],
-        "samples_used": 5,
-        "start": "2019-07-01"
-      },
-      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-02-14",
+          "boundary_lo_date": "2024-01-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2023/12/01/20231201_0001_WLSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/03/01/20240301_0000_WLSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/01/01/20240101_0001_WLSH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-02-14",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/02/14/20240214_0000_WLSH.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHE",
           "CHN",
@@ -37,7 +128,178 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2024/07/01/20240701_0054_WLSH.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 80891,
+          "min": 3826,
+          "n_samples": 49999,
+          "p10": 32008,
+          "p25": 33720,
+          "p50": 36495,
+          "p75": 39913,
+          "p90": 43813
+        },
+        "start": "2024-02-14"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-11-15",
+          "boundary_lo_date": "2018-10-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/12/01/2018-12-01 0042 01 WLSH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/09/01/2018-09-01 0143 07 WLSH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/10/01/2018-10-01 1636 09 WLSH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/11/01/2018-11-01 1601 00 WLSH_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 31
+        },
+        "boundary_resolution_days": 31,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2018-10-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/10/01/2018-10-01 1636 09 WLSH_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-11-15",
+          "boundary_lo_date": "2018-10-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/12/01/2018-12-01 0042 01 WLSH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/09/01/2018-09-01 0143 07 WLSH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/10/01/2018-10-01 1636 09 WLSH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/11/01/2018-11-01 1601 00 WLSH_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 31
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/01/01/2019-01-01 0359 06 WLSH_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2020/07/01/2020-07-01 0104 13 WLSH_CHN.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-11-15"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2021/12/15/2021-12-15 0312 02 WLSH_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2022/09/01/2022-09-01 0000 03 WLSH_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2023/12/01/2023-12-01 0140 02 WLSH_CHZ.mseed.zip"
+        ],
+        "samples_used": 4,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
       }
     ],
     "tele_noss_mseed": [
@@ -53,24 +315,20 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2022/07/01/2022-07-01 0446 WLSH.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 81026,
+          "min": 684,
+          "n_samples": 26185,
+          "p10": 29451,
+          "p25": 32012,
+          "p50": 36708,
+          "p75": 41654,
+          "p90": 47541
+        },
         "start": "2020-07-01"
       }
     ],
     "tele_ss_mseed": [
-      {
-        "channels": [
-          "CDO",
-          "CHE",
-          "CHN",
-          "CHZ"
-        ],
-        "end": "2018-07-01",
-        "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/07/16/2018-07-16 0400 00 WLSH.ms.zip"
-        ],
-        "samples_used": 1,
-        "start": "2018-07-01"
-      },
       {
         "channels": [
           "CHE",
@@ -79,15 +337,28 @@
         ],
         "end": "2023-07-01",
         "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/07/16/2018-07-16 0400 00 WLSH.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/04/01/2019-04-01 0009 00 WLSH.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2023/07/01/2023-07-02 0000 00 WLSH.ms.zip"
         ],
-        "samples_used": 2,
-        "start": "2019-07-01"
+        "samples_used": 3,
+        "size_stats": {
+          "max": 116176,
+          "min": 7038,
+          "n_samples": 24823,
+          "p10": 31844,
+          "p25": 33880,
+          "p50": 37666,
+          "p75": 42214,
+          "p90": 47119
+        },
+        "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:55:45Z",
+  "generated_at_utc": "2026-06-23T03:57:49Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WLSH.db",
-  "station": "WLSH"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "WLSH",
+  "target_resolution_days": 30
 }

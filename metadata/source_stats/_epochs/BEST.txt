@@ -1,19 +1,24 @@
 # Channel-epoch scan: BEST
-# Generated: 2026-06-21T07:22:18Z
+# Generated: 2026-06-23T02:52:16Z
 
 ## disk_suds
-  2017-07-01 → 2019-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)
-  2020-07-01 → 2021-07-01  channels=['c03']  (n_samples=2)
-  2022-07-01 → 2025-07-01  channels=['c01', 'c02', 'c03']  (n_samples=4)
+  2017-07-01 → 2019-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)  [boundary ±366d]
+  2020-07-01 → 2021-07-01  channels=['c03']  (n_samples=2)  [boundary ±137d]
+  2021-11-15 → 2025-07-01  channels=['c01', 'c02', 'c03']  (n_samples=4)  [boundary ±137d]
 
 ## tele_ss_suds
-  2017-07-01 → 2018-07-01  channels=['c03']  (n_samples=2)
-  2019-07-01 → 2019-07-01  channels=['CHZ']  (n_samples=1)
-  2020-07-01 → 2025-07-01  channels=['c03']  (n_samples=6)
+  2017-07-01 → 2019-04-15  channels=['c03']  (n_samples=2)  [boundary ±77d]
+  2019-07-01 → 2019-07-01  channels=['CHZ']  (n_samples=1)  [boundary ±366d]
+  2020-07-01 → 2025-07-01  channels=['c03']  (n_samples=6)  [boundary ±366d]
 
 ## disk_mseed
   2019-07-01 → 2020-07-01  channels=['CHZ']  (n_samples=2)
 
 ## tele_noss_mseed
   2019-07-01 → 2019-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+
+## perchan_mseed
+  2018-07-01 → 2020-12-15  channels=['DHZ']  (n_samples=3)  [boundary ±198d]
+  2021-07-01 → 2021-12-15  channels=['CHZ', 'DHZ']  (n_samples=1)  [boundary ±198d]
+  2022-07-01 → 2024-07-01  channels=['DHZ']  (n_samples=3)  [boundary ±198d]
 

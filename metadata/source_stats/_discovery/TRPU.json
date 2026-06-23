@@ -27,7 +27,7 @@
       "pct": 0.0
     }
   ],
-  "generated_at_utc": "2026-06-21T07:55:46Z",
+  "generated_at_utc": "2026-06-23T03:52:51Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TRPU.db",
   "manifest_signatures": [
     {
@@ -73,8 +73,8 @@
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
-        "exclude_reason": "unparsed",
-        "flags": null,
+        "exclude_reason": null,
+        "flags": "mixed_separator:underscore_tele",
         "recorder_type": "gecko",
         "role": "waveform",
         "source_type": "telemetry",
@@ -162,32 +162,30 @@
     },
     {
       "by_year": {
-        "2015": 2,
-        "2016": 1,
-        "2017": 4321
+        "2017": 4320
       },
-      "row_count": 4324,
+      "row_count": 4320,
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
-        "exclude_reason": "unparsed",
-        "flags": null,
+        "exclude_reason": null,
+        "flags": "mixed_separator:all_dash_date",
         "recorder_type": "gecko",
         "role": "waveform",
-        "source_type": "disk",
+        "source_type": "telemetry",
         "ss_is_null": true,
         "station_mismatch": false
       },
       "size_likely_bimodal": false,
       "size_stats": {
         "max": 38202,
-        "min": 3676,
-        "n_samples": 4324,
-        "p10": 19662,
-        "p50": 21973,
-        "p90": 25180
+        "min": 18944,
+        "n_samples": 4320,
+        "p10": 19666,
+        "p50": 21974,
+        "p90": 25181
       },
-      "unmatched_filename_count": 4324
+      "unmatched_filename_count": 4320
     },
     {
       "by_year": {
@@ -223,6 +221,35 @@
     },
     {
       "by_year": {
+        "2015": 2,
+        "2016": 1,
+        "2017": 1
+      },
+      "row_count": 4,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "disk",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 7914,
+        "min": 3676,
+        "n_samples": 4,
+        "p10": 4816,
+        "p50": 7564,
+        "p90": 7834
+      },
+      "unmatched_filename_count": 4
+    },
+    {
+      "by_year": {
         "2020": 1
       },
       "row_count": 1,
@@ -249,7 +276,7 @@
       "unmatched_filename_count": 1
     }
   ],
-  "n_distinct_signatures": 7,
+  "n_distinct_signatures": 8,
   "station": "TRPU",
   "total_rows": 3628847,
   "unmatched_filename_samples": [

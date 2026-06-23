@@ -1,0 +1,35 @@
+# Source categorization: SGWU
+# Generated: 2026-06-23T03:47:44Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.SGWU.db
+# Total day-entries: 3066
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    72.5%
+  full tele available  (>=1400 single var):    22.6%
+  FULL FROM EITHER kind:                        95.0%
+  full from BOTH (redundancy):                  0.1%
+
+## Buckets
+  A_pure      :   2219  ( 72.4%)
+  D_pure      :    688  ( 22.4%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :      1  (  0.0%)
+  AB_mixed    :      4  (  0.1%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :     44  (  1.4%)
+  weird       :     99  (  3.2%)
+  empty       :     11  (  0.4%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2014          83          0         83      83       0       0       0      1 | 84
+   2015         341          0        341     341       0       0       0     18 | 360
+   2016         317          4        317     313       0       0       4     37 | 356
+   2017         333          0        333     333       0       0       0     29 | 362
+   2018         360          0        360     360       0       0       0      3 | 363
+   2019         201        110        311     200     110       0       0      1 | 361
+   2020         293          0        293     293       0       0       0      2 | 296
+   2021           9        350        359       9     350       0       0      3 | 362
+   2022         134        228        362     134     228       0       0      2 | 365
+   2023         153          0        153     153       0       0       0      3 | 157

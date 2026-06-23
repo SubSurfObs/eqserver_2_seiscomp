@@ -1,0 +1,33 @@
+# Source categorization: WDSD
+# Generated: 2026-06-23T03:55:33Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.WDSD.db
+# Total day-entries: 2426
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    71.2%
+  full tele available  (>=1400 single var):    74.4%
+  FULL FROM EITHER kind:                        94.6%
+  full from BOTH (redundancy):                 51.0%
+
+## Buckets
+  A_pure      :    461  ( 19.0%)
+  D_pure      :    465  ( 19.2%)
+  E_multivar  :    128  (  5.3%)
+  C_partial   :     11  (  0.5%)
+  AB_mixed    :   1172  ( 48.3%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :     17  (  0.7%)
+  sparse      :     12  (  0.5%)
+  weird       :    160  (  6.6%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2018         121        183        183       0       0      46      89     49 | 184
+   2019         336        332        346       0       2      80     257      9 | 365
+   2020         289        175        290     106       0       1     188     64 | 366
+   2021         202        181        202      20       0       0     194      5 | 231
+   2022         114        348        363      14     221       1     100     27 | 365
+   2023         364         59        365     304       0       0      59      1 | 365
+   2024         301        343        363      17      58       0     285      4 | 365
+   2025           0        184        184       0     184       0       0      1 | 185

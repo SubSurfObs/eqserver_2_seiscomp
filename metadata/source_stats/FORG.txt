@@ -1,0 +1,33 @@
+# Source categorization: FORG
+# Generated: 2026-06-23T03:11:40Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.FORG.db
+# Total day-entries: 2148
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    80.8%
+  full tele available  (>=1400 single var):    65.5%
+  FULL FROM EITHER kind:                        94.9%
+  full from BOTH (redundancy):                 51.5%
+
+## Buckets
+  A_pure      :    621  ( 28.9%)
+  D_pure      :    234  ( 10.9%)
+  E_multivar  :     87  (  4.1%)
+  C_partial   :      0  (  0.0%)
+  AB_mixed    :   1108  ( 51.6%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :     12  (  0.6%)
+  sparse      :     48  (  2.2%)
+  weird       :     38  (  1.8%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2017          18          0         18      18       0       0       0      0 | 19
+   2018         352        318        352      32       0       0     322     11 | 365
+   2019         346        342        346       0       0       0     347      3 | 350
+   2020         338        339        340       0       0       1     341      2 | 346
+   2021         110        198        199       0      23      86      98      3 | 213
+   2022         138        211        349     137     211       0       0      5 | 365
+   2023         365          0        365     365       0       0       0      0 | 365
+   2024          69          0         69      69       0       0       0     14 | 125

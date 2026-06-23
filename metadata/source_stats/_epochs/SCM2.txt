@@ -1,4 +1,6 @@
 # Channel-epoch scan: SCM2
-# Generated: 2026-06-21T07:52:56Z
+# Generated: 2026-06-23T03:45:27Z
 
-(no source kinds had readable files in this station)
+## perchan_mseed
+  2019-07-01 → 2021-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=3)
+

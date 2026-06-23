@@ -1,10 +1,15 @@
 # Channel-epoch scan: LRNW
-# Generated: 2026-06-21T07:40:19Z
+# Generated: 2026-06-23T03:32:25Z
 
 ## disk_mseed
-  2019-07-01 → 2020-07-01  channels=['CHZ']  (n_samples=2)
-  2021-07-01 → 2021-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+  2019-07-01 → 2021-06-07  channels=['CHZ']  (n_samples=2)  [boundary ±24d]
+  2021-07-01 → 2021-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)  [boundary ±24d]
 
 ## tele_noss_mseed
   2019-07-01 → 2021-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)
+
+## perchan_mseed
+  2019-07-01 → 2019-10-15  channels=['CHN', 'CHZ']  (n_samples=1)  [boundary ±260d]
+  2020-07-01 → 2021-05-15  channels=['CHZ']  (n_samples=1)  [boundary ±47d]
+  2021-07-01 → 2021-07-01  channels=['CHE', 'CHZ']  (n_samples=1)  [boundary ±47d]
 

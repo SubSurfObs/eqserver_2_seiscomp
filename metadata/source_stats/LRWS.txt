@@ -1,0 +1,27 @@
+# Source categorization: LRWS
+# Generated: 2026-06-23T03:35:07Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.LRWS.db
+# Total day-entries: 529
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    90.9%
+  full tele available  (>=1400 single var):    84.7%
+  FULL FROM EITHER kind:                        93.6%
+  full from BOTH (redundancy):                 82.0%
+
+## Buckets
+  A_pure      :     39  (  7.4%)
+  D_pure      :      0  (  0.0%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :      8  (  1.5%)
+  AB_mixed    :    470  ( 88.8%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :      3  (  0.6%)
+  weird       :      9  (  1.7%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2020         362        317        364      39       0       0     321      4 | 366
+   2021         119        131        131       0       0       0     149      5 | 163

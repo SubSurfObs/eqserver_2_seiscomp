@@ -1,0 +1,29 @@
+# Source categorization: KRAN
+# Generated: 2026-06-23T03:27:49Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.KRAN.db
+# Total day-entries: 670
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    46.4%
+  full tele available  (>=1400 single var):    51.2%
+  FULL FROM EITHER kind:                        67.3%
+  full from BOTH (redundancy):                 30.3%
+
+## Buckets
+  A_pure      :    100  ( 14.9%)
+  D_pure      :    126  ( 18.8%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :     43  (  6.4%)
+  AB_mixed    :    267  ( 39.9%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :     16  (  2.4%)
+  weird       :    118  ( 17.6%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1970           0          0          0       0       0       0       0      0 | 1
+   2012         111         15        112      95       0       0      20     41 | 161
+   2013          91        207        210       2     108       0     126     64 | 316
+   2014         109        121        129       3      18       0     121     13 | 192

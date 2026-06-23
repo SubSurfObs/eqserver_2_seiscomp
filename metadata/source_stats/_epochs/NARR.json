@@ -1,4 +1,5 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
@@ -14,7 +15,36 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2014/07/02/2014-07-02_0712_41_NARR.dmx"
         ],
         "samples_used": 13,
+        "size_stats": {
+          "max": 185720,
+          "min": 128872,
+          "n_samples": 49946,
+          "p10": 181822,
+          "p25": 181822,
+          "p50": 181822,
+          "p75": 181822,
+          "p90": 181822
+        },
         "start": "2012-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2019/01/11/2019-01-11 0420 31 NARR_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2022/06/01/2022-06-01 0136 44 NARR_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2023/10/01/2023-10-01 0058 44 NARR_DHZ.mseed.zip"
+        ],
+        "samples_used": 4,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
       }
     ],
     "tele_ss_suds": [
@@ -29,11 +59,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/NARR/continuous/2014/07/02/2014-07-02 0403 41 NARR.dmx"
         ],
         "samples_used": 14,
+        "size_stats": {
+          "max": 91789,
+          "min": 91789,
+          "n_samples": 54,
+          "p10": 91789,
+          "p25": 91789,
+          "p50": 91789,
+          "p75": 91789,
+          "p90": 91789
+        },
         "start": "2012-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:43:03Z",
+  "generated_at_utc": "2026-06-23T03:41:55Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.NARR.db",
-  "station": "NARR"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "NARR",
+  "target_resolution_days": 30
 }

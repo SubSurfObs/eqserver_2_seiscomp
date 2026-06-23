@@ -1,4 +1,5 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
@@ -14,6 +15,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2014/07/01/2014-07-01_0000_21_HODL.dmx.gz"
         ],
         "samples_used": 5,
+        "size_stats": {
+          "max": 181822,
+          "min": 94520,
+          "n_samples": 33977,
+          "p10": 98358,
+          "p25": 100496,
+          "p50": 110263,
+          "p75": 181822,
+          "p90": 181822
+        },
         "start": "2012-07-01"
       }
     ],
@@ -29,11 +40,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HODL/continuous/2014/07/01/2014-07-01 0540 21 HODL.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 61114,
+          "min": 61114,
+          "n_samples": 16023,
+          "p10": 61114,
+          "p25": 61114,
+          "p50": 61114,
+          "p75": 61114,
+          "p90": 61114
+        },
         "start": "2012-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:31:22Z",
+  "generated_at_utc": "2026-06-23T03:20:47Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HODL.db",
-  "station": "HODL"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "HODL",
+  "target_resolution_days": 30
 }

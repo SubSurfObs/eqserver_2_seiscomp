@@ -1,4 +1,9 @@
 # Channel-epoch scan: SGWU
-# Generated: 2026-06-21T07:53:28Z
+# Generated: 2026-06-23T03:48:15Z
 
-(no source kinds had readable files in this station)
+## tele_underscore_mseed
+  2019-07-01 → 2022-07-01  channels=['HH1', 'HH2', 'HHZ']  (n_samples=3)
+
+## perchan_mseed
+  2015-07-01 → 2015-07-01  channels=['HH1', 'HH2', 'HHZ']  (n_samples=1)
+

@@ -1,11 +1,11 @@
 # Channel-epoch scan: MRDN
-# Generated: 2026-06-21T07:42:42Z
+# Generated: 2026-06-23T03:38:41Z
 
 ## disk_suds
-  2012-07-01 → 2014-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)
-  2015-07-01 → 2015-07-01  channels=['c03']  (n_samples=1)
-  2016-07-01 → 2018-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)
-  2019-07-01 → 2019-07-01  channels=['c01', 'c02']  (n_samples=1)
+  2012-07-01 → 2015-06-07  channels=['c01', 'c02', 'c03']  (n_samples=3)  [boundary ±24d]
+  2015-07-01 → 2015-10-15  channels=['c03']  (n_samples=1)  [boundary ±123d]
+  2016-02-15 → 2018-11-15  channels=['c01', 'c02', 'c03']  (n_samples=3)  [boundary ±61d]
+  2019-01-15 → 2019-07-01  channels=['c01', 'c02']  (n_samples=1)  [boundary ±61d]
 
 ## tele_ss_suds
   2012-07-01 → 2019-07-01  channels=['c03']  (n_samples=8)

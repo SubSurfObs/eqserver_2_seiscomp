@@ -1,5 +1,5 @@
 # Discovery audit: DDWB
-# Generated: 2026-06-21T06:52:47Z
+# Generated: 2026-06-23T03:07:25Z
 # Total rows: 6726202
 # Distinct signatures: 2
 
@@ -30,5 +30,5 @@
 ## Top signatures (by row count)
   rows=   6695053  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
            size:  min=237  p10=11949  p50=15989  p90=16274  max=41967
-  rows=     31149  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+  rows=     31149  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None  flags=mixed_separator:underscore_tele
            size:  min=10053  p10=27764  p50=39706  p90=51901  max=82500

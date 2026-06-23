@@ -22,7 +22,7 @@
       "pct": 0.005
     }
   ],
-  "generated_at_utc": "2026-06-21T07:27:04Z",
+  "generated_at_utc": "2026-06-23T03:30:37Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOYU.db",
   "manifest_signatures": [
     {
@@ -90,16 +90,15 @@
     },
     {
       "by_year": {
-        "2015": 2,
-        "2016": 1,
+        "2015": 1,
         "2019": 110307
       },
-      "row_count": 110310,
+      "row_count": 110308,
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
-        "exclude_reason": "unparsed",
-        "flags": null,
+        "exclude_reason": null,
+        "flags": "mixed_separator:underscore_tele",
         "recorder_type": "gecko",
         "role": "waveform",
         "source_type": "telemetry",
@@ -109,13 +108,13 @@
       "size_likely_bimodal": false,
       "size_stats": {
         "max": 85246,
-        "min": 1358,
-        "n_samples": 110310,
+        "min": 2224,
+        "n_samples": 110308,
         "p10": 35298,
         "p50": 50436,
         "p90": 66475
       },
-      "unmatched_filename_count": 110310
+      "unmatched_filename_count": 110308
     },
     {
       "by_year": {
@@ -177,9 +176,37 @@
         "p90": 3376
       },
       "unmatched_filename_count": 0
+    },
+    {
+      "by_year": {
+        "2015": 1,
+        "2016": 1
+      },
+      "row_count": 2,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": "unparsed",
+        "flags": null,
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 1440,
+        "min": 1358,
+        "n_samples": 2,
+        "p10": 1366,
+        "p50": 1399,
+        "p90": 1431
+      },
+      "unmatched_filename_count": 2
     }
   ],
-  "n_distinct_signatures": 5,
+  "n_distinct_signatures": 6,
   "station": "LOYU",
   "total_rows": 1569144,
   "unmatched_filename_samples": [

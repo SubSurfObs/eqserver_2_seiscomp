@@ -1,7 +1,17 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
         "channels": [
           "CHZ"
         ],
@@ -12,9 +22,36 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2019/07/01/20190701_0000_DDNE.ms.zip"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 99734,
+          "min": 4396,
+          "n_samples": 12757,
+          "p10": 12728,
+          "p25": 15322,
+          "p50": 18075,
+          "p75": 40169,
+          "p90": 47222
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 730,
         "channels": [
           "CHE",
           "CHN",
@@ -25,20 +62,126 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2021/12/15/20211215_2209_DDNE.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2021-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-01-15",
+          "boundary_lo_date": "2023-12-30",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2023/12/01/20231201_0000_DDNE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2024/03/01/20240301_0000_DDNE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2024/01/01/20240101_0000_DDNE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2023/12/30/20231230_0000_DDNE.ms.zip"
+            }
+          ],
+          "resolution_days": 16
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_resolution_days": 16,
         "channels": [
           "CHZ"
         ],
-        "end": "2023-07-01",
+        "end": "2023-12-30",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2023/10/01/20231001_0000_DDNE.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2023-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-01-15",
+          "boundary_lo_date": "2023-12-30",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2023/12/01/20231201_0000_DDNE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2024/03/01/20240301_0000_DDNE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2024/01/01/20240101_0000_DDNE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2023/12/30/20231230_0000_DDNE.ms.zip"
+            }
+          ],
+          "resolution_days": 16
+        },
+        "boundary_resolution_days": 16,
         "channels": [
           "CHE",
           "CHN",
@@ -49,7 +192,124 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2024/01/01/20240101_0000_DDNE.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 117756,
+          "min": 5726,
+          "n_samples": 37143,
+          "p10": 17766,
+          "p25": 22810,
+          "p50": 42251,
+          "p75": 48768,
+          "p90": 58154
+        },
+        "start": "2024-01-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-03-15",
+          "boundary_lo_date": "2018-01-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2017-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2017/12/01/2017-12-01 0219 59 DDNE_CHE.mseed"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/03/01/2018-03-01 0731 05 DDNE_CHZ.mseed"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2018-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/01/01/2018-01-01 0000 59 DDNE_CHE.mseed"
+            }
+          ],
+          "resolution_days": 59
+        },
+        "boundary_resolution_days": 59,
+        "channels": [
+          "CHE",
+          "CHZ"
+        ],
+        "end": "2018-01-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2017/10/04/2017-10-04 0916 59 DDNE_CHE.mseed"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2017-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-03-15",
+          "boundary_lo_date": "2018-01-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2017-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2017/12/01/2017-12-01 0219 59 DDNE_CHE.mseed"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/03/01/2018-03-01 0731 05 DDNE_CHZ.mseed"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2018-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/01/01/2018-01-01 0000 59 DDNE_CHE.mseed"
+            }
+          ],
+          "resolution_days": 59
+        },
+        "boundary_resolution_days": 59,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/07/01/2018-07-01 1825 03 DDNE_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2019/02/14/2019-02-14 2342 03 DDNE_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2020/04/01/2020-04-01 0122 07 DDNE_CHZ.mseed.zip"
+        ],
+        "samples_used": 5,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-03-15"
       }
     ],
     "tele_noss_mseed": [
@@ -66,6 +326,9 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2020/07/01/2020-07-01 0001 DDNE.ms.zip"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2018-07-01"
       }
     ],
@@ -83,6 +346,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2019/04/01/2019-04-01 0000 00 DDNE.ms.zip"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 41292,
+          "min": 39600,
+          "n_samples": 2,
+          "p10": 39769,
+          "p25": 40023,
+          "p50": 40446,
+          "p75": 40869,
+          "p90": 41122
+        },
         "start": "2017-07-01"
       }
     ],
@@ -99,11 +372,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDNE/continuous/2018/02/06/2018-02-06 0015 59 DDNE.dmx"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 192406,
+          "min": 47824,
+          "n_samples": 801,
+          "p10": 62056,
+          "p25": 180452,
+          "p50": 181708,
+          "p75": 182644,
+          "p90": 183380
+        },
         "start": "2017-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:26:34Z",
+  "generated_at_utc": "2026-06-23T03:02:02Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDNE.db",
-  "station": "DDNE"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "DDNE",
+  "target_resolution_days": 30
 }

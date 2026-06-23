@@ -1,0 +1,32 @@
+# Source categorization: WPNH
+# Generated: 2026-06-23T03:58:39Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.WPNH.db
+# Total day-entries: 1339
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    80.2%
+  full tele available  (>=1400 single var):    75.7%
+  FULL FROM EITHER kind:                        80.5%
+  full from BOTH (redundancy):                 75.3%
+
+## Buckets
+  A_pure      :     27  (  2.0%)
+  D_pure      :      0  (  0.0%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :      7  (  0.5%)
+  AB_mixed    :   1052  ( 78.6%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :    137  ( 10.2%)
+  weird       :    116  (  8.7%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1989           0          0          0       0       0       0       0      0 | 1
+   2018         213        212        214       0       0       0     216      0 | 218
+   2019         284        277        284       0       0       0     283      2 | 285
+   2020         335        321        335       6       0       0     329      6 | 350
+   2021          46         29         46      14       0       0      30     52 | 162
+   2022         171        152        174       7       0       0     169     56 | 297
+   2023          25         22         25       0       0       0      25      0 | 26

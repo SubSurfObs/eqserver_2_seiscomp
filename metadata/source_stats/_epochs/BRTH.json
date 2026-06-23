@@ -1,20 +1,127 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-08-30",
+          "boundary_lo_date": "2023-08-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/10/01/20231001_0000_BRTH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/08/01/20230801_0000_BRTH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/09/01/20230901_0000_BRTH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-08-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/08/30/20230830_0000_BRTH.ms.zip"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHZ"
         ],
-        "end": "2023-07-01",
+        "end": "2023-08-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2018/07/01/20180701_2011_BRTH.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2019/07/01/20190701_0000_BRTH.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/01/01/20210101_0000_BRTH.ms.zip"
         ],
         "samples_used": 5,
+        "size_stats": {
+          "max": 65017,
+          "min": 6183,
+          "n_samples": 25081,
+          "p10": 12487,
+          "p25": 12838,
+          "p50": 13487,
+          "p75": 14469,
+          "p90": 19184
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-08-30",
+          "boundary_lo_date": "2023-08-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/10/01/20231001_0000_BRTH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/08/01/20230801_0000_BRTH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/09/01/20230901_0000_BRTH.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-08-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/08/30/20230830_0000_BRTH.ms.zip"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHE",
           "CHN",
@@ -25,7 +132,211 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2024/07/01/20240701_0000_BRTH.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 70045,
+          "min": 26604,
+          "n_samples": 24635,
+          "p10": 31368,
+          "p25": 31734,
+          "p50": 32646,
+          "p75": 34399,
+          "p90": 37556
+        },
+        "start": "2023-08-30"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 731,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2018/07/01/2018-07-01 0502 06 BRTH_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2019/02/01/2019-02-01 0441 06 BRTH_CHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-12-15",
+          "boundary_lo_date": "2021-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/12/01/2021-12-01 0520 57 BRTH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2021-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/09/01/2021-09-01 0410 05 BRTH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2021-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/10/02/2021-10-02 0500 50 BRTH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/11/01/2021-11-01 2236 35 BRTH_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 30,
+        "channels": [
+          "CHE",
+          "CHZ"
+        ],
+        "end": "2021-11-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/10/02/2021-10-02 0500 50 BRTH_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-12-15",
+          "boundary_lo_date": "2021-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/12/01/2021-12-01 0520 57 BRTH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2021-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/09/01/2021-09-01 0410 05 BRTH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2021-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/10/02/2021-10-02 0500 50 BRTH_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2021/11/01/2021-11-01 2236 35 BRTH_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2022/01/01/2022-01-01 2048 46 BRTH_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-12-15"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2023/03/01/2023-03-01 0034 01 BRTH_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2023-07-01"
       }
     ],
     "tele_noss_mseed": [
@@ -41,6 +352,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2022/01/01/2022-01-01 2138 BRTH.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 16028,
+          "min": 1359,
+          "n_samples": 5134,
+          "p10": 5753,
+          "p25": 6268,
+          "p50": 6639,
+          "p75": 7154,
+          "p90": 7988
+        },
         "start": "2021-07-01"
       }
     ],
@@ -58,11 +379,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BRTH/continuous/2020/07/01/2020-07-01 0001 00 BRTH.ms.zip"
         ],
         "samples_used": 7,
+        "size_stats": {
+          "max": 69462,
+          "min": 11275,
+          "n_samples": 24484,
+          "p10": 30186,
+          "p25": 31106,
+          "p50": 32794,
+          "p75": 35159,
+          "p90": 38209
+        },
         "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:24:41Z",
+  "generated_at_utc": "2026-06-23T02:55:59Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.BRTH.db",
-  "station": "BRTH"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "BRTH",
+  "target_resolution_days": 30
 }

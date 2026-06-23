@@ -32,7 +32,7 @@
       "pct": 0.104
     }
   ],
-  "generated_at_utc": "2026-06-21T07:57:48Z",
+  "generated_at_utc": "2026-06-23T04:00:24Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WPSH.db",
   "manifest_signatures": [
     {
@@ -182,11 +182,11 @@
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
-        "exclude_reason": "unparsed",
-        "flags": null,
+        "exclude_reason": null,
+        "flags": "mixed_separator:dash_around_sta",
         "recorder_type": "gecko",
         "role": "waveform",
-        "source_type": "disk",
+        "source_type": "telemetry",
         "ss_is_null": true,
         "station_mismatch": false
       },

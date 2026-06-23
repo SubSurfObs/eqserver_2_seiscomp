@@ -1,0 +1,44 @@
+# Source categorization: NARR
+# Generated: 2026-06-23T03:41:05Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.NARR.db
+# Total day-entries: 3994
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    75.5%
+  full tele available  (>=1400 single var):    82.8%
+  FULL FROM EITHER kind:                        87.9%
+  full from BOTH (redundancy):                 70.4%
+
+## Buckets
+  A_pure      :    109  (  2.7%)
+  D_pure      :    197  (  4.9%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :    144  (  3.6%)
+  AB_mixed    :   2937  ( 73.5%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :    167  (  4.2%)
+  weird       :    378  (  9.5%)
+  empty       :     62  (  1.6%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1970           0          0          0       0       0       0       0      0 | 1
+   1989           0          0          0       0       0       0       0      0 | 1
+   1999           0          0          0       0       0       0       0      0 | 1
+   2001           0         12         12       0      12       0       0      2 | 59
+   2002           0          0          0       0       0       0       0      0 | 62
+   2012         152        100        152      50       0       0     104     10 | 174
+   2013         171        151        184      17      13       0     146     24 | 232
+   2014         251        297        313      11       0       0     251     13 | 341
+   2015         222        245        267      20       0       0     209     75 | 334
+   2016         310        304        315       7       0       0     310      8 | 331
+   2017         291        274        295       0       0       0     275     15 | 357
+   2018         253        240        254       0       0       0     246     36 | 316
+   2019         283        296        300       0       8       0     287      8 | 306
+   2020         130        208        211       0       4       0     133     79 | 223
+   2021         153        318        322       0     118       0     155     50 | 324
+   2022         346        344        346       0       0       0     348      0 | 349
+   2023         307        302        307       0       0       0     321      0 | 325
+   2024         146        150        165       4       9       0     152     14 | 181
+   2025           0         68         68       0      33       0       0     44 | 77

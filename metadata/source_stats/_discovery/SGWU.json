@@ -27,7 +27,7 @@
       "pct": 0.0
     }
   ],
-  "generated_at_utc": "2026-06-21T07:54:12Z",
+  "generated_at_utc": "2026-06-23T03:48:14Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SGWU.db",
   "manifest_signatures": [
     {
@@ -76,8 +76,8 @@
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
-        "exclude_reason": "unparsed",
-        "flags": null,
+        "exclude_reason": null,
+        "flags": "mixed_separator:underscore_tele",
         "recorder_type": "gecko",
         "role": "waveform",
         "source_type": "telemetry",
@@ -167,11 +167,37 @@
     },
     {
       "by_year": {
+        "2016": 5760
+      },
+      "row_count": 5760,
+      "signature": {
+        "channel_suffix_is_null": true,
+        "date_mismatch": false,
+        "exclude_reason": null,
+        "flags": "mixed_separator:all_dash_date",
+        "recorder_type": "gecko",
+        "role": "waveform",
+        "source_type": "telemetry",
+        "ss_is_null": true,
+        "station_mismatch": false
+      },
+      "size_likely_bimodal": false,
+      "size_stats": {
+        "max": 24547,
+        "min": 18614,
+        "n_samples": 5760,
+        "p10": 18952,
+        "p50": 19771,
+        "p90": 20958
+      },
+      "unmatched_filename_count": 5760
+    },
+    {
+      "by_year": {
         "2015": 990,
-        "2016": 5760,
         "2019": 1008
       },
-      "row_count": 7758,
+      "row_count": 1998,
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
@@ -183,16 +209,16 @@
         "ss_is_null": true,
         "station_mismatch": false
       },
-      "size_likely_bimodal": true,
+      "size_likely_bimodal": false,
       "size_stats": {
         "max": 1461317,
-        "min": 18614,
-        "n_samples": 7758,
-        "p10": 19039,
-        "p50": 20139,
-        "p90": 1141831
+        "min": 34304,
+        "n_samples": 1998,
+        "p10": 34816,
+        "p50": 1123734,
+        "p90": 1198225
       },
-      "unmatched_filename_count": 7758
+      "unmatched_filename_count": 1998
     },
     {
       "by_year": {
@@ -223,7 +249,7 @@
       "unmatched_filename_count": 0
     }
   ],
-  "n_distinct_signatures": 6,
+  "n_distinct_signatures": 7,
   "station": "SGWU",
   "total_rows": 5188204,
   "unmatched_filename_samples": [

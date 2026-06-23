@@ -1,6 +1,29 @@
 {
-  "by_source_kind": {},
-  "generated_at_utc": "2026-06-21T07:42:41Z",
+  "bisection_enabled": true,
+  "by_source_kind": {
+    "perchan_mseed": [
+      {
+        "channels": [
+          "HH1",
+          "HH2",
+          "HHZ"
+        ],
+        "end": "2015-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MOSU/continuous/2015/07/07/2015-07-07 0246 05 MOSU_HH1.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2015-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-23T03:37:39Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.MOSU.db",
-  "station": "MOSU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "MOSU",
+  "target_resolution_days": 30
 }

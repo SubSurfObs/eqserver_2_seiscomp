@@ -1,22 +1,133 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2023-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2022/11/01/2022-11-01_0008_12_BRIG.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/03/01/2023-03-01_0250_17_BRIG.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/04/01/2023-04-01_0014_33_BRIG.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/04/01/2023-04-01_0014_33_BRIG.dmx"
+            }
+          ],
+          "resolution_days": 77
+        },
+        "boundary_resolution_days": 77,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2022-07-01",
+        "end": "2023-04-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2017/12/01/2017-12-01_0143_32_BRIG.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2018/01/01/2018-01-01_0149_48_BRIG.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/07/01/2019-07-01_0019_08_BRIG.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 181933,
+          "min": 91062,
+          "n_samples": 34614,
+          "p10": 91880,
+          "p25": 91880,
+          "p50": 91880,
+          "p75": 91880,
+          "p90": 91880
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2023-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2022/11/01/2022-11-01_0008_12_BRIG.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/03/01/2023-03-01_0250_17_BRIG.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/04/01/2023-04-01_0014_33_BRIG.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/04/01/2023-04-01_0014_33_BRIG.dmx"
+            }
+          ],
+          "resolution_days": 77
+        },
+        "boundary_resolution_days": 77,
         "channels": [
           "c03"
         ],
@@ -26,7 +137,180 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2024/01/01/2024-01-01_0001_27_BRIG.dmx"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 31172,
+          "min": 4164,
+          "n_samples": 551,
+          "p10": 5512,
+          "p25": 12252,
+          "p50": 24384,
+          "p75": 30020,
+          "p90": 31172
+        },
         "start": "2023-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-05-15",
+          "boundary_lo_date": "2019-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2018/12/01/2018-12-01 0052 25 BRIG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/03/01/2019-03-01 0302 21 BRIG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [],
+              "date": "2019-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/05/01/2019-05-01 0310 04 BRIG_DLZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/04/01/2019-04-01 0154 51 BRIG_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2019-04-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2018/04/01/2018-04-01 0037 35 BRIG_DHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-01-15",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2021-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2021/01/01/2021-01-01 0208 08 BRIG_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-05-15",
+          "boundary_lo_date": "2019-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2018/12/01/2018-12-01 0052 25 BRIG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/03/01/2019-03-01 0302 21 BRIG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [],
+              "date": "2019-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/05/01/2019-05-01 0310 04 BRIG_DLZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/04/01/2019-04-01 0154 51 BRIG_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 198,
+        "channels": [],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2019/07/01/2019-07-01 0001 08 BRIG_DLZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2020/02/01/2020-02-01 0002 10 BRIG_DLZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-05-15"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-01-15",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2021-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2021/01/01/2021-01-01 0208 08 BRIG_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2021/01/01/2021-01-01 0208 08 BRIG_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2022/01/01/2022-01-01 0016 17 BRIG_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2023/10/01/2023-10-01 0153 01 BRIG_DHZ.mseed.zip"
+        ],
+        "samples_used": 4,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-01-15"
       }
     ],
     "tele_ss_suds": [
@@ -41,11 +325,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BRIG/continuous/2020/01/01/2020-01-01 0004 57 BRIG.dmx"
         ],
         "samples_used": 7,
+        "size_stats": {
+          "max": 61173,
+          "min": 31172,
+          "n_samples": 25466,
+          "p10": 31172,
+          "p25": 31172,
+          "p50": 31172,
+          "p75": 31172,
+          "p90": 31172
+        },
         "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:22:44Z",
+  "generated_at_utc": "2026-06-23T02:54:18Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.BRIG.db",
-  "station": "BRIG"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "BRIG",
+  "target_resolution_days": 30
 }

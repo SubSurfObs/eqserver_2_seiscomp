@@ -1,0 +1,33 @@
+# Source categorization: HDDL
+# Generated: 2026-06-23T03:16:47Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.HDDL.db
+# Total day-entries: 1819
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    54.8%
+  full tele available  (>=1400 single var):    59.7%
+  FULL FROM EITHER kind:                        63.9%
+  full from BOTH (redundancy):                 50.5%
+
+## Buckets
+  A_pure      :     52  (  2.9%)
+  D_pure      :     78  (  4.3%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :    144  (  7.9%)
+  AB_mixed    :   1029  ( 56.6%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :    218  ( 12.0%)
+  weird       :    298  ( 16.4%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2018         242        247        247       0       1       0     246      2 | 256
+   2019         200        277        285       0       0       0     223    107 | 358
+   2020         285        280        285       0       0       0     300      7 | 324
+   2021          56         44         56      10       0       0      58     48 | 164
+   2022         100         90        100       6       0       0     110     62 | 293
+   2023         109         71        109      32       0       0      92     61 | 317
+   2024           4          0          4       4       0       0       0      5 | 23
+   2025           0         77         77       0      77       0       0      6 | 84

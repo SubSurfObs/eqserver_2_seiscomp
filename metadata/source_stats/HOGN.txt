@@ -1,0 +1,28 @@
+# Source categorization: HOGN
+# Generated: 2026-06-23T03:21:51Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.HOGN.db
+# Total day-entries: 336
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    18.4%
+  full tele available  (>=1400 single var):    58.6%
+  FULL FROM EITHER kind:                        58.6%
+  full from BOTH (redundancy):                 18.4%
+
+## Buckets
+  A_pure      :      0  (  0.0%)
+  D_pure      :     24  (  7.1%)
+  E_multivar  :     31  (  9.2%)
+  C_partial   :     17  (  5.1%)
+  AB_mixed    :    119  ( 35.4%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :     61  ( 18.2%)
+  weird       :     84  ( 25.0%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2018           0          0          0       0       0       0       0      0 | 6
+   2019          62        191        191       0      24      29     119     74 | 301
+   2020           0          6          6       0       0       2       0     10 | 29

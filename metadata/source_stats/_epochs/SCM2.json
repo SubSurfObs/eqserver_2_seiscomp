@@ -1,6 +1,31 @@
 {
-  "by_source_kind": {},
-  "generated_at_utc": "2026-06-21T07:52:56Z",
+  "bisection_enabled": true,
+  "by_source_kind": {
+    "perchan_mseed": [
+      {
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCM2/continuous/2019/12/01/2019-12-01 0000 08 SCM2_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCM2/continuous/2020/07/01/2020-07-01 0928 07 SCM2_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCM2/continuous/2021/07/01/2021-07-01 0000 03 SCM2_CHN.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-23T03:45:27Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SCM2.db",
-  "station": "SCM2"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "SCM2",
+  "target_resolution_days": 30
 }

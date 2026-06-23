@@ -1,22 +1,121 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-12-30",
+          "boundary_lo_date": "2024-12-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2024/12/01/2024-12-01_1008_17_OUTU.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2025-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2025/02/01/2025-02-01_0106_33_OUTU.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2025-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2025/01/01/2025-01-01_0316_50_OUTU.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2024-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2024/12/30/2024-12-30_0046_50_OUTU.dmx"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2024-07-01",
+        "end": "2024-12-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2014/12/11/2014-12-11_1856_35_OUTU.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2015/07/01/2015-07-01_0009_49_OUTU.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2016/07/01/2016-07-01_1805_14_OUTU.dmx"
         ],
         "samples_used": 11,
+        "size_stats": {
+          "max": 145895,
+          "min": 73861,
+          "n_samples": 50000,
+          "p10": 73895,
+          "p25": 73895,
+          "p50": 73895,
+          "p75": 73895,
+          "p90": 73895
+        },
         "start": "2014-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-12-30",
+          "boundary_lo_date": "2024-12-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2024/12/01/2024-12-01_1008_17_OUTU.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2025-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2025/02/01/2025-02-01_0106_33_OUTU.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2025-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2025/01/01/2025-01-01_0316_50_OUTU.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2024-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2024/12/30/2024-12-30_0046_50_OUTU.dmx"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "c03"
         ],
@@ -25,11 +124,49 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2025/01/01/2025-01-01_0316_50_OUTU.dmx"
         ],
         "samples_used": 1,
-        "start": "2025-07-01"
+        "size_stats": {
+          "max": 70144,
+          "min": 3882,
+          "n_samples": 17342,
+          "p10": 52942,
+          "p25": 54202,
+          "p50": 55788,
+          "p75": 57782,
+          "p90": 59598
+        },
+        "start": "2024-12-30"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2021/05/02/2021-05-02 0616 09 OUTU_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2022/06/01/2022-06-01 0014 56 OUTU_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2023/01/01/2023-01-01 0051 37 OUTU_DHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
       }
     ],
     "tele_ss_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
         "channels": [
           "c01",
           "c02",
@@ -42,9 +179,21 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2018/01/01/2018-01-01 0549 44 OUTU.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2016-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
         "channels": [
           "c03"
         ],
@@ -55,11 +204,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/OUTU/continuous/2021/01/01/2021-01-01 0000 12 OUTU.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:50:40Z",
+  "generated_at_utc": "2026-06-23T03:44:06Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.OUTU.db",
-  "station": "OUTU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "OUTU",
+  "target_resolution_days": 30
 }

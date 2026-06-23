@@ -1,34 +1,241 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-02-15",
+          "boundary_lo_date": "2018-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/11/01/20181101_0032_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/03/01/20190301_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2019-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/02/01/20190201_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/11/01/20181101_0032_WDSD.ms.zip"
+            }
+          ],
+          "resolution_days": 92
+        },
+        "boundary_resolution_days": 92,
         "channels": [
-          "CDO",
           "CHE",
           "CHN",
           "CHZ"
         ],
-        "end": "2018-07-01",
+        "end": "2018-11-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/20180701_0349_WDSD.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 92395,
+          "min": 1686,
+          "n_samples": 9540,
+          "p10": 23755,
+          "p25": 24755,
+          "p50": 27267,
+          "p75": 47802,
+          "p90": 56138
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-08-30",
+          "boundary_lo_date": "2023-08-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/12/01/20231201_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/09/01/20230901_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/08/01/20230801_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-08-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/08/30/20230830_0000_WDSD.ms.zip"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-02-15",
+          "boundary_lo_date": "2018-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/11/01/20181101_0032_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/03/01/20190301_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2019-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/02/01/20190201_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/11/01/20181101_0032_WDSD.ms.zip"
+            }
+          ],
+          "resolution_days": 92
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHZ"
         ],
-        "end": "2023-07-01",
+        "end": "2023-08-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/07/01/20190701_0000_WDSD.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/07/01/20200701_0000_WDSD.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/07/14/20210714_0520_WDSD.ms.zip"
         ],
         "samples_used": 5,
-        "start": "2019-07-01"
+        "size_stats": {
+          "max": 81093,
+          "min": 4977,
+          "n_samples": 17277,
+          "p10": 14707,
+          "p25": 15643,
+          "p50": 17188,
+          "p75": 22362,
+          "p90": 26215
+        },
+        "start": "2019-02-15"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-08-30",
+          "boundary_lo_date": "2023-08-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/12/01/20231201_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/09/01/20230901_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/08/01/20230801_0000_WDSD.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2023-08-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/08/30/20230830_0000_WDSD.ms.zip"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHE",
           "CHN",
@@ -39,24 +246,249 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2024/07/01/20240701_0000_WDSD.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 95818,
+          "min": 6013,
+          "n_samples": 49778,
+          "p10": 36836,
+          "p25": 39097,
+          "p50": 42262,
+          "p75": 46009,
+          "p90": 50016
+        },
+        "start": "2023-08-30"
       }
     ],
-    "tele_noss_mseed": [
+    "perchan_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-04-15",
+          "boundary_lo_date": "2019-02-15",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2019-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/02/01/2019-02-01 0205 05 WDSD_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/04/01/2019-04-01 0641 07 WDSD_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 59
+        },
+        "boundary_resolution_days": 59,
         "channels": [
-          "CDO",
           "CHE",
           "CHN",
           "CHZ"
         ],
-        "end": "2018-07-01",
+        "end": "2019-02-15",
         "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/2018-07-01 0558 WDSD.ms.zip"
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/08/01/2018-08-01 1135 00 WDSD_CHE.mseed.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2018-07-01"
       },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-08-15",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2020-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/10/01/2020-10-01 0042 02 WDSD_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2020-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/08/01/2020-08-01 0003 07 WDSD_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 45
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-04-15",
+          "boundary_lo_date": "2019-02-15",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2019-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/02/01/2019-02-01 0205 05 WDSD_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/04/01/2019-04-01 0641 07 WDSD_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 59
+        },
+        "boundary_resolution_days": 45,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/04/01/2019-04-01 0641 07 WDSD_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/07/01/2020-07-01 0057 05 WDSD_CHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-04-15"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-08-15",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/11/01/2021-11-01 0236 06 WDSD_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/08/01/2021-08-01 0202 04 WDSD_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 45
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-08-15",
+          "boundary_lo_date": "2020-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2020-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/10/01/2020-10-01 0042 02 WDSD_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHZ"
+              ],
+              "date": "2020-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2020/08/01/2020-08-01 0003 07 WDSD_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 45
+        },
+        "boundary_resolution_days": 45,
+        "channels": [
+          "CHE",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/10/01/2021-10-01 0026 00 WDSD_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-08-15"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-08-15",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/11/01/2021-11-01 0236 06 WDSD_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2021/08/01/2021-08-01 0202 04 WDSD_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 45
+        },
+        "boundary_resolution_days": 45,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2022/01/01/2022-01-01 0042 03 WDSD_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2023/03/01/2023-03-01 0103 01 WDSD_CHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-08-15"
+      }
+    ],
+    "tele_noss_mseed": [
       {
         "channels": [
           "CHE",
@@ -65,28 +497,25 @@
         ],
         "end": "2022-07-01",
         "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/2018-07-01 0558 WDSD.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/01/01/2019-01-01 0103 WDSD.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2022/04/01/2022-04-01 0044 WDSD.ms.zip"
         ],
-        "samples_used": 2,
-        "start": "2019-07-01"
+        "samples_used": 3,
+        "size_stats": {
+          "max": 6844,
+          "min": 1559,
+          "n_samples": 161,
+          "p10": 2306,
+          "p25": 2971,
+          "p50": 3468,
+          "p75": 4652,
+          "p90": 5275
+        },
+        "start": "2018-07-01"
       }
     ],
     "tele_ss_mseed": [
-      {
-        "channels": [
-          "CDO",
-          "CHE",
-          "CHN",
-          "CHZ"
-        ],
-        "end": "2018-07-01",
-        "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/2018-07-01 0347 00 WDSD.ms.zip"
-        ],
-        "samples_used": 1,
-        "start": "2018-07-01"
-      },
       {
         "channels": [
           "CHE",
@@ -95,16 +524,28 @@
         ],
         "end": "2025-07-01",
         "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2018/07/01/2018-07-01 0347 00 WDSD.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2019/01/01/2019-01-01 0001 00 WDSD.ms.zip",
-          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2022/07/01/2022-07-02 0000 00 WDSD.ms.zip",
-          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2024/12/01/2024-12-02 0000 00 WDSD.ms.zip"
+          "/mnt/eqserver_archive/shared/data/repository/archive/WDSD/continuous/2022/07/01/2022-07-02 0000 00 WDSD.ms.zip"
         ],
-        "samples_used": 4,
-        "start": "2019-07-01"
+        "samples_used": 5,
+        "size_stats": {
+          "max": 102147,
+          "min": 5082,
+          "n_samples": 40247,
+          "p10": 44414,
+          "p25": 49037,
+          "p50": 53298,
+          "p75": 60266,
+          "p90": 72347
+        },
+        "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:55:26Z",
+  "generated_at_utc": "2026-06-23T03:56:06Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WDSD.db",
-  "station": "WDSD"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "WDSD",
+  "target_resolution_days": 30
 }

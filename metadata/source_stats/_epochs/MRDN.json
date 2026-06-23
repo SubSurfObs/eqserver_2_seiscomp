@@ -1,48 +1,327 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2015-07-01",
+          "boundary_lo_date": "2015-06-07",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/02/01/2015-02-01_0045_50_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/03/01/2015-03-01_0350_29_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/05/01/2015-05-01_2229_36_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/06/07/2015-06-07_0625_11_MRDN.dmx.gz"
+            }
+          ],
+          "resolution_days": 24
+        },
+        "boundary_resolution_days": 24,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2014-07-01",
+        "end": "2015-06-07",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2012/12/01/2012-12-01_0237_10_MRDN.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2013/07/04/2013-07-04_0756_35_MRDN.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2014/07/17/2014-07-17_1118_43_MRDN.dmx.gz"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "max": 181822,
+          "min": 181788,
+          "n_samples": 24767,
+          "p10": 181822,
+          "p25": 181822,
+          "p50": 181822,
+          "p75": 181822,
+          "p90": 181822
+        },
         "start": "2012-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2016-02-15",
+          "boundary_lo_date": "2015-10-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2015-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/10/01/2015-10-01_2232_24_MRDN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2016-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2016/02/01/2016-02-01_0325_39_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2015-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/10/01/2015-10-01_2232_24_MRDN.dmx"
+            }
+          ],
+          "resolution_days": 123
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2015-07-01",
+          "boundary_lo_date": "2015-06-07",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/02/01/2015-02-01_0045_50_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/03/01/2015-03-01_0350_29_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/05/01/2015-05-01_2229_36_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2015-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/06/07/2015-06-07_0625_11_MRDN.dmx.gz"
+            }
+          ],
+          "resolution_days": 24
+        },
+        "boundary_resolution_days": 123,
         "channels": [
           "c03"
         ],
-        "end": "2015-07-01",
+        "end": "2015-10-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/10/01/2015-10-01_2232_24_MRDN.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 91309,
+          "min": 2776,
+          "n_samples": 24734,
+          "p10": 48102,
+          "p25": 50146,
+          "p50": 52411,
+          "p75": 54733,
+          "p90": 57738
+        },
         "start": "2015-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-01-15",
+          "boundary_lo_date": "2018-11-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2018/11/20/2018-11-20_0047_08_MRDN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02"
+              ],
+              "date": "2019-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2019/01/11/2019-01-11_0210_41_MRDN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2018/11/20/2018-11-20_0047_08_MRDN.dmx"
+            }
+          ],
+          "resolution_days": 61
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2016-02-15",
+          "boundary_lo_date": "2015-10-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2015-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/10/01/2015-10-01_2232_24_MRDN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2016-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2016/02/01/2016-02-01_0325_39_MRDN.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2015-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2015/10/01/2015-10-01_2232_24_MRDN.dmx"
+            }
+          ],
+          "resolution_days": 123
+        },
+        "boundary_resolution_days": 61,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2018-07-01",
+        "end": "2018-11-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2016/12/01/2016-12-01_2015_05_MRDN.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2017/01/01/2017-01-01_2347_23_MRDN.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2018/11/20/2018-11-20_0047_08_MRDN.dmx"
         ],
         "samples_used": 3,
-        "start": "2016-07-01"
+        "size_stats": {
+          "max": 94625,
+          "min": 2776,
+          "n_samples": 16972,
+          "p10": 44650,
+          "p25": 47633,
+          "p50": 51204,
+          "p75": 54405,
+          "p90": 57043
+        },
+        "start": "2016-02-15"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-01-15",
+          "boundary_lo_date": "2018-11-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2018/11/20/2018-11-20_0047_08_MRDN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02"
+              ],
+              "date": "2019-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2019/01/11/2019-01-11_0210_41_MRDN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2018/11/20/2018-11-20_0047_08_MRDN.dmx"
+            }
+          ],
+          "resolution_days": 61
+        },
+        "boundary_resolution_days": 61,
         "channels": [
           "c01",
           "c02"
@@ -52,7 +331,10 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2019/01/11/2019-01-11_0210_41_MRDN.dmx"
         ],
         "samples_used": 1,
-        "start": "2019-07-01"
+        "size_stats": {
+          "n_samples": 0
+        },
+        "start": "2019-01-15"
       }
     ],
     "tele_ss_suds": [
@@ -67,11 +349,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/MRDN/continuous/2014/01/01/2014-01-01 1953 00 MRDN.dmx"
         ],
         "samples_used": 8,
+        "size_stats": {
+          "max": 61114,
+          "min": 61080,
+          "n_samples": 25233,
+          "p10": 61114,
+          "p25": 61114,
+          "p50": 61114,
+          "p75": 61114,
+          "p90": 61114
+        },
         "start": "2012-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:42:42Z",
+  "generated_at_utc": "2026-06-23T03:38:41Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.MRDN.db",
-  "station": "MRDN"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "MRDN",
+  "target_resolution_days": 30
 }

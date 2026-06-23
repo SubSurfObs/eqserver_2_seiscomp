@@ -1,19 +1,114 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2021-06-07",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2020-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2020/12/01/20201201_0000_LRNW.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/03/01/20210301_0000_LRNW.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/05/01/20210501_0025_LRNW.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/06/07/20210607_0000_LRNW.ms.zip"
+            }
+          ],
+          "resolution_days": 24
+        },
+        "boundary_resolution_days": 24,
         "channels": [
           "CHZ"
         ],
-        "end": "2020-07-01",
+        "end": "2021-06-07",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2019/07/01/20190701_0000_LRNW.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2020/07/01/20200701_0000_LRNW.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 75041,
+          "min": 11126,
+          "n_samples": 25482,
+          "p10": 14304,
+          "p25": 14879,
+          "p50": 16157,
+          "p75": 17942,
+          "p90": 20600
+        },
         "start": "2019-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2021-06-07",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2020-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2020/12/01/20201201_0000_LRNW.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/03/01/20210301_0000_LRNW.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/05/01/20210501_0025_LRNW.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/06/07/20210607_0000_LRNW.ms.zip"
+            }
+          ],
+          "resolution_days": 24
+        },
+        "boundary_resolution_days": 24,
         "channels": [
           "CHE",
           "CHN",
@@ -24,6 +119,170 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/07/01/20210701_0019_LRNW.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 73461,
+          "min": 4108,
+          "n_samples": 10001,
+          "p10": 15114,
+          "p25": 15662,
+          "p50": 39543,
+          "p75": 41704,
+          "p90": 43194
+        },
+        "start": "2021-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-10-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2019-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2019/10/01/2019-10-01 0220 01 LRNW_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 260
+        },
+        "boundary_resolution_days": 260,
+        "channels": [
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2019-10-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2019/10/01/2019-10-01 0220 01 LRNW_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2021-05-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2020-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2020/12/01/2020-12-01 0319 00 LRNW_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/02/01/2021-02-01 0025 04 LRNW_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/05/01/2021-05-01 0033 03 LRNW_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 47
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-10-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2019-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2019/10/01/2019-10-01 0220 01 LRNW_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 260
+        },
+        "boundary_resolution_days": 47,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2021-05-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2020/06/01/2020-06-01 0058 05 LRNW_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2021-05-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2020-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2020/12/01/2020-12-01 0319 00 LRNW_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/02/01/2021-02-01 0025 04 LRNW_CHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/05/01/2021-05-01 0033 03 LRNW_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 47
+        },
+        "boundary_resolution_days": 47,
+        "channels": [
+          "CHE",
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/07/01/2021-07-01 0000 03 LRNW_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2021-07-01"
       }
     ],
@@ -40,11 +299,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRNW/continuous/2021/10/04/2021-10-04 0558 LRNW.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 78710,
+          "min": 1279,
+          "n_samples": 24475,
+          "p10": 35831,
+          "p25": 37326,
+          "p50": 40865,
+          "p75": 48334,
+          "p90": 56069
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:40:19Z",
+  "generated_at_utc": "2026-06-23T03:32:25Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LRNW.db",
-  "station": "LRNW"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "LRNW",
+  "target_resolution_days": 30
 }

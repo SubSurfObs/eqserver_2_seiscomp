@@ -1,22 +1,125 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-01-15",
+          "boundary_lo_date": "2021-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/11/01/2021-11-01_0048_55_SCMB.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2022/03/01/2022-03-01_0137_59_SCMB.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2022-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2022/01/01/2022-01-01_0121_05_SCMB.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/11/01/2021-11-01_0048_55_SCMB.dmx"
+            }
+          ],
+          "resolution_days": 61
+        },
+        "boundary_resolution_days": 61,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2021-07-01",
+        "end": "2021-11-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17_0639_17_SCMB.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2020/07/01/2020-07-01_0017_08_SCMB.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/07/01/2021-07-01_0137_08_SCMB.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "max": 110486,
+          "min": 4084,
+          "n_samples": 23330,
+          "p10": 67751,
+          "p25": 69396,
+          "p50": 72382,
+          "p75": 74867,
+          "p90": 76319
+        },
         "start": "2019-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-01-15",
+          "boundary_lo_date": "2021-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/11/01/2021-11-01_0048_55_SCMB.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2022/03/01/2022-03-01_0137_59_SCMB.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2022-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2022/01/01/2022-01-01_0121_05_SCMB.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/11/01/2021-11-01_0048_55_SCMB.dmx"
+            }
+          ],
+          "resolution_days": 61
+        },
+        "boundary_resolution_days": 61,
         "channels": [
           "c03"
         ],
@@ -26,7 +129,109 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2023/01/02/2023-01-02_0339_09_SCMB.dmx"
         ],
         "samples_used": 2,
-        "start": "2022-07-01"
+        "size_stats": {
+          "max": 58328,
+          "min": 1348,
+          "n_samples": 331,
+          "p10": 5512,
+          "p25": 9556,
+          "p50": 18992,
+          "p75": 28542,
+          "p90": 31165
+        },
+        "start": "2022-01-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-03-15",
+          "boundary_lo_date": "2019-12-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17 0502 17 SCMB_DLZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2020-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2020/03/01/2020-03-01 0007 49 SCMB_DLZ.mseed.zip"
+            },
+            {
+              "channels": [],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17 0502 17 SCMB_DLZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 91
+        },
+        "boundary_resolution_days": 91,
+        "channels": [],
+        "end": "2019-12-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17 0502 17 SCMB_DLZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-03-15",
+          "boundary_lo_date": "2019-12-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17 0502 17 SCMB_DLZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2020-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2020/03/01/2020-03-01 0007 49 SCMB_DLZ.mseed.zip"
+            },
+            {
+              "channels": [],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2019/12/17/2019-12-17 0502 17 SCMB_DLZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 91
+        },
+        "boundary_resolution_days": 91,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2020/03/01/2020-03-01 0007 49 SCMB_DLZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/10/01/2021-10-01 0111 55 SCMB_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2022/11/01/2022-11-01 0158 40 SCMB_DHZ.mseed.zip"
+        ],
+        "samples_used": 4,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-03-15"
       }
     ],
     "tele_ss_suds": [
@@ -41,11 +246,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/SCMB/continuous/2021/07/01/2021-07-01 0000 08 SCMB.dmx"
         ],
         "samples_used": 5,
+        "size_stats": {
+          "max": 61171,
+          "min": 31164,
+          "n_samples": 24499,
+          "p10": 31170,
+          "p25": 31170,
+          "p50": 31170,
+          "p75": 31170,
+          "p90": 31170
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:53:22Z",
+  "generated_at_utc": "2026-06-23T03:46:23Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SCMB.db",
-  "station": "SCMB"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "SCMB",
+  "target_resolution_days": 30
 }

@@ -1,11 +1,16 @@
 # Channel-epoch scan: WPNH
-# Generated: 2026-06-21T07:55:54Z
+# Generated: 2026-06-23T03:58:54Z
 
 ## disk_suds
-  2018-07-01 → 2021-07-01  channels=['c01', 'c02', 'c03']  (n_samples=4)
-  2022-07-01 → 2022-07-01  channels=['c01', 'c02']  (n_samples=1)
-  2023-07-01 → 2023-07-01  channels=['c01', 'c02', 'c03']  (n_samples=1)
+  2018-07-01 → 2022-06-07  channels=['c01', 'c02', 'c03']  (n_samples=4)  [boundary ±24d]
+  2022-07-01 → 2022-07-01  channels=['c01', 'c02']  (n_samples=1)  [boundary ±45d]
+  2022-08-15 → 2023-07-01  channels=['c01', 'c02', 'c03']  (n_samples=1)  [boundary ±45d]
 
 ## tele_ss_suds
   2018-07-01 → 2023-07-01  channels=['c03']  (n_samples=6)
+
+## perchan_mseed
+  2018-07-01 → 2018-11-15  channels=['DHZ']  (n_samples=1)  [boundary ±228d]
+  2019-07-01 → 2019-07-01  channels=[]  (n_samples=1)  [boundary ±366d]
+  2020-07-01 → 2022-07-01  channels=['DHZ']  (n_samples=3)  [boundary ±366d]
 

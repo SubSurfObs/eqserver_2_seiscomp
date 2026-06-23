@@ -1,0 +1,37 @@
+# Source categorization: BEST
+# Generated: 2026-06-23T02:51:48Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.BEST.db
+# Total day-entries: 2134
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    83.3%
+  full tele available  (>=1400 single var):    81.9%
+  FULL FROM EITHER kind:                        84.7%
+  full from BOTH (redundancy):                 80.4%
+
+## Buckets
+  A_pure      :     21  (  1.0%)
+  D_pure      :     20  (  0.9%)
+  E_multivar  :     27  (  1.3%)
+  C_partial   :     34  (  1.6%)
+  AB_mixed    :   1771  ( 83.0%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :    154  (  7.2%)
+  weird       :    107  (  5.0%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1989           0          0          0       0       0       0       0      0 | 1
+   1999           0          0          0       0       0       0       0      8 | 10
+   2001           0          0          0       0       0       0       0      0 | 27
+   2017          31         28         32       4       0       0      28      8 | 43
+   2018         317        317        319       0       0       0     323      0 | 325
+   2019         301        310        310       0       2      27     281      1 | 313
+   2020         234        230        234       0       0       0     238      0 | 239
+   2021         144        158        162       0      18       0     144      8 | 174
+   2022         317        297        317       5       0       0     315      0 | 321
+   2023         247        238        247       5       0       0     245     44 | 363
+   2024         176        159        177       7       0       0     185     38 | 245
+   2025          10         10         10       0       0       0      12      0 | 73

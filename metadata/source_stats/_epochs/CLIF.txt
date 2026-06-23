@@ -1,15 +1,17 @@
 # Channel-epoch scan: CLIF
-# Generated: 2026-06-21T07:24:59Z
+# Generated: 2026-06-23T02:58:23Z
 
 ## disk_suds
-  2013-07-01 → 2020-07-01  channels=['c01', 'c02', 'c03']  (n_samples=8)
-  2021-07-01 → 2021-07-01  channels=['c01', 'c02', 'c03', 'c04', 'c05', 'c06']  (n_samples=1)
-  2022-07-01 → 2023-07-01  channels=['c01', 'c02', 'c03']  (n_samples=2)
-  2024-07-01 → 2024-07-01  channels=['c03']  (n_samples=1)
+  2013-07-01 → 2023-07-01  channels=['c01', 'c02', 'c03']  (n_samples=11)  [boundary ±106d]
+    ⚠ ambiguous channel set at 2023-08-15: []
+  2023-10-15 → 2024-07-01  channels=['c03']  (n_samples=1)  [boundary ±106d]
 
 ## tele_ss_suds
   2013-07-01 → 2024-07-01  channels=['c03']  (n_samples=12)
 
 ## tele_ss_mseed
-  2021-07-01 → 2021-07-01  channels=['DLE', 'DLN', 'DLZ', 'DNE', 'DNN', 'DNZ']  (n_samples=1)
+  2021-07-01 → 2021-07-01  channels=[]  (n_samples=1)
+
+## perchan_mseed
+  2019-07-01 → 2023-07-01  channels=['DHZ']  (n_samples=5)
 

@@ -1,0 +1,32 @@
+# Source categorization: WLSH
+# Generated: 2026-06-23T03:57:27Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.WLSH.db
+# Total day-entries: 1810
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    58.7%
+  full tele available  (>=1400 single var):    70.4%
+  FULL FROM EITHER kind:                        95.4%
+  full from BOTH (redundancy):                 33.7%
+
+## Buckets
+  A_pure      :    330  ( 18.2%)
+  D_pure      :    633  ( 35.0%)
+  E_multivar  :    164  (  9.1%)
+  C_partial   :      3  (  0.2%)
+  AB_mixed    :    459  ( 25.4%)
+  M_perchan   :      4  (  0.2%)
+  M_partial   :     14  (  0.8%)
+  sparse      :     73  (  4.0%)
+  weird       :    130  (  7.2%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2018         151        157        157       0       0      42     110      0 | 166
+   2019         356        252        364       0       0     121     132    112 | 365
+   2020         158        158        158       0       0       0     158      0 | 224
+   2021          15         16         16       0       0       0      16      1 | 17
+   2022          42        364        364       0     306       1      43      2 | 365
+   2023          37        327        364      36     327       0       0      1 | 365
+   2024         303          0        303     294       0       0       0     14 | 308

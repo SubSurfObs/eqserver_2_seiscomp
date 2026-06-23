@@ -1,0 +1,31 @@
+# Source categorization: DDWB
+# Generated: 2026-06-23T03:06:41Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.DDWB.db
+# Total day-entries: 1570
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):     0.0%
+  full tele available  (>=1400 single var):     0.0%
+  FULL FROM EITHER kind:                         0.0%
+  full from BOTH (redundancy):                  0.0%
+
+## Buckets
+  A_pure      :      0  (  0.0%)
+  D_pure      :      0  (  0.0%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :      0  (  0.0%)
+  AB_mixed    :      0  (  0.0%)
+  M_perchan   :   1524  ( 97.1%)
+  M_partial   :     45  (  2.9%)
+  sparse      :      1  (  0.1%)
+  weird       :      0  (  0.0%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2019           0          0          0       0       0       0       0      0 | 91
+   2020           0          0          0       0       0       0       0      0 | 366
+   2021           0          0          0       0       0       0       0      0 | 362
+   2022           0          0          0       0       0       0       0      0 | 362
+   2023           0          0          0       0       0       0       0      0 | 365
+   2024           0          0          0       0       0       0       0      0 | 24

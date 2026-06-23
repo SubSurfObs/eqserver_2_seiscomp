@@ -1,9 +1,9 @@
 # Channel-epoch scan: SOMU
-# Generated: 2026-06-21T07:53:43Z
+# Generated: 2026-06-23T03:48:53Z
 
 ## disk_suds
-  2014-07-01 → 2018-07-01  channels=['c01', 'c02', 'c03']  (n_samples=4)
-  2019-07-01 → 2019-07-01  channels=['c04', 'c05', 'c06']  (n_samples=1)
+  2014-07-01 → 2019-05-15  channels=['c01', 'c02', 'c03']  (n_samples=4)  [boundary ±23d]
+  2019-06-07 → 2019-07-01  channels=[]  (n_samples=1)  [boundary ±23d]
 
 ## tele_ss_suds
   2014-07-01 → 2014-07-01  channels=['c03']  (n_samples=1)

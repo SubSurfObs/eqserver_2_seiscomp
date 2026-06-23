@@ -1,6 +1,118 @@
 {
-  "by_source_kind": {},
-  "generated_at_utc": "2026-06-21T07:26:26Z",
+  "bisection_enabled": true,
+  "by_source_kind": {
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ",
+                "HHE",
+                "HHN",
+                "HHZ"
+              ],
+              "date": "2019-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDBE/continuous/2019/12/01/2019-12-01 0000 02 DDBE_HHN.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ",
+                "HHE",
+                "HHN",
+                "HHZ"
+              ],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDBE/continuous/2019/12/01/2019-12-01 0000 02 DDBE_HHN.mseed.zip"
+            }
+          ],
+          "resolution_days": 366
+        },
+        "boundary_resolution_days": 366,
+        "channels": [
+          "HHE",
+          "HHN",
+          "HHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDBE/continuous/2019/10/01/2019-10-01 0747 14 DDBE_HHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ",
+                "HHE",
+                "HHN",
+                "HHZ"
+              ],
+              "date": "2019-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDBE/continuous/2019/12/01/2019-12-01 0000 02 DDBE_HHN.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ",
+                "HHE",
+                "HHN",
+                "HHZ"
+              ],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDBE/continuous/2019/12/01/2019-12-01 0000 02 DDBE_HHN.mseed.zip"
+            }
+          ],
+          "resolution_days": 366
+        },
+        "boundary_resolution_days": 366,
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDBE/continuous/2020/01/01/2020-01-01 0000 09 DDBE_CHN.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-23T03:00:29Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDBE.db",
-  "station": "DDBE"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "DDBE",
+  "target_resolution_days": 30
 }

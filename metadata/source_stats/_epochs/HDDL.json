@@ -1,31 +1,259 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-06-07",
+          "boundary_lo_date": "2019-05-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/02/01/2019-02-01_0000_33_HDDL.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/04/01/2019-04-01_0000_35_HDDL.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/05/01/2019-05-01_0000_37_HDDL.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/06/07/2019-06-07_0503_09_HDDL.dmx"
+            }
+          ],
+          "resolution_days": 23
+        },
+        "boundary_resolution_days": 23,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2018-07-01",
+        "end": "2019-05-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2018/05/01/2018-05-01_0047_33_HDDL.dmx.gz"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 126947,
+          "min": 4164,
+          "n_samples": 23078,
+          "p10": 58045,
+          "p25": 61229,
+          "p50": 64683,
+          "p75": 67354,
+          "p90": 70753
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-10-28",
+          "boundary_lo_date": "2019-10-15",
+          "n_probes": 5,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/12/01/2019-12-01_0143_45_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/08/01/2019-08-01_0000_38_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/10/01/2019-10-01_0020_38_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/11/05/2019-11-05_0612_46_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-10-28",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/10/28/2019-10-28_0110_37_HDDL.dmx"
+            }
+          ],
+          "resolution_days": 13
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-06-07",
+          "boundary_lo_date": "2019-05-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/02/01/2019-02-01_0000_33_HDDL.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/04/01/2019-04-01_0000_35_HDDL.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/05/01/2019-05-01_0000_37_HDDL.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/06/07/2019-06-07_0503_09_HDDL.dmx"
+            }
+          ],
+          "resolution_days": 23
+        },
+        "boundary_resolution_days": 13,
         "channels": [
           "c03"
         ],
-        "end": "2019-07-01",
+        "end": "2019-10-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/07/01/2019-07-01_0003_10_HDDL.dmx"
         ],
         "samples_used": 1,
-        "start": "2019-07-01"
+        "size_stats": {
+          "max": 31176,
+          "min": 4104,
+          "n_samples": 448,
+          "p10": 5472,
+          "p25": 9576,
+          "p50": 24584,
+          "p75": 31175,
+          "p90": 31175
+        },
+        "start": "2019-06-07"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-10-28",
+          "boundary_lo_date": "2019-10-15",
+          "n_probes": 5,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/12/01/2019-12-01_0143_45_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/08/01/2019-08-01_0000_38_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/10/01/2019-10-01_0020_38_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/11/05/2019-11-05_0612_46_HDDL.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-10-28",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2019/10/28/2019-10-28_0110_37_HDDL.dmx"
+            }
+          ],
+          "resolution_days": 13
+        },
+        "boundary_resolution_days": 13,
         "channels": [
           "c01",
           "c02",
@@ -38,6 +266,35 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2022/01/01/2022-01-01_0200_04_HDDL.dmx"
         ],
         "samples_used": 5,
+        "size_stats": {
+          "max": 91875,
+          "min": 21888,
+          "n_samples": 23079,
+          "p10": 91875,
+          "p25": 91875,
+          "p50": 91875,
+          "p75": 91875,
+          "p90": 91875
+        },
+        "start": "2019-10-28"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2020/10/01/2020-10-01 0119 06 HDDL_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2022/10/01/2022-10-01 0225 16 HDDL_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2023/06/02/2023-06-02 2104 43 HDDL_DHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2020-07-01"
       }
     ],
@@ -53,6 +310,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2025/07/01/2025-07-01 0049 00 HDDL.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 262141,
+          "min": 524,
+          "n_samples": 3844,
+          "p10": 1259,
+          "p25": 1288,
+          "p50": 23660,
+          "p75": 24529,
+          "p90": 26262
+        },
         "start": "2025-07-01"
       }
     ],
@@ -68,11 +335,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HDDL/continuous/2020/07/01/2020-07-01 0000 13 HDDL.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 185014,
+          "min": 31175,
+          "n_samples": 24064,
+          "p10": 31175,
+          "p25": 31175,
+          "p50": 31175,
+          "p75": 31175,
+          "p90": 31175
+        },
         "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:28:14Z",
+  "generated_at_utc": "2026-06-23T03:17:07Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HDDL.db",
-  "station": "HDDL"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "HDDL",
+  "target_resolution_days": 30
 }

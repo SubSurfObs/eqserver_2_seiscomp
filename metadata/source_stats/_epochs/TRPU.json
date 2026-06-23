@@ -1,5 +1,27 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
+    "perchan_mseed": [
+      {
+        "channels": [
+          "HH1",
+          "HH2",
+          "HHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2015/07/01/2015-07-01 0005 00 TRPU_HH2.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2021/01/01/2021-01-01 1502 07 TRPU_HHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2022/01/01/2022-01-01 0302 07 TRPU_HHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2015-07-01"
+      }
+    ],
     "tele_noss_mseed": [
       {
         "channels": [
@@ -9,15 +31,46 @@
         ],
         "end": "2022-07-01",
         "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2021/08/08/2021-08-08 0200 TRPU.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2022/04/01/2022-04-01 0300 TRPU.ms.zip"
         ],
-        "samples_used": 2,
-        "start": "2021-07-01"
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
+        "start": "2022-07-01"
+      }
+    ],
+    "tele_underscore_mseed": [
+      {
+        "channels": [
+          "HH1",
+          "HH2",
+          "HHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2020/10/01/2020-10-01 1700_TRPU.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2021/07/01/2021-07-01 2202_TRPU.ms.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TRPU/continuous/2022/01/01/2022-01-01 0201_TRPU.ms.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "max": 47302,
+          "min": 9189,
+          "n_samples": 43576,
+          "p10": 17663,
+          "p25": 20946,
+          "p50": 21645,
+          "p75": 22685,
+          "p90": 23354
+        },
+        "start": "2020-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:55:04Z",
+  "generated_at_utc": "2026-06-23T03:52:52Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TRPU.db",
-  "station": "TRPU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "TRPU",
+  "target_resolution_days": 30
 }

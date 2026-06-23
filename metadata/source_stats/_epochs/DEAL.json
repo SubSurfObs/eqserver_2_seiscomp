@@ -1,7 +1,54 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-08-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/08/21/20180821_2222_DEAL.ms.zip"
+            }
+          ],
+          "boundary_hi_date": "2018-09-15",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "HHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/12/01/20181201_0000_DEAL.ms.zip"
+            },
+            {
+              "channels": [
+                "HHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/09/01/20180901_1034_DEAL.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/08/21/20180821_2222_DEAL.ms.zip"
+            }
+          ],
+          "resolution_days": 76
+        },
+        "boundary_resolution_days": 76,
         "channels": [
           "HHE",
           "HHN",
@@ -12,21 +59,155 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/10/01/20181001_1700_DEAL.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-04-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2021/04/07/20210407_2327_DEAL.ms.zip"
+            }
+          ],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-10-15",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "HHZ"
+              ],
+              "date": "2020-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2020/10/01/20201001_0000_DEAL.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2021/04/07/20210407_2327_DEAL.ms.zip"
+            }
+          ],
+          "resolution_days": 259
+        },
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-08-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/08/21/20180821_2222_DEAL.ms.zip"
+            }
+          ],
+          "boundary_hi_date": "2018-09-15",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "HHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/12/01/20181201_0000_DEAL.ms.zip"
+            },
+            {
+              "channels": [
+                "HHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/09/01/20180901_1034_DEAL.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2018-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/08/21/20180821_2222_DEAL.ms.zip"
+            }
+          ],
+          "resolution_days": 76
+        },
+        "boundary_resolution_days": 259,
         "channels": [
           "HHZ"
         ],
-        "end": "2020-07-01",
+        "end": "2020-10-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2019/07/01/20190701_0000_DEAL.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2020/07/12/20200712_0138_DEAL.ms.zip"
         ],
         "samples_used": 2,
-        "start": "2019-07-01"
+        "size_stats": {
+          "max": 66294,
+          "min": 3827,
+          "n_samples": 24474,
+          "p10": 11699,
+          "p25": 12723,
+          "p50": 14704,
+          "p75": 16804,
+          "p90": 19157
+        },
+        "start": "2018-09-15"
       },
       {
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-04-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2021/04/07/20210407_2327_DEAL.ms.zip"
+            }
+          ],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-10-15",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "HHZ"
+              ],
+              "date": "2020-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2020/10/01/20201001_0000_DEAL.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2021/04/07/20210407_2327_DEAL.ms.zip"
+            }
+          ],
+          "resolution_days": 259
+        },
+        "boundary_resolution_days": 259,
         "channels": [
           "CHZ"
         ],
@@ -36,6 +217,67 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2022/01/01/20220101_0001_DEAL.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 82409,
+          "min": 8300,
+          "n_samples": 48374,
+          "p10": 13889,
+          "p25": 15008,
+          "p50": 17510,
+          "p75": 21594,
+          "p90": 24284
+        },
+        "start": "2021-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 731,
+        "channels": [
+          "HHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/10/01/2018-10-01 0207 02 DEAL_HHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2019/01/01/2019-01-01 0359 02 DEAL_HHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 731,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2021/12/01/2021-12-01 0141 04 DEAL_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2021-07-01"
       }
     ],
@@ -51,6 +293,9 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2018/08/22/2018-08-22 0152 19 DEAL.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2018-07-01"
       }
     ],
@@ -64,11 +309,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DEAL/continuous/2019/07/01/2019-07-01 0238 00 DEAL.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 53664,
+          "min": 44680,
+          "n_samples": 177,
+          "p10": 47542,
+          "p25": 48280,
+          "p50": 49188,
+          "p75": 49976,
+          "p90": 51109
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:27:54Z",
+  "generated_at_utc": "2026-06-23T03:09:55Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DEAL.db",
-  "station": "DEAL"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "DEAL",
+  "target_resolution_days": 30
 }

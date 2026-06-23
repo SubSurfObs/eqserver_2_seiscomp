@@ -1,20 +1,123 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-02-14",
+          "boundary_lo_date": "2024-01-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2023/12/01/20231201_0000_FORG.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/03/01/20240301_0000_FORG.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/01/01/20240101_0000_FORG.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-02-14",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/02/14/20240214_0126_FORG.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHZ"
         ],
-        "end": "2023-07-01",
+        "end": "2024-01-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2017/12/11/20171211_2308_FORG.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/01/01/20180101_1247_FORG.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2020/07/01/20200701_0000_FORG.ms.zip"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 38114,
+          "min": 3897,
+          "n_samples": 47964,
+          "p10": 8761,
+          "p25": 8797,
+          "p50": 11170,
+          "p75": 11213,
+          "p90": 11244
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-02-14",
+          "boundary_lo_date": "2024-01-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2023/12/01/20231201_0000_FORG.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/03/01/20240301_0000_FORG.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/01/01/20240101_0000_FORG.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-02-14",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/02/14/20240214_0126_FORG.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHE",
           "CHN",
@@ -25,7 +128,17 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/07/07/20240707_0408_FORG.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 103664,
+          "min": 650,
+          "n_samples": 48237,
+          "p10": 34588,
+          "p25": 35764,
+          "p50": 37480,
+          "p75": 40919,
+          "p90": 47733
+        },
+        "start": "2024-02-14"
       }
     ],
     "disk_suds": [
@@ -42,7 +155,151 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2020/02/01/2020-02-01_0038_54_FORG.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "max": 121876,
+          "min": 91875,
+          "n_samples": 24653,
+          "p10": 91876,
+          "p25": 91876,
+          "p50": 91876,
+          "p75": 91876,
+          "p90": 91876
+        },
         "start": "2018-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-09-15",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/12/01/2018-12-01 0019 21 FORG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/09/01/2018-09-01 1433 22 FORG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/09/01/2018-09-01 1433 22 FORG_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 76
+        },
+        "boundary_resolution_days": 76,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2017/12/11/2017-12-11 2310 06 FORG_CHZ.mseed",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/01/01/2018-01-01 0014 11 FORG_CHZ.mseed"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2017-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-09-15",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/12/01/2018-12-01 0019 21 FORG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/09/01/2018-09-01 1433 22 FORG_DHZ.mseed.zip"
+            },
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2018/09/01/2018-09-01 1433 22 FORG_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 76
+        },
+        "boundary_resolution_days": 731,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2019/01/01/2019-01-01 0128 21 FORG_DHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-09-15"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 731,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2021/05/12/2021-05-12 0303 00 FORG_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2023/12/01/2023-12-01 0100 06 FORG_CHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
       }
     ],
     "tele_noss_mseed": [
@@ -58,6 +315,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2024/07/02/2024-07-02 0816 FORG.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 65771,
+          "min": 5298,
+          "n_samples": 24689,
+          "p10": 32822,
+          "p25": 33736,
+          "p50": 35233,
+          "p75": 38112,
+          "p90": 41938
+        },
         "start": "2021-07-01"
       }
     ],
@@ -74,6 +341,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2022/07/01/2022-07-02 0000 00 FORG.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 133607,
+          "min": 4071,
+          "n_samples": 25311,
+          "p10": 32836,
+          "p25": 33732,
+          "p50": 35216,
+          "p75": 38097,
+          "p90": 41875
+        },
         "start": "2021-07-01"
       }
     ],
@@ -89,11 +366,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/FORG/continuous/2020/01/01/2020-01-01 0002 57 FORG.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "max": 31168,
+          "min": 31167,
+          "n_samples": 25295,
+          "p10": 31168,
+          "p25": 31168,
+          "p50": 31168,
+          "p75": 31168,
+          "p90": 31168
+        },
         "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:27:59Z",
+  "generated_at_utc": "2026-06-23T03:12:04Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.FORG.db",
-  "station": "FORG"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "FORG",
+  "target_resolution_days": 30
 }

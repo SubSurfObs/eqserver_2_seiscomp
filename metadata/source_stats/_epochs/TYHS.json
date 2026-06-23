@@ -1,7 +1,42 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-27",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/11/01/2019-11-01_0155_50_TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/08/01/2019-08-01_0221_58_TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-07-27",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/07/27/2019-07-27_0809_20_TYHS.dmx"
+            }
+          ],
+          "resolution_days": 26
+        },
+        "boundary_resolution_days": 26,
         "channels": [
           "c01",
           "c02",
@@ -12,9 +47,81 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/01/21/2019-01-21_0539_57_TYHS.dmx.gz"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2019-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "c01"
+              ],
+              "date": "2023-09-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/09/01/2023-09-01_0250_56_TYHS.dmx"
+            }
+          ],
+          "boundary_hi_date": "2024-01-15",
+          "boundary_lo_date": "2023-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/01/11/2024-01-11_0220_58_TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c01"
+              ],
+              "date": "2023-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/09/01/2023-09-01_0250_56_TYHS.dmx"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-27",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/11/01/2019-11-01_0155_50_TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/08/01/2019-08-01_0221_58_TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-07-27",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/07/27/2019-07-27_0809_20_TYHS.dmx"
+            }
+          ],
+          "resolution_days": 26
+        },
+        "boundary_resolution_days": 198,
         "channels": [
           "c03"
         ],
@@ -25,9 +132,55 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/07/01/2022-07-01_0126_22_TYHS.dmx"
         ],
         "samples_used": 4,
-        "start": "2020-07-01"
+        "size_stats": {
+          "max": 108596,
+          "min": 1348,
+          "n_samples": 24348,
+          "p10": 73899,
+          "p25": 75714,
+          "p50": 78689,
+          "p75": 82512,
+          "p90": 87912
+        },
+        "start": "2019-07-27"
       },
       {
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "c01"
+              ],
+              "date": "2023-09-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/09/01/2023-09-01_0250_56_TYHS.dmx"
+            }
+          ],
+          "boundary_hi_date": "2024-01-15",
+          "boundary_lo_date": "2023-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/01/11/2024-01-11_0220_58_TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c01"
+              ],
+              "date": "2023-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/09/01/2023-09-01_0250_56_TYHS.dmx"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
         "channels": [
           "c01",
           "c02",
@@ -38,24 +191,203 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/07/01/2024-07-01_0033_01_TYHS.dmx"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 181875,
+          "min": 91875,
+          "n_samples": 24489,
+          "p10": 91875,
+          "p25": 91875,
+          "p50": 91875,
+          "p75": 121875,
+          "p90": 151875
+        },
+        "start": "2024-01-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-12-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/12/01/2022-12-01 0039 51 TYHS_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2022-12-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2020/03/01/2020-03-01 0038 34 TYHS_DLZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2021/04/01/2021-04-01 0154 38 TYHS_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/01/01/2022-01-01 0125 23 TYHS_DHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-12-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/12/01/2022-12-01 0039 51 TYHS_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
+        "channels": [
+          "DHE"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/06/01/2023-06-01 0236 17 TYHS_DHE.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/07/01/2024-07-01 0004 01 TYHS_DHE.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2023-07-01"
       }
     ],
     "tele_ss_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-06-07",
+          "boundary_lo_date": "2023-05-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/12/01/2022-12-01 0004 51 TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/03/01/2023-03-01 0001 20 TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/05/01/2023-05-01 0000 33 TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/06/07/2023-06-07 0004 46 TYHS.dmx"
+            }
+          ],
+          "resolution_days": 23
+        },
+        "boundary_resolution_days": 23,
         "channels": [
           "c03"
         ],
-        "end": "2022-07-01",
+        "end": "2023-05-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2019/07/24/2019-07-24 2359 00 TYHS.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2020/07/01/2020-07-01 0000 14 TYHS.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2021/07/01/2021-07-01 0000 00 TYHS.dmx"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 61170,
+          "min": 31136,
+          "n_samples": 25545,
+          "p10": 31136,
+          "p25": 31136,
+          "p50": 31136,
+          "p75": 61136,
+          "p90": 61136
+        },
         "start": "2019-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-06-07",
+          "boundary_lo_date": "2023-05-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2022/12/01/2022-12-01 0004 51 TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/03/01/2023-03-01 0001 20 TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/05/01/2023-05-01 0000 33 TYHS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2023/06/07/2023-06-07 0004 46 TYHS.dmx"
+            }
+          ],
+          "resolution_days": 23
+        },
+        "boundary_resolution_days": 23,
         "channels": [
           "c01",
           "c02",
@@ -67,11 +399,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/TYHS/continuous/2024/07/01/2024-07-01 0000 01 TYHS.dmx"
         ],
         "samples_used": 2,
-        "start": "2023-07-01"
+        "size_stats": {
+          "max": 181878,
+          "min": 91878,
+          "n_samples": 24620,
+          "p10": 91878,
+          "p25": 91878,
+          "p50": 91878,
+          "p75": 121878,
+          "p90": 151878
+        },
+        "start": "2023-06-07"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:55:13Z",
+  "generated_at_utc": "2026-06-23T03:54:13Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.TYHS.db",
-  "station": "TYHS"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "TYHS",
+  "target_resolution_days": 30
 }

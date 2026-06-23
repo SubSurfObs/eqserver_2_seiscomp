@@ -1,4 +1,5 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
@@ -11,11 +12,30 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/01/01/20200101_0006_BEST.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 38941,
+          "min": 13737,
+          "n_samples": 23040,
+          "p10": 17247,
+          "p25": 20600,
+          "p50": 26969,
+          "p75": 30940,
+          "p90": 32470
+        },
         "start": "2019-07-01"
       }
     ],
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 366
+        },
+        "boundary_resolution_days": 366,
         "channels": [
           "c01",
           "c02",
@@ -28,9 +48,67 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/01/01/2019-01-01_0000_44_BEST.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "max": 181879,
+          "min": 354,
+          "n_samples": 30857,
+          "p10": 91878,
+          "p25": 91878,
+          "p50": 91878,
+          "p75": 91878,
+          "p90": 91878
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-11-15",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/12/01/2021-12-01_0019_12_BEST.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/11/17/2021-11-17_0031_12_BEST.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/11/17/2021-11-17_0031_12_BEST.dmx"
+            }
+          ],
+          "resolution_days": 137
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 366
+        },
+        "boundary_resolution_days": 137,
         "channels": [
           "c03"
         ],
@@ -40,9 +118,59 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/01/01/2021-01-01_0241_54_BEST.dmx"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 118714,
+          "min": 4096,
+          "n_samples": 23175,
+          "p10": 57929,
+          "p25": 61160,
+          "p50": 64982,
+          "p75": 71168,
+          "p90": 79432
+        },
         "start": "2020-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-11-15",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/12/01/2021-12-01_0019_12_BEST.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/11/17/2021-11-17_0031_12_BEST.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/11/17/2021-11-17_0031_12_BEST.dmx"
+            }
+          ],
+          "resolution_days": 137
+        },
+        "boundary_resolution_days": 137,
         "channels": [
           "c01",
           "c02",
@@ -55,6 +183,141 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2024/01/01/2024-01-01_0147_42_BEST.dmx"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 181879,
+          "min": 91878,
+          "n_samples": 23682,
+          "p10": 91878,
+          "p25": 91878,
+          "p50": 91878,
+          "p75": 91878,
+          "p90": 91878
+        },
+        "start": "2021-11-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-12-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2020-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/12/02/2020-12-02 0555 25 BEST_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2020-12-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2018/10/01/2018-10-01 0121 51 BEST_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/01/01/2019-01-01 0239 44 BEST_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/07/01/2020-07-01 0126 41 BEST_DHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2021-12-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHZ",
+                "DHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/12/01/2021-12-01 0045 12 BEST_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2020-12-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2020-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2020/12/02/2020-12-02 0555 25 BEST_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
+        "channels": [
+          "CHZ",
+          "DHZ"
+        ],
+        "end": "2021-12-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/12/01/2021-12-01 0045 12 BEST_DHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2021-12-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHZ",
+                "DHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2021/12/01/2021-12-01 0045 12 BEST_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 198
+        },
+        "boundary_resolution_days": 198,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2022/07/01/2022-07-01 0143 09 BEST_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2023/05/01/2023-05-01 2227 10 BEST_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2024/01/01/2024-01-01 0142 42 BEST_DHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2022-07-01"
       }
     ],
@@ -70,23 +333,135 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/05/02/2019-05-02 0312 BEST.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 98235,
+          "min": 1397,
+          "n_samples": 10076,
+          "p10": 42495,
+          "p25": 54650,
+          "p50": 80356,
+          "p75": 87312,
+          "p90": 89356
+        },
         "start": "2019-07-01"
       }
     ],
     "tele_ss_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2019-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2018/12/01/2018-12-01 0000 39 BEST.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/03/01/2019-03-01 0000 05 BEST.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/04/24/2019-04-24 0133 06 BEST.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/04/24/2019-04-24 0133 06 BEST.dmx"
+            }
+          ],
+          "resolution_days": 77
+        },
+        "boundary_resolution_days": 77,
         "channels": [
           "c03"
         ],
-        "end": "2018-07-01",
+        "end": "2019-04-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2017/12/01/2017-12-01 1138 41 BEST.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2018/07/01/2018-07-01 0733 19 BEST.dmx"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 61171,
+          "min": 31170,
+          "n_samples": 19143,
+          "p10": 31170,
+          "p25": 31170,
+          "p50": 31170,
+          "p75": 31170,
+          "p90": 31170
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 366
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2019-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2018/12/01/2018-12-01 0000 39 BEST.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/03/01/2019-03-01 0000 05 BEST.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/04/24/2019-04-24 0133 06 BEST.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/04/24/2019-04-24 0133 06 BEST.dmx"
+            }
+          ],
+          "resolution_days": 77
+        },
+        "boundary_resolution_days": 366,
         "channels": [
           "CHZ"
         ],
@@ -95,9 +470,28 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2019/07/01/2019-07-01 0108 01 BEST.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 69856,
+          "min": 52384,
+          "n_samples": 495,
+          "p10": 57137,
+          "p25": 59528,
+          "p50": 60640,
+          "p75": 62700,
+          "p90": 64983
+        },
         "start": "2019-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 366
+        },
+        "boundary_resolution_days": 366,
         "channels": [
           "c03"
         ],
@@ -108,11 +502,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/BEST/continuous/2022/07/01/2022-07-01 0000 09 BEST.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 61172,
+          "min": 31172,
+          "n_samples": 23436,
+          "p10": 31172,
+          "p25": 31172,
+          "p50": 31172,
+          "p75": 31172,
+          "p90": 31172
+        },
         "start": "2020-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:22:18Z",
+  "generated_at_utc": "2026-06-23T02:52:16Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.BEST.db",
-  "station": "BEST"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "BEST",
+  "target_resolution_days": 30
 }

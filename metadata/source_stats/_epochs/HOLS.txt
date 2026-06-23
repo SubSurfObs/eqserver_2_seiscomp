@@ -1,10 +1,10 @@
 # Channel-epoch scan: HOLS
-# Generated: 2026-06-21T07:33:40Z
+# Generated: 2026-06-23T03:25:57Z
 
 ## disk_suds
-  2012-07-01 → 2020-07-01  channels=['c01', 'c02', 'c03']  (n_samples=9)
-  2021-07-01 → 2021-07-01  channels=['c04', 'c05', 'c06']  (n_samples=1)
-  2022-07-01 → 2024-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)
+  2012-07-01 → 2021-03-15  channels=['c01', 'c02', 'c03']  (n_samples=9)  [boundary ±108d]
+  2021-07-01 → 2021-12-30  channels=[]  (n_samples=1)  [boundary ±16d]
+  2022-01-15 → 2024-07-01  channels=['c01', 'c02', 'c03']  (n_samples=3)  [boundary ±16d]
 
 ## tele_ss_suds
   2017-07-01 → 2018-07-01  channels=['c01', 'c02', 'c03']  (n_samples=2)

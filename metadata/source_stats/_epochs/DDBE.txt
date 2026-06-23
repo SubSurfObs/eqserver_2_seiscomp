@@ -1,4 +1,8 @@
 # Channel-epoch scan: DDBE
-# Generated: 2026-06-21T07:26:26Z
+# Generated: 2026-06-23T03:00:29Z
 
-(no source kinds had readable files in this station)
+## perchan_mseed
+  2019-07-01 → 2019-07-01  channels=['HHE', 'HHN', 'HHZ']  (n_samples=1)  [boundary ±366d]
+    ⚠ ambiguous channel set at 2019-12-15: ['CHE', 'CHN', 'CHZ', 'HHE', 'HHN', 'HHZ']
+  2020-07-01 → 2020-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)  [boundary ±366d]
+

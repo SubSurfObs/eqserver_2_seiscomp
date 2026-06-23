@@ -1,35 +1,215 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2021-03-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2020-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2020/11/01/2020-11-01_0000_10_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/03/08/2021-03-08_0506_14_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/03/08/2021-03-08_0506_14_HOLS.dmx"
+            }
+          ],
+          "resolution_days": 108
+        },
+        "boundary_resolution_days": 108,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2020-07-01",
+        "end": "2021-03-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2012/07/01/2012-07-01_0022_23_HOLS.dmx.gz",
           "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2013/07/01/2013-07-01_0545_52_HOLS.dmx.gz",
           "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2014/07/17/2014-07-17_0815_42_HOLS.dmx.gz"
         ],
         "samples_used": 9,
+        "size_stats": {
+          "max": 148102,
+          "min": 93737,
+          "n_samples": 50000,
+          "p10": 97207,
+          "p25": 98150,
+          "p50": 99020,
+          "p75": 99823,
+          "p90": 100664
+        },
         "start": "2012-07-01"
       },
       {
-        "channels": [
-          "c04",
-          "c05",
-          "c06"
-        ],
-        "end": "2021-07-01",
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-01-15",
+          "boundary_lo_date": "2021-12-30",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/12/01/2021-12-01_0853_23_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2022/03/01/2022-03-01_2356_05_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2022/01/01/2022-01-01_2304_05_HOLS.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2021-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/12/30/2021-12-30_2219_24_HOLS.dmx"
+            }
+          ],
+          "resolution_days": 16
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2021-03-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2020-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2020/11/01/2020-11-01_0000_10_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/03/08/2021-03-08_0506_14_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/03/08/2021-03-08_0506_14_HOLS.dmx"
+            }
+          ],
+          "resolution_days": 108
+        },
+        "boundary_resolution_days": 16,
+        "channels": [],
+        "end": "2021-12-30",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/10/21/2021-10-21_0623_18_HOLS.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 188042,
+          "min": 91911,
+          "n_samples": 27740,
+          "p10": 91911,
+          "p25": 91911,
+          "p50": 91911,
+          "p75": 91911,
+          "p90": 93542
+        },
         "start": "2021-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-01-15",
+          "boundary_lo_date": "2021-12-30",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/12/01/2021-12-01_0853_23_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2022/03/01/2022-03-01_2356_05_HOLS.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2022/01/01/2022-01-01_2304_05_HOLS.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2021-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2021/12/30/2021-12-30_2219_24_HOLS.dmx"
+            }
+          ],
+          "resolution_days": 16
+        },
+        "boundary_resolution_days": 16,
         "channels": [
           "c01",
           "c02",
@@ -42,7 +222,17 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2024/01/01/2024-01-01_1000_43_HOLS.dmx"
         ],
         "samples_used": 3,
-        "start": "2022-07-01"
+        "size_stats": {
+          "max": 199542,
+          "min": 91911,
+          "n_samples": 47854,
+          "p10": 91911,
+          "p25": 91911,
+          "p50": 91911,
+          "p75": 91911,
+          "p90": 124042
+        },
+        "start": "2022-01-15"
       }
     ],
     "tele_ss_suds": [
@@ -58,11 +248,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HOLS/continuous/2018/07/01/2018-07-01 0416 47 HOLS.dmx"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 182432,
+          "min": 92318,
+          "n_samples": 1971,
+          "p10": 92429,
+          "p25": 92429,
+          "p50": 92432,
+          "p75": 92432,
+          "p90": 122432
+        },
         "start": "2017-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:33:40Z",
+  "generated_at_utc": "2026-06-23T03:25:57Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HOLS.db",
-  "station": "HOLS"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "HOLS",
+  "target_resolution_days": 30
 }

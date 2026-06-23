@@ -1,0 +1,35 @@
+# Source categorization: MRDN
+# Generated: 2026-06-23T03:38:23Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.MRDN.db
+# Total day-entries: 1661
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    54.1%
+  full tele available  (>=1400 single var):    64.5%
+  FULL FROM EITHER kind:                        69.4%
+  full from BOTH (redundancy):                 49.1%
+
+## Buckets
+  A_pure      :     44  (  2.6%)
+  D_pure      :     23  (  1.4%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :    122  (  7.3%)
+  AB_mixed    :    957  ( 57.6%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :    137  (  8.2%)
+  weird       :    378  ( 22.8%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1970           0          0          0       0       0       0       0      0 | 1
+   1980           0          0          0       0       0       0       0      0 | 2
+   2012          58         50         59       6       0       0      53      1 | 60
+   2013         147        153        166      13      18       0     144      3 | 184
+   2014         158        217        229       8       0       0     153     48 | 308
+   2015         279        308        318       3       0       0     291     31 | 346
+   2016         110        153        172      14       0       0      93    161 | 303
+   2017          98        147        161       0       5       0     111    133 | 338
+   2018          48         43         48       0       0       0     112      1 | 118
+   2019           0          0          0       0       0       0       0      0 | 1

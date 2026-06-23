@@ -1,0 +1,31 @@
+# Source categorization: SCMB
+# Generated: 2026-06-23T03:46:12Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.SCMB.db
+# Total day-entries: 1033
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    63.3%
+  full tele available  (>=1400 single var):    86.6%
+  FULL FROM EITHER kind:                        88.7%
+  full from BOTH (redundancy):                 61.3%
+
+## Buckets
+  A_pure      :      0  (  0.0%)
+  D_pure      :      5  (  0.5%)
+  E_multivar  :      3  (  0.3%)
+  C_partial   :     22  (  2.1%)
+  AB_mixed    :    670  ( 64.9%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :     28  (  2.7%)
+  weird       :    305  ( 29.5%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1970           0          0          0       0       0       0       0      0 | 1
+   2019          20         28         28       0       4       3      19      5 | 31
+   2020         334        325        334       0       0       0     339      3 | 352
+   2021         300        319        331       0       0       0     312     31 | 351
+   2022           0        205        205       0       1       0       0    238 | 255
+   2023           0         18         18       0       0       0       0     28 | 43

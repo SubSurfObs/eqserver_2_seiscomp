@@ -1,22 +1,172 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2022-06-07",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2021/12/02/2021-12-02_0311_55_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/03/01/2022-03-01_1011_57_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/05/01/2022-05-01_0142_05_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/06/07/2022-06-07_0152_54_WPNH.dmx"
+            }
+          ],
+          "resolution_days": 24
+        },
+        "boundary_resolution_days": 24,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2021-07-01",
+        "end": "2022-06-07",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2018/12/01/2018-12-01_0000_23_WPNH.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2019/07/01/2019-07-01_0013_36_WPNH.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2020/07/01/2020-07-01_0157_02_WPNH.dmx"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 181878,
+          "min": 91878,
+          "n_samples": 23272,
+          "p10": 91878,
+          "p25": 91878,
+          "p50": 91878,
+          "p75": 91878,
+          "p90": 91878
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-08-15",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/11/01/2022-11-01_0156_33_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/09/01/2022-09-01_0108_51_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/08/03/2022-08-03_0405_51_WPNH.dmx"
+            }
+          ],
+          "resolution_days": 45
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2022-06-07",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2021/12/02/2021-12-02_0311_55_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/03/01/2022-03-01_1011_57_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/05/01/2022-05-01_0142_05_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/06/07/2022-06-07_0152_54_WPNH.dmx"
+            }
+          ],
+          "resolution_days": 24
+        },
+        "boundary_resolution_days": 45,
         "channels": [
           "c01",
           "c02"
@@ -26,9 +176,52 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/01/01/2022-01-01_0011_53_WPNH.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2022-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-08-15",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/11/01/2022-11-01_0156_33_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/09/01/2022-09-01_0108_51_WPNH.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/08/03/2022-08-03_0405_51_WPNH.dmx"
+            }
+          ],
+          "resolution_days": 45
+        },
+        "boundary_resolution_days": 45,
         "channels": [
           "c01",
           "c02",
@@ -39,7 +232,117 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2023/01/01/2023-01-01_0007_57_WPNH.dmx"
         ],
         "samples_used": 1,
-        "start": "2023-07-01"
+        "size_stats": {
+          "max": 181878,
+          "min": 91844,
+          "n_samples": 24420,
+          "p10": 91878,
+          "p25": 91878,
+          "p50": 91878,
+          "p75": 91878,
+          "p90": 91878
+        },
+        "start": "2022-08-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-11-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2018/11/01/2018-11-01 0730 34 WPNH_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 228
+        },
+        "boundary_resolution_days": 228,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2018-11-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2018/07/01/2018-07-01 0005 56 WPNH_DHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 366
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-11-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "DHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2018/11/01/2018-11-01 0730 34 WPNH_DHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 228
+        },
+        "boundary_resolution_days": 366,
+        "channels": [],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2019/09/01/2019-09-01 0016 07 WPNH_DLZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 366
+        },
+        "boundary_resolution_days": 366,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2020/09/01/2020-09-01 0229 56 WPNH_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2021/12/02/2021-12-02 0300 55 WPNH_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2022/12/15/2022-12-15 0113 16 WPNH_DHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-07-01"
       }
     ],
     "tele_ss_suds": [
@@ -54,11 +357,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/WPNH/continuous/2020/07/01/2020-07-01 0000 45 WPNH.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 92691,
+          "min": 3272,
+          "n_samples": 24275,
+          "p10": 31170,
+          "p25": 31170,
+          "p50": 31170,
+          "p75": 31170,
+          "p90": 31170
+        },
         "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:55:54Z",
+  "generated_at_utc": "2026-06-23T03:58:54Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WPNH.db",
-  "station": "WPNH"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "WPNH",
+  "target_resolution_days": 30
 }

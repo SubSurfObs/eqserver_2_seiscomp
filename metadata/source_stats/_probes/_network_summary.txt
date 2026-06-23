@@ -1,0 +1,14 @@
+# probe_unknowns summary  (2026-06-21T09:42:46Z)
+
+## Probe A — underscore-tele co-existence
+
+## Probe B — RT130/Minimus LT audit
+  LOYU:
+    2018 doy=196  HHZ   n_traces=    1  npts=  16293619  94.29% of day  @ 200.0 Hz
+  WILU:
+  TRPU:
+  MOSU:
+  SGWU:
+  DDBE:
+  DDWB:
+  SCM2:

@@ -12,7 +12,7 @@
       "pct": 0.463
     }
   ],
-  "generated_at_utc": "2026-06-21T06:52:47Z",
+  "generated_at_utc": "2026-06-23T03:07:25Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDWB.db",
   "manifest_signatures": [
     {
@@ -56,8 +56,8 @@
       "signature": {
         "channel_suffix_is_null": true,
         "date_mismatch": false,
-        "exclude_reason": "unparsed",
-        "flags": null,
+        "exclude_reason": null,
+        "flags": "mixed_separator:underscore_tele",
         "recorder_type": "gecko",
         "role": "waveform",
         "source_type": "telemetry",
@@ -88,10 +88,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -102,10 +102,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -116,10 +116,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -130,10 +130,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -144,10 +144,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -158,10 +158,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -172,10 +172,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -186,10 +186,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -200,10 +200,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -214,10 +214,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -228,10 +228,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -242,10 +242,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -256,10 +256,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -270,10 +270,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -284,10 +284,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -298,10 +298,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -312,10 +312,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -326,10 +326,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -340,10 +340,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -354,10 +354,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -368,10 +368,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -382,10 +382,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -396,10 +396,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -410,10 +410,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -424,10 +424,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -438,10 +438,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -452,10 +452,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -466,10 +466,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -480,10 +480,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     },
     {
@@ -494,10 +494,10 @@
         "waveform",
         true,
         true,
-        "unparsed",
+        null,
         false,
         false,
-        null
+        "mixed_separator:underscore_tele"
       ]
     }
   ]

@@ -1,6 +1,27 @@
 {
-  "by_source_kind": {},
-  "generated_at_utc": "2026-06-21T07:55:42Z",
+  "bisection_enabled": true,
+  "by_source_kind": {
+    "perchan_mseed": [
+      {
+        "channels": [
+          "HHZ"
+        ],
+        "end": "2015-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/WILU/continuous/2015/06/01/2015-06-01 0000 00 WILU_HHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2015-07-01"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-06-23T03:56:46Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.WILU.db",
-  "station": "WILU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "WILU",
+  "target_resolution_days": 30
 }

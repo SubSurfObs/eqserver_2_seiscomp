@@ -1,0 +1,74 @@
+{
+  "buckets_total": {
+    "empty": 2
+  },
+  "by_year": {
+    "2013": {
+      "buckets": {
+        "empty": 1
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 1
+    },
+    "2014": {
+      "buckets": {
+        "empty": 1
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 1
+    }
+  },
+  "coverage_pct": {
+    "full_any": 0.0,
+    "full_both": 0.0,
+    "full_disk": 0.0,
+    "full_tele": 0.0
+  },
+  "coverage_total": {
+    "full_any": 0,
+    "full_both": 0,
+    "full_disk": 0,
+    "full_tele": 0
+  },
+  "day_classifications": [
+    {
+      "bucket": "empty",
+      "date": "2013-08-20",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 0,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "empty",
+      "date": "2014-09-22",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 0,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    }
+  ],
+  "generated_at_utc": "2026-06-22T00:38:22Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.FBNK.db",
+  "representatives": {
+    "empty": {
+      "bucket": "empty",
+      "date": "2013-08-20",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 0,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    }
+  },
+  "station": "FBNK",
+  "total_days": 2
+}

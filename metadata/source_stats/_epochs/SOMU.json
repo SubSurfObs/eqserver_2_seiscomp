@@ -1,33 +1,142 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-06-07",
+          "boundary_lo_date": "2019-05-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2018/12/01/2018-12-01_0000_25_SOMU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/03/01/2019-03-01_2204_07_SOMU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/05/01/2019-05-01_0000_13_SOMU.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2019-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/06/07/2019-06-07_0000_21_SOMU.dmx"
+            }
+          ],
+          "resolution_days": 23
+        },
+        "boundary_resolution_days": 23,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2018-07-01",
+        "end": "2019-05-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2014/12/12/2014-12-12_0649_40_SOMU.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2015/07/01/2015-07-01_0442_01_SOMU.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2016/01/01/2016-01-01_0018_34_SOMU.dmx"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 145912,
+          "min": 4344,
+          "n_samples": 50000,
+          "p10": 73912,
+          "p25": 73912,
+          "p50": 73912,
+          "p75": 73912,
+          "p90": 73912
+        },
         "start": "2014-07-01"
       },
       {
-        "channels": [
-          "c04",
-          "c05",
-          "c06"
-        ],
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-06-07",
+          "boundary_lo_date": "2019-05-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2018/12/01/2018-12-01_0000_25_SOMU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/03/01/2019-03-01_2204_07_SOMU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/05/01/2019-05-01_0000_13_SOMU.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2019-06-07",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/06/07/2019-06-07_0000_21_SOMU.dmx"
+            }
+          ],
+          "resolution_days": 23
+        },
+        "boundary_resolution_days": 23,
+        "channels": [],
         "end": "2019-07-01",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2019/07/01/2019-07-01_0000_45_SOMU.dmx"
         ],
         "samples_used": 1,
-        "start": "2019-07-01"
+        "size_stats": {
+          "max": 145912,
+          "min": 73878,
+          "n_samples": 35998,
+          "p10": 73912,
+          "p25": 73912,
+          "p50": 73912,
+          "p75": 73912,
+          "p90": 73912
+        },
+        "start": "2019-06-07"
       }
     ],
     "tele_ss_suds": [
@@ -40,11 +149,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/SOMU/continuous/2014/01/26/2014-01-26 1544 45 SOMU.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2014-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:53:43Z",
+  "generated_at_utc": "2026-06-23T03:48:53Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.SOMU.db",
-  "station": "SOMU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "SOMU",
+  "target_resolution_days": 30
 }

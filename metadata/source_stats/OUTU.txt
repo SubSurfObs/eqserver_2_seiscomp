@@ -1,5 +1,5 @@
 # Source categorization: OUTU
-# Generated: 2026-06-21T06:22:36Z
+# Generated: 2026-06-23T03:43:41Z
 # Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.OUTU.db
 # Total day-entries: 2418
 
@@ -15,6 +15,8 @@
   E_multivar  :      0  (  0.0%)
   C_partial   :    113  (  4.7%)
   AB_mixed    :    607  ( 25.1%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
   sparse      :     29  (  1.2%)
   weird       :    342  ( 14.1%)
   empty       :      0  (  0.0%)

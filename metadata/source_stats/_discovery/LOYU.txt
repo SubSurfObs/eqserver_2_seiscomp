@@ -1,7 +1,7 @@
 # Discovery audit: LOYU
-# Generated: 2026-06-21T07:27:04Z
+# Generated: 2026-06-23T03:30:37Z
 # Total rows: 1569144
-# Distinct signatures: 5
+# Distinct signatures: 6
 
 ## Ambiguous signature pairs (CHECK THESE)
   (none)
@@ -34,9 +34,11 @@
            size:  min=48926  p10=61276  p50=63506  p90=66903  max=108046
   rows=    378903  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
            size:  min=231  p10=11313  p50=47104  p90=60416  max=529408
-  rows=    110310  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
-           size:  min=1358  p10=35298  p50=50436  p90=66475  max=85246
+  rows=    110308  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None  flags=mixed_separator:underscore_tele
+           size:  min=2224  p10=35298  p50=50436  p90=66475  max=85246
   rows=       350  recorder=unknown  src=unknown    role=unknown   ss_null=True  chan_null=True  excl=unknown_extension
            size:  min=12288  p10=12288  p50=12288  p90=16384  max=73728 ⚠ BIMODAL
   rows=        80  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None
            size:  min=162  p10=162  p50=162  p90=3376  max=13372 ⚠ BIMODAL
+  rows=         2  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=unparsed
+           size:  min=1358  p10=1366  p50=1399  p90=1431  max=1440

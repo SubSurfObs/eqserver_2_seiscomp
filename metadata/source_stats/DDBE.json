@@ -1,0 +1,1787 @@
+{
+  "buckets_total": {
+    "M_partial": 4,
+    "M_perchan": 187
+  },
+  "by_year": {
+    "2019": {
+      "buckets": {
+        "M_partial": 1,
+        "M_perchan": 91
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 92
+    },
+    "2020": {
+      "buckets": {
+        "M_partial": 3,
+        "M_perchan": 96
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 99
+    }
+  },
+  "coverage_pct": {
+    "full_any": 0.0,
+    "full_both": 0.0,
+    "full_disk": 0.0,
+    "full_tele": 0.0
+  },
+  "coverage_total": {
+    "full_any": 0,
+    "full_both": 0,
+    "full_disk": 0,
+    "full_tele": 0
+  },
+  "day_classifications": [
+    {
+      "bucket": "M_partial",
+      "date": "2019-10-01",
+      "n_disk": 0,
+      "n_excluded": 3044,
+      "n_perchan": 3044,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-02",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-03",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-04",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-05",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-06",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-07",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-08",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-09",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-10",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-11",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-12",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-13",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-14",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-15",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-16",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-17",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-18",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-19",
+      "n_disk": 0,
+      "n_excluded": 4318,
+      "n_perchan": 4318,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-20",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-21",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-22",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-23",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-24",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-25",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-26",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-27",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-28",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-29",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-30",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-10-31",
+      "n_disk": 0,
+      "n_excluded": 4329,
+      "n_perchan": 4329,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-01",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-02",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-03",
+      "n_disk": 0,
+      "n_excluded": 4311,
+      "n_perchan": 4311,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-04",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-05",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-06",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-07",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-08",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-09",
+      "n_disk": 0,
+      "n_excluded": 4414,
+      "n_perchan": 4414,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-10",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-11",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-12",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-13",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-14",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-15",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-16",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-17",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-18",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-19",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-20",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-21",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-22",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-23",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-24",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-25",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-26",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-27",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-28",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-29",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-11-30",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-01",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-02",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-03",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-04",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-05",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-06",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-07",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-08",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-09",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-10",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-11",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-12",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-13",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-14",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-15",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-16",
+      "n_disk": 0,
+      "n_excluded": 4262,
+      "n_perchan": 4262,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-17",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-18",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-19",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-20",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-21",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-22",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-23",
+      "n_disk": 0,
+      "n_excluded": 4311,
+      "n_perchan": 4311,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-24",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-25",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-26",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-27",
+      "n_disk": 0,
+      "n_excluded": 4289,
+      "n_perchan": 4289,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-28",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-29",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-30",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2019-12-31",
+      "n_disk": 0,
+      "n_excluded": 4311,
+      "n_perchan": 4311,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-01",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-02",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-03",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-04",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-05",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-06",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-07",
+      "n_disk": 0,
+      "n_excluded": 4314,
+      "n_perchan": 4314,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-08",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-09",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-10",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-11",
+      "n_disk": 0,
+      "n_excluded": 4309,
+      "n_perchan": 4309,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-12",
+      "n_disk": 0,
+      "n_excluded": 4313,
+      "n_perchan": 4313,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-13",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-14",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-15",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-16",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-17",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-18",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-19",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-20",
+      "n_disk": 0,
+      "n_excluded": 4312,
+      "n_perchan": 4312,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-21",
+      "n_disk": 0,
+      "n_excluded": 4311,
+      "n_perchan": 4311,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-22",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-23",
+      "n_disk": 0,
+      "n_excluded": 4305,
+      "n_perchan": 4305,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-24",
+      "n_disk": 0,
+      "n_excluded": 4312,
+      "n_perchan": 4312,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-25",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-26",
+      "n_disk": 0,
+      "n_excluded": 4317,
+      "n_perchan": 4317,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-27",
+      "n_disk": 0,
+      "n_excluded": 4314,
+      "n_perchan": 4314,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-28",
+      "n_disk": 0,
+      "n_excluded": 4301,
+      "n_perchan": 4301,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-29",
+      "n_disk": 0,
+      "n_excluded": 4307,
+      "n_perchan": 4307,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-30",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-01-31",
+      "n_disk": 0,
+      "n_excluded": 4316,
+      "n_perchan": 4316,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-01",
+      "n_disk": 0,
+      "n_excluded": 4303,
+      "n_perchan": 4303,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-02",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-03",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-04",
+      "n_disk": 0,
+      "n_excluded": 4308,
+      "n_perchan": 4308,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-05",
+      "n_disk": 0,
+      "n_excluded": 4308,
+      "n_perchan": 4308,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-06",
+      "n_disk": 0,
+      "n_excluded": 4307,
+      "n_perchan": 4307,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-07",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-08",
+      "n_disk": 0,
+      "n_excluded": 4304,
+      "n_perchan": 4304,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-09",
+      "n_disk": 0,
+      "n_excluded": 4307,
+      "n_perchan": 4307,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-10",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-11",
+      "n_disk": 0,
+      "n_excluded": 4309,
+      "n_perchan": 4309,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-12",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-13",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-14",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-15",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-16",
+      "n_disk": 0,
+      "n_excluded": 4304,
+      "n_perchan": 4304,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-17",
+      "n_disk": 0,
+      "n_excluded": 4317,
+      "n_perchan": 4317,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-18",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-19",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-20",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-21",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-22",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-23",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-24",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-25",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-26",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-27",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-28",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-02-29",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-01",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-02",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-03",
+      "n_disk": 0,
+      "n_excluded": 4316,
+      "n_perchan": 4316,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-04",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-05",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-06",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-07",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-08",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-09",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-10",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-11",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-12",
+      "n_disk": 0,
+      "n_excluded": 4315,
+      "n_perchan": 4315,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-13",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-14",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-15",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-16",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-17",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-18",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-19",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-20",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-21",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-22",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-23",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-24",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-25",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-26",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-27",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-28",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-29",
+      "n_disk": 0,
+      "n_excluded": 4321,
+      "n_perchan": 4321,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-30",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-03-31",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-04-01",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-04-02",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_partial",
+      "date": "2020-04-03",
+      "n_disk": 0,
+      "n_excluded": 2961,
+      "n_perchan": 2961,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_partial",
+      "date": "2020-04-04",
+      "n_disk": 0,
+      "n_excluded": 3432,
+      "n_perchan": 3432,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-04-05",
+      "n_disk": 0,
+      "n_excluded": 4322,
+      "n_perchan": 4322,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-04-06",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_perchan",
+      "date": "2020-04-07",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "M_partial",
+      "date": "2020-04-08",
+      "n_disk": 0,
+      "n_excluded": 1384,
+      "n_perchan": 1384,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    }
+  ],
+  "generated_at_utc": "2026-06-23T03:00:24Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDBE.db",
+  "representatives": {
+    "M_partial": {
+      "bucket": "M_partial",
+      "date": "2019-10-01",
+      "n_disk": 0,
+      "n_excluded": 3044,
+      "n_perchan": 3044,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    },
+    "M_perchan": {
+      "bucket": "M_perchan",
+      "date": "2019-10-02",
+      "n_disk": 0,
+      "n_excluded": 4320,
+      "n_perchan": 4320,
+      "n_tele_noss": 0,
+      "n_tele_ss": 0
+    }
+  },
+  "station": "DDBE",
+  "total_days": 191
+}

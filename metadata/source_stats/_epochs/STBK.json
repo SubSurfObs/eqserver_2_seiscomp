@@ -1,7 +1,50 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-07-23",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/11/01/20181101_0006_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/09/01/20180901_0014_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/08/01/20180801_0142_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-07-23",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/07/23/20180723_0033_STBK.ms.zip"
+            }
+          ],
+          "resolution_days": 22
+        },
+        "boundary_resolution_days": 22,
         "channels": [
           "CHE",
           "CHN",
@@ -12,22 +55,171 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/07/01/20180701_1126_STBK.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 80456,
+          "min": 11562,
+          "n_samples": 9833,
+          "p10": 14585,
+          "p25": 37385,
+          "p50": 39083,
+          "p75": 41585,
+          "p90": 45668
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-12-15",
+          "boundary_lo_date": "2022-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/12/01/20221201_0001_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2022-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/09/01/20220901_0000_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2022-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/10/01/20221001_0000_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/11/01/20221101_0000_STBK.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-07-23",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/11/01/20181101_0006_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/09/01/20180901_0014_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/08/01/20180801_0142_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-07-23",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/07/23/20180723_0033_STBK.ms.zip"
+            }
+          ],
+          "resolution_days": 22
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHZ"
         ],
-        "end": "2022-07-01",
+        "end": "2022-11-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2019/07/01/20190701_0000_STBK.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2020/07/01/20200701_0000_STBK.ms.zip",
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2021/07/14/20210714_0355_STBK.ms.zip"
         ],
         "samples_used": 4,
-        "start": "2019-07-01"
+        "size_stats": {
+          "max": 69847,
+          "min": 12454,
+          "n_samples": 24852,
+          "p10": 14185,
+          "p25": 14844,
+          "p50": 16736,
+          "p75": 20339,
+          "p90": 24115
+        },
+        "start": "2018-07-23"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-12-15",
+          "boundary_lo_date": "2022-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/12/01/20221201_0001_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2022-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/09/01/20220901_0000_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2022-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/10/01/20221001_0000_STBK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/11/01/20221101_0000_STBK.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHE",
           "CHN",
@@ -39,7 +231,36 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2024/01/01/20240101_0000_STBK.ms.zip"
         ],
         "samples_used": 2,
-        "start": "2023-07-01"
+        "size_stats": {
+          "max": 78914,
+          "min": 11199,
+          "n_samples": 28399,
+          "p10": 36769,
+          "p25": 38212,
+          "p50": 40602,
+          "p75": 43954,
+          "p90": 47832
+        },
+        "start": "2022-12-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2018/04/01/2018-04-01 1656 04 STBK_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2019/02/01/2019-02-01 0441 02 STBK_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/09/01/2022-09-01 0229 04 STBK_CHZ.mseed.zip"
+        ],
+        "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
       }
     ],
     "tele_noss_mseed": [
@@ -54,6 +275,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2022/04/01/2022-04-01 0715 STBK.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 78757,
+          "min": 31005,
+          "n_samples": 10080,
+          "p10": 34132,
+          "p25": 34555,
+          "p50": 35218,
+          "p75": 36139,
+          "p90": 37725
+        },
         "start": "2022-07-01"
       }
     ],
@@ -71,11 +302,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/STBK/continuous/2019/01/01/2019-01-01 0001 00 STBK.ms.zip"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 82705,
+          "min": 34968,
+          "n_samples": 24449,
+          "p10": 36288,
+          "p25": 37027,
+          "p50": 38643,
+          "p75": 41457,
+          "p90": 45954
+        },
         "start": "2012-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:53:47Z",
+  "generated_at_utc": "2026-06-23T03:51:22Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.STBK.db",
-  "station": "STBK"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "STBK",
+  "target_resolution_days": 30
 }

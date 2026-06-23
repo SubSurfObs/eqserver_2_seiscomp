@@ -1,4 +1,14 @@
 # Channel-epoch scan: DDWB
-# Generated: 2026-06-21T07:27:20Z
+# Generated: 2026-06-23T03:07:25Z
 
-(no source kinds had readable files in this station)
+## tele_underscore_mseed
+  2021-07-01 → 2021-07-01  channels=['CHE', 'CHZ']  (n_samples=1)  [boundary ±730d]
+  2023-07-01 → 2023-07-01  channels=['HHE', 'HHN']  (n_samples=1)  [boundary ±730d]
+
+## perchan_mseed
+  2019-07-01 → 2019-07-01  channels=['HHE', 'HHN', 'HHZ']  (n_samples=1)  [boundary ±366d]
+    ⚠ ambiguous channel set at 2019-12-15: ['CHE', 'CHN', 'CHZ', 'HHE', 'HHN', 'HHZ']
+  2020-07-01 → 2023-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=4)  [boundary ±167d]
+    ⚠ ambiguous channel set at 2023-09-15: ['CHE', 'CHN', 'CHZ', 'HHE', 'HHN', 'HHZ']
+  2023-12-15 → 2024-07-01  channels=['HHE', 'HHN', 'HHZ']  (n_samples=1)  [boundary ±167d]
+

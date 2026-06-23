@@ -1,17 +1,21 @@
 # Channel-epoch scan: DDSW
-# Generated: 2026-06-21T07:27:00Z
+# Generated: 2026-06-23T03:04:30Z
 
 ## tele_ss_suds
   2017-07-01 → 2017-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
 
 ## disk_mseed
-  2017-07-01 → 2023-07-01  channels=['CHZ']  (n_samples=7)
-  2024-07-01 → 2024-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)
+  2017-07-01 → 2024-01-15  channels=['CHZ']  (n_samples=7)  [boundary ±30d]
+  2024-02-14 → 2024-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=1)  [boundary ±30d]
 
 ## tele_ss_mseed
   2017-07-01 → 2019-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=3)
 
 ## tele_noss_mseed
-  2018-07-01 → 2018-07-01  channels=['CHN', 'CHZ']  (n_samples=1)
-  2019-07-01 → 2022-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)
+  2018-07-01 → 2018-07-01  channels=['CHN', 'CHZ']  (n_samples=1)  [boundary ±365d]
+  2019-07-01 → 2022-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)  [boundary ±365d]
+
+## perchan_mseed
+  2017-07-01 → 2017-11-15  channels=['CHE', 'CHZ']  (n_samples=1)  [boundary ±30d]
+  2017-12-15 → 2024-07-01  channels=['CHZ']  (n_samples=7)  [boundary ±30d]
 

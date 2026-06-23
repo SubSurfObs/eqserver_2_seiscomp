@@ -1,22 +1,129 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-05-15",
+          "boundary_lo_date": "2023-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2022/11/01/2022-11-01_0042_29_CRJN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/03/01/2023-03-01_0133_41_CRJN.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/05/01/2023-05-01_0133_16_CRJN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/04/01/2023-04-01_0106_28_CRJN.dmx"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2022-07-01",
+        "end": "2023-04-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2019/12/01/2019-12-01_0118_42_CRJN.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2020/07/01/2020-07-01_0011_59_CRJN.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2021/07/01/2021-07-01_0016_59_CRJN.dmx"
         ],
         "samples_used": 4,
+        "size_stats": {
+          "max": 181881,
+          "min": 91847,
+          "n_samples": 24549,
+          "p10": 91880,
+          "p25": 91880,
+          "p50": 91880,
+          "p75": 91880,
+          "p90": 91880
+        },
         "start": "2019-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-05-15",
+          "boundary_lo_date": "2023-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2022-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2022/11/01/2022-11-01_0042_29_CRJN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/03/01/2023-03-01_0133_41_CRJN.dmx"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-05-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/05/01/2023-05-01_0133_16_CRJN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2023-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/04/01/2023-04-01_0106_28_CRJN.dmx"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "c03"
         ],
@@ -26,7 +133,81 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2024/07/01/2024-07-01_0010_40_CRJN.dmx"
         ],
         "samples_used": 2,
-        "start": "2023-07-01"
+        "size_stats": {
+          "max": 61172,
+          "min": 1348,
+          "n_samples": 325,
+          "p10": 5512,
+          "p25": 9556,
+          "p50": 20340,
+          "p75": 31172,
+          "p90": 31172
+        },
+        "start": "2023-05-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-11-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [],
+              "date": "2019-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2019/11/20/2019-11-20 0523 42 CRJN_DLZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 229
+        },
+        "boundary_resolution_days": 229,
+        "channels": [],
+        "end": "2019-11-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2019/11/20/2019-11-20 0523 42 CRJN_DLZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2020-07-01",
+          "boundary_lo_date": "2019-11-15",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [],
+              "date": "2019-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2019/11/20/2019-11-20 0523 42 CRJN_DLZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 229
+        },
+        "boundary_resolution_days": 229,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2020/07/01/2020-07-01 0032 59 CRJN_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2021/12/01/2021-12-01 0049 34 CRJN_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2023/04/01/2023-04-01 0228 28 CRJN_DHZ.mseed.zip"
+        ],
+        "samples_used": 4,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2020-07-01"
       }
     ],
     "tele_ss_suds": [
@@ -41,11 +222,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/CRJN/continuous/2021/01/01/2021-01-01 0000 47 CRJN.dmx"
         ],
         "samples_used": 6,
+        "size_stats": {
+          "max": 61173,
+          "min": 31172,
+          "n_samples": 25418,
+          "p10": 31172,
+          "p25": 31172,
+          "p50": 31172,
+          "p75": 31172,
+          "p90": 31172
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:26:18Z",
+  "generated_at_utc": "2026-06-23T02:59:56Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.CRJN.db",
-  "station": "CRJN"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "CRJN",
+  "target_resolution_days": 30
 }

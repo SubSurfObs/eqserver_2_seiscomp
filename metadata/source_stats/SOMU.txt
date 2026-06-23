@@ -1,0 +1,30 @@
+# Source categorization: SOMU
+# Generated: 2026-06-23T03:48:47Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.SOMU.db
+# Total day-entries: 951
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    95.5%
+  full tele available  (>=1400 single var):     0.0%
+  FULL FROM EITHER kind:                        95.5%
+  full from BOTH (redundancy):                  0.0%
+
+## Buckets
+  A_pure      :    908  ( 95.5%)
+  D_pure      :      0  (  0.0%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :      0  (  0.0%)
+  AB_mixed    :      0  (  0.0%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :     13  (  1.4%)
+  weird       :     30  (  3.2%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2014          19          0         19      19       0       0       0      4 | 24
+   2015         261          0        261     261       0       0       0     13 | 286
+   2016          65          0         65      65       0       0       0      1 | 66
+   2018         274          0        274     274       0       0       0      9 | 283
+   2019         289          0        289     289       0       0       0      3 | 292

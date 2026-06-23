@@ -1,4 +1,6 @@
 # Channel-epoch scan: MOSU
-# Generated: 2026-06-21T07:42:41Z
+# Generated: 2026-06-23T03:37:39Z
 
-(no source kinds had readable files in this station)
+## perchan_mseed
+  2015-07-01 → 2015-07-01  channels=['HH1', 'HH2', 'HHZ']  (n_samples=1)
+

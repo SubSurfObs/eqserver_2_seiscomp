@@ -1,4 +1,5 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
@@ -11,11 +12,85 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2020/01/01/20200101_1413_HOGN.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 23363,
+          "min": 3194,
+          "n_samples": 22469,
+          "p10": 10773,
+          "p25": 11800,
+          "p50": 13903,
+          "p75": 16677,
+          "p90": 18957
+        },
+        "start": "2019-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2018/08/14/2018-08-14 1903 47 HOGN_CHN.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "HHE",
+          "HHN",
+          "HHZ"
+        ],
+        "end": "2020-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2019/07/01/2019-07-01 0135 00 HOGN_HHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2020/01/01/2020-01-01 1415 05 HOGN_HHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2019-07-01"
       }
     ],
     "tele_noss_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
         "channels": [
           "CHE",
           "CHN",
@@ -26,9 +101,21 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2018/08/14/2018-08-14 0130 HOGN.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
         "channels": [
           "HHE",
           "HHN",
@@ -39,6 +126,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2019/04/01/2019-04-01 0709 HOGN.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 50273,
+          "min": 21911,
+          "n_samples": 10080,
+          "p10": 26041,
+          "p25": 27015,
+          "p50": 30206,
+          "p75": 38785,
+          "p90": 41594
+        },
         "start": "2019-07-01"
       }
     ],
@@ -55,11 +152,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/HOGN/continuous/2020/01/01/2020-01-01 0001 00 HOGN.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:33:10Z",
+  "generated_at_utc": "2026-06-23T03:21:55Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HOGN.db",
-  "station": "HOGN"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "HOGN",
+  "target_resolution_days": 30
 }

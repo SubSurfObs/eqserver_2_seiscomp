@@ -1,0 +1,14 @@
+{
+  "samples": [
+    {
+      "chan": "HHZ",
+      "doy": 196,
+      "n_traces": 1,
+      "npts": 16293619,
+      "pct_of_full_day": 94.29,
+      "sample_rate": 200.0,
+      "year": 2018
+    }
+  ],
+  "station": "LOYU"
+}

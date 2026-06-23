@@ -1,5 +1,5 @@
 # Channel-epoch scan: HODL
-# Generated: 2026-06-21T07:31:22Z
+# Generated: 2026-06-23T03:20:47Z
 
 ## disk_suds
   2012-07-01 → 2017-07-01  channels=['c01', 'c02', 'c03']  (n_samples=5)

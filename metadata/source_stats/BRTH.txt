@@ -1,0 +1,32 @@
+# Source categorization: BRTH
+# Generated: 2026-06-23T02:55:36Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.BRTH.db
+# Total day-entries: 2069
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    60.8%
+  full tele available  (>=1400 single var):    59.3%
+  FULL FROM EITHER kind:                        92.5%
+  full from BOTH (redundancy):                 27.6%
+
+## Buckets
+  A_pure      :    608  ( 29.4%)
+  D_pure      :    632  ( 30.5%)
+  E_multivar  :     53  (  2.6%)
+  C_partial   :     15  (  0.7%)
+  AB_mixed    :    616  ( 29.8%)
+  M_perchan   :      5  (  0.2%)
+  M_partial   :      8  (  0.4%)
+  sparse      :     93  (  4.5%)
+  weird       :     39  (  1.9%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2018         181        194        194       0       0       0     189      0 | 196
+   2019         316        303        333      30       9       2     290      5 | 336
+   2020          13        351        364       0     351       1      13      1 | 366
+   2021         103         46        104       0       0      50      65     22 | 226
+   2022         113        135        248     111     134       0       0      3 | 272
+   2023         235        188        364     174     128       0      59      3 | 365
+   2024         297         10        307     293      10       0       0      5 | 308

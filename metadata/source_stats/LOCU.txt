@@ -1,0 +1,30 @@
+# Source categorization: LOCU
+# Generated: 2026-06-23T03:28:55Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.LOCU.db
+# Total day-entries: 1542
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    66.3%
+  full tele available  (>=1400 single var):    67.3%
+  FULL FROM EITHER kind:                        82.2%
+  full from BOTH (redundancy):                 51.4%
+
+## Buckets
+  A_pure      :    189  ( 12.3%)
+  D_pure      :     58  (  3.8%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :     11  (  0.7%)
+  AB_mixed    :    868  ( 56.3%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :     13  (  0.8%)
+  sparse      :    110  (  7.1%)
+  weird       :    293  ( 19.0%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   2021         158        184        218      10      46       0     176     43 | 328
+   2022         299        287        299       2       0       0     304     14 | 334
+   2023         344        354        358       0       0       0     345     14 | 360
+   2024         221         62        241     177       1       0      43     78 | 364
+   2025           0        151        151       0      11       0       0    144 | 156

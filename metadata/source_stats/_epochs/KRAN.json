@@ -1,20 +1,99 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
-        "channels": [
-          "c04",
-          "c05",
-          "c06"
-        ],
-        "end": "2012-07-01",
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2012-10-15",
+          "boundary_lo_date": "2012-09-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2012-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/12/27/2012-12-27_1727_13_KRAN.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2012-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/09/01/2012-09-01_2143_26_KRAN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2012-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/10/01/2012-10-01_0333_21_KRAN.dmx"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
+        "channels": [],
+        "end": "2012-09-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/07/07/2012-07-07_0148_31_KRAN.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 181822,
+          "min": 116788,
+          "n_samples": 50000,
+          "p10": 151822,
+          "p25": 151822,
+          "p50": 151822,
+          "p75": 151822,
+          "p90": 151822
+        },
         "start": "2012-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2012-10-15",
+          "boundary_lo_date": "2012-09-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2012-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/12/27/2012-12-27_1727_13_KRAN.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2012-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/09/01/2012-09-01_2143_26_KRAN.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2012-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2012/10/01/2012-10-01_0333_21_KRAN.dmx"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "c01",
           "c02",
@@ -26,7 +105,17 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2014/07/01/2014-07-01_0016_11_KRAN.dmx.gz"
         ],
         "samples_used": 2,
-        "start": "2013-07-01"
+        "size_stats": {
+          "max": 181822,
+          "min": 181788,
+          "n_samples": 25673,
+          "p10": 181822,
+          "p25": 181822,
+          "p50": 181822,
+          "p75": 181822,
+          "p90": 181822
+        },
+        "start": "2012-10-15"
       }
     ],
     "tele_ss_suds": [
@@ -41,11 +130,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/KRAN/continuous/2014/07/01/2014-07-01 0015 11 KRAN.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2012-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:37:27Z",
+  "generated_at_utc": "2026-06-23T03:27:55Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.KRAN.db",
-  "station": "KRAN"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "KRAN",
+  "target_resolution_days": 30
 }

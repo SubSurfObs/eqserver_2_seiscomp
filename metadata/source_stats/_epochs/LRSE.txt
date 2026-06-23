@@ -1,10 +1,17 @@
 # Channel-epoch scan: LRSE
-# Generated: 2026-06-21T07:41:48Z
+# Generated: 2026-06-23T03:33:37Z
 
 ## disk_mseed
-  2021-07-01 → 2021-07-01  channels=['CHZ']  (n_samples=1)
-  2022-07-01 → 2023-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)
+  2021-07-01 → 2021-11-15  channels=['CHZ']  (n_samples=1)  [boundary ±30d]
+  2021-12-15 → 2023-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)  [boundary ±30d]
 
 ## tele_ss_mseed
   2022-07-01 → 2023-07-01  channels=['CHE', 'CHN', 'CHZ']  (n_samples=2)
+
+## perchan_mseed
+  2021-07-01 → 2021-07-01  channels=['CHZ']  (n_samples=1)  [boundary ±365d]
+    ⚠ ambiguous channel set at 2021-12-15: ['CHN', 'CHZ']
+  2022-07-01 → 2022-07-01  channels=['CHE', 'CHZ']  (n_samples=1)  [boundary ±365d]
+    ⚠ ambiguous channel set at 2022-12-15: ['CHE', 'CHN', 'CHZ']
+  2023-07-01 → 2023-07-01  channels=['CHN', 'CHZ']  (n_samples=1)  [boundary ±365d]
 

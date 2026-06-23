@@ -1,7 +1,17 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 731,
         "channels": [
           "CHZ"
         ],
@@ -12,9 +22,36 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2019/07/01/20190701_0000_DDWK.ms.zip"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "max": 82103,
+          "min": 4566,
+          "n_samples": 12478,
+          "p10": 12538,
+          "p25": 15013,
+          "p50": 18254,
+          "p75": 37145,
+          "p90": 40430
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-07-01",
+          "boundary_lo_date": "2019-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 731
+        },
+        "boundary_resolution_days": 730,
         "channels": [
           "CHE",
           "CHN",
@@ -25,20 +62,126 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2021/12/16/20211216_0121_DDWK.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2021-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-01-15",
+          "boundary_lo_date": "2023-12-30",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2023/12/01/20231201_0001_DDWK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2024/03/01/20240301_0000_DDWK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2024/01/01/20240101_0001_DDWK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2023/12/30/20231230_0001_DDWK.ms.zip"
+            }
+          ],
+          "resolution_days": 16
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_resolution_days": 16,
         "channels": [
           "CHZ"
         ],
-        "end": "2023-07-01",
+        "end": "2023-12-30",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2023/10/01/20231001_0001_DDWK.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2023-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-01-15",
+          "boundary_lo_date": "2023-12-30",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2023/12/01/20231201_0001_DDWK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2024/03/01/20240301_0000_DDWK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2024/01/01/20240101_0001_DDWK.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2023-12-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2023/12/30/20231230_0001_DDWK.ms.zip"
+            }
+          ],
+          "resolution_days": 16
+        },
+        "boundary_resolution_days": 16,
         "channels": [
           "CHE",
           "CHN",
@@ -49,7 +192,129 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2024/07/01/20240701_0000_DDWK.ms.zip"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 91138,
+          "min": 3563,
+          "n_samples": 37039,
+          "p10": 36878,
+          "p25": 38893,
+          "p50": 41797,
+          "p75": 45193,
+          "p90": 49834
+        },
+        "start": "2024-01-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-01-15",
+          "boundary_lo_date": "2017-10-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/01/01/2018-01-01 0001 15 DDWK_CHZ.mseed"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2017-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 1303 59 DDWK_CHE.mseed"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2017-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 1303 59 DDWK_CHE.mseed"
+            }
+          ],
+          "resolution_days": 92
+        },
+        "boundary_resolution_days": 92,
+        "channels": [
+          "CHE",
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2017-10-15",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 1303 59 DDWK_CHE.mseed"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2017-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-01-15",
+          "boundary_lo_date": "2017-10-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2018-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/01/01/2018-01-01 0001 15 DDWK_CHZ.mseed"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2017-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 1303 59 DDWK_CHE.mseed"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2017-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 1303 59 DDWK_CHE.mseed"
+            }
+          ],
+          "resolution_days": 92
+        },
+        "boundary_resolution_days": 92,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2024-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/07/01/2018-07-01 1342 06 DDWK_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2019/07/01/2019-07-01 0315 08 DDWK_CHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2021/12/16/2021-12-16 0120 59 DDWK_CHZ.mseed.zip"
+        ],
+        "samples_used": 5,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-01-15"
       }
     ],
     "tele_noss_mseed": [
@@ -66,6 +331,9 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2021/12/16/2021-12-16 0111 DDWK.ms.zip"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2018-07-01"
       }
     ],
@@ -83,24 +351,116 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2019/01/01/2019-01-01 0001 00 DDWK.ms.zip"
         ],
         "samples_used": 5,
+        "size_stats": {
+          "max": 96751,
+          "min": 4172,
+          "n_samples": 12914,
+          "p10": 36046,
+          "p25": 38402,
+          "p50": 41213,
+          "p75": 47094,
+          "p90": 56760
+        },
         "start": "2017-07-01"
       }
     ],
     "tele_ss_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2017-10-30",
+          "boundary_lo_date": "2017-10-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2017-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/11/01/2017-11-01 0734 05 DDWK.dmx"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2017-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 0908 59 DDWK.dmx"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2017-10-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/30/2017-10-30 0903 11 DDWK.dmx"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHE",
           "CHN",
           "CHZ"
         ],
-        "end": "2017-07-01",
+        "end": "2017-10-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 0908 59 DDWK.dmx"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 185364,
+          "min": 178212,
+          "n_samples": 365,
+          "p10": 180429,
+          "p25": 181252,
+          "p50": 181988,
+          "p75": 182860,
+          "p90": 183428
+        },
         "start": "2017-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2017-10-30",
+          "boundary_lo_date": "2017-10-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2017-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/11/01/2017-11-01 0734 05 DDWK.dmx"
+            },
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2017-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/04/2017-10-04 0908 59 DDWK.dmx"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2017-10-30",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2017/10/30/2017-10-30 0903 11 DDWK.dmx"
+            }
+          ],
+          "resolution_days": 15
+        },
+        "boundary_resolution_days": 15,
         "channels": [
           "CHZ"
         ],
@@ -109,11 +469,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/DDWK/continuous/2018/01/01/2018-01-01 0146 07 DDWK.dmx"
         ],
         "samples_used": 1,
-        "start": "2018-07-01"
+        "size_stats": {
+          "max": 198630,
+          "min": 48740,
+          "n_samples": 441,
+          "p10": 62420,
+          "p25": 172550,
+          "p50": 180566,
+          "p75": 185798,
+          "p90": 191054
+        },
+        "start": "2017-10-30"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:27:43Z",
+  "generated_at_utc": "2026-06-23T03:09:06Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.DDWK.db",
-  "station": "DDWK"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "DDWK",
+  "target_resolution_days": 30
 }

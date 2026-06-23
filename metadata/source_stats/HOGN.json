@@ -1,0 +1,3149 @@
+{
+  "buckets_total": {
+    "AB_mixed": 119,
+    "C_partial": 17,
+    "D_pure": 24,
+    "E_multivar": 31,
+    "sparse": 61,
+    "weird": 84
+  },
+  "by_year": {
+    "2018": {
+      "buckets": {
+        "C_partial": 1,
+        "sparse": 5
+      },
+      "full_any": 0,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 0,
+      "total": 6
+    },
+    "2019": {
+      "buckets": {
+        "AB_mixed": 119,
+        "C_partial": 15,
+        "D_pure": 24,
+        "E_multivar": 29,
+        "sparse": 40,
+        "weird": 74
+      },
+      "full_any": 191,
+      "full_both": 62,
+      "full_disk": 62,
+      "full_tele": 191,
+      "total": 301
+    },
+    "2020": {
+      "buckets": {
+        "C_partial": 1,
+        "E_multivar": 2,
+        "sparse": 16,
+        "weird": 10
+      },
+      "full_any": 6,
+      "full_both": 0,
+      "full_disk": 0,
+      "full_tele": 6,
+      "total": 29
+    }
+  },
+  "coverage_pct": {
+    "full_any": 58.63,
+    "full_both": 18.45,
+    "full_disk": 18.45,
+    "full_tele": 58.63
+  },
+  "coverage_total": {
+    "full_any": 197,
+    "full_both": 62,
+    "full_disk": 62,
+    "full_tele": 197
+  },
+  "day_classifications": [
+    {
+      "bucket": "sparse",
+      "date": "2018-08-14",
+      "n_disk": 0,
+      "n_excluded": 40,
+      "n_perchan": 40,
+      "n_tele_noss": 396,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2018-08-15",
+      "n_disk": 0,
+      "n_excluded": 68,
+      "n_perchan": 68,
+      "n_tele_noss": 350,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2018-08-16",
+      "n_disk": 0,
+      "n_excluded": 12,
+      "n_perchan": 12,
+      "n_tele_noss": 87,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2018-08-19",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 14,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2018-08-20",
+      "n_disk": 0,
+      "n_excluded": 34,
+      "n_perchan": 34,
+      "n_tele_noss": 229,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2018-08-21",
+      "n_disk": 713,
+      "n_excluded": 83,
+      "n_perchan": 83,
+      "n_tele_noss": 386,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-03-05",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 0,
+      "n_tele_noss": 1,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-03-07",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 55,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-03-08",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 26,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-09",
+      "n_disk": 1356,
+      "n_excluded": 34,
+      "n_perchan": 22,
+      "n_tele_noss": 1369,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-10",
+      "n_disk": 1414,
+      "n_excluded": 17,
+      "n_perchan": 15,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-11",
+      "n_disk": 1407,
+      "n_excluded": 12,
+      "n_perchan": 12,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-03-12",
+      "n_disk": 717,
+      "n_excluded": 9,
+      "n_perchan": 7,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-03-13",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-03-14",
+      "n_disk": 478,
+      "n_excluded": 6,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-15",
+      "n_disk": 1421,
+      "n_excluded": 11,
+      "n_perchan": 8,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-16",
+      "n_disk": 1440,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-17",
+      "n_disk": 1426,
+      "n_excluded": 10,
+      "n_perchan": 10,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-18",
+      "n_disk": 1419,
+      "n_excluded": 10,
+      "n_perchan": 10,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-19",
+      "n_disk": 1431,
+      "n_excluded": 8,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-20",
+      "n_disk": 1439,
+      "n_excluded": 5,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-21",
+      "n_disk": 1440,
+      "n_excluded": 6,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-22",
+      "n_disk": 1440,
+      "n_excluded": 5,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-23",
+      "n_disk": 1438,
+      "n_excluded": 17,
+      "n_perchan": 13,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-24",
+      "n_disk": 1432,
+      "n_excluded": 11,
+      "n_perchan": 9,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-25",
+      "n_disk": 1427,
+      "n_excluded": 17,
+      "n_perchan": 12,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-03-26",
+      "n_disk": 561,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-27",
+      "n_disk": 1412,
+      "n_excluded": 9,
+      "n_perchan": 8,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-28",
+      "n_disk": 1439,
+      "n_excluded": 22,
+      "n_perchan": 21,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-29",
+      "n_disk": 1306,
+      "n_excluded": 17,
+      "n_perchan": 17,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-03-30",
+      "n_disk": 1405,
+      "n_excluded": 11,
+      "n_perchan": 7,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-03-31",
+      "n_disk": 408,
+      "n_excluded": 7,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-01",
+      "n_disk": 1403,
+      "n_excluded": 10,
+      "n_perchan": 6,
+      "n_tele_noss": 7,
+      "n_tele_ss": 1527
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-02",
+      "n_disk": 1434,
+      "n_excluded": 14,
+      "n_perchan": 10,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1453
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-04-03",
+      "n_disk": 614,
+      "n_excluded": 10,
+      "n_perchan": 8,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1513
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-04",
+      "n_disk": 1410,
+      "n_excluded": 9,
+      "n_perchan": 9,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1508
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-05",
+      "n_disk": 1428,
+      "n_excluded": 11,
+      "n_perchan": 11,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1455
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-06",
+      "n_disk": 1164,
+      "n_excluded": 9,
+      "n_perchan": 7,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1513
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-07",
+      "n_disk": 1432,
+      "n_excluded": 13,
+      "n_perchan": 10,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1462
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-08",
+      "n_disk": 1426,
+      "n_excluded": 16,
+      "n_perchan": 15,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1477
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-04-09",
+      "n_disk": 828,
+      "n_excluded": 10,
+      "n_perchan": 8,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1527
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-04-10",
+      "n_disk": 917,
+      "n_excluded": 10,
+      "n_perchan": 9,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1519
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-11",
+      "n_disk": 1036,
+      "n_excluded": 13,
+      "n_perchan": 5,
+      "n_tele_noss": 8,
+      "n_tele_ss": 1535
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-12",
+      "n_disk": 1429,
+      "n_excluded": 15,
+      "n_perchan": 14,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1457
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-13",
+      "n_disk": 1357,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1469
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-14",
+      "n_disk": 1370,
+      "n_excluded": 15,
+      "n_perchan": 14,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1452
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-15",
+      "n_disk": 1435,
+      "n_excluded": 13,
+      "n_perchan": 11,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1441
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-16",
+      "n_disk": 1436,
+      "n_excluded": 13,
+      "n_perchan": 12,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1440
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-17",
+      "n_disk": 1430,
+      "n_excluded": 19,
+      "n_perchan": 18,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1440
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-04-18",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 4,
+      "n_tele_noss": 5,
+      "n_tele_ss": 1547
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-19",
+      "n_disk": 1126,
+      "n_excluded": 16,
+      "n_perchan": 8,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1492
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-20",
+      "n_disk": 1437,
+      "n_excluded": 13,
+      "n_perchan": 6,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1441
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-04-21",
+      "n_disk": 898,
+      "n_excluded": 21,
+      "n_perchan": 5,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1482
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-04-22",
+      "n_disk": 0,
+      "n_excluded": 7,
+      "n_perchan": 5,
+      "n_tele_noss": 6,
+      "n_tele_ss": 1547
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-04-23",
+      "n_disk": 0,
+      "n_excluded": 12,
+      "n_perchan": 5,
+      "n_tele_noss": 7,
+      "n_tele_ss": 1546
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-24",
+      "n_disk": 1288,
+      "n_excluded": 9,
+      "n_perchan": 7,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1491
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-25",
+      "n_disk": 1439,
+      "n_excluded": 5,
+      "n_perchan": 2,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1446
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-26",
+      "n_disk": 1437,
+      "n_excluded": 6,
+      "n_perchan": 4,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1446
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-27",
+      "n_disk": 1437,
+      "n_excluded": 5,
+      "n_perchan": 4,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1440
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-28",
+      "n_disk": 1435,
+      "n_excluded": 8,
+      "n_perchan": 4,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1456
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-29",
+      "n_disk": 1415,
+      "n_excluded": 10,
+      "n_perchan": 6,
+      "n_tele_noss": 5,
+      "n_tele_ss": 1498
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-04-30",
+      "n_disk": 1434,
+      "n_excluded": 12,
+      "n_perchan": 9,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1444
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-01",
+      "n_disk": 1143,
+      "n_excluded": 7,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-05-02",
+      "n_disk": 249,
+      "n_excluded": 6,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-03",
+      "n_disk": 1377,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-04",
+      "n_disk": 1097,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-05-05",
+      "n_disk": 179,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-05-06",
+      "n_disk": 185,
+      "n_excluded": 3,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-07",
+      "n_disk": 1036,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-08",
+      "n_disk": 1437,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-09",
+      "n_disk": 1440,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-05-10",
+      "n_disk": 977,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-11",
+      "n_disk": 1440,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-12",
+      "n_disk": 1415,
+      "n_excluded": 5,
+      "n_perchan": 4,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-13",
+      "n_disk": 1440,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-14",
+      "n_disk": 1439,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-05-15",
+      "n_disk": 745,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-16",
+      "n_disk": 1131,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-17",
+      "n_disk": 1433,
+      "n_excluded": 11,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-18",
+      "n_disk": 1437,
+      "n_excluded": 21,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-19",
+      "n_disk": 1438,
+      "n_excluded": 21,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-20",
+      "n_disk": 1439,
+      "n_excluded": 8,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-21",
+      "n_disk": 1440,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1439,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-22",
+      "n_disk": 1440,
+      "n_excluded": 6,
+      "n_perchan": 4,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-23",
+      "n_disk": 1440,
+      "n_excluded": 8,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-24",
+      "n_disk": 1435,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-25",
+      "n_disk": 1440,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 1439,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-26",
+      "n_disk": 1432,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-27",
+      "n_disk": 1431,
+      "n_excluded": 6,
+      "n_perchan": 2,
+      "n_tele_noss": 1439,
+      "n_tele_ss": 4
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-05-28",
+      "n_disk": 1417,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-05-29",
+      "n_disk": 280,
+      "n_excluded": 15,
+      "n_perchan": 10,
+      "n_tele_noss": 1415,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-05-30",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-05-31",
+      "n_disk": 0,
+      "n_excluded": 4,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-01",
+      "n_disk": 572,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-02",
+      "n_disk": 982,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-06-03",
+      "n_disk": 137,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-04",
+      "n_disk": 38,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-05",
+      "n_disk": 1126,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-06",
+      "n_disk": 1429,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-07",
+      "n_disk": 1438,
+      "n_excluded": 6,
+      "n_perchan": 4,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-08",
+      "n_disk": 1110,
+      "n_excluded": 6,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-06-09",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-06-10",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-11",
+      "n_disk": 1340,
+      "n_excluded": 12,
+      "n_perchan": 7,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-12",
+      "n_disk": 1440,
+      "n_excluded": 7,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 8
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-13",
+      "n_disk": 1289,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-14",
+      "n_disk": 1186,
+      "n_excluded": 7,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 5
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-15",
+      "n_disk": 929,
+      "n_excluded": 5,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-16",
+      "n_disk": 1087,
+      "n_excluded": 6,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 4
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-17",
+      "n_disk": 1384,
+      "n_excluded": 6,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-18",
+      "n_disk": 946,
+      "n_excluded": 14,
+      "n_perchan": 10,
+      "n_tele_noss": 1349,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-19",
+      "n_disk": 1088,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-20",
+      "n_disk": 819,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-06-21",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-22",
+      "n_disk": 22,
+      "n_excluded": 6,
+      "n_perchan": 3,
+      "n_tele_noss": 1080,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-06-23",
+      "n_disk": 13,
+      "n_excluded": 16,
+      "n_perchan": 2,
+      "n_tele_noss": 1133,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-24",
+      "n_disk": 1205,
+      "n_excluded": 7,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 7
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-25",
+      "n_disk": 1233,
+      "n_excluded": 17,
+      "n_perchan": 8,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 17
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-26",
+      "n_disk": 1373,
+      "n_excluded": 12,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 10
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-27",
+      "n_disk": 1383,
+      "n_excluded": 13,
+      "n_perchan": 9,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 7
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-28",
+      "n_disk": 1362,
+      "n_excluded": 22,
+      "n_perchan": 14,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 14
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-29",
+      "n_disk": 1016,
+      "n_excluded": 6,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 6
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-06-30",
+      "n_disk": 1272,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-01",
+      "n_disk": 1120,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-02",
+      "n_disk": 1396,
+      "n_excluded": 3,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-03",
+      "n_disk": 472,
+      "n_excluded": 6,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-04",
+      "n_disk": 1280,
+      "n_excluded": 7,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-05",
+      "n_disk": 1415,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-06",
+      "n_disk": 1365,
+      "n_excluded": 15,
+      "n_perchan": 15,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-07",
+      "n_disk": 1431,
+      "n_excluded": 8,
+      "n_perchan": 6,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 4
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-08",
+      "n_disk": 1300,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-09",
+      "n_disk": 1120,
+      "n_excluded": 4,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 4
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-10",
+      "n_disk": 1076,
+      "n_excluded": 5,
+      "n_perchan": 4,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-11",
+      "n_disk": 1049,
+      "n_excluded": 6,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-12",
+      "n_disk": 873,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-07-13",
+      "n_disk": 281,
+      "n_excluded": 24,
+      "n_perchan": 23,
+      "n_tele_noss": 776,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-14",
+      "n_disk": 1203,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-15",
+      "n_disk": 859,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1439,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-16",
+      "n_disk": 1332,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-17",
+      "n_disk": 1172,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-18",
+      "n_disk": 1036,
+      "n_excluded": 6,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 4
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-19",
+      "n_disk": 1295,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-20",
+      "n_disk": 1394,
+      "n_excluded": 9,
+      "n_perchan": 9,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-21",
+      "n_disk": 1438,
+      "n_excluded": 4,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-22",
+      "n_disk": 1386,
+      "n_excluded": 16,
+      "n_perchan": 15,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-23",
+      "n_disk": 1299,
+      "n_excluded": 5,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-24",
+      "n_disk": 608,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 3
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-25",
+      "n_disk": 1359,
+      "n_excluded": 16,
+      "n_perchan": 9,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 6
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-07-26",
+      "n_disk": 174,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 1377,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-07-27",
+      "n_disk": 1204,
+      "n_excluded": 10,
+      "n_perchan": 9,
+      "n_tele_noss": 1398,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-28",
+      "n_disk": 713,
+      "n_excluded": 10,
+      "n_perchan": 9,
+      "n_tele_noss": 1414,
+      "n_tele_ss": 2
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-29",
+      "n_disk": 521,
+      "n_excluded": 87,
+      "n_perchan": 2,
+      "n_tele_noss": 1296,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-30",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 3,
+      "n_tele_noss": 1207,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-07-31",
+      "n_disk": 0,
+      "n_excluded": 12,
+      "n_perchan": 9,
+      "n_tele_noss": 1163,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-01",
+      "n_disk": 774,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1097,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-02",
+      "n_disk": 265,
+      "n_excluded": 23,
+      "n_perchan": 22,
+      "n_tele_noss": 1194,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-03",
+      "n_disk": 802,
+      "n_excluded": 7,
+      "n_perchan": 2,
+      "n_tele_noss": 1232,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-04",
+      "n_disk": 281,
+      "n_excluded": 24,
+      "n_perchan": 22,
+      "n_tele_noss": 1006,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-05",
+      "n_disk": 927,
+      "n_excluded": 54,
+      "n_perchan": 48,
+      "n_tele_noss": 1131,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-06",
+      "n_disk": 1328,
+      "n_excluded": 16,
+      "n_perchan": 10,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-07",
+      "n_disk": 252,
+      "n_excluded": 9,
+      "n_perchan": 8,
+      "n_tele_noss": 1141,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-08-08",
+      "n_disk": 1,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 322,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-08-09",
+      "n_disk": 0,
+      "n_excluded": 17,
+      "n_perchan": 17,
+      "n_tele_noss": 280,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-08-10",
+      "n_disk": 0,
+      "n_excluded": 12,
+      "n_perchan": 11,
+      "n_tele_noss": 338,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-11",
+      "n_disk": 780,
+      "n_excluded": 9,
+      "n_perchan": 5,
+      "n_tele_noss": 1171,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-12",
+      "n_disk": 305,
+      "n_excluded": 10,
+      "n_perchan": 9,
+      "n_tele_noss": 964,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-13",
+      "n_disk": 1128,
+      "n_excluded": 12,
+      "n_perchan": 9,
+      "n_tele_noss": 1263,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-14",
+      "n_disk": 1386,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-15",
+      "n_disk": 1428,
+      "n_excluded": 3,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-16",
+      "n_disk": 553,
+      "n_excluded": 7,
+      "n_perchan": 6,
+      "n_tele_noss": 930,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-17",
+      "n_disk": 1256,
+      "n_excluded": 16,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-18",
+      "n_disk": 1240,
+      "n_excluded": 13,
+      "n_perchan": 13,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-19",
+      "n_disk": 465,
+      "n_excluded": 15,
+      "n_perchan": 14,
+      "n_tele_noss": 782,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-20",
+      "n_disk": 321,
+      "n_excluded": 18,
+      "n_perchan": 16,
+      "n_tele_noss": 1072,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-08-21",
+      "n_disk": 369,
+      "n_excluded": 22,
+      "n_perchan": 18,
+      "n_tele_noss": 814,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-22",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1209,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-23",
+      "n_disk": 900,
+      "n_excluded": 10,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-24",
+      "n_disk": 1418,
+      "n_excluded": 6,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-25",
+      "n_disk": 691,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-26",
+      "n_disk": 1360,
+      "n_excluded": 5,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-08-27",
+      "n_disk": 994,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-08-28",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 482,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-08-29",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 1,
+      "n_tele_noss": 1419,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-30",
+      "n_disk": 1055,
+      "n_excluded": 17,
+      "n_perchan": 2,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-08-31",
+      "n_disk": 1394,
+      "n_excluded": 33,
+      "n_perchan": 11,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 1
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-09-01",
+      "n_disk": 1426,
+      "n_excluded": 13,
+      "n_perchan": 4,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1438
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-09-02",
+      "n_disk": 1433,
+      "n_excluded": 19,
+      "n_perchan": 3,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1441
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-09-03",
+      "n_disk": 1412,
+      "n_excluded": 12,
+      "n_perchan": 6,
+      "n_tele_noss": 0,
+      "n_tele_ss": 1443
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-09-04",
+      "n_disk": 1293,
+      "n_excluded": 9,
+      "n_perchan": 3,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1450
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-05",
+      "n_disk": 778,
+      "n_excluded": 39,
+      "n_perchan": 34,
+      "n_tele_noss": 17,
+      "n_tele_ss": 1448
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-09-06",
+      "n_disk": 12,
+      "n_excluded": 24,
+      "n_perchan": 20,
+      "n_tele_noss": 270,
+      "n_tele_ss": 147
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-07",
+      "n_disk": 0,
+      "n_excluded": 4,
+      "n_perchan": 4,
+      "n_tele_noss": 190,
+      "n_tele_ss": 37
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-08",
+      "n_disk": 0,
+      "n_excluded": 4,
+      "n_perchan": 4,
+      "n_tele_noss": 182,
+      "n_tele_ss": 43
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-09",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 187,
+      "n_tele_ss": 28
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-10",
+      "n_disk": 534,
+      "n_excluded": 7,
+      "n_perchan": 7,
+      "n_tele_noss": 68,
+      "n_tele_ss": 1070
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-09-11",
+      "n_disk": 1134,
+      "n_excluded": 15,
+      "n_perchan": 11,
+      "n_tele_noss": 11,
+      "n_tele_ss": 1410
+    },
+    {
+      "bucket": "AB_mixed",
+      "date": "2019-09-12",
+      "n_disk": 1092,
+      "n_excluded": 3,
+      "n_perchan": 1,
+      "n_tele_noss": 61,
+      "n_tele_ss": 1199
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-13",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 7,
+      "n_tele_noss": 97,
+      "n_tele_ss": 1162
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-09-14",
+      "n_disk": 140,
+      "n_excluded": 9,
+      "n_perchan": 9,
+      "n_tele_noss": 92,
+      "n_tele_ss": 1184
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-15",
+      "n_disk": 0,
+      "n_excluded": 6,
+      "n_perchan": 5,
+      "n_tele_noss": 88,
+      "n_tele_ss": 1191
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-16",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 182,
+      "n_tele_ss": 25
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-17",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 4,
+      "n_tele_noss": 71,
+      "n_tele_ss": 1211
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-09-18",
+      "n_disk": 406,
+      "n_excluded": 99,
+      "n_perchan": 17,
+      "n_tele_noss": 96,
+      "n_tele_ss": 1016
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-19",
+      "n_disk": 528,
+      "n_excluded": 43,
+      "n_perchan": 28,
+      "n_tele_noss": 85,
+      "n_tele_ss": 1078
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-09-20",
+      "n_disk": 509,
+      "n_excluded": 32,
+      "n_perchan": 26,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1500
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-09-21",
+      "n_disk": 6,
+      "n_excluded": 7,
+      "n_perchan": 5,
+      "n_tele_noss": 109,
+      "n_tele_ss": 940
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-09-22",
+      "n_disk": 0,
+      "n_excluded": 6,
+      "n_perchan": 5,
+      "n_tele_noss": 134,
+      "n_tele_ss": 602
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-23",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 187,
+      "n_tele_ss": 36
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-24",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 184,
+      "n_tele_ss": 27
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-09-25",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 191,
+      "n_tele_ss": 665
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-09-26",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 166,
+      "n_tele_ss": 701
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-27",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 167,
+      "n_tele_ss": 47
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-28",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 207,
+      "n_tele_ss": 49
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-29",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 203,
+      "n_tele_ss": 56
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-09-30",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 216,
+      "n_tele_ss": 39
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-01",
+      "n_disk": 290,
+      "n_excluded": 12,
+      "n_perchan": 9,
+      "n_tele_noss": 10,
+      "n_tele_ss": 1447
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-02",
+      "n_disk": 191,
+      "n_excluded": 17,
+      "n_perchan": 15,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1530
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-03",
+      "n_disk": 203,
+      "n_excluded": 19,
+      "n_perchan": 19,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1527
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-10-04",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 173,
+      "n_tele_ss": 522
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-05",
+      "n_disk": 370,
+      "n_excluded": 20,
+      "n_perchan": 13,
+      "n_tele_noss": 16,
+      "n_tele_ss": 1459
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-06",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 6,
+      "n_tele_ss": 1547
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-07",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 5,
+      "n_tele_noss": 7,
+      "n_tele_ss": 1545
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-08",
+      "n_disk": 0,
+      "n_excluded": 10,
+      "n_perchan": 6,
+      "n_tele_noss": 5,
+      "n_tele_ss": 1546
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-09",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 6,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1548
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-10",
+      "n_disk": 0,
+      "n_excluded": 12,
+      "n_perchan": 4,
+      "n_tele_noss": 8,
+      "n_tele_ss": 1547
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-11",
+      "n_disk": 0,
+      "n_excluded": 4,
+      "n_perchan": 3,
+      "n_tele_noss": 7,
+      "n_tele_ss": 1548
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-12",
+      "n_disk": 0,
+      "n_excluded": 6,
+      "n_perchan": 5,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1549
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-13",
+      "n_disk": 326,
+      "n_excluded": 15,
+      "n_perchan": 15,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1518
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-14",
+      "n_disk": 192,
+      "n_excluded": 18,
+      "n_perchan": 15,
+      "n_tele_noss": 6,
+      "n_tele_ss": 1530
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-10-15",
+      "n_disk": 0,
+      "n_excluded": 14,
+      "n_perchan": 6,
+      "n_tele_noss": 5,
+      "n_tele_ss": 1546
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-16",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 2,
+      "n_tele_noss": 45,
+      "n_tele_ss": 1341
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-17",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 214,
+      "n_tele_ss": 40
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-18",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 3,
+      "n_tele_noss": 42,
+      "n_tele_ss": 1188
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-19",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 211,
+      "n_tele_ss": 48
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-20",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 207,
+      "n_tele_ss": 34
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-21",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 203,
+      "n_tele_ss": 38
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-22",
+      "n_disk": 13,
+      "n_excluded": 12,
+      "n_perchan": 12,
+      "n_tele_noss": 58,
+      "n_tele_ss": 1102
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-23",
+      "n_disk": 871,
+      "n_excluded": 248,
+      "n_perchan": 37,
+      "n_tele_noss": 30,
+      "n_tele_ss": 1361
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-24",
+      "n_disk": 277,
+      "n_excluded": 26,
+      "n_perchan": 20,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1518
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-25",
+      "n_disk": 21,
+      "n_excluded": 17,
+      "n_perchan": 10,
+      "n_tele_noss": 85,
+      "n_tele_ss": 1248
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-26",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 205,
+      "n_tele_ss": 49
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-27",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 191,
+      "n_tele_ss": 22
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-10-28",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 174,
+      "n_tele_ss": 70
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-10-29",
+      "n_disk": 131,
+      "n_excluded": 50,
+      "n_perchan": 16,
+      "n_tele_noss": 109,
+      "n_tele_ss": 1131
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-10-30",
+      "n_disk": 267,
+      "n_excluded": 30,
+      "n_perchan": 28,
+      "n_tele_noss": 85,
+      "n_tele_ss": 1109
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-10-31",
+      "n_disk": 282,
+      "n_excluded": 16,
+      "n_perchan": 13,
+      "n_tele_noss": 7,
+      "n_tele_ss": 1514
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-11-01",
+      "n_disk": 205,
+      "n_excluded": 26,
+      "n_perchan": 19,
+      "n_tele_noss": 6,
+      "n_tele_ss": 1528
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-02",
+      "n_disk": 81,
+      "n_excluded": 28,
+      "n_perchan": 16,
+      "n_tele_noss": 112,
+      "n_tele_ss": 1036
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-03",
+      "n_disk": 26,
+      "n_excluded": 13,
+      "n_perchan": 5,
+      "n_tele_noss": 125,
+      "n_tele_ss": 890
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-04",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 215,
+      "n_tele_ss": 21
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-05",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 193,
+      "n_tele_ss": 58
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-06",
+      "n_disk": 0,
+      "n_excluded": 6,
+      "n_perchan": 6,
+      "n_tele_noss": 208,
+      "n_tele_ss": 70
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-07",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 203,
+      "n_tele_ss": 18
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-08",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 198,
+      "n_tele_ss": 14
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-09",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 201,
+      "n_tele_ss": 36
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-10",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 223,
+      "n_tele_ss": 25
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2019-11-11",
+      "n_disk": 80,
+      "n_excluded": 8,
+      "n_perchan": 8,
+      "n_tele_noss": 45,
+      "n_tele_ss": 1175
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-12",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 147,
+      "n_tele_ss": 636
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-13",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 236,
+      "n_tele_ss": 40
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-14",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 207,
+      "n_tele_ss": 52
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-15",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 206,
+      "n_tele_ss": 21
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-16",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 217,
+      "n_tele_ss": 29
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-17",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 210,
+      "n_tele_ss": 9
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-18",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 197,
+      "n_tele_ss": 38
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-19",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 176,
+      "n_tele_ss": 24
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-11-20",
+      "n_disk": 1,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 180,
+      "n_tele_ss": 93
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-21",
+      "n_disk": 6,
+      "n_excluded": 8,
+      "n_perchan": 8,
+      "n_tele_noss": 1100,
+      "n_tele_ss": 1537
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-22",
+      "n_disk": 0,
+      "n_excluded": 16,
+      "n_perchan": 16,
+      "n_tele_noss": 1371,
+      "n_tele_ss": 1544
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-23",
+      "n_disk": 0,
+      "n_excluded": 15,
+      "n_perchan": 15,
+      "n_tele_noss": 1388,
+      "n_tele_ss": 1544
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-24",
+      "n_disk": 115,
+      "n_excluded": 47,
+      "n_perchan": 21,
+      "n_tele_noss": 1354,
+      "n_tele_ss": 1535
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-25",
+      "n_disk": 261,
+      "n_excluded": 111,
+      "n_perchan": 42,
+      "n_tele_noss": 1318,
+      "n_tele_ss": 1513
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-26",
+      "n_disk": 0,
+      "n_excluded": 4,
+      "n_perchan": 4,
+      "n_tele_noss": 1349,
+      "n_tele_ss": 185
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-27",
+      "n_disk": 0,
+      "n_excluded": 35,
+      "n_perchan": 30,
+      "n_tele_noss": 1311,
+      "n_tele_ss": 1357
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-28",
+      "n_disk": 0,
+      "n_excluded": 11,
+      "n_perchan": 10,
+      "n_tele_noss": 1278,
+      "n_tele_ss": 1548
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-29",
+      "n_disk": 0,
+      "n_excluded": 26,
+      "n_perchan": 25,
+      "n_tele_noss": 1342,
+      "n_tele_ss": 1507
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-11-30",
+      "n_disk": 0,
+      "n_excluded": 20,
+      "n_perchan": 19,
+      "n_tele_noss": 1339,
+      "n_tele_ss": 1282
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-01",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1350,
+      "n_tele_ss": 9
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-02",
+      "n_disk": 0,
+      "n_excluded": 14,
+      "n_perchan": 14,
+      "n_tele_noss": 1333,
+      "n_tele_ss": 59
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-03",
+      "n_disk": 0,
+      "n_excluded": 10,
+      "n_perchan": 10,
+      "n_tele_noss": 1310,
+      "n_tele_ss": 47
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-04",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 8,
+      "n_tele_noss": 1334,
+      "n_tele_ss": 60
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-05",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1042,
+      "n_tele_ss": 30
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-06",
+      "n_disk": 0,
+      "n_excluded": 7,
+      "n_perchan": 7,
+      "n_tele_noss": 1352,
+      "n_tele_ss": 40
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-12-07",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 1423,
+      "n_tele_ss": 31
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-08",
+      "n_disk": 3,
+      "n_excluded": 23,
+      "n_perchan": 21,
+      "n_tele_noss": 1421,
+      "n_tele_ss": 1069
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-09",
+      "n_disk": 221,
+      "n_excluded": 117,
+      "n_perchan": 40,
+      "n_tele_noss": 1357,
+      "n_tele_ss": 1100
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-12-10",
+      "n_disk": 0,
+      "n_excluded": 14,
+      "n_perchan": 14,
+      "n_tele_noss": 1374,
+      "n_tele_ss": 32
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-11",
+      "n_disk": 0,
+      "n_excluded": 22,
+      "n_perchan": 19,
+      "n_tele_noss": 1230,
+      "n_tele_ss": 1062
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-12-12",
+      "n_disk": 0,
+      "n_excluded": 7,
+      "n_perchan": 7,
+      "n_tele_noss": 1395,
+      "n_tele_ss": 25
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-12-13",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1407,
+      "n_tele_ss": 17
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-14",
+      "n_disk": 0,
+      "n_excluded": 17,
+      "n_perchan": 17,
+      "n_tele_noss": 1319,
+      "n_tele_ss": 67
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-15",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 8,
+      "n_tele_noss": 1363,
+      "n_tele_ss": 23
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-12-16",
+      "n_disk": 0,
+      "n_excluded": 5,
+      "n_perchan": 5,
+      "n_tele_noss": 1365,
+      "n_tele_ss": 60
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-17",
+      "n_disk": 364,
+      "n_excluded": 24,
+      "n_perchan": 15,
+      "n_tele_noss": 1407,
+      "n_tele_ss": 812
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-18",
+      "n_disk": 348,
+      "n_excluded": 31,
+      "n_perchan": 29,
+      "n_tele_noss": 1284,
+      "n_tele_ss": 1450
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-19",
+      "n_disk": 291,
+      "n_excluded": 28,
+      "n_perchan": 28,
+      "n_tele_noss": 268,
+      "n_tele_ss": 823
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-20",
+      "n_disk": 367,
+      "n_excluded": 45,
+      "n_perchan": 45,
+      "n_tele_noss": 160,
+      "n_tele_ss": 642
+    },
+    {
+      "bucket": "sparse",
+      "date": "2019-12-21",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 204,
+      "n_tele_ss": 32
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-22",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 186,
+      "n_tele_ss": 430
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2019-12-23",
+      "n_disk": 0,
+      "n_excluded": 7,
+      "n_perchan": 2,
+      "n_tele_noss": 162,
+      "n_tele_ss": 652
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-24",
+      "n_disk": 0,
+      "n_excluded": 6,
+      "n_perchan": 6,
+      "n_tele_noss": 17,
+      "n_tele_ss": 1363
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-25",
+      "n_disk": 106,
+      "n_excluded": 9,
+      "n_perchan": 9,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1540
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-26",
+      "n_disk": 27,
+      "n_excluded": 13,
+      "n_perchan": 12,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1544
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-27",
+      "n_disk": 563,
+      "n_excluded": 46,
+      "n_perchan": 28,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1499
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-28",
+      "n_disk": 796,
+      "n_excluded": 36,
+      "n_perchan": 35,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1478
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-29",
+      "n_disk": 883,
+      "n_excluded": 46,
+      "n_perchan": 46,
+      "n_tele_noss": 1,
+      "n_tele_ss": 1470
+    },
+    {
+      "bucket": "weird",
+      "date": "2019-12-30",
+      "n_disk": 41,
+      "n_excluded": 21,
+      "n_perchan": 16,
+      "n_tele_noss": 6,
+      "n_tele_ss": 1539
+    },
+    {
+      "bucket": "D_pure",
+      "date": "2019-12-31",
+      "n_disk": 0,
+      "n_excluded": 6,
+      "n_perchan": 4,
+      "n_tele_noss": 6,
+      "n_tele_ss": 1546
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-01",
+      "n_disk": 4,
+      "n_excluded": 8,
+      "n_perchan": 6,
+      "n_tele_noss": 5,
+      "n_tele_ss": 1544
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-02",
+      "n_disk": 303,
+      "n_excluded": 13,
+      "n_perchan": 10,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1467
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-03",
+      "n_disk": 422,
+      "n_excluded": 30,
+      "n_perchan": 19,
+      "n_tele_noss": 2,
+      "n_tele_ss": 1509
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2020-01-04",
+      "n_disk": 0,
+      "n_excluded": 4,
+      "n_perchan": 4,
+      "n_tele_noss": 238,
+      "n_tele_ss": 299
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-05",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 219,
+      "n_tele_ss": 12
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-06",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 3,
+      "n_tele_noss": 303,
+      "n_tele_ss": 39
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-07",
+      "n_disk": 0,
+      "n_excluded": 10,
+      "n_perchan": 2,
+      "n_tele_noss": 40,
+      "n_tele_ss": 1337
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-08",
+      "n_disk": 2,
+      "n_excluded": 23,
+      "n_perchan": 6,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1547
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-09",
+      "n_disk": 171,
+      "n_excluded": 16,
+      "n_perchan": 12,
+      "n_tele_noss": 3,
+      "n_tele_ss": 1531
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-10",
+      "n_disk": 5,
+      "n_excluded": 6,
+      "n_perchan": 5,
+      "n_tele_noss": 4,
+      "n_tele_ss": 1548
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-11",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 206,
+      "n_tele_ss": 20
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-12",
+      "n_disk": 0,
+      "n_excluded": 8,
+      "n_perchan": 5,
+      "n_tele_noss": 49,
+      "n_tele_ss": 1135
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-13",
+      "n_disk": 530,
+      "n_excluded": 22,
+      "n_perchan": 20,
+      "n_tele_noss": 16,
+      "n_tele_ss": 1384
+    },
+    {
+      "bucket": "weird",
+      "date": "2020-01-14",
+      "n_disk": 564,
+      "n_excluded": 16,
+      "n_perchan": 8,
+      "n_tele_noss": 24,
+      "n_tele_ss": 1384
+    },
+    {
+      "bucket": "C_partial",
+      "date": "2020-01-15",
+      "n_disk": 132,
+      "n_excluded": 23,
+      "n_perchan": 12,
+      "n_tele_noss": 57,
+      "n_tele_ss": 1250
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-16",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 227,
+      "n_tele_ss": 33
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-17",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 218,
+      "n_tele_ss": 25
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-18",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 227,
+      "n_tele_ss": 48
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-19",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 216,
+      "n_tele_ss": 22
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-20",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 214,
+      "n_tele_ss": 15
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-21",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 202,
+      "n_tele_ss": 23
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-22",
+      "n_disk": 0,
+      "n_excluded": 2,
+      "n_perchan": 2,
+      "n_tele_noss": 217,
+      "n_tele_ss": 14
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-23",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 211,
+      "n_tele_ss": 39
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-24",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 215,
+      "n_tele_ss": 31
+    },
+    {
+      "bucket": "E_multivar",
+      "date": "2020-01-25",
+      "n_disk": 10,
+      "n_excluded": 5,
+      "n_perchan": 4,
+      "n_tele_noss": 131,
+      "n_tele_ss": 775
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-26",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 201,
+      "n_tele_ss": 18
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-27",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 196,
+      "n_tele_ss": 40
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-28",
+      "n_disk": 0,
+      "n_excluded": 1,
+      "n_perchan": 1,
+      "n_tele_noss": 207,
+      "n_tele_ss": 46
+    },
+    {
+      "bucket": "sparse",
+      "date": "2020-01-29",
+      "n_disk": 0,
+      "n_excluded": 0,
+      "n_perchan": 0,
+      "n_tele_noss": 6,
+      "n_tele_ss": 0
+    }
+  ],
+  "generated_at_utc": "2026-06-23T03:21:51Z",
+  "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.HOGN.db",
+  "representatives": {
+    "AB_mixed": {
+      "bucket": "AB_mixed",
+      "date": "2019-03-09",
+      "n_disk": 1356,
+      "n_excluded": 34,
+      "n_perchan": 22,
+      "n_tele_noss": 1369,
+      "n_tele_ss": 0
+    },
+    "C_partial": {
+      "bucket": "C_partial",
+      "date": "2018-08-21",
+      "n_disk": 713,
+      "n_excluded": 83,
+      "n_perchan": 83,
+      "n_tele_noss": 386,
+      "n_tele_ss": 0
+    },
+    "D_pure": {
+      "bucket": "D_pure",
+      "date": "2019-03-13",
+      "n_disk": 0,
+      "n_excluded": 3,
+      "n_perchan": 0,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    },
+    "E_multivar": {
+      "bucket": "E_multivar",
+      "date": "2019-09-06",
+      "n_disk": 12,
+      "n_excluded": 24,
+      "n_perchan": 20,
+      "n_tele_noss": 270,
+      "n_tele_ss": 147
+    },
+    "sparse": {
+      "bucket": "sparse",
+      "date": "2018-08-14",
+      "n_disk": 0,
+      "n_excluded": 40,
+      "n_perchan": 40,
+      "n_tele_noss": 396,
+      "n_tele_ss": 0
+    },
+    "weird": {
+      "bucket": "weird",
+      "date": "2019-03-12",
+      "n_disk": 717,
+      "n_excluded": 9,
+      "n_perchan": 7,
+      "n_tele_noss": 1440,
+      "n_tele_ss": 0
+    }
+  },
+  "station": "HOGN",
+  "total_days": 336
+}

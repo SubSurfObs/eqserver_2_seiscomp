@@ -1,20 +1,131 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2019-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2018/12/01/2018-12-01_0000_54_MARD.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/03/01/2019-03-01_0000_54_MARD.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/04/01/2019-04-01_0000_34_MARD.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/04/01/2019-04-01_0000_34_MARD.dmx.gz"
+            }
+          ],
+          "resolution_days": 77
+        },
+        "boundary_resolution_days": 77,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2018-07-01",
+        "end": "2019-04-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2018/12/01/2018-12-01_0000_54_MARD.dmx.gz"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 112569,
+          "min": 4164,
+          "n_samples": 21746,
+          "p10": 58648,
+          "p25": 61185,
+          "p50": 64908,
+          "p75": 69506,
+          "p90": 74288
+        },
         "start": "2018-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2019-04-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2018/12/01/2018-12-01_0000_54_MARD.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/03/01/2019-03-01_0000_54_MARD.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/04/01/2019-04-01_0000_34_MARD.dmx.gz"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2019-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/04/01/2019-04-01_0000_34_MARD.dmx.gz"
+            }
+          ],
+          "resolution_days": 77
+        },
+        "boundary_resolution_days": 77,
         "channels": [
           "c03"
         ],
@@ -25,7 +136,36 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2021/04/01/2021-04-01_0055_49_MARD.dmx"
         ],
         "samples_used": 7,
+        "size_stats": {
+          "max": 114532,
+          "min": 4104,
+          "n_samples": 20759,
+          "p10": 59486,
+          "p25": 63671,
+          "p50": 68258,
+          "p75": 75767,
+          "p90": 79770
+        },
         "start": "2019-07-01"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2025-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2018/07/01/2018-07-01 0242 33 MARD_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2019/01/01/2019-01-01 0319 54 MARD_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2021/07/01/2021-07-01 0123 17 MARD_DHZ.mseed.zip"
+        ],
+        "samples_used": 6,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
       }
     ],
     "tele_ss_suds": [
@@ -40,11 +180,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/MARD/continuous/2020/01/01/2020-01-01 0003 38 MARD.dmx"
         ],
         "samples_used": 8,
+        "size_stats": {
+          "max": 92751,
+          "min": 3272,
+          "n_samples": 21757,
+          "p10": 31175,
+          "p25": 31175,
+          "p50": 31175,
+          "p75": 31175,
+          "p90": 31175
+        },
         "start": "2018-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:42:20Z",
+  "generated_at_utc": "2026-06-23T03:37:16Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.MARD.db",
-  "station": "MARD"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "MARD",
+  "target_resolution_days": 30
 }

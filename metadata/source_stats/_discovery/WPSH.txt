@@ -1,5 +1,5 @@
 # Discovery audit: WPSH
-# Generated: 2026-06-21T07:57:48Z
+# Generated: 2026-06-23T04:00:24Z
 # Total rows: 4889517
 # Distinct signatures: 7
 
@@ -40,7 +40,7 @@
            size:  min=1934  p10=31148  p50=92688  p90=92781  max=182784
   rows=     29788  recorder=mseed    src=telemetry  role=waveform  ss_null=False chan_null=False excl=single_channel
            size:  min=470  p10=483  p50=718  p90=1187  max=222290
-  rows=     29243  recorder=gecko    src=disk       role=waveform  ss_null=True  chan_null=True  excl=unparsed
+  rows=     29243  recorder=gecko    src=telemetry  role=waveform  ss_null=True  chan_null=True  excl=None  flags=mixed_separator:dash_around_sta
            size:  min=36540  p10=37458  p50=48067  p90=71800  max=96323
   rows=     26053  recorder=echopro  src=telemetry  role=waveform  ss_null=False chan_null=True  excl=None  flags=wrno
            size:  min=17067  p10=18816  p50=21208  p90=23089  max=58064

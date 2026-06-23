@@ -1,10 +1,15 @@
 # Channel-epoch scan: BRIG
-# Generated: 2026-06-21T07:22:44Z
+# Generated: 2026-06-23T02:54:18Z
 
 ## disk_suds
-  2017-07-01 → 2022-07-01  channels=['c01', 'c02', 'c03']  (n_samples=6)
-  2023-07-01 → 2024-07-01  channels=['c03']  (n_samples=2)
+  2017-07-01 → 2023-04-15  channels=['c01', 'c02', 'c03']  (n_samples=6)  [boundary ±77d]
+  2023-07-01 → 2024-07-01  channels=['c03']  (n_samples=2)  [boundary ±77d]
 
 ## tele_ss_suds
   2018-07-01 → 2024-07-01  channels=['c03']  (n_samples=7)
+
+## perchan_mseed
+  2018-07-01 → 2019-04-15  channels=['DHZ']  (n_samples=1)  [boundary ±30d]
+  2019-05-15 → 2020-07-01  channels=[]  (n_samples=2)  [boundary ±198d]
+  2021-01-15 → 2024-07-01  channels=['DHZ']  (n_samples=4)  [boundary ±198d]
 

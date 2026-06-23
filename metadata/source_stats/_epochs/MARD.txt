@@ -1,10 +1,13 @@
 # Channel-epoch scan: MARD
-# Generated: 2026-06-21T07:42:20Z
+# Generated: 2026-06-23T03:37:16Z
 
 ## disk_suds
-  2018-07-01 → 2018-07-01  channels=['c01', 'c02', 'c03']  (n_samples=1)
-  2019-07-01 → 2025-07-01  channels=['c03']  (n_samples=7)
+  2018-07-01 → 2019-04-15  channels=['c01', 'c02', 'c03']  (n_samples=1)  [boundary ±77d]
+  2019-07-01 → 2025-07-01  channels=['c03']  (n_samples=7)  [boundary ±77d]
 
 ## tele_ss_suds
   2018-07-01 → 2025-07-01  channels=['c03']  (n_samples=8)
+
+## perchan_mseed
+  2018-07-01 → 2025-07-01  channels=['DHZ']  (n_samples=6)
 

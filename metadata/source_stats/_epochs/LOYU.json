@@ -1,7 +1,136 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-07-01",
+          "boundary_lo_date": "2016-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_resolution_days": 730,
+        "channels": [
+          "HH2"
+        ],
+        "end": "2016-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2016/04/05/2016-04-05 0210 31 LOYU_HH2.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2016-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "HH2"
+              ],
+              "date": "2018-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/12/04/2018-12-04 0036 17 LOYU_HH2.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "HH2"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/12/04/2018-12-04 0036 17 LOYU_HH2.mseed.zip"
+            }
+          ],
+          "resolution_days": 365
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-07-01",
+          "boundary_lo_date": "2016-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "HH1",
+          "HH2"
+        ],
+        "end": "2018-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/07/03/2018-07-03 0116 18 LOYU_HH2.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2018-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "HH2"
+              ],
+              "date": "2018-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/12/04/2018-12-04 0036 17 LOYU_HH2.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2019-07-01",
+          "boundary_lo_date": "2018-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "HH2"
+              ],
+              "date": "2018-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/12/04/2018-12-04 0036 17 LOYU_HH2.mseed.zip"
+            }
+          ],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "HH1",
+          "HH2",
+          "HHZ"
+        ],
+        "end": "2019-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2019/01/05/2019-01-05 1853 39 LOYU_HH1.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
+      }
+    ],
     "tele_noss_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-07-01",
+          "boundary_lo_date": "2016-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_resolution_days": 730,
         "channels": [
           "HHZ"
         ],
@@ -10,34 +139,55 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2016/05/06/2016-05-06 2347 LOYU.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2016-07-01"
       },
       {
-        "channels": [
-          "001",
-          "004"
-        ],
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2018-07-01",
+          "boundary_lo_date": "2016-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 730
+        },
+        "boundary_resolution_days": 730,
+        "channels": [],
         "end": "2018-07-01",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2018/05/03/2018-05-03 0847 LOYU.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2018-07-01"
-      },
+      }
+    ],
+    "tele_underscore_mseed": [
       {
         "channels": [
-          "HH2"
+          "HH1",
+          "HH2",
+          "HHZ"
         ],
         "end": "2019-07-01",
         "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2019/04/13/2019-04-13 1832 LOYU.ms.zip"
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOYU/continuous/2019/01/05/2019-01-05 1658_LOYU.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2019-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:38:54Z",
+  "generated_at_utc": "2026-06-23T03:30:37Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOYU.db",
-  "station": "LOYU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "LOYU",
+  "target_resolution_days": 30
 }

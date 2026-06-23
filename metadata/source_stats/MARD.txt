@@ -1,0 +1,39 @@
+# Source categorization: MARD
+# Generated: 2026-06-23T03:36:40Z
+# Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.MARD.db
+# Total day-entries: 2863
+
+## Coverage (% of days)
+  full disk available  (>=1400 disk files):    48.8%
+  full tele available  (>=1400 single var):    70.0%
+  FULL FROM EITHER kind:                        72.3%
+  full from BOTH (redundancy):                 46.5%
+
+## Buckets
+  A_pure      :      0  (  0.0%)
+  D_pure      :    291  ( 10.2%)
+  E_multivar  :      0  (  0.0%)
+  C_partial   :      5  (  0.2%)
+  AB_mixed    :   1461  ( 51.0%)
+  M_perchan   :      0  (  0.0%)
+  M_partial   :      0  (  0.0%)
+  sparse      :    350  ( 12.2%)
+  weird       :    756  ( 26.4%)
+  empty       :      0  (  0.0%)
+
+## Per-year breakdown
+  year   full_disk  full_tele  full_any   A_pure  D_pure  E_mvar  AB_mix  weird  | total
+   1970           0          0          0       0       0       0       0      0 | 1
+   1980           0          0          0       0       0       0       0      0 | 3
+   1989           0          0          0       0       0       0       0      0 | 1
+   1999           0          2          2       0       2       0       0      0 | 4
+   2000           0          0          0       0       0       0       0      0 | 201
+   2001           0          0          0       0       0       0       0      0 | 98
+   2018         234        234        236       0       0       0     238      1 | 239
+   2019         327        336        342       0       0       0     326     18 | 346
+   2020          60        337        340       0     279       0      62     21 | 364
+   2021         353        334        353       0       0       0     364      0 | 365
+   2022         330        313        330       0       0       0     364      1 | 365
+   2023          92        241        259       0       0       0     107    255 | 364
+   2024           0         29         29       0       1       0       0    285 | 328
+   2025           0        178        178       0       9       0       0    175 | 184

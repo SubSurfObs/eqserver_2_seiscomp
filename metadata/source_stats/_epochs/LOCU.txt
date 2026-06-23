@@ -1,14 +1,18 @@
 # Channel-epoch scan: LOCU
-# Generated: 2026-06-21T07:38:07Z
+# Generated: 2026-06-23T03:29:12Z
 
 ## disk_suds
-  2021-07-01 → 2023-07-01  channels=['c03']  (n_samples=3)
-  2024-07-01 → 2024-07-01  channels=['c01', 'c02', 'c03']  (n_samples=1)
-  2025-07-01 → 2025-07-01  channels=['c03']  (n_samples=1)
+  2021-07-01 → 2024-02-15  channels=['c03']  (n_samples=3)  [boundary ±30d]
+  2024-03-16 → 2024-12-15  channels=['c01', 'c02', 'c03']  (n_samples=1)  [boundary ±90d]
+  2025-03-15 → 2025-07-01  channels=['c03']  (n_samples=1)  [boundary ±90d]
 
 ## tele_ss_suds
   2021-07-01 → 2025-07-01  channels=['c03']  (n_samples=5)
 
 ## tele_ss_mseed
-  2021-07-01 → 2021-07-01  channels=['DLE', 'DLN', 'DLZ']  (n_samples=1)
+  2021-07-01 → 2021-07-01  channels=[]  (n_samples=1)
+
+## perchan_mseed
+  2021-07-01 → 2021-07-01  channels=[]  (n_samples=1)  [boundary ±365d]
+  2022-07-01 → 2023-07-01  channels=['DHZ']  (n_samples=2)  [boundary ±365d]
 

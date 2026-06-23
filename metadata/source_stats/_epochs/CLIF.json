@@ -1,38 +1,38 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
-        "channels": [
-          "c01",
-          "c02",
-          "c03"
-        ],
-        "end": "2020-07-01",
-        "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2013/12/01/2013-12-01_0206_00_CLIF.dmx",
-          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2014/07/01/2014-07-01_0112_13_CLIF.dmx",
-          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2015/01/01/2015-01-01_0656_00_CLIF.dmx"
-        ],
-        "samples_used": 8,
-        "start": "2013-07-01"
-      },
-      {
-        "channels": [
-          "c01",
-          "c02",
-          "c03",
-          "c04",
-          "c05",
-          "c06"
-        ],
-        "end": "2021-07-01",
-        "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2021/07/13/2021-07-13_2349_36_CLIF.dmx"
-        ],
-        "samples_used": 1,
-        "start": "2021-07-01"
-      },
-      {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [],
+              "date": "2023-08-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/08/01/2023-08-01_0240_18_CLIF.dmx"
+            }
+          ],
+          "boundary_hi_date": "2023-10-15",
+          "boundary_lo_date": "2023-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/10/01/2023-10-01_0015_03_CLIF.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2023-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/08/01/2023-08-01_0240_18_CLIF.dmx"
+            }
+          ],
+          "resolution_days": 106
+        },
+        "boundary_resolution_days": 106,
         "channels": [
           "c01",
           "c02",
@@ -40,13 +40,54 @@
         ],
         "end": "2023-07-01",
         "sample_paths": [
-          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2022/01/01/2022-01-01_0128_08_CLIF.dmx",
-          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/07/02/2023-07-02_0507_49_CLIF.dmx"
+          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2013/12/01/2013-12-01_0206_00_CLIF.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2014/07/01/2014-07-01_0112_13_CLIF.dmx",
+          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2015/01/01/2015-01-01_0656_00_CLIF.dmx"
         ],
-        "samples_used": 2,
-        "start": "2022-07-01"
+        "samples_used": 11,
+        "size_stats": {
+          "max": 145924,
+          "min": 73924,
+          "n_samples": 26428,
+          "p10": 73924,
+          "p25": 73924,
+          "p50": 73924,
+          "p75": 73924,
+          "p90": 73924
+        },
+        "start": "2013-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [],
+              "date": "2023-08-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/08/01/2023-08-01_0240_18_CLIF.dmx"
+            }
+          ],
+          "boundary_hi_date": "2023-10-15",
+          "boundary_lo_date": "2023-07-01",
+          "n_probes": 2,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2023-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/10/01/2023-10-01_0015_03_CLIF.dmx"
+            },
+            {
+              "channels": [],
+              "date": "2023-08-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2023/08/01/2023-08-01_0240_18_CLIF.dmx"
+            }
+          ],
+          "resolution_days": 106
+        },
+        "boundary_resolution_days": 106,
         "channels": [
           "c03"
         ],
@@ -55,24 +96,49 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2024/02/01/2024-02-01_0112_09_CLIF.dmx"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 31202,
+          "min": 4224,
+          "n_samples": 335,
+          "p10": 22835,
+          "p25": 31202,
+          "p50": 31202,
+          "p75": 31202,
+          "p90": 31202
+        },
+        "start": "2023-10-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2019/01/01/2019-01-01 0213 13 CLIF_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2020/09/01/2020-09-01 0224 39 CLIF_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2021/01/01/2021-01-01 0151 32 CLIF_DHZ.mseed.zip"
+        ],
+        "samples_used": 5,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2019-07-01"
       }
     ],
     "tele_ss_mseed": [
       {
-        "channels": [
-          "DLE",
-          "DLN",
-          "DLZ",
-          "DNE",
-          "DNN",
-          "DNZ"
-        ],
+        "channels": [],
         "end": "2021-07-01",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2021/07/13/2021-07-13 2319 01 CLIF.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2021-07-01"
       }
     ],
@@ -88,11 +154,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/CLIF/continuous/2015/07/01/2015-07-01 2030 04 CLIF.dmx"
         ],
         "samples_used": 12,
+        "size_stats": {
+          "max": 49216,
+          "min": 25128,
+          "n_samples": 23572,
+          "p10": 25216,
+          "p25": 25216,
+          "p50": 25216,
+          "p75": 25216,
+          "p90": 25216
+        },
         "start": "2013-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:24:59Z",
+  "generated_at_utc": "2026-06-23T02:58:23Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.CLIF.db",
-  "station": "CLIF"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "CLIF",
+  "target_resolution_days": 30
 }

@@ -1,18 +1,117 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_mseed": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-12-15",
+          "boundary_lo_date": "2021-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/12/01/20211201_0005_LRSE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/09/01/20210901_0000_LRSE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/10/01/20211001_0001_LRSE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/11/01/20211101_0000_LRSE.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHZ"
         ],
-        "end": "2021-07-01",
+        "end": "2021-11-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/07/01/20210701_0000_LRSE.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 89213,
+          "min": 4549,
+          "n_samples": 25374,
+          "p10": 20076,
+          "p25": 21489,
+          "p50": 22741,
+          "p75": 23851,
+          "p90": 24885
+        },
         "start": "2021-07-01"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2021-12-15",
+          "boundary_lo_date": "2021-11-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/12/01/20211201_0005_LRSE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-09-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/09/01/20210901_0000_LRSE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-10-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/10/01/20211001_0001_LRSE.ms.zip"
+            },
+            {
+              "channels": [
+                "CHZ"
+              ],
+              "date": "2021-11-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/11/01/20211101_0000_LRSE.ms.zip"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "CHE",
           "CHN",
@@ -24,7 +123,181 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2023/04/01/20230401_0141_LRSE.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 104810,
+          "min": 4560,
+          "n_samples": 42933,
+          "p10": 18095,
+          "p25": 21613,
+          "p50": 45650,
+          "p75": 57292,
+          "p90": 64719
+        },
+        "start": "2021-12-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/12/01/2021-12-01 0007 02 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/12/01/2021-12-01 0007 02 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHZ"
+        ],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/10/01/2021-10-01 0221 04 LRSE_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
+      },
+      {
+        "boundary_after": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/12/01/2022-12-01 0027 14 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/12/01/2022-12-01 0027 14 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 365
+        },
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/12/01/2021-12-01 0007 02 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2021-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2021/12/01/2021-12-01 0007 02 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHE",
+          "CHZ"
+        ],
+        "end": "2022-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/10/01/2022-10-01 0040 03 LRSE_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
         "start": "2022-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-12-15",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/12/01/2022-12-01 0027 14 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "boundary_hi_date": "2023-07-01",
+          "boundary_lo_date": "2022-07-01",
+          "n_probes": 1,
+          "probes": [
+            {
+              "channels": [
+                "CHE",
+                "CHN",
+                "CHZ"
+              ],
+              "date": "2022-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2022/12/01/2022-12-01 0027 14 LRSE_CHZ.mseed.zip"
+            }
+          ],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "CHN",
+          "CHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2023/04/01/2023-04-01 0006 07 LRSE_CHZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2023-07-01"
       }
     ],
     "tele_ss_mseed": [
@@ -40,11 +313,23 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LRSE/continuous/2023/07/01/2023-07-02 0000 00 LRSE.ms.zip"
         ],
         "samples_used": 2,
+        "size_stats": {
+          "max": 77324,
+          "min": 4209,
+          "n_samples": 49919,
+          "p10": 48457,
+          "p25": 54846,
+          "p50": 62339,
+          "p75": 66875,
+          "p90": 70326
+        },
         "start": "2022-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:41:48Z",
+  "generated_at_utc": "2026-06-23T03:33:37Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LRSE.db",
-  "station": "LRSE"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "LRSE",
+  "target_resolution_days": 30
 }

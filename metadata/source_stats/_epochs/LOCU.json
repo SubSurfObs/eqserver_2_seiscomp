@@ -1,33 +1,214 @@
 {
+  "bisection_enabled": true,
   "by_source_kind": {
     "disk_suds": [
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-03-16",
+          "boundary_lo_date": "2024-02-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/01/01/2024-01-01_0002_19_LOCU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/04/01/2024-04-01_1000_18_LOCU.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2024-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/02/01/2024-02-01_0216_19_LOCU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-03-16",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/03/16/2024-03-16_1022_18_LOCU.dmx.gz"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 30,
         "channels": [
           "c03"
         ],
-        "end": "2023-07-01",
+        "end": "2024-02-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2021/01/01/2021-01-01_0008_46_LOCU.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2022/07/01/2022-07-01_0033_56_LOCU.dmx",
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2023/07/01/2023-07-01_0025_54_LOCU.dmx"
         ],
         "samples_used": 3,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2021-07-01"
       },
       {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2025-03-15",
+          "boundary_lo_date": "2024-12-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/12/01/2024-12-01_1018_10_LOCU.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2025-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2025/03/01/2025-03-01_0138_20_LOCU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/12/01/2024-12-01_1018_10_LOCU.dmx.gz"
+            }
+          ],
+          "resolution_days": 90
+        },
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2024-03-16",
+          "boundary_lo_date": "2024-02-15",
+          "n_probes": 4,
+          "probes": [
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2024-01-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/01/01/2024-01-01_0002_19_LOCU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-04-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/04/01/2024-04-01_1000_18_LOCU.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2024-02-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/02/01/2024-02-01_0216_19_LOCU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-03-16",
+              "level": "day",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/03/16/2024-03-16_1022_18_LOCU.dmx.gz"
+            }
+          ],
+          "resolution_days": 30
+        },
+        "boundary_resolution_days": 90,
         "channels": [
           "c01",
           "c02",
           "c03"
         ],
-        "end": "2024-07-01",
+        "end": "2024-12-15",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/07/01/2024-07-01_1038_27_LOCU.dmx.gz"
         ],
         "samples_used": 1,
-        "start": "2024-07-01"
+        "size_stats": {
+          "max": 97622,
+          "min": 52330,
+          "n_samples": 48686,
+          "p10": 56062,
+          "p25": 57337,
+          "p50": 59242,
+          "p75": 61918,
+          "p90": 64824
+        },
+        "start": "2024-03-16"
       },
       {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2025-03-15",
+          "boundary_lo_date": "2024-12-15",
+          "n_probes": 3,
+          "probes": [
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/12/01/2024-12-01_1018_10_LOCU.dmx.gz"
+            },
+            {
+              "channels": [
+                "c03"
+              ],
+              "date": "2025-03-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2025/03/01/2025-03-01_0138_20_LOCU.dmx"
+            },
+            {
+              "channels": [
+                "c01",
+                "c02",
+                "c03"
+              ],
+              "date": "2024-12-15",
+              "level": "month",
+              "path": "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2024/12/01/2024-12-01_1018_10_LOCU.dmx.gz"
+            }
+          ],
+          "resolution_days": 90
+        },
+        "boundary_resolution_days": 90,
         "channels": [
           "c03"
         ],
@@ -36,21 +217,86 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2025/06/01/2025-06-01_0303_08_LOCU.dmx"
         ],
         "samples_used": 1,
-        "start": "2025-07-01"
+        "size_stats": {
+          "max": 31172,
+          "min": 3882,
+          "n_samples": 161,
+          "p10": 5176,
+          "p25": 15528,
+          "p50": 27174,
+          "p75": 29762,
+          "p90": 29762
+        },
+        "start": "2025-03-15"
+      }
+    ],
+    "perchan_mseed": [
+      {
+        "boundary_after": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [],
+        "end": "2021-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2021/08/01/2021-08-01 0100 50 LOCU_DLZ.mseed.zip"
+        ],
+        "samples_used": 1,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2021-07-01"
+      },
+      {
+        "boundary_before": {
+          "ambiguous": [],
+          "boundary_hi_date": "2022-07-01",
+          "boundary_lo_date": "2021-07-01",
+          "n_probes": 0,
+          "probes": [],
+          "resolution_days": 365
+        },
+        "boundary_resolution_days": 365,
+        "channels": [
+          "DHZ"
+        ],
+        "end": "2023-07-01",
+        "sample_paths": [
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2022/12/15/2022-12-15 0452 19 LOCU_DHZ.mseed.zip",
+          "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2023/10/01/2023-10-01 0219 10 LOCU_DHZ.mseed.zip"
+        ],
+        "samples_used": 2,
+        "size_stats": {
+          "n_samples": 0,
+          "note": "unknown source_kind 'perchan_mseed'"
+        },
+        "start": "2022-07-01"
       }
     ],
     "tele_ss_mseed": [
       {
-        "channels": [
-          "DLE",
-          "DLN",
-          "DLZ"
-        ],
+        "channels": [],
         "end": "2021-07-01",
         "sample_paths": [
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2021/07/01/2021-07-01 0000 51 LOCU.ms.zip"
         ],
         "samples_used": 1,
+        "size_stats": {
+          "max": 86118,
+          "min": 38576,
+          "n_samples": 5830,
+          "p10": 42959,
+          "p25": 47769,
+          "p50": 52678,
+          "p75": 53827,
+          "p90": 54834
+        },
         "start": "2021-07-01"
       }
     ],
@@ -66,11 +312,16 @@
           "/mnt/eqserver_archive/shared/data/repository/archive/LOCU/continuous/2023/07/01/2023-07-01 0000 54 LOCU.dmx"
         ],
         "samples_used": 5,
+        "size_stats": {
+          "n_samples": 0
+        },
         "start": "2021-07-01"
       }
     ]
   },
-  "generated_at_utc": "2026-06-21T07:38:07Z",
+  "generated_at_utc": "2026-06-23T03:29:12Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.LOCU.db",
-  "station": "LOCU"
+  "size_stats_added_at_utc": "2026-06-23",
+  "station": "LOCU",
+  "target_resolution_days": 30
 }
