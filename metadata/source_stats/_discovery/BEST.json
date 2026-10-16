@@ -94,7 +94,7 @@
       "pct": 0.003
     }
   ],
-  "generated_at_utc": "2026-06-23T02:52:15Z",
+  "generated_at_utc": "2026-06-23T09:16:09Z",
   "manifest_db": "/home/unimelb.edu.au/dsand/station_dbs/VW.BEST.db",
   "manifest_signatures": [
     {
@@ -498,420 +498,420 @@
   "total_rows": 5632669,
   "unmatched_filename_samples": [
     {
-      "basename": "1989-08-17 2359 31 BEST.wrno.dmx.gz",
+      "basename": "2019-05-02 03hr BEST.ms.zip",
       "signature": [
-        "echopro",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
+        true,
         true,
         null,
         false,
         false,
-        "wrno"
+        null
       ]
     },
     {
-      "basename": "1989-08-17 2359 36 BEST.wrno.dmx.gz",
+      "basename": "2019-05-02 04hr BEST.ms.zip",
       "signature": [
-        "echopro",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
+        true,
         true,
         null,
         false,
         false,
-        "wrno"
+        null
       ]
     },
     {
-      "basename": "1989-08-17 2359 35 BEST.wrno.dmx.gz",
+      "basename": "2019-05-02 05hr BEST.ms.zip",
       "signature": [
-        "echopro",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
+        true,
         true,
         null,
         false,
         false,
-        "wrno"
+        null
       ]
     },
     {
-      "basename": "1989-08-17 2359 19 BEST.wrno.dmx.gz",
+      "basename": "2019-05-02 06hr BEST.ms.zip",
       "signature": [
-        "echopro",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
+        true,
         true,
         null,
         false,
         false,
-        "wrno"
+        null
       ]
     },
     {
-      "basename": "1989-08-17 2359 33 BEST.wrno.dmx.gz",
+      "basename": "2019-05-02 07hr BEST.ms.zip",
       "signature": [
-        "echopro",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
+        true,
         true,
         null,
         false,
         false,
-        "wrno"
+        null
       ]
     },
     {
-      "basename": "1999-09-08 0727 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 08hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-08 1454 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 09hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-09 1732 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 10hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-09 2056 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 11hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-10 0350 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 12hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-10 2009 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 13hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-10 2227 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 14hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-11 0639 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 15hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-11 1651 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 16hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-11 1726 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 17hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-11 2109 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 18hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-12 0323 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 19hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-12 0650 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 20hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-12 0915 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 21hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-12 1535 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 22hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-12 2031 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-02 23hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-13 1520 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 00hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-13 1914 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 01hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-13 2218 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 02hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-14 1216 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 03hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-14 1248 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 04hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-15 0404 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 05hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-15 0415 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 06hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-15 1351 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 07hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null
       ]
     },
     {
-      "basename": "1999-09-15 1502 36 BEST_DLZ.mseed.zip",
+      "basename": "2019-05-03 08hr BEST.ms.zip",
       "signature": [
-        "mseed",
+        "gecko",
         "telemetry",
         "waveform",
-        false,
-        false,
-        "single_channel",
+        true,
+        true,
+        null,
         false,
         false,
         null

@@ -1,5 +1,5 @@
 # Source categorization: BEST
-# Generated: 2026-06-23T02:51:48Z
+# Generated: 2026-06-23T09:15:41Z
 # Manifest: /home/unimelb.edu.au/dsand/station_dbs/VW.BEST.db
 # Total day-entries: 2134
 

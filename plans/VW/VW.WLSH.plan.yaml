@@ -22,4 +22,144 @@ epochs:
     clean_cross_source_recovery: 19
     clean_telemetry_primary: 647
     near_clean_gecko_threshold: 109
+  channels_by_source_kind:
+    perchan_mseed:
+    - CHE
+    - CHN
+    - CHZ
+  source_priority: {}
 flagged_days: []
+channel_epochs:
+  by_source_kind:
+    perchan_mseed:
+    - boundary_after:
+        ambiguous: []
+        boundary_hi_date: '2018-11-15'
+        boundary_lo_date: '2018-10-15'
+        n_probes: 4
+        probes:
+        - channels:
+          - CHE
+          - CHN
+          - CHZ
+          date: '2018-12-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/12/01/2018-12-01
+            0042 01 WLSH_CHZ.mseed.zip
+        - channels:
+          - CHZ
+          date: '2018-09-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/09/01/2018-09-01
+            0143 07 WLSH_CHZ.mseed.zip
+        - channels:
+          - CHZ
+          date: '2018-10-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/10/01/2018-10-01
+            1636 09 WLSH_CHZ.mseed.zip
+        - channels:
+          - CHE
+          - CHN
+          - CHZ
+          date: '2018-11-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/11/01/2018-11-01
+            1601 00 WLSH_CHZ.mseed.zip
+        resolution_days: 31
+      boundary_resolution_days: 31
+      channels:
+      - CHZ
+      end: '2018-10-15'
+      sample_paths:
+      - /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/10/01/2018-10-01
+        1636 09 WLSH_CHZ.mseed.zip
+      samples_used: 1
+      size_stats:
+        n_samples: 0
+        note: unknown source_kind 'perchan_mseed'
+      start: '2018-07-01'
+    - boundary_after:
+        ambiguous: []
+        boundary_hi_date: '2021-07-01'
+        boundary_lo_date: '2020-07-01'
+        n_probes: 0
+        probes: []
+        resolution_days: 365
+      boundary_before:
+        ambiguous: []
+        boundary_hi_date: '2018-11-15'
+        boundary_lo_date: '2018-10-15'
+        n_probes: 4
+        probes:
+        - channels:
+          - CHE
+          - CHN
+          - CHZ
+          date: '2018-12-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/12/01/2018-12-01
+            0042 01 WLSH_CHZ.mseed.zip
+        - channels:
+          - CHZ
+          date: '2018-09-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/09/01/2018-09-01
+            0143 07 WLSH_CHZ.mseed.zip
+        - channels:
+          - CHZ
+          date: '2018-10-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/10/01/2018-10-01
+            1636 09 WLSH_CHZ.mseed.zip
+        - channels:
+          - CHE
+          - CHN
+          - CHZ
+          date: '2018-11-15'
+          level: month
+          path: /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2018/11/01/2018-11-01
+            1601 00 WLSH_CHZ.mseed.zip
+        resolution_days: 31
+      boundary_resolution_days: 365
+      channels:
+      - CHE
+      - CHN
+      - CHZ
+      end: '2020-07-01'
+      sample_paths:
+      - /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2019/01/01/2019-01-01
+        0359 06 WLSH_CHZ.mseed.zip
+      - /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2020/07/01/2020-07-01
+        0104 13 WLSH_CHN.mseed.zip
+      samples_used: 2
+      size_stats:
+        n_samples: 0
+        note: unknown source_kind 'perchan_mseed'
+      start: '2018-11-15'
+    - boundary_before:
+        ambiguous: []
+        boundary_hi_date: '2021-07-01'
+        boundary_lo_date: '2020-07-01'
+        n_probes: 0
+        probes: []
+        resolution_days: 365
+      boundary_resolution_days: 365
+      channels:
+      - CHZ
+      end: '2024-07-01'
+      sample_paths:
+      - /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2021/12/15/2021-12-15
+        0312 02 WLSH_CHZ.mseed.zip
+      - /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2022/09/01/2022-09-01
+        0000 03 WLSH_CHZ.mseed.zip
+      - /mnt/eqserver_archive/shared/data/repository/archive/WLSH/continuous/2023/12/01/2023-12-01
+        0140 02 WLSH_CHZ.mseed.zip
+      samples_used: 4
+      size_stats:
+        n_samples: 0
+        note: unknown source_kind 'perchan_mseed'
+      start: '2021-07-01'
+  bisection_enabled: true
+  target_resolution_days: 30
+  generated_at_utc: '2026-06-24T00:37:11Z'

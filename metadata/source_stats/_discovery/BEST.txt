@@ -1,5 +1,5 @@
 # Discovery audit: BEST
-# Generated: 2026-06-23T02:52:15Z
+# Generated: 2026-06-23T09:16:09Z
 # Total rows: 5632669
 # Distinct signatures: 13
 
@@ -23,21 +23,21 @@
   kelunjimeta_ss                          173    0.00%
 
 ## Sample UNMATCHED filenames
-  1989-08-17 2359 31 BEST.wrno.dmx.gz
-  1989-08-17 2359 36 BEST.wrno.dmx.gz
-  1989-08-17 2359 35 BEST.wrno.dmx.gz
-  1989-08-17 2359 19 BEST.wrno.dmx.gz
-  1989-08-17 2359 33 BEST.wrno.dmx.gz
-  1999-09-08 0727 36 BEST_DLZ.mseed.zip
-  1999-09-08 1454 36 BEST_DLZ.mseed.zip
-  1999-09-09 1732 36 BEST_DLZ.mseed.zip
-  1999-09-09 2056 36 BEST_DLZ.mseed.zip
-  1999-09-10 0350 36 BEST_DLZ.mseed.zip
-  1999-09-10 2009 36 BEST_DLZ.mseed.zip
-  1999-09-10 2227 36 BEST_DLZ.mseed.zip
-  1999-09-11 0639 36 BEST_DLZ.mseed.zip
-  1999-09-11 1651 36 BEST_DLZ.mseed.zip
-  1999-09-11 1726 36 BEST_DLZ.mseed.zip
+  2019-05-02 03hr BEST.ms.zip
+  2019-05-02 04hr BEST.ms.zip
+  2019-05-02 05hr BEST.ms.zip
+  2019-05-02 06hr BEST.ms.zip
+  2019-05-02 07hr BEST.ms.zip
+  2019-05-02 08hr BEST.ms.zip
+  2019-05-02 09hr BEST.ms.zip
+  2019-05-02 10hr BEST.ms.zip
+  2019-05-02 11hr BEST.ms.zip
+  2019-05-02 12hr BEST.ms.zip
+  2019-05-02 13hr BEST.ms.zip
+  2019-05-02 14hr BEST.ms.zip
+  2019-05-02 15hr BEST.ms.zip
+  2019-05-02 16hr BEST.ms.zip
+  2019-05-02 17hr BEST.ms.zip
 
 ## Top signatures (by row count)
   rows=   2302490  recorder=echopro  src=disk       role=waveform  ss_null=False chan_null=True  excl=None
