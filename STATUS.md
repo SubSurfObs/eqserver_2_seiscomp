@@ -135,6 +135,45 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 - [ ] Decide sequencing (recommended: finish v2 Steps 4–6 → VX → DU → targeted VW resweep).
 - [ ] Write the per-stage SHA preflight script (`config/pinned_repo_shas.yaml`).
 
+## QA verification campaign — IN FLIGHT (launched 2026-10-16 ~23:30 AEDT)
+
+**A stratified sample-level audit of v1 LT output vs original archive files
+is running detached on the staging VM.** Monitoring was interrupted by a
+VPN outage on the Mac; the run itself is unaffected (setsid, survives all
+disconnects, hard `--max-hours 72` backstop, resume-by-default).
+
+- **Run:** `scan/qa_driver.py`, PID 826025 on `rs-l-0ezd3a`, 10 workers,
+  6,775 work items (strata: uniform 4000 / boundary 402 / class2 416 /
+  pre_c 184 / qc_flagged 1447 / recorder 600). ~280 days/h expected →
+  ~24 h to complete.
+- **Paths:** queue, results, log all in
+  `/mnt/seiscomp_staging/qa_verify/2026-10-16/` (`queue.jsonl`,
+  `results.jsonl`, `driver.log`; `results_smoke_oldcode.jsonl` is a
+  discarded pre-fix smoke run; `controls/` holds the seeded-corruption SDS).
+- **Check status:** `tail driver.log`; `pgrep -af qa_driver`. Summarise:
+  `python3 scan/qa_report.py /mnt/seiscomp_staging/qa_verify/2026-10-16/results.jsonl`
+  (venv: `~/projects/SubSurfObs/disk_to_sds/.venv/bin/python3`).
+- **If dead/stalled:** safe to relaunch same command (resume skips done
+  days): see the setsid line in the session log of 2026-10-16 or
+  `driver.log` header `argv`.
+- **Harness:** `scan/qa_verify.py` (comparator), `qa_sampler.py`,
+  `qa_driver.py`, `qa_report.py` @ `ac6f8f5`. Codex-reviewed
+  (`reviews/2026-10-16_qa_harness.md`, 9 findings, all addressed;
+  controls re-run and passing). Design + known limitations:
+  `docs/qa/verification_campaign_plan.md`.
+- **Controls verified:** pre-C 45 s boundary loss (BEST), Class-2
+  selection_loss (WLSH 2019: N/E only in telemetry hourly bundles,
+  ~85 ks/day), Echo/Gecko/Minimus/RT130 clean days, seeded corruption
+  (sample/cut/loc) all detected.
+- **Confirmed new finding (pre-sweep):** STBK 2020-03-10 LT has 406 ×
+  1.648 s gaps — v1 alternated between two time-shifted duplicate
+  telemetry populations (Class-B2 selector defect), verified by hand in
+  LT + source. Sweep will measure prevalence.
+- **Next steps:** (1) check run health + `qa_report.py` rollup; (2) triage
+  categories into `docs/qa/2026-10-20_findings.md`, map to defect classes;
+  (3) Codex review of interpretation (checkpoint 3); (4) feed into the
+  assumptions-inventory session. Monday target stands.
+
 ## Session log (newest first, one line each)
 
 - 2026-10-16 (evening) — Read-only re-verification on both VMs: mounts/repos/sweep state confirmed; WLSH verdict recorded (run clean, output byte-equal to v1 → Class 2 not yet fixed, coverage_planner missing); 50 agent-memory notes recovered to docs/agent_memory/.
