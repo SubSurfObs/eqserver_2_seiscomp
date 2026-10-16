@@ -26,6 +26,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qa_verify  # noqa: E402
 
 ALLOWED_PREFIX = "/mnt/seiscomp_staging/qa_verify/"
+# Resume treats these as non-terminal: the day is re-queued on restart.
+RETRY_CATEGORIES = {"comparator_error", "no_station_db"}
 
 _G = {}
 
@@ -71,6 +73,8 @@ def main():
                     help="process at most N new items (0 = no limit)")
     ap.add_argument("--allow-out-dir", action="store_true",
                     help="permit an out-dir outside the QA subtree (tests)")
+    ap.add_argument("--allow-dirty", action="store_true",
+                    help="permit uncommitted scan/ changes (tests only)")
     args = ap.parse_args()
 
     out_dir = Path(args.out_dir).expanduser().resolve()
@@ -88,8 +92,12 @@ def main():
                     r = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if r.get("t") == "day":
-                    done.add((r["net"], r["sta"], r["date"]))
+                if r.get("t") != "day":
+                    continue
+                cats = {x.get("category") for x in r.get("findings", [])}
+                if cats & RETRY_CATEGORIES:
+                    continue  # non-terminal: retry on resume
+                done.add((r["net"], r["sta"], r["date"]))
 
     queue = []
     with open(args.queue) as f:
@@ -104,6 +112,13 @@ def main():
         queue = queue[:args.limit]
 
     repo_root = Path(args.repo_root)
+    scan_dirty = subprocess.run(
+        ["git", "-C", str(repo_root), "status", "--porcelain", "--", "scan/"],
+        capture_output=True, text=True).stdout.strip()
+    if scan_dirty and not args.allow_dirty:
+        sys.exit("REFUSED: scan/ has uncommitted changes (provenance); "
+                 "commit them or pass --allow-dirty for local tests:\n"
+                 + scan_dirty)
     header = {
         "t": "header", "ts": datetime.now(timezone.utc).isoformat(),
         "host": socket.gethostname(), "argv": sys.argv[1:],
@@ -121,11 +136,23 @@ def main():
         out.flush()
         n = n_find = 0
         t_start = time.time()
-        for rec in pool.imap_unordered(_work, queue, chunksize=1):
+        it = pool.imap_unordered(_work, queue, chunksize=1)
+        while True:
+            try:
+                rec = it.next(timeout=120)  # bounded wait: deadline holds
+            except mp.TimeoutError:         # even if a worker hangs on NFS
+                if time.time() > deadline:
+                    print("max-hours reached while waiting; terminating",
+                          flush=True)
+                    pool.terminate()
+                    break
+                continue
+            except StopIteration:
+                break
             out.write(json.dumps(rec) + "\n")
             out.flush()
             n += 1
-            if rec.get("findings"):
+            if rec.get("finding_counts") or rec.get("findings"):
                 n_find += 1
             if n % 20 == 0 or time.time() > deadline:
                 rate = n / max(time.time() - t_start, 1)

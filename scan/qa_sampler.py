@@ -25,7 +25,10 @@ from datetime import date as date_cls
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import yaml
 from qa_verify import find_db, DEFAULT_DB_DIRS
+
+ALLOWED_PREFIX = "/mnt/seiscomp_staging/qa_verify/"
 
 CLASS2_STATIONS = {"WLSH", "WDSD", "BRTH", "DDSW", "DDNE", "DDWK", "FORG", "BEST"}
 CLASS2_YEARS = range(2017, 2024)
@@ -72,8 +75,9 @@ def days_by_year(db_dirs: list, net: str, sta: str) -> dict[int, list]:
     db = sqlite3.connect(f"file:{p}?mode=ro", uri=True)
     rows = db.execute(
         "SELECT DISTINCT file_year, file_month, file_day FROM files "
-        "WHERE role='waveform' AND station_mismatch=0 "
-        "AND exclude_reason IS NULL")
+        "WHERE role='waveform' AND station_mismatch=0 AND "
+        "(exclude_reason IS NULL "
+        " OR exclude_reason IN ('single_channel','unparsed'))")
     out: dict[int, list] = {}
     for y, m, d in rows:
         try:
@@ -106,11 +110,24 @@ def main():
     ap.add_argument("--queue-dir", default="/mnt/seiscomp_staging/eqserver_sweep")
     ap.add_argument("--db-dirs", nargs="*", default=DEFAULT_DB_DIRS)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--force", action="store_true",
+                    help="overwrite an existing queue file")
+    ap.add_argument("--allow-out", action="store_true",
+                    help="permit an out path outside the QA subtree (tests)")
+    ap.add_argument("--repo-root",
+                    default=str(Path(__file__).resolve().parent.parent))
     ap.add_argument("--seed", type=int, default=20261016)
     ap.add_argument("--n-uniform", type=int, default=4000)
     ap.add_argument("--per-unit-cap", type=int, default=8,
                     help="cap per (unit) within targeted strata")
     args = ap.parse_args()
+
+    out_path = Path(args.out).expanduser().resolve()
+    if not str(out_path).startswith(ALLOWED_PREFIX) and not args.allow_out:
+        sys.exit(f"REFUSED: --out {out_path} outside {ALLOWED_PREFIX} "
+                 f"(pass --allow-out only for tests)")
+    if out_path.exists() and not args.force:
+        sys.exit(f"REFUSED: {out_path} exists (pass --force to overwrite)")
 
     rng = random.Random(args.seed)
     queue_dir = Path(args.queue_dir)
@@ -156,6 +173,25 @@ def main():
                 days, min(args.per_unit_cap, len(days))))
     strata["pre_c"] = pre_c
 
+    # recorder-class stratum: guaranteed days for every registry recorder
+    # class among the promoted stations (minimus, reftek_rt130, echo, ...).
+    try:
+        with open(Path(args.repo_root) / "metadata" /
+                  "station_registry.yaml") as f:
+            registry = yaml.safe_load(f) or {}
+    except OSError:
+        registry = {}
+    by_class: dict[str, list] = {}
+    for u, days in day_index.items():
+        rts = (registry.get(u[1]) or {}).get("recorder_types") or ["unknown"]
+        for rt in set(rts):
+            if days:
+                by_class.setdefault(str(rt), []).extend((u, d) for d in days)
+    rec_stratum = []
+    for rt, pairs in sorted(by_class.items()):
+        rec_stratum.extend(rng.sample(pairs, min(120, len(pairs))))
+    strata_recorder = rec_stratum
+
     qc = []
     for net, sta, ds in qc_flagged_days(queue_dir):
         try:
@@ -166,6 +202,7 @@ def main():
         if u in day_index:
             qc.append((u, d))
     strata["qc_flagged"] = qc
+    strata["recorder"] = strata_recorder
 
     for name, items in strata.items():
         rng.shuffle(items)
@@ -174,7 +211,8 @@ def main():
     # Round-robin interleave, dedup on (net, sta, date); first stratum wins.
     seen = set()
     queue = []
-    order = ["boundary", "class2", "pre_c", "qc_flagged", "uniform"]
+    order = ["boundary", "class2", "pre_c", "qc_flagged", "recorder",
+             "uniform"]
     idx = {k: 0 for k in order}
     while any(idx[k] < len(strata[k]) for k in order):
         for k in order:
@@ -188,10 +226,12 @@ def main():
             seen.add(key)
             queue.append({"net": net, "sta": sta, "date": d.isoformat(),
                           "stratum": k})
-    with open(args.out, "w") as f:
+    tmp = out_path.with_suffix(".tmp")
+    with open(tmp, "w") as f:
         for item in queue:
             f.write(json.dumps(item) + "\n")
-    print(f"wrote {len(queue)} work items -> {args.out}")
+    tmp.rename(out_path)
+    print(f"wrote {len(queue)} work items -> {out_path}")
 
 
 if __name__ == "__main__":

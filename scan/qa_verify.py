@@ -82,6 +82,7 @@ def seed_band(rate_hz: float) -> str:
 SAMPLE_TOL = 0.01          # fractional-sample alignment tolerance
 TELE_PROBE_EVERY_MIN = 30  # probe cadence for tele-duplicate channel check
 MAX_FINDINGS_PER_CAT = 10  # cap repeated findings per category per day
+EXTRA_READ_CAP = 300       # max tele_extra/revived files read per day (lower-bound beyond)
 
 
 # --- registry / DB resolution -------------------------------------------------
@@ -128,35 +129,82 @@ def _rows(db: sqlite3.Connection, y: int, m: int, d: int, hhmm: str | None = Non
     return rows
 
 
+REVIVABLE_EXCL = ("single_channel", "unparsed")
+HOURBUNDLE_RE = re.compile(r"[ _](\d{2})hr[ _]", re.IGNORECASE)
+
+
 def query_day_files(db, day: date_cls, minimus: bool) -> list[dict]:
+    """In-scope rows plus revived excluded cohorts.
+
+    r["revived"] is False for rows the v1 conversion would have used
+    (exclude_reason NULL, or Minimus single_channel), True for excluded
+    cohorts we still audit as source data the archive holds (RT130
+    per-channel single_channel files, 'unparsed' grammars such as hourly
+    bundles). Revived rows only ever feed the tele_extra/union view, so
+    their coverage shows up as selection_loss, never missing_*."""
     rows = _rows(db, day.year, day.month, day.day)
     out = []
     for r in rows:
         if r["excl"] is None:
+            r["revived"] = False
             out.append(r)
         elif minimus and r["excl"] == "single_channel" and r["path"].endswith(
                 (".mseed.zip", ".mseed")):
-            out.append(r)  # Minimus per-channel mseed IS the data
+            r["revived"] = False  # Minimus per-channel mseed IS the data
+            out.append(r)
+        elif r["excl"] in REVIVABLE_EXCL and r["path"].endswith(
+                (".mseed.zip", ".mseed", ".ms.zip", ".ms")):
+            r["revived"] = True
+            out.append(r)
     return out
 
 
 def query_boundary_tail(db, day: date_cls, minimus: bool) -> list[dict]:
-    """Previous day's 23:59 minute-files (they spill SS seconds into `day`)."""
+    """Previous day's final minute-files (they spill SS seconds into `day`):
+    23:59 minute files plus 23hr hourly bundles."""
     prev = day - timedelta(days=1)
     rows = _rows(db, prev.year, prev.month, prev.day)
-    rows = [r for r in rows if r["hhmm"] == "2359"]
-    return [r for r in rows if r["excl"] is None
-            or (minimus and r["excl"] == "single_channel")]
+    out = []
+    for r in rows:
+        name = Path(r["path"]).name
+        hb = HOURBUNDLE_RE.search(name)
+        if r["hhmm"] != "2359" and not (hb and hb.group(1) == "23"):
+            continue
+        if r["excl"] is None or (minimus and r["excl"] == "single_channel"):
+            r["revived"] = False
+            out.append(r)
+        elif r["excl"] in REVIVABLE_EXCL:
+            r["revived"] = True
+            out.append(r)
+    return out
+
+
+def variant_key(path: str, source: str) -> str:
+    """Coarse filename-grammar class, for the multi-variant day metric."""
+    name = Path(path).name
+    if HOURBUNDLE_RE.search(name):
+        return "hour_bundle"
+    has_space = " " in name
+    n_us = name.split(".")[0].count("_")
+    if has_space and n_us:
+        return "mixed_sep"
+    if has_space:
+        return f"tele_{len(name.split()) - 1}tok"
+    return f"disk_{n_us}us"
 
 
 def split_populations(files: list[dict]) -> tuple[list, list, list]:
     """(disk, tele_fill, tele_extra): tele_fill = telemetry minutes with no
     disk file (the documented gap-fill); tele_extra = everything else
-    telemetry (duplicate minutes, hourly bundles, unparsed grammars)."""
-    disk = [f for f in files if f["source"] == "disk"]
+    telemetry (duplicate minutes, hourly bundles, revived excluded
+    cohorts). Revived rows are never 'expected' — their coverage can only
+    surface as selection_loss."""
+    live = [f for f in files if not f.get("revived")]
+    revived = [f for f in files if f.get("revived")]
+    disk = [f for f in live if f["source"] == "disk"]
     disk_minutes = {f["hhmm"] for f in disk if f["hhmm"]}
     tele_fill, tele_extra = [], []
-    for f in files:
+    for f in live:
         if f["source"] == "disk":
             continue
         if disk and (not f["hhmm"] or f["hhmm"] in disk_minutes):
@@ -165,7 +213,7 @@ def split_populations(files: list[dict]) -> tuple[list, list, list]:
             tele_fill.append(f)
     if not disk:
         tele_fill, tele_extra = tele_fill + tele_extra, []
-    return disk, tele_fill, tele_extra
+    return disk, tele_fill, tele_extra + revived
 
 
 # --- source readers ------------------------------------------------------------
@@ -374,9 +422,9 @@ def compare_samples(src_traces, conv_traces, day_start, day_end):
 def read_converted(sds_root: Path, net: str, sta: str, day: date_cls):
     jday = day.timetuple().tm_yday
     sta_dir = sds_root / str(day.year) / net / sta
-    traces, chans, locs, nets = [], set(), set(), set()
+    traces, chans, locs, nets, stas = [], set(), set(), set(), set()
     if not sta_dir.is_dir():
-        return traces, chans, locs, nets
+        return traces, chans, locs, nets, stas
     day_start = UTCDateTime(day.year, day.month, day.day)
     day_end = day_start + 86400
     for chan_dir in sorted(sta_dir.glob("*.D")):
@@ -389,6 +437,7 @@ def read_converted(sds_root: Path, net: str, sta: str, day: date_cls):
                 chans.add(tr.stats.channel)
                 locs.add(tr.stats.location)
                 nets.add(tr.stats.network)
+                stas.add(tr.stats.station)
                 orient = _mseed_orientation(tr.stats.channel) or "?"
                 traces.append({
                     "orient": orient, "chan": tr.stats.channel,
@@ -396,7 +445,7 @@ def read_converted(sds_root: Path, net: str, sta: str, day: date_cls):
                     "rate": float(tr.stats.sampling_rate),
                     "data": np.asarray(tr.data, dtype=np.int64),
                 })
-    return traces, chans, locs, nets
+    return traces, chans, locs, nets, stas
 
 
 # --- main per-day verification -----------------------------------------------------
@@ -443,7 +492,7 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
     day_start = UTCDateTime(day.year, day.month, day.day)
     day_end = day_start + 86400
 
-    conv_traces, conv_chans, conv_locs, conv_nets = read_converted(
+    conv_traces, conv_chans, conv_locs, conv_nets, conv_stas = read_converted(
         sds_root, net, sta, day)
     conv_iv = to_intervals(conv_traces, day_start, day_end)
 
@@ -451,31 +500,44 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
     rec["metrics"]["conv_seconds"] = round(
         sum(total(v) for v in conv_iv.values()), 2)
 
-    if not files and not conv_traces:
-        rec["metrics"]["verdict"] = "ok_empty"
-        return rec
-    if not files and conv_traces:
-        # LT bytes with no eqserver source: usually live-seedlink era.
-        _add(rec, "conv_data_without_source", counts,
-             detail="no in-scope source files this day")
-        rec["metrics"]["verdict"] = "finding"
-        return rec
-
-    rec["metrics"]["recorders"] = sorted({f["recorder"] for f in files})
-
     # --- read sources by population -------------------------------------------
+    # The previous-day tail is read even when the day itself has no files:
+    # its final minute spills SS seconds into this day (tail-only days).
     errors: list = []
     counters: dict = {}
     disk_f, fill_f, extra_f = split_populations(files)
-    tail_disk, tail_fill, _ = split_populations(tail)
+    tail_disk, tail_fill, tail_extra = split_populations(tail)
     expected_tr = read_population(disk_f + fill_f + tail_disk + tail_fill,
                                   errors, counters)
-    extra_tr = read_population(extra_f, errors, counters)
-    for e in errors[:MAX_FINDINGS_PER_CAT]:
-        rec["findings"].append({"category": "source_read_error", **e})
-    counts["source_read_error"] = len(errors)
+    extra_f_all = extra_f + tail_extra
+    if len(extra_f_all) > EXTRA_READ_CAP:
+        # Even subsample; selection_loss becomes a lower bound.
+        step = max(1, len(extra_f_all) // EXTRA_READ_CAP)
+        sampled = extra_f_all[::step][:EXTRA_READ_CAP]
+        counters["n_extra_unread"] = len(extra_f_all) - len(sampled)
+        extra_f_all = sampled
+    extra_tr = read_population(extra_f_all, errors, counters)
+
+    if not files and not expected_tr and not extra_tr:
+        if conv_traces:
+            # LT bytes with no eqserver source: usually live-seedlink era.
+            _add(rec, "conv_data_without_source", counts,
+                 detail="no in-scope source files this day")
+            rec["metrics"]["verdict"] = "finding"
+        else:
+            rec["metrics"]["verdict"] = "ok_empty"
+        return rec
+
+    if errors:
+        for e in errors[:MAX_FINDINGS_PER_CAT]:
+            rec["findings"].append({"category": "source_read_error", **e})
+        counts["source_read_error"] = len(errors)
     rec["metrics"]["n_read_errors"] = len(errors)
     rec["metrics"].update(counters)
+    rec["metrics"]["recorders"] = sorted({f["recorder"] for f in files})
+    variants = sorted({variant_key(f["path"], f["source"]) for f in files})
+    rec["metrics"]["variants"] = variants
+    rec["metrics"]["multi_variant"] = len(variants) > 1
 
     exp_iv = to_intervals(expected_tr, day_start, day_end)
     extra_iv = to_intervals(extra_tr, day_start, day_end)
@@ -483,18 +545,23 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
         sum(total(v) for v in exp_iv.values()), 2)
 
     all_src = expected_tr + extra_tr
-    min_rate = min((t["rate"] for t in all_src if t["rate"] > 0), default=100.0)
-    min_len = 2.0 / min_rate
 
     # --- per-orientation coverage + sample comparison -------------------------
     per_chan = {}
     total_cmp = total_bad = total_misalign = 0
     t0 = float(day_start.timestamp)
-    orients = set(exp_iv) | set(extra_iv)
+    orients = set(exp_iv) | set(extra_iv) | set(conv_iv)
     for orient in sorted(orients):
         e_iv = exp_iv.get(orient, [])
         x_iv = extra_iv.get(orient, [])
         c_iv = conv_iv.get(orient, [])
+        # Loss threshold at THIS orientation's rate (a slow aux channel must
+        # not raise the bar for the seismic channels).
+        o_rates = [t["rate"] for t in all_src if t["orient"] == orient
+                   and t["rate"] > 0]
+        o_rates += [t["rate"] for t in conv_traces if t["orient"] == orient
+                    and t["rate"] > 0]
+        min_len = 1.5 / max(o_rates, default=100.0)
         missing = subtract(e_iv, c_iv, min_len)
         sel_loss = subtract(subtract(x_iv, e_iv, min_len), c_iv, min_len)
         src_for = [t for t in all_src if t["orient"] == orient]
@@ -524,6 +591,10 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
                  detail=f"{round(e - s, 3)}s at day-offset {round(s - t0, 1)}s")
         if e_iv and not c_iv:
             _add(rec, "missing_channel", counts, channel=orient)
+        if c_iv and not e_iv and not x_iv:
+            _add(rec, "extra_channel", counts, channel=orient,
+                 detail=f"{round(total(c_iv), 1)}s converted data on an "
+                        f"orientation no source carries")
         if total(sel_loss) > 5.0:
             _add(rec, "selection_loss", counts, channel=orient,
                  detail=f"{round(total(sel_loss), 1)}s telemetry-only data "
@@ -572,6 +643,9 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
     if conv_nets - {net}:
         _add(rec, "seed_id_mismatch", counts,
              detail=f"net {sorted(conv_nets)} != {net}")
+    if conv_stas - {sta}:
+        _add(rec, "seed_id_mismatch", counts,
+             detail=f"sta {sorted(conv_stas)} != {sta}")
     if conv_locs - {exp_loc}:
         _add(rec, "seed_id_mismatch", counts,
              detail=f"loc {sorted(conv_locs)} != {exp_loc}")
@@ -585,8 +659,8 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
                         f"'{band}*', converted has {sorted(wrong)}")
 
     rec["per_chan"] = per_chan
-    rec["finding_counts"] = counts
-    rec["metrics"]["verdict"] = "finding" if counts else "ok"
+    rec["finding_counts"] = {k: v for k, v in counts.items() if v > 0}
+    rec["metrics"]["verdict"] = ("finding" if rec["finding_counts"] else "ok")
     return rec
 
 

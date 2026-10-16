@@ -51,15 +51,16 @@ spots, and writing the findings register. Claude checks in on a loop every
      ([[feedback-scans-write-at-intervals]]).
 
 2. **`scan/qa_sampler.py` — stratified random sampler.** Universe = the 357
-   promoted v1 units × their days-with-data (from station DBs). Seeded RNG,
-   queue written to the results dir for reproducibility. Allocation ~60%
-   uniform random, ~40% targeted strata:
-   - recorder class (echopro / echo / gecko / rt130 / minimus / perchan);
-   - the Class-3 pre-C midnight-boundary cohort (32 unit-years);
-   - Class-2 candidate stations (WLSH, WDSD, BRTH, DDSW, DDNE, DDWK, FORG);
-   - year-boundary days (Jan 1 / Dec 31), epoch-transition days,
-     `qc_flagged` days from run manifests, days adjacent to recovered
-     failures in the recovery register.
+   promoted v1 units × their days-with-data (from station DBs, including
+   days whose only files are excluded cohorts such as RT130 per-channel or
+   hourly bundles). Seeded RNG, queue written to the results dir for
+   reproducibility. Implemented strata: uniform, year-boundary days
+   (Jan 1 / Dec 31), Class-2 candidate stations (WLSH, WDSD, BRTH, DDSW,
+   DDNE, DDWK, FORG, BEST), pre-Option-C units (convert ts before
+   2026-06-02), `qc_flagged` days from run manifests, and
+   registry-recorder-class coverage (≤120 days per class). *Deferred to a
+   later queue build:* epoch-transition days and days adjacent to
+   recovered failures.
 
 3. **`scan/qa_driver.py` — pool driver.** `multiprocessing` workers
    (start ~8, cap ~16 — shared NFS), resume-by-default (skips days already
@@ -146,6 +147,31 @@ NFS; Minimus ≈ 4,320). At ~1–2 min/station-day × 12 workers, expect roughly
 coverage of the ~110 k converted station-days, plus full coverage of the
 targeted strata. The sampler design means the campaign is resumable and
 extendable: more coverage is just more weekend.
+
+## Known limitations (agreed residual risk, Codex review 2026-10-16)
+
+- **Selection-contract compliance is not verified.** The comparator audits
+  *data completeness against best-available source coverage* (expected =
+  disk + telemetry gap-fill; everything else = selection_loss). It does
+  not replicate the converter's per-slot candidate selection
+  (cross_source.py size thresholds / tiebreaks), so it cannot distinguish
+  "engine lost data" from "selector picked the other variant" — that split
+  is triage's job, aided by the per-day `multi_variant` metric. Full
+  selection-contract verification belongs with the Step-4
+  coverage_planner work.
+- **Single-sample interior dropouts are below interval resolution**
+  (coverage merges at ~1 sample, loss threshold 1.5 samples at the
+  orientation's own rate). A deleted sample inside a converted trace that
+  shifts later samples WILL show as sample_mismatch; a 1-sample coverage
+  nick will not.
+- **Instrument-code letter is not validated** (band letter is; orientation
+  is). CHO-vs-CDO-class naming questions need the plan YAML / FDSN
+  integration — deferred.
+- **Revived excluded cohorts (RT130 per-channel, unparsed grammars) are
+  read with a 300-file/day cap**, so their selection_loss seconds are a
+  lower bound on heavy days (flagged via `n_extra_unread`).
+- sudspy is shared with the conversion engine, so a sudspy sample-decode
+  bug is invisible to this audit.
 
 ## Out of scope
 
