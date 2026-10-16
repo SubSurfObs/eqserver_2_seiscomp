@@ -20,8 +20,12 @@ import argparse
 import json
 import random
 import sqlite3
+import sys
 from datetime import date as date_cls
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from qa_verify import find_db, DEFAULT_DB_DIRS
 
 CLASS2_STATIONS = {"WLSH", "WDSD", "BRTH", "DDSW", "DDNE", "DDWK", "FORG", "BEST"}
 CLASS2_YEARS = range(2017, 2024)
@@ -60,8 +64,11 @@ def first_convert_ts(queue_dir: Path) -> dict:
     return out
 
 
-def days_with_data(db_dir: Path, net: str, sta: str, year: int) -> list[date_cls]:
-    db = sqlite3.connect(str(db_dir / f"{net}.{sta}.db"))
+def days_with_data(db_dirs: list, net: str, sta: str, year: int) -> list[date_cls]:
+    p = find_db(db_dirs, net, sta)
+    if p is None:
+        raise FileNotFoundError(f"no usable {net}.{sta}.db on search path")
+    db = sqlite3.connect(f"file:{p}?mode=ro", uri=True)
     rows = db.execute(
         "SELECT DISTINCT file_month, file_day FROM files "
         "WHERE role='waveform' AND station_mismatch=0 AND exclude_reason IS NULL "
@@ -96,7 +103,7 @@ def qc_flagged_days(queue_dir: Path) -> list[tuple]:
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--queue-dir", default="/mnt/seiscomp_staging/eqserver_sweep")
-    ap.add_argument("--db-dir", default="~/station_dbs")
+    ap.add_argument("--db-dirs", nargs="*", default=DEFAULT_DB_DIRS)
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=20261016)
     ap.add_argument("--n-uniform", type=int, default=4000)
@@ -106,14 +113,14 @@ def main():
 
     rng = random.Random(args.seed)
     queue_dir = Path(args.queue_dir)
-    db_dir = Path(args.db_dir).expanduser()
+    db_dirs = [Path(d).expanduser() for d in args.db_dirs]
 
     units = promoted_units(queue_dir)
     conv_ts = first_convert_ts(queue_dir)
     day_index = {}  # unit -> [date, ...]
     for net, sta, year in units:
         try:
-            day_index[(net, sta, year)] = days_with_data(db_dir, net, sta, year)
+            day_index[(net, sta, year)] = days_with_data(db_dirs, net, sta, year)
         except Exception as exc:
             print(f"WARN: no day index for {net}.{sta}.{year}: {exc}")
             day_index[(net, sta, year)] = []

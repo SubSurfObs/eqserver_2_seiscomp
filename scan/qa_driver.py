@@ -30,8 +30,8 @@ ALLOWED_PREFIX = "/mnt/seiscomp_staging/qa_verify/"
 _G = {}
 
 
-def _init(db_dir, sds_root, repo_root):
-    _G["db_dir"] = Path(db_dir)
+def _init(db_dirs, sds_root, repo_root):
+    _G["db_dirs"] = [Path(d).expanduser() for d in db_dirs]
     _G["sds_root"] = Path(sds_root)
     _G["registry"] = qa_verify.load_registry(Path(repo_root))
 
@@ -40,7 +40,7 @@ def _work(item):
     t0 = time.time()
     rec = qa_verify.verify_day(
         item["net"], item["sta"], date_cls.fromisoformat(item["date"]),
-        _G["db_dir"], _G["sds_root"], _G["registry"],
+        _G["db_dirs"], _G["sds_root"], _G["registry"],
         stratum=item.get("stratum", "uniform"))
     rec["elapsed_s"] = round(time.time() - t0, 1)
     return rec
@@ -61,7 +61,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--queue", required=True)
     ap.add_argument("--out-dir", required=True)
-    ap.add_argument("--db-dir", default="~/station_dbs")
+    ap.add_argument("--db-dirs", nargs="*", default=qa_verify.DEFAULT_DB_DIRS)
     ap.add_argument("--sds-root", default="/mnt/seiscomp_archive")
     ap.add_argument("--repo-root",
                     default=str(Path(__file__).resolve().parent.parent))
@@ -115,7 +115,7 @@ def main():
 
     with open(results_path, "a") as out, \
          mp.Pool(args.workers, initializer=_init,
-                 initargs=(Path(args.db_dir).expanduser(), args.sds_root,
+                 initargs=(args.db_dirs, args.sds_root,
                            args.repo_root)) as pool:
         out.write(json.dumps(header) + "\n")
         out.flush()

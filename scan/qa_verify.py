@@ -8,24 +8,37 @@ Mode A auditor for the QA verification campaign
   2. read originals independently (sudspy for PC-SUDS, ObsPy for miniSEED) —
      deliberately does NOT import phase3_driver / suds_convert,
   3. read the converted SDS day-files (default: LT, read-only),
-  4. trim both to [day, day+1) and compare: integer sample equality,
-     missing/phantom intervals (boundary vs mid-day), channel presence,
-     SEED codes, duration.
+  4. trim both to [day, day+1) and compare.
 
-Emits one JSON record per day (written by the caller / driver). Read-only
-against origin NFS and the SDS root; writes nothing itself.
+Coverage semantics (population-aware):
+  expected  = disk coverage + telemetry gap-fill (minutes with no disk file)
+              — what the documented disk-preferred selection converts
+  tele_extra = telemetry coverage beyond expected (duplicate minutes,
+              hourly bundles, odd grammars)
+  missing   = expected − converted        -> missing_* categories
+  selection_loss = tele_extra − converted -> data only telemetry had and
+              conversion dropped (Class-2 signature), quantified in seconds
 
-Finding categories (see plan doc):
+Sample semantics: a converted sample is wrong only if NO source copy
+matches it (duplicate telemetry copies routinely disagree with each other;
+the conversion picked one).
+
+Emits one JSON record per day. Read-only against origin NFS and the SDS
+root; writes nothing itself.
+
+Categories:
   missing_day, missing_channel, missing_interval_boundary,
   missing_interval_midday, sample_mismatch, timing_misalign,
-  duplicated_data, selection_loss_suspect, seed_id_mismatch, phantom_data,
-  conv_data_without_source, source_read_error, comparator_error
+  duplicated_data, selection_loss, selection_loss_suspect,
+  seed_id_mismatch, phantom_data, conv_data_without_source,
+  source_read_error, no_station_db, comparator_error
 """
 
 import argparse
 import gzip
 import io
 import json
+import re
 import sqlite3
 import sys
 import zipfile
@@ -45,14 +58,16 @@ SUDS_COMPONENT = {
     "c01": "N", "c02": "E", "c03": "Z",
     "north-t": "N", "east-t": "E", "up-t": "Z",
 }
-# SUDS channels deliberately dropped by the conversion (accelerometer / aux).
 SUDS_DROP_SUFFIXES = ("-a",)
 SUDS_DROP_PREFIXES = ("c04", "c05", "c06", "c07", "c08", "c09")
 
 ORIENTATIONS = set("ZNEO12")
 
-# Gecko band-code table (broadband column, by sample rate).
+HHMM_RE = re.compile(r"[ _](\d{4})[ _]")
+
+
 def seed_band(rate_hz: float) -> str:
+    """Gecko band-code table (broadband column, by sample rate)."""
     if rate_hz >= 1000:
         return "F"
     if rate_hz >= 250:
@@ -66,16 +81,35 @@ def seed_band(rate_hz: float) -> str:
 
 SAMPLE_TOL = 0.01          # fractional-sample alignment tolerance
 TELE_PROBE_EVERY_MIN = 30  # probe cadence for tele-duplicate channel check
+MAX_FINDINGS_PER_CAT = 10  # cap repeated findings per category per day
 
 
-# --- registry ----------------------------------------------------------------
+# --- registry / DB resolution -------------------------------------------------
 
 def load_registry(repo_root: Path) -> dict:
     with open(repo_root / "metadata" / "station_registry.yaml") as f:
         return yaml.safe_load(f) or {}
 
 
-# --- station DB --------------------------------------------------------------
+def find_db(db_dirs: list[Path], net: str, sta: str) -> Path | None:
+    """First DB on the search path that actually has a `files` table."""
+    for d in db_dirs:
+        p = d / f"{net}.{sta}.db"
+        if not p.is_file():
+            continue
+        try:
+            c = sqlite3.connect(f"file:{p}?mode=ro", uri=True)
+            ok = c.execute("SELECT name FROM sqlite_master WHERE type='table' "
+                           "AND name='files'").fetchone()
+            c.close()
+            if ok:
+                return p
+        except sqlite3.Error:
+            continue
+    return None
+
+
+# --- station DB queries --------------------------------------------------------
 
 def _rows(db: sqlite3.Connection, y: int, m: int, d: int, hhmm: str | None = None):
     q = ("SELECT path, recorder_type, source_type, hhmm, ss, exclude_reason "
@@ -85,8 +119,13 @@ def _rows(db: sqlite3.Connection, y: int, m: int, d: int, hhmm: str | None = Non
     if hhmm is not None:
         q += " AND hhmm=?"
         args.append(hhmm)
-    return [dict(zip(("path", "recorder", "source", "hhmm", "ss", "excl"), r))
+    rows = [dict(zip(("path", "recorder", "source", "hhmm", "ss", "excl"), r))
             for r in db.execute(q, args)]
+    for r in rows:
+        if not r["hhmm"]:  # fallback parse for grammars level1 didn't tokenise
+            mt = HHMM_RE.search(Path(r["path"]).name)
+            r["hhmm"] = mt.group(1) if mt else None
+    return rows
 
 
 def query_day_files(db, day: date_cls, minimus: bool) -> list[dict]:
@@ -104,24 +143,32 @@ def query_day_files(db, day: date_cls, minimus: bool) -> list[dict]:
 def query_boundary_tail(db, day: date_cls, minimus: bool) -> list[dict]:
     """Previous day's 23:59 minute-files (they spill SS seconds into `day`)."""
     prev = day - timedelta(days=1)
-    rows = _rows(db, prev.year, prev.month, prev.day, hhmm="2359")
+    rows = _rows(db, prev.year, prev.month, prev.day)
+    rows = [r for r in rows if r["hhmm"] == "2359"]
     return [r for r in rows if r["excl"] is None
             or (minimus and r["excl"] == "single_channel")]
 
 
-def select_disk_preferred(files: list[dict]) -> list[dict]:
-    """Documented dedup: per minute, disk wins; telemetry fills disk-less
-    minutes. Everything that is neither 'disk' nor 'telemetry' is kept."""
-    disk_minutes = {f["hhmm"] for f in files if f["source"] == "disk"}
-    out = []
+def split_populations(files: list[dict]) -> tuple[list, list, list]:
+    """(disk, tele_fill, tele_extra): tele_fill = telemetry minutes with no
+    disk file (the documented gap-fill); tele_extra = everything else
+    telemetry (duplicate minutes, hourly bundles, unparsed grammars)."""
+    disk = [f for f in files if f["source"] == "disk"]
+    disk_minutes = {f["hhmm"] for f in disk if f["hhmm"]}
+    tele_fill, tele_extra = [], []
     for f in files:
-        if f["source"] == "telemetry" and f["hhmm"] in disk_minutes:
+        if f["source"] == "disk":
             continue
-        out.append(f)
-    return out
+        if disk and (not f["hhmm"] or f["hhmm"] in disk_minutes):
+            tele_extra.append(f)
+        else:
+            tele_fill.append(f)
+    if not disk:
+        tele_fill, tele_extra = tele_fill + tele_extra, []
+    return disk, tele_fill, tele_extra
 
 
-# --- source readers ----------------------------------------------------------
+# --- source readers ------------------------------------------------------------
 
 def _suds_component(chan: str) -> str | None:
     c = (chan or "").strip().lower()
@@ -139,7 +186,11 @@ def _mseed_orientation(chan: str) -> str | None:
     return None
 
 
-def read_source_file(path: str, errors: list) -> list[dict]:
+def _looks_like_mseed(blob: bytes) -> bool:
+    return len(blob) >= 64 and blob[6:7] in b"DRQM"
+
+
+def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
     """Read one source file into trace dicts:
     {orient, src_chan, start (UTCDateTime), rate, data (np.int64)}."""
     traces = []
@@ -149,6 +200,8 @@ def read_source_file(path: str, errors: list) -> list[dict]:
             for tr in st:
                 orient = _suds_component(tr.stats.channel)
                 if orient is None:
+                    counters["n_suds_chans_dropped"] = counters.get(
+                        "n_suds_chans_dropped", 0) + 1
                     continue
                 traces.append({
                     "orient": orient, "src_chan": tr.stats.channel,
@@ -169,11 +222,13 @@ def read_source_file(path: str, errors: list) -> list[dict]:
                             continue
                         members.append(zf.read(name))
             for blob in members:
-                if not blob:
+                if not _looks_like_mseed(blob):
+                    counters["n_members_skipped"] = counters.get(
+                        "n_members_skipped", 0) + 1
                     continue
                 try:
-                    st = obspy_read(io.BytesIO(blob))
-                except Exception as exc:  # non-mseed member (metadata etc.)
+                    st = obspy_read(io.BytesIO(blob), format="MSEED")
+                except Exception as exc:
                     errors.append({"path": path, "err": f"member: {exc}"})
                     continue
                 for tr in st:
@@ -191,7 +246,14 @@ def read_source_file(path: str, errors: list) -> list[dict]:
     return traces
 
 
-# --- interval arithmetic -----------------------------------------------------
+def read_population(files: list[dict], errors: list, counters: dict) -> list[dict]:
+    out = []
+    for f in files:
+        out.extend(read_source_file(f["path"], errors, counters))
+    return out
+
+
+# --- interval arithmetic --------------------------------------------------------
 
 def to_intervals(traces, day_start, day_end) -> dict[str, list]:
     """Per-orientation merged (start, end) float-epoch intervals, clipped to
@@ -220,6 +282,19 @@ def to_intervals(traces, day_start, day_end) -> dict[str, list]:
     return out
 
 
+def union(a: list, b: list, tol: float = 0.0) -> list:
+    ivs = sorted(a + b)
+    if not ivs:
+        return []
+    merged = [list(ivs[0])]
+    for s, e in ivs[1:]:
+        if s <= merged[-1][1] + tol:
+            merged[-1][1] = max(merged[-1][1], e)
+        else:
+            merged.append([s, e])
+    return [tuple(iv) for iv in merged]
+
+
 def subtract(a: list, b: list, min_len: float) -> list:
     """Interval list a − b, dropping slivers shorter than min_len."""
     out = []
@@ -244,51 +319,59 @@ def total(ivs: list) -> float:
     return sum(e - s for s, e in ivs)
 
 
-# --- sample comparison -------------------------------------------------------
+# --- sample comparison ----------------------------------------------------------
 
 def compare_samples(src_traces, conv_traces, day_start, day_end):
-    """Exact integer comparison on overlapping windows.
+    """Match-any-copy comparison: per converted trace, a sample counts as bad
+    only if at least one source copy covered it and none agreed.
     Returns (n_compared, n_mismatch, n_misaligned, covered_intervals)."""
     t0, t1 = float(day_start.timestamp), float(day_end.timestamp)
     n_cmp = n_bad = n_misalign = 0
     covered = []
+    src_sorted = sorted(src_traces, key=lambda t: float(t["start"].timestamp))
     for ct in conv_traces:
         c0 = float(ct["start"].timestamp)
         rate = ct["rate"]
-        for srct in src_traces:
+        nconv = len(ct["data"])
+        if nconv == 0 or rate <= 0:
+            continue
+        c1 = c0 + nconv / rate
+        compared = np.zeros(nconv, dtype=bool)
+        matched = np.zeros(nconv, dtype=bool)
+        for srct in src_sorted:
             if abs(srct["rate"] - rate) > 1e-6:
                 continue
             s0 = float(srct["start"].timestamp)
             s1 = s0 + len(srct["data"]) / rate
-            c1 = c0 + len(ct["data"]) / rate
+            if s0 >= c1:
+                break
             lo = max(c0, s0, t0)
             hi = min(c1, s1, t1)
             if hi - lo < 1.0 / rate:
                 continue
             off_f = (lo - s0) * rate
             coff_f = (lo - c0) * rate
-            frac = abs(off_f - round(off_f) - (coff_f - round(coff_f)))
+            frac = abs((off_f - round(off_f)) - (coff_f - round(coff_f)))
             if min(frac, 1 - frac) > SAMPLE_TOL:
                 n_misalign += 1
                 continue
             si, ci = int(round(off_f)), int(round(coff_f))
-            n = min(len(srct["data"]) - si, len(ct["data"]) - ci,
+            n = min(len(srct["data"]) - si, nconv - ci,
                     int(round((hi - lo) * rate)))
             if n <= 0:
                 continue
-            a = srct["data"][si:si + n]
-            b = ct["data"][ci:ci + n]
-            n_cmp += n
-            n_bad += int(np.count_nonzero(a != b))
+            seg = slice(ci, ci + n)
+            compared[seg] = True
+            matched[seg] |= (srct["data"][si:si + n] == ct["data"][seg])
             covered.append((lo, lo + n / rate))
+        n_cmp += int(compared.sum())
+        n_bad += int((compared & ~matched).sum())
     return n_cmp, n_bad, n_misalign, covered
 
 
-# --- converted (SDS) reader --------------------------------------------------
+# --- converted (SDS) reader ------------------------------------------------------
 
 def read_converted(sds_root: Path, net: str, sta: str, day: date_cls):
-    """All converted traces for the station-day, trimmed to the day window.
-    Returns (traces, chan_codes, loc_codes, net_codes)."""
     jday = day.timetuple().tm_yday
     sta_dir = sds_root / str(day.year) / net / sta
     traces, chans, locs, nets = [], set(), set(), set()
@@ -316,27 +399,43 @@ def read_converted(sds_root: Path, net: str, sta: str, day: date_cls):
     return traces, chans, locs, nets
 
 
-# --- main per-day verification ------------------------------------------------
+# --- main per-day verification -----------------------------------------------------
 
-def verify_day(net: str, sta: str, day: date_cls, db_dir: Path, sds_root: Path,
+def _add(rec, category, counts, **kw):
+    counts[category] = counts.get(category, 0) + 1
+    if counts[category] <= MAX_FINDINGS_PER_CAT:
+        rec["findings"].append({"category": category, **kw})
+
+
+def verify_day(net: str, sta: str, day: date_cls, db_dirs, sds_root: Path,
                registry: dict, stratum: str = "uniform") -> dict:
     rec = {"t": "day", "net": net, "sta": sta, "date": day.isoformat(),
            "stratum": stratum, "findings": [], "metrics": {}}
+    if isinstance(db_dirs, (str, Path)):
+        db_dirs = [Path(db_dirs)]
     try:
-        return _verify_day(rec, net, sta, day, db_dir, sds_root, registry)
+        return _verify_day(rec, net, sta, day, [Path(d) for d in db_dirs],
+                           Path(sds_root), registry)
     except Exception as exc:
         rec["findings"].append({"category": "comparator_error",
                                 "detail": f"{type(exc).__name__}: {exc}"})
         return rec
 
 
-def _verify_day(rec, net, sta, day, db_dir, sds_root, registry):
+def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
+    counts: dict = {}
     entry = registry.get(sta) or {}
     rts = entry.get("recorder_types") or []
     minimus = "minimus" in rts
     exp_loc = entry.get("target_location") or "00"
 
-    db = sqlite3.connect(str(db_dir / f"{net}.{sta}.db"))
+    db_path = find_db(db_dirs, net, sta)
+    if db_path is None:
+        _add(rec, "no_station_db", counts,
+             detail=f"no usable {net}.{sta}.db on search path")
+        rec["metrics"]["verdict"] = "finding"
+        return rec
+    db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     files = query_day_files(db, day, minimus)
     tail = query_boundary_tail(db, day, minimus)
     db.close()
@@ -357,58 +456,48 @@ def _verify_day(rec, net, sta, day, db_dir, sds_root, registry):
         return rec
     if not files and conv_traces:
         # LT bytes with no eqserver source: usually live-seedlink era.
-        rec["findings"].append({"category": "conv_data_without_source",
-                                "detail": "no in-scope source files this day"})
+        _add(rec, "conv_data_without_source", counts,
+             detail="no in-scope source files this day")
         rec["metrics"]["verdict"] = "finding"
         return rec
 
-    recorders = {f["recorder"] for f in files}
-    rec["metrics"]["recorders"] = sorted(recorders)
+    rec["metrics"]["recorders"] = sorted({f["recorder"] for f in files})
 
-    # --- read selected sources (disk-preferred) + previous-day tail ----------
+    # --- read sources by population -------------------------------------------
     errors: list = []
-    selected = select_disk_preferred(files)
-    src_traces = []
-    for f in selected + select_disk_preferred(tail):
-        src_traces.append((f, read_source_file(f["path"], errors)))
-    flat_src = [t for _, ts in src_traces for t in ts]
-    for e in errors[:20]:
+    counters: dict = {}
+    disk_f, fill_f, extra_f = split_populations(files)
+    tail_disk, tail_fill, _ = split_populations(tail)
+    expected_tr = read_population(disk_f + fill_f + tail_disk + tail_fill,
+                                  errors, counters)
+    extra_tr = read_population(extra_f, errors, counters)
+    for e in errors[:MAX_FINDINGS_PER_CAT]:
         rec["findings"].append({"category": "source_read_error", **e})
+    counts["source_read_error"] = len(errors)
     rec["metrics"]["n_read_errors"] = len(errors)
+    rec["metrics"].update(counters)
 
-    sel_iv = to_intervals(flat_src, day_start, day_end)
+    exp_iv = to_intervals(expected_tr, day_start, day_end)
+    extra_iv = to_intervals(extra_tr, day_start, day_end)
     rec["metrics"]["src_seconds"] = round(
-        sum(total(v) for v in sel_iv.values()), 2)
+        sum(total(v) for v in exp_iv.values()), 2)
 
-    # --- channel-set probe of unselected telemetry (Class-2 detector) --------
-    disk_minutes = {f["hhmm"] for f in files if f["source"] == "disk"}
-    tele_dup = sorted(
-        (f for f in files
-         if f["source"] == "telemetry" and f["hhmm"] in disk_minutes),
-        key=lambda f: f["hhmm"])
-    probe = tele_dup[::max(1, TELE_PROBE_EVERY_MIN)][:48]
-    sel_orients = set(sel_iv)
-    tele_extra = set()
-    for f in probe:
-        for t in read_source_file(f["path"], errors):
-            if t["orient"] not in sel_orients:
-                tele_extra.add(t["orient"])
-    if tele_extra:
-        rec["findings"].append({
-            "category": "selection_loss_suspect",
-            "detail": f"unselected telemetry carries orientations "
-                      f"{sorted(tele_extra)} absent from selected sources",
-        })
-
-    # --- per-orientation coverage + sample comparison ------------------------
-    min_rate = min((t["rate"] for t in flat_src if t["rate"] > 0), default=100.0)
+    all_src = expected_tr + extra_tr
+    min_rate = min((t["rate"] for t in all_src if t["rate"] > 0), default=100.0)
     min_len = 2.0 / min_rate
+
+    # --- per-orientation coverage + sample comparison -------------------------
     per_chan = {}
     total_cmp = total_bad = total_misalign = 0
-    for orient, s_iv in sel_iv.items():
+    t0 = float(day_start.timestamp)
+    orients = set(exp_iv) | set(extra_iv)
+    for orient in sorted(orients):
+        e_iv = exp_iv.get(orient, [])
+        x_iv = extra_iv.get(orient, [])
         c_iv = conv_iv.get(orient, [])
-        missing = subtract(s_iv, c_iv, min_len)
-        src_for = [t for t in flat_src if t["orient"] == orient]
+        missing = subtract(e_iv, c_iv, min_len)
+        sel_loss = subtract(subtract(x_iv, e_iv, min_len), c_iv, min_len)
+        src_for = [t for t in all_src if t["orient"] == orient]
         conv_for = [t for t in conv_traces if t["orient"] == orient]
         n_cmp, n_bad, n_mis, covered = compare_samples(
             src_for, conv_for, day_start, day_end)
@@ -417,93 +506,113 @@ def _verify_day(rec, net, sta, day, db_dir, sds_root, registry):
         total_cmp += n_cmp
         total_bad += n_bad
         total_misalign += n_mis
-        per_chan[orient] = {
-            "src_s": round(total(s_iv), 2), "conv_s": round(total(c_iv), 2),
+        pc = {
+            "src_s": round(total(e_iv), 2), "conv_s": round(total(c_iv), 2),
             "missing_s": round(total(missing), 2),
+            "sel_loss_s": round(total(sel_loss), 2),
             "phantom_s": round(total(phantom), 2),
             "n_cmp": n_cmp, "n_bad": n_bad,
         }
-        t0 = float(day_start.timestamp)
-        for s, e in missing[:50]:
+        pc["missing"] = [[round(s - t0, 3), round(e - t0, 3)]
+                         for s, e in missing[:20]]
+        per_chan[orient] = pc
+        for s, e in missing:
             boundary = (s - t0) < 120 or (float(day_end.timestamp) - e) < 120
-            per_chan[orient].setdefault("missing", []).append(
-                [round(s - t0, 3), round(e - t0, 3)])
             cat = ("missing_interval_boundary" if boundary
                    else "missing_interval_midday")
-            rec["findings"].append({
-                "category": cat, "channel": orient,
-                "detail": f"{round(e - s, 3)}s at day-offset {round(s - t0, 1)}s"})
-        if not c_iv and s_iv:
-            rec["findings"].append({"category": "missing_channel",
-                                    "channel": orient})
+            _add(rec, cat, counts, channel=orient,
+                 detail=f"{round(e - s, 3)}s at day-offset {round(s - t0, 1)}s")
+        if e_iv and not c_iv:
+            _add(rec, "missing_channel", counts, channel=orient)
+        if total(sel_loss) > 5.0:
+            _add(rec, "selection_loss", counts, channel=orient,
+                 detail=f"{round(total(sel_loss), 1)}s telemetry-only data "
+                        f"not in converted output")
         if total(phantom) > 2.0:
-            rec["findings"].append({
-                "category": "phantom_data", "channel": orient,
-                "detail": f"{round(total(phantom), 1)}s converted data not "
-                          f"matched to any selected source sample window"})
+            _add(rec, "phantom_data", counts, channel=orient,
+                 detail=f"{round(total(phantom), 1)}s converted data not "
+                        f"matched to any source sample window")
         if n_bad:
-            rec["findings"].append({
-                "category": "sample_mismatch", "channel": orient,
-                "detail": f"{n_bad}/{n_cmp} samples differ"})
-        # duration ratio on the converted side (duplication detector)
+            _add(rec, "sample_mismatch", counts, channel=orient,
+                 detail=f"{n_bad}/{n_cmp} samples differ (no source copy "
+                        f"agrees)")
         conv_dur = sum(len(t["data"]) / t["rate"] for t in conv_for)
         if conv_dur > 1.05 * total(c_iv) and conv_dur - total(c_iv) > 60:
-            rec["findings"].append({
-                "category": "duplicated_data", "channel": orient,
-                "detail": f"trace-seconds {round(conv_dur)} vs unique "
-                          f"coverage {round(total(c_iv))}"})
+            _add(rec, "duplicated_data", counts, channel=orient,
+                 detail=f"trace-seconds {round(conv_dur)} vs unique "
+                        f"coverage {round(total(c_iv))}")
     if total_misalign:
-        rec["findings"].append({
-            "category": "timing_misalign",
-            "detail": f"{total_misalign} trace overlaps misaligned by "
-                      f">{SAMPLE_TOL} samples"})
+        _add(rec, "timing_misalign", counts,
+             detail=f"{total_misalign} trace overlaps misaligned by "
+                    f">{SAMPLE_TOL} samples")
     rec["metrics"]["n_cmp"] = total_cmp
     rec["metrics"]["n_bad"] = total_bad
 
-    if sel_iv and not conv_traces:
+    if orients and not conv_traces:
         rec["findings"] = [f for f in rec["findings"]
-                           if f["category"] != "missing_channel"]
-        rec["findings"].append({"category": "missing_day"})
+                           if f["category"] not in ("missing_channel",)]
+        _add(rec, "missing_day", counts)
 
-    # --- SEED id checks -------------------------------------------------------
+    # --- channel-set probe of duplicate telemetry (cheap Class-2 sentinel) ----
+    probe_src = sorted(extra_f, key=lambda f: f["hhmm"] or "")
+    probe = probe_src[::max(1, TELE_PROBE_EVERY_MIN)][:48]
+    probed_extra = {t["orient"]
+                    for f in probe
+                    for t in read_source_file(f["path"], [], {})}
+    extra_orients = probed_extra - set(exp_iv)
+    already = {f.get("channel") for f in rec["findings"]
+               if f["category"] in ("selection_loss", "missing_channel")}
+    if extra_orients - already:
+        _add(rec, "selection_loss_suspect", counts,
+             detail=f"duplicate telemetry carries orientations "
+                    f"{sorted(extra_orients - already)} absent from expected "
+                    f"sources")
+
+    # --- SEED id checks ---------------------------------------------------------
     if conv_nets - {net}:
-        rec["findings"].append({"category": "seed_id_mismatch",
-                                "detail": f"net {sorted(conv_nets)} != {net}"})
+        _add(rec, "seed_id_mismatch", counts,
+             detail=f"net {sorted(conv_nets)} != {net}")
     if conv_locs - {exp_loc}:
-        rec["findings"].append({
-            "category": "seed_id_mismatch",
-            "detail": f"loc {sorted(conv_locs)} != {exp_loc}"})
-    rates = {round(t["rate"]) for t in flat_src if t["rate"] > 0}
+        _add(rec, "seed_id_mismatch", counts,
+             detail=f"loc {sorted(conv_locs)} != {exp_loc}")
+    rates = {round(t["rate"]) for t in all_src if t["rate"] > 0}
     if len(rates) == 1 and conv_chans:
         band = seed_band(next(iter(rates)))
         wrong = {c for c in conv_chans if c[0] != band}
         if wrong:
-            rec["findings"].append({
-                "category": "seed_id_mismatch",
-                "detail": f"band: source rate {sorted(rates)} expects "
-                          f"'{band}*', converted has {sorted(wrong)}"})
+            _add(rec, "seed_id_mismatch", counts,
+                 detail=f"band: source rate {sorted(rates)} expects "
+                        f"'{band}*', converted has {sorted(wrong)}")
 
     rec["per_chan"] = per_chan
-    rec["metrics"]["verdict"] = "finding" if rec["findings"] else "ok"
+    rec["finding_counts"] = counts
+    rec["metrics"]["verdict"] = "finding" if counts else "ok"
     return rec
 
 
-# --- CLI ----------------------------------------------------------------------
+# --- CLI -------------------------------------------------------------------------
+
+DEFAULT_DB_DIRS = [
+    "/mnt/seiscomp_staging/eqserver_provenance/VW/2026-06-10/station_dbs",
+    "~/station_dbs",
+]
+
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--net", required=True)
     ap.add_argument("--sta", required=True)
     ap.add_argument("--date", required=True, help="YYYY-MM-DD")
-    ap.add_argument("--db-dir", default="~/station_dbs")
+    ap.add_argument("--db-dirs", nargs="*", default=DEFAULT_DB_DIRS)
     ap.add_argument("--sds-root", default="/mnt/seiscomp_archive")
-    ap.add_argument("--repo-root", default=str(Path(__file__).resolve().parent.parent))
+    ap.add_argument("--repo-root",
+                    default=str(Path(__file__).resolve().parent.parent))
     args = ap.parse_args()
 
     registry = load_registry(Path(args.repo_root))
+    db_dirs = [Path(d).expanduser() for d in args.db_dirs]
     rec = verify_day(args.net, args.sta, date_cls.fromisoformat(args.date),
-                     Path(args.db_dir).expanduser(), Path(args.sds_root),
-                     registry)
+                     db_dirs, Path(args.sds_root), registry)
     json.dump(rec, sys.stdout, indent=2)
     print()
 
