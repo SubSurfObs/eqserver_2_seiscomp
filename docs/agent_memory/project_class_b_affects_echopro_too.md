@@ -1,7 +1,7 @@
 ---
 name: project-class-b-affects-echopro-too
 description: "Class B (missing stream.merge before write_sds) affects EchoPro days too, not just Gecko/Minimus. LT trace-count scan confirmed 2026-06-19: 136 Class B candidates including pure-EchoPro station-years (BEST, HOLS, CLIF, MRDN, NARR, HODL, KRAN, MARD, WPNH, LOCU)."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

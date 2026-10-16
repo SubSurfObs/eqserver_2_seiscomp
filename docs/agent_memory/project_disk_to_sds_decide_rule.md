@@ -1,7 +1,7 @@
 ---
 name: project-disk-to-sds-decide-rule
 description: The override decision lives in apply.py:decide() and compares SAMPLES (not size) to a tolerance of full-day expected samples. Already source-kind-agnostic. Plus two known failure modes.
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

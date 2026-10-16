@@ -1,7 +1,7 @@
 ---
 name: feedback-use-station-dbs-first
 description: "For any 'what's in EqServer?' question — counts, per-day coverage, channel-suffix transitions, deployment gaps — query the per-station SQLite DBs under /home/.../station_dbs/ first. Filesystem walks bypass work we already paid for."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

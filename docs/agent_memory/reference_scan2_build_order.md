@@ -1,7 +1,7 @@
 ---
 name: reference-scan2-build-order
 description: "Canonical 6-step build order for the second-pass conversion pipeline. Anchor for any work on scan 2 after compaction. Do not press ahead with the test suite until Step 5 is real — the pieces don't talk to each other yet."
-metadata: 
+metadata:
   node_type: memory
   type: reference
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

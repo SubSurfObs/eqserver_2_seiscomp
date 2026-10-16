@@ -1,7 +1,7 @@
 ---
 name: project-next-session-startup-2026-06-23
 description: "Startup priorities for next session 2026-06-23 evening / 2026-06-24. In-flight: diagnose.py rerun on staging VM (PID 3480413, started ~13:11 UTC, ETA finish ~14:30 UTC). When done: pull eqserver on VM, commit source_stats outputs, rebuild test-env mini-DBs, regenerate plans, convert_all to fresh staging_sds (v3). Three staging dirs preserved for evolution tracking."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

@@ -1,7 +1,7 @@
 ---
 name: project-first-sweep-attempt
 description: "First VW production sweep attempt on 2026-05-31. End-to-end pipeline worked on isolated single units, but failed on the multi-unit case due to an apply.py scoping race. Sweep halted. Three fixes applied; restart deferred until testing exercises multi-unit pipelining."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

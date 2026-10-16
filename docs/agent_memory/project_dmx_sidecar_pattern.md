@@ -1,7 +1,7 @@
 ---
 name: project-dmx-sidecar-pattern
 description: EqServer ingest path produces single-channel SUDS sidecar files (1-channel UM.<STA>.CHZ) alongside Gecko 3-channel mseed. 19 stations × 56 station-years affected network-wide. plan_generator.manifest_recorder protected against the dispatch contamination 2026-06-22.
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

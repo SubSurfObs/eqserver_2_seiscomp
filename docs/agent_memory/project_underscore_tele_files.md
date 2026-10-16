@@ -1,7 +1,7 @@
 ---
 name: project-underscore-tele-files
 description: "1.69M tele MSEED files use UNDERSCORE between time and station code (e.g. '2021-06-20 2355_DDWB.ms.zip'). Concentrated 97% at RT130 stations (SGWU 995k, TRPU 550k, LOYU 110k) with a small Minimus tail (DDWB 31k). Verified 2026-06-22 by per-station count across all 41 VW. DDBE/SCM2 (Minimus) have ZERO — pattern is NOT Minimus-universal."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

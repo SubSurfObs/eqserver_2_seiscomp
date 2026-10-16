@@ -1,7 +1,7 @@
 ---
 name: feedback-verify-before-claiming
 description: "Every concrete assertion about 'X exists / X is true / X works this way' must be backed by a tool output in the same response that directly shows X. No inference from partial ls / partial code reads / half-remembered docs."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

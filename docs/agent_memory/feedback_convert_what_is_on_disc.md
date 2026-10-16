@@ -1,7 +1,7 @@
 ---
 name: feedback-convert-what-is-on-disc
 description: "The pipeline's job is to convert the data that exists on disc. The ONLY legitimate reason to skip a day is a pathological file-level issue (e.g. unreadable bytes). Recorder restarts, partial days, low-power outages, multi-session days, telemetry-only days are NORMAL operational states of the archive — NOT pathological — and must NOT be pre-filtered out."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

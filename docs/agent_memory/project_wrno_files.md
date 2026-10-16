@@ -1,7 +1,7 @@
 ---
 name: project-wrno-files
 description: .wrno.dmx.gz files (~970k network-wide) carry a WNRO (GPS Week Number RollOver) tag — files whose original GPS timestamps were affected by the 1024-week rollover bug. Filename dates are uncorrected (often appear as 1989/1999). Real recording date = filename date + 19.7 years × N. Already addressed by ingest-side correction per CLAUDE.md.
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

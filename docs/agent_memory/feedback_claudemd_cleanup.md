@@ -1,7 +1,7 @@
 ---
 name: claudemd-cleanup
 description: "User wants active reconciliation/clarification of CLAUDE.md during the preliminary stage, not just appends"
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 8334aefc-ad49-41d2-9e7a-e1847a54dfc1

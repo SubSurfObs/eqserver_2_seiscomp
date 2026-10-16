@@ -1,7 +1,7 @@
 ---
 name: project-rt130-per-channel-files
 description: "RT130 borehole stations (LOYU, WILU, TRPU, MOSU, SGWU) wrote SINGLE-CHANNEL miniSEED files via pre-ingest conversion. ~1.2M such files visible in EqServer manifest as 'unmatched'. Convert path must aggregate per-channel sources into 3-component output. Confirm in test env before launching scan 2."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

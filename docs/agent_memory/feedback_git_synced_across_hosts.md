@@ -1,7 +1,7 @@
 ---
 name: feedback-git-synced-across-hosts
 description: "ALL code in this project group syncs across Mac, staging VM, and dev1 via git pull — never SCP, never manual file copies. The infrastructure (ledger_git autocommit, GitHub origin) is designed for this. SCP is incoherent with that design."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

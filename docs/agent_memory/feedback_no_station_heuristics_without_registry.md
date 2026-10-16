@@ -1,7 +1,7 @@
 ---
 name: feedback-no-station-heuristics-without-registry
 description: "Don't ad-lib station identity / network assignment from naming patterns alone. Check the registry first; if it's quiet, say \"I don't know\" rather than guess."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

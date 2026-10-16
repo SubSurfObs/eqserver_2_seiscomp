@@ -27,7 +27,15 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 2. **Scan 2 / v2 engine** (`docs/scan2_build_order.md`, 6 ordered steps):
    - Step 1 conditional epoch bisection — done (`3c52c50`)
    - Step 2 size stats — done (`8d729a0`)
-   - Step 3 plan_generator ingests epochs + size stats — done (`16f039f`)
+   - Step 3 plan_generator ingests epochs + size stats — landed (`16f039f`)
+     but **incomplete for Class 2** (Codex review 2026-10-16, F1): the
+     per-plan-epoch `channels_by_source_kind` / `source_priority` hints
+     UNION channel epochs over the whole recorder epoch, so a CHZ-only
+     disk era inside a broader epoch still yields disk-first priority for
+     CHE/CHN. Fix: split plan epochs at channel-epoch boundaries, OR make
+     Step 4 do date-aware lookup against `channel_epochs` directly.
+     Acceptance test: WLSH 2018–2023 CHE/CHN priorities must exclude
+     `disk_mseed`.
    - Step 4 `coverage_planner.py` — **not started** (no file exists; plan
      YAML carries hints "coverage_planner will consume this")
    - Step 5 phase3 integration — partly: `fast_merge_split` wired into
@@ -36,15 +44,22 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
    - **WLSH validation run — resolved 2026-10-16.** The run completed
      cleanly on 2026-06-24 15:22 (13 year-manifests, engine
      `eqserver@a53d74e`; 2012–2017 `no_files`, 2018–2024: 1,776 ok days,
-     34 qc_flagged, 0 failures/timeouts). But the v2 staging output is
-     **byte-identical to v1 LT** across 2018–2023 (per-channel dir byte
-     totals match to within KB), so **Class 2 is NOT confirmed fixed** —
-     as expected, because Step 4 `coverage_planner.py` was never built;
+     34 qc_flagged, 0 failures/timeouts). But the v2 staging output shows
+     **no channel-coverage change vs v1 LT** across 2018–2023: identical
+     per-channel day-file counts and per-channel directory byte totals
+     agreeing to within KB (`du -sb` aggregate comparison — NOT a
+     per-file hash; individual files may still differ at trace boundaries
+     per the known fast_merge_split trim semantic). Recovered N/E would
+     be GB-scale, so **Class 2 is NOT confirmed fixed** — as expected,
+     because Step 4 `coverage_planner.py` was never built;
      the regenerated plan only gained `channel_epochs` hints and an empty
      `source_priority: {}` (uncommitted on the VM). WLSH's `_epochs` data
      shows the channel evidence comes from the `perchan_mseed` population
      (CHZ-only 2018-07→10 and 2021-07→2024-07; 3-channel 2018-11→2020-07).
-     The run DID validate engine stability + determinism. Side findings:
+     The run DID validate engine stability (clean completion, zero
+     timeouts); determinism is NOT established by a single run — that
+     needs two runs from identical pinned inputs with per-file
+     comparison. Side findings:
      v2 names the 2018 4th channel `CHO` where v1 LT has `CDO`, and the
      2019 one-day high-rate epoch `HH*` where v1 LT has `HQ*` — naming
      deltas to adjudicate before any v2 promote; WLSH 2024 staging has
@@ -71,14 +86,20 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
   `sudspy@1e51cd8` clean; `sds_staging_ledger@da216ea` dirty with
   cleanups.jsonl appends incl. untracked VX 2012 ALLA/MOE3 (operator
   commits these).
-- **Engine pin is stale in CLAUDE.md.** `suds_convert.py` changed once
-  since `94ff229`: `20a483c` (write_sds → `sudspy.fast_merge_split`,
-  committed 2026-06-23, deliberate). The v2 BEST/WLSH runs included it.
-  Effective pin for v2 work: `disk_to_sds@20a483c` or later.
-- **Sweep state (v1 queue, raw jsonl):** 364 units all
-  converted+promoted+cleaned (VW 332 + VX 32). The unit-table's "7
-  converted-not-yet-promoted" are BRTH 2012–2017 + CLIF 2012 — all
-  `skip-empty` at promote (no-data years), benign, not pending work.
+- **Engine pin updated in CLAUDE.md** (was stale at `94ff229`).
+  `suds_convert.py` changed exactly once since then: `20a483c` (write_sds
+  → `sudspy.fast_merge_split`, committed 2026-06-23, deliberate); the v2
+  BEST/WLSH runs included it. The **exact repo SHA for the next Stage-4
+  production run is still an owed decision** (Dan): either checkout
+  `20a483c`, or validate and pin current VM HEAD `ec159ea` (clean;
+  later commits are resample/SmartSolo, engine untouched). Record the
+  choice in `config/pinned_repo_shas.yaml` when the preflight script is
+  built. "20a483c or later" is NOT a pin.
+- **Sweep state (v1 queue, raw jsonl):** 364 units terminally handled
+  (VW 332 + VX 32): 357 promoted + cleaned, 7 `skip-empty` no-data
+  units (BRTH 2012–2017 + CLIF 2012 — the unit-table shows these as
+  "converted-not-yet-promoted" because skip-empty intentionally never
+  sets promoted/cleaned). Benign; nothing pending.
 - **v2 queue:** 22 units converted (BEST 2017–2025, WLSH 2012–2024),
   **none promoted**; written into the main staging tree
   `/mnt/seiscomp_staging/seiscomp_archive`.
@@ -93,7 +114,6 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 - `scan/level1.py` treats `include: unknown` as in scope (truthy test) while
   `plan_generator.py` requires `include is True`. Harmless today (plan gate),
   but make them consistent.
-- CLAUDE.md engine-pin section needs updating to `20a483c`+ (noted there).
 
 ## Next actions (in order)
 
@@ -104,9 +124,14 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 - [ ] Assumptions inventory session: every assumption the conversion
       relies on, and what (if anything) currently tests it → work plan
       for the testing week.
-- [ ] Build v2 Step 4 `coverage_planner.py` (the actual Class-2 fix),
-      then re-run WLSH as the validation (current run only proved engine
-      stability/determinism).
+- [ ] Dan: choose the exact `disk_to_sds` SHA for the next Stage-4 run
+      (`20a483c` checkout vs pin `ec159ea`) — see Codex F3.
+- [ ] Build v2 Step 4 `coverage_planner.py` (the actual Class-2 fix) with
+      **date-aware lookup against `channel_epochs`** (or split plan
+      epochs at channel-epoch boundaries first — Codex F1), then re-run
+      WLSH; acceptance test: 2018–2023 CHE/CHN priorities exclude
+      `disk_mseed`, and recovered N/E appears in staging where v1 LT is
+      Z-only.
 - [ ] Decide sequencing (recommended: finish v2 Steps 4–6 → VX → DU → targeted VW resweep).
 - [ ] Write the per-stage SHA preflight script (`config/pinned_repo_shas.yaml`).
 

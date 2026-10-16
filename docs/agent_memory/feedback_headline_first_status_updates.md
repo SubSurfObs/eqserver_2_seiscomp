@@ -1,7 +1,7 @@
 ---
 name: feedback-headline-first-status-updates
 description: "For any status update or progress report, lead with a one-line plain-English headline a human can understand cold; only then unpick detail"
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

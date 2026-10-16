@@ -1,7 +1,7 @@
 ---
 name: feedback-iterative-station-by-station-workflow
 description: "For v2 (and any future) production resweep, the operator pattern is iterative station-by-station: one station, spot-test staging vs LT, apply, more testing, then add the next station via --stations BEST,OTHER. Days between stations are fine. The shared queue-dir (eqserver_sweep_v2/) marks completed units so re-runs only do new work. Don't launch the full cohort/network at once."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

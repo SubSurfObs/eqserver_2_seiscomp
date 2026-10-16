@@ -1,7 +1,7 @@
 ---
 name: feedback-test-the-pipeline-not-just-the-unit
 description: "Single-unit end-to-end tests prove the per-(sta, year) chain works but do NOT prove the orchestrator-as-a-pipeline works. Before re-launching a multi-unit sweep, test the multi-unit case — overlapping units, races, status-gate misses, partial state in staging. Both verification tests this session were single-unit."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

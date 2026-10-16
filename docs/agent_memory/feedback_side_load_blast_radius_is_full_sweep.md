@@ -1,7 +1,7 @@
 ---
 name: feedback-side-load-blast-radius-is-full-sweep
 description: "When a side-loaded engine corrupts archive bytes, the blast radius can approach the cost of a full re-sweep. Provenance discipline must be enforced BEFORE phase3 starts, not after."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

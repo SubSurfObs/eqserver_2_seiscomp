@@ -1,7 +1,7 @@
 ---
 name: project-eqserver-telemetry-only-via-network
 description: "Telemetry files in the EqServer archive can ONLY have arrived via real-time network (FTP for EchoPro, serial for Gecko) into EqServer's inbox. There is no physical upload pathway. Archive mtimes reflect EqServer's dispatch time, NOT the original network arrival."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

@@ -1,7 +1,7 @@
 ---
 name: feedback-scans-write-at-intervals
 description: "Long-running scans must flush results to disk at intervals (per outer-loop iteration or every N items), not just at end-of-run. Buffered-until-completion makes it impossible to catch bugs or interrupt safely."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

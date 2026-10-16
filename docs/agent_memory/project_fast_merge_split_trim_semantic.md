@@ -1,7 +1,7 @@
 ---
 name: project-fast-merge-split-trim-semantic
 description: "Pipeline as of 2026-06-23 uses sudspy.fast_merge_split(overlap='trim') in all engines, replacing obspy.merge(method=1)+split(). Production wins are RELIABILITY not raw speed: ~18% SLOWER per-day on typical clean production days (verified 2026-06-24 on v2 BEST run), but eliminates O(N^2) timeout class on pathological days that previously failed. Yesterday's 7x catalogue claim came from cherry-picked pathological days + avoided timeouts, NOT per-day speedup. Semantic difference: trim drops overlap from later trace (preserves real measurements); obspy averaged. 0.006-0.04% of samples in scan-1 LT will diverge -- expected, not a regression."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

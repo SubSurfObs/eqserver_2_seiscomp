@@ -1,7 +1,7 @@
 ---
 name: project-sgwu-lt-findings-2026-06-21
 description: "Direct LT verification 2026-06-21: SGWU channel naming consistent HH1/HH2/HHZ across the RT130 era (2014-2023); switches to CH?/DH?/FH? in 2025-2026 Gecko era. LT coverage shockingly low for several years: 2014 (23% of year), 2021 (2.5%!), 2022 (37%), 2023 (43%) — possibly correlates with the unparsed-cohort drop. Same pattern likely at LOYU, WILU, TRPU."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

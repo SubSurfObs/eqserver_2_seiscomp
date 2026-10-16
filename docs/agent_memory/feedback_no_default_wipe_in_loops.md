@@ -1,7 +1,7 @@
 ---
 name: feedback-no-default-wipe-in-loops
 description: "Never put rmtree-style 'clean slate' wipes as default behaviour in code that may be called in a loop. Wiping must be opt-in via explicit flag. Bulk wrappers around per-item functions must audit those functions for state-modifying side effects before iterating."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

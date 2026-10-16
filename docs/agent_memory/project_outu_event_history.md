@@ -1,7 +1,7 @@
 ---
 name: project-outu-event-history
 description: OUTU 2017-04-12 was an EchoPro sample-rate reconfigure (200→250 Hz) + seismometer correction — NOT a recorder swap. The real EchoPro→Gecko swap at OUTU was 2025-04-09 (out of scope for the EqServer scan whose data ends 2025-02).
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

@@ -1,7 +1,7 @@
 ---
 name: project-rt130-borehole-z12-mapping
 description: "RT130 borehole stations (LOYU, WILU, TRPU, MOSU, SGWU) use HH1/HH2/HHZ channel codes because the sensor's down-hole orientation is unknown — 1 and 2 stand in for the unconstrained horizontals. Current operator decision (2026-06-21): keep the existing HH1→HHN, HH2→HHE mapping in the LT archive. A proper remap is a future task that will also need telemetry-side correction."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

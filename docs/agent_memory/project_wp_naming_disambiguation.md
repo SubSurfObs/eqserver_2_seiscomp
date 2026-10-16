@@ -1,7 +1,7 @@
 ---
 name: project-wp-naming-disambiguation
 description: "WP-prefix stations split into two distinct deployments — Wilson's Prom (permanent VW) vs Woods Point aftershocks (temporary VX). Don't conflate."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

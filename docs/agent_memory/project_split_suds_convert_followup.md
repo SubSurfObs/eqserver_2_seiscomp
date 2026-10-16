@@ -1,7 +1,7 @@
 ---
 name: project-split-suds-convert-followup
 description: "Queued cross-repo rename: disk_to_sds will split suds_convert.py into sds_writer.py + suds_convert.py after current sweep stabilises. Eqserver's phase3_driver.py imports must update in the same window."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

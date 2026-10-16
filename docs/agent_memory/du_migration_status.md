@@ -1,7 +1,7 @@
 ---
 name: du-migration-status
 description: "DU network migration to new SeisComP server is ~70% done; FDSN inventory is the channel-code source of truth, no hand CSV"
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 8334aefc-ad49-41d2-9e7a-e1847a54dfc1

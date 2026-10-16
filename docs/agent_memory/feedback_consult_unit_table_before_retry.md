@@ -1,7 +1,7 @@
 ---
 name: feedback-consult-unit-table-before-retry
 description: "Before any retry-class decision in this project, run `sweep_status.py --unit-table` for the affected units. The state column is the gate; convert_failed.jsonl alone is misleading."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

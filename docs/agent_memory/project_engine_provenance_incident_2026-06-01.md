@@ -1,7 +1,7 @@
 ---
 name: project-engine-provenance-incident-2026-06-01
 description: "Mid-sweep on 2026-06-01, disk_to_sds caught that the SUDS→SDS engine running on the production sweep existed only as an untracked side-loaded file on the staging VM — no git record. Functionally identical to the Mac working tree, but the running 2.6 TB conversion had no pinnable engine SHA. Pinned at disk_to_sds 9a3b2ae after the fact."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

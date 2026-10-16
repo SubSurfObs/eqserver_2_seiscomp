@@ -1,7 +1,7 @@
 ---
 name: feedback-held-queue-is-load-bearing
 description: "Don't auto-commit held entries via apply.py --commit, even when \"tuning tolerance\" or \"matching disk_to_sds.\" The held queue is a human review gate; disk_to_sds field history shows the rule was wrong the one time it fired."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

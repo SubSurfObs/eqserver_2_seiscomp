@@ -1,7 +1,7 @@
 ---
 name: project-stress-test-results
 description: "2026-06-01 multi-station + setsid-detach + resume-after-kill stress test. All three operational gaps from yesterday's failed sweep launch are now verified resolved. The pipeline is operationally ready for the full VW sweep."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

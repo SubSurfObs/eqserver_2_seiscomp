@@ -1,7 +1,7 @@
 ---
 name: fdsn-server
 description: UoM SeisComP FDSN station web service — source of truth for live station/channel SEED codes
-metadata: 
+metadata:
   node_type: memory
   type: reference
   originSessionId: 8334aefc-ad49-41d2-9e7a-e1847a54dfc1

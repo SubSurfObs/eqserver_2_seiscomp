@@ -1,7 +1,7 @@
 ---
 name: reference-source-stats-tooling
 description: "New source-characterisation scripts under scan/ + outputs under metadata/source_stats/. Built 2026-06-21 to do the discovery work that should have preceded scan 1. Use these to answer 'what shape is the source data?' before any new scan."
-metadata: 
+metadata:
   node_type: memory
   type: reference
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

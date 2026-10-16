@@ -1,7 +1,7 @@
 ---
 name: feedback-cold-cache-discipline
 description: "For ALL perf tests on this project's pipeline, explicitly control for cold vs hot NFS cache state — the gap is large enough to invalidate apples-to-oranges comparisons silently"
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

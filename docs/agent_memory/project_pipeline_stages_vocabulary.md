@@ -1,7 +1,7 @@
 ---
 name: project-pipeline-stages-vocabulary
 description: "Locked 2026-06-23: pipeline is 5 executable stages + 1 manual foundation. Stage 0 REGISTRY (manual, station_registry.yaml + FDSN snapshots), Stage 1 MANIFEST, Stage 2 PROFILE, Stage 3 PLAN, Stage 4 CONVERT, Stage 5 PROMOTE. Authoritative reference is CLAUDE.md 'Pipeline stages and their dependencies' section."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

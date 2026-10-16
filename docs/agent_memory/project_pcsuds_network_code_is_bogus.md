@@ -1,7 +1,7 @@
 ---
 name: project-pcsuds-network-code-is-bogus
 description: "PC-SUDS STATIDENT.network field is bogus pre-VW-formal-registration; common values UM/AB/ABC are all parse-noise on the same meaningless field and get mapped to VW by the conversion. Don't treat variation across UM/AB/ABC as a signal."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

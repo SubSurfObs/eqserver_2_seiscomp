@@ -1,7 +1,7 @@
 ---
 name: feedback-orchestrator-must-validate-date-range
 description: "run_production_convert.py must validate that phase3's start/end_date is a full year (or that partial_completion_reason explains the truncation) before appending to convert_done. Without this guard, leftover test-run invocations with 7-day windows get marked complete and never re-attempted."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

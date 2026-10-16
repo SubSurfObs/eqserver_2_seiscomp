@@ -1,7 +1,7 @@
 ---
 name: project-du-sweep-preconditions
 description: "Things that MUST be reviewed before the DU network sweep launches. Currently: re-examine the PiesMo HHZ-stub defer_conversion rationale (PiesMo only appears in DU), and confirm LT-direct-seedlink overlap doesn't bite the override gate."
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

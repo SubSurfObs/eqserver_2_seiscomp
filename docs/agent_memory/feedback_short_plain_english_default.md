@@ -1,7 +1,7 @@
 ---
 name: feedback-short-plain-english-default
 description: "Default reply style is short and plain English. Aim for ~4 sentences. No tables, lists, headers, or multi-section structure unless the operator explicitly asks for detail. Long, structured replies slow iteration. The operator will ask for more if they need it."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

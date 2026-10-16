@@ -1,7 +1,7 @@
 ---
 name: project-pipeline-test-results
 description: Multi-unit pipeline test run on 2026-06-01 against an isolated mediaflux proxy LT + local bare ledger. All 7 scenarios passed including the falsifiability control. Year-scoping fix verified end-to-end. Cleanup year-safety mitigated by LT-match-required design.
-metadata: 
+metadata:
   node_type: memory
   type: project
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

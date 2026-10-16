@@ -1,7 +1,7 @@
 ---
 name: feedback-check-audit-trail-before-speculating
 description: "For \"who wrote these LT files?\" — read the mtime first. If recent, it was this project; legacy bash+Java pipeline is not a candidate."
-metadata: 
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 66713a2d-7a0d-44f1-ae1a-e3a1e4de0f66

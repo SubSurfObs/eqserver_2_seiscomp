@@ -276,13 +276,16 @@ Reuse its model rather than re-implementing:
 
 ### Shared conversion core: `disk_to_sds/scripts/suds_convert.py`
 
-**Engine pin (current): `disk_to_sds` SHA `20a483c` (committed 2026-06-23),
-which routes `write_sds` through `sudspy.fast_merge_split` (the trim-semantic
-merge adopted across all engines — see [[project-fast-merge-split-trim-semantic]]).
-This is the only `suds_convert.py` change since `94ff229` and is what the v2
-BEST/WLSH runs of 2026-06-23/24 ran on. Verified on the staging VM 2026-10-16:
-HEAD is `ec159ea` (clean); commits after `20a483c` are resample/SmartSolo work
-that does not touch the engine.**
+**Last engine-touching commit: `disk_to_sds` SHA `20a483c` (committed
+2026-06-23), which routes `write_sds` through `sudspy.fast_merge_split` (the
+trim-semantic merge adopted across all engines — see
+[[project-fast-merge-split-trim-semantic]]). This is the only
+`suds_convert.py` change since `94ff229` and is what the v2 BEST/WLSH runs of
+2026-06-23/24 ran on. It is NOT yet an approved Stage-4 pin: the exact repo
+SHA for the next production run (checkout `20a483c`, or validate current VM
+HEAD `ec159ea` — clean, later commits are resample/SmartSolo work that does
+not touch the engine) is an owed operator decision, to be recorded in
+`config/pinned_repo_shas.yaml` when the preflight script is built.**
 
 **Earlier pin: `94ff229` (committed 2026-06-12),
 which adds Kelunji **Echo** channel-name recognition (`Up-T/East-T/North-T`
