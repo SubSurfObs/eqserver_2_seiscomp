@@ -64,23 +64,24 @@ def first_convert_ts(queue_dir: Path) -> dict:
     return out
 
 
-def days_with_data(db_dirs: list, net: str, sta: str, year: int) -> list[date_cls]:
+def days_by_year(db_dirs: list, net: str, sta: str) -> dict[int, list]:
+    """One full-table scan per STATION: {year: [date, ...]}."""
     p = find_db(db_dirs, net, sta)
     if p is None:
         raise FileNotFoundError(f"no usable {net}.{sta}.db on search path")
     db = sqlite3.connect(f"file:{p}?mode=ro", uri=True)
     rows = db.execute(
-        "SELECT DISTINCT file_month, file_day FROM files "
-        "WHERE role='waveform' AND station_mismatch=0 AND exclude_reason IS NULL "
-        "AND file_year=?", (year,))
-    out = []
-    for m, d in rows:
+        "SELECT DISTINCT file_year, file_month, file_day FROM files "
+        "WHERE role='waveform' AND station_mismatch=0 "
+        "AND exclude_reason IS NULL")
+    out: dict[int, list] = {}
+    for y, m, d in rows:
         try:
-            out.append(date_cls(year, m, d))
+            out.setdefault(y, []).append(date_cls(y, m, d))
         except (ValueError, TypeError):
             continue
     db.close()
-    return sorted(out)
+    return {y: sorted(v) for y, v in out.items()}
 
 
 def qc_flagged_days(queue_dir: Path) -> list[tuple]:
@@ -117,13 +118,16 @@ def main():
 
     units = promoted_units(queue_dir)
     conv_ts = first_convert_ts(queue_dir)
+    station_days: dict[tuple, dict] = {}  # (net, sta) -> {year: [date, ...]}
+    for net, sta in sorted({(n, s) for n, s, _ in units}):
+        try:
+            station_days[(net, sta)] = days_by_year(db_dirs, net, sta)
+        except Exception as exc:
+            print(f"WARN: no day index for {net}.{sta}: {exc}")
+            station_days[(net, sta)] = {}
     day_index = {}  # unit -> [date, ...]
     for net, sta, year in units:
-        try:
-            day_index[(net, sta, year)] = days_with_data(db_dirs, net, sta, year)
-        except Exception as exc:
-            print(f"WARN: no day index for {net}.{sta}.{year}: {exc}")
-            day_index[(net, sta, year)] = []
+        day_index[(net, sta, year)] = station_days[(net, sta)].get(year, [])
 
     all_pairs = [(u, d) for u, days in day_index.items() for d in days]
     print(f"universe: {len(units)} units, {len(all_pairs)} station-days")
