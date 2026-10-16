@@ -1,3 +1,10 @@
+@AGENTS.md
+@STATUS.md
+
+> **Agents:** `AGENTS.md` (imported above) is the short, model-agnostic entry point and
+> `STATUS.md` is the current state. The rest of this file is the long-form design
+> reference; OpenCode and other tools do not auto-load it, so open sections on demand.
+
 # eqserver_2_seiscomp — Design Notes
 
 ## Pipeline stages and their dependencies
@@ -269,7 +276,15 @@ Reuse its model rather than re-implementing:
 
 ### Shared conversion core: `disk_to_sds/scripts/suds_convert.py`
 
-**Engine pin (current): `disk_to_sds` SHA `94ff229` (committed 2026-06-12),
+**Engine pin (current): `disk_to_sds` SHA `20a483c` (committed 2026-06-23),
+which routes `write_sds` through `sudspy.fast_merge_split` (the trim-semantic
+merge adopted across all engines — see [[project-fast-merge-split-trim-semantic]]).
+This is the only `suds_convert.py` change since `94ff229` and is what the v2
+BEST/WLSH runs of 2026-06-23/24 ran on. Verified on the staging VM 2026-10-16:
+HEAD is `ec159ea` (clean); commits after `20a483c` are resample/SmartSolo work
+that does not touch the engine.**
+
+**Earlier pin: `94ff229` (committed 2026-06-12),
 which adds Kelunji **Echo** channel-name recognition (`Up-T/East-T/North-T`
 → velocity Z/N/E; `Up-A/East-A/North-A` → accelerometer, dropped) alongside
 the existing EchoPro `c01/c02/c03` mapping. Before this pin, Echo-format

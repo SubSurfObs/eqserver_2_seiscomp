@@ -3,3 +3,4 @@
 
 # Nested git repo — exclude entirely (contents extracted into station_registry.yaml)
 metadata/uploaded/VW/Metadata/
+__pycache__/
