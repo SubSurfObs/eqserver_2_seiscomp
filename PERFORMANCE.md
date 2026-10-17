@@ -327,3 +327,39 @@ Every experiment is structured as:
    plus **Caveats** (anything that limits the validity).
 5. Update the "Pending experiments" priority table.
 6. Commit.
+
+### 11. Read+decode baseline: local disk vs NFS cold vs NFS hot (post-resize VM)
+
+- **Date:** 2026-10-17 (16 vCPU / 62 GiB VM, idle; single-threaded reader)
+- **Objective:** Quantify the local-vs-NFS gap on the frozen 8-day corpus
+  (`~/perf_corpus`, md5-pinned) — the ceiling on what staging/prefetch can buy.
+- **Method:** `scan/perf_read_bench.py` (qa_verify readers: sudspy + ObsPy),
+  one day per cohort; local = corpus day; NFS = the NEIGHBOURING date
+  (untouched → cold assumed), then immediate hot rerun. Writes excluded.
+- **Outcome (wall s per day):**
+
+  | Day | local | nfs_cold | nfs_hot | cold/local |
+  |---|---|---|---|---|
+  | BEST echopro 2022 | 22.4 | 133.3 | 2.8 | 6.0× |
+  | HOLS echopro 2018 | 18.1 | 41.7 | 1.8 | 2.3× |
+  | MOE3 echo 2012 | 22.0 | 55.5 | 1.5 | 2.5× |
+  | STBK b2 2022 (4.3k files) | 22.8 | 167.6 | 12.5 | 7.3× |
+  | STBK clean 2023 | 10.7 | 117.2 | 5.5 | 11.0× |
+  | DDWB minimus 2021 | 7.0 | 75.0 | 6.2 | 10.8× |
+  | SGWU rt130 2021 | 4.3 | 30.3 | 2.8 | 7.0× |
+  | WLSH 2019 | 5.8 | 48.1 | 3.0 | 8.3× |
+  | **TOTAL** | **113** | **669** | **36** | **5.9×** |
+
+- **Findings:** (a) cold NFS is ~6× slower than local decode overall (2–11×
+  by cohort; worst = many-small-file mseed cohorts, pure latency). Cold
+  single-stream ≈ 23–58 files/s ≈ one ~20–40 ms round-trip per file.
+  (b) Hot NFS ≈ local-or-better (345–1,090 f/s): once bytes are in page
+  cache, decode flies — the entire problem is getting bytes onto the box.
+  (c) Decode itself: EchoPro ≈ 130 f/s/core, tiny-mseed ≈ 250–620 f/s/core.
+- **Implication:** staging/prefetch (bulk parallel copy overlapped with
+  decode) has up to ~6× headroom on the read phase; its own copy cost is
+  per-file-latency bound too, so the win comes from PARALLEL transfer
+  streams + overlap, not from copying per se. Next: measure parallel rsync
+  aggregate f/s (8–16 streams) and nconnect mount effect.
+- **Caveats:** neighbouring-date proxy for cold (sizes within ~5%);
+  single-threaded; conversion write phase excluded.
