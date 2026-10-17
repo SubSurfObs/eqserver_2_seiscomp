@@ -32,12 +32,16 @@ replication runs double as the VW/VX repairs.
 3. **Simpler:** one command per stage; selection decisions in a
    reviewable file; preflight on every run; fewer state stores.
 
-## Settled architecture decision (operator, 2026-10-17 evening)
+## PROPOSAL UNDER STRESS-TEST — registry absorbs the plan stage (NOT decided)
 
-**Registry and plan collapse into one human-owned contract.** The plan
-stage is NOT fundamentally different from the registry — it was mixing
-identity (human territory) with scan summaries and selection hints
-(machine territory). New shape:
+**Status: an idea from the 2026-10-17 architecture discussion (operator:
+"that's just an idea and maybe I'm missing something"). It must be
+stress-tested and Codex-reviewed before anything is built against it.
+Nothing below is settled.**
+
+The idea: the plan stage may not be fundamentally different from the
+registry — it mixes identity (human territory) with scan summaries and
+selection hints (machine territory). Candidate shape:
 
 - **REGISTRY (human, iterative with scan):** the single reviewed artifact.
   Absorbs per-station identity, target network/location, channel-naming
@@ -57,6 +61,26 @@ identity (human territory) with scan summaries and selection hints
   a registry question. Fail closed, but only on genuine contradictions.
 - **The auditor is the back-stop:** automatic source-vs-output checking
   before promote, instead of human pre-approval.
+
+**Stress-test questions (to be answered before any decision):**
+1. Provenance: the ledger contract fingerprints the per-station plan YAML
+   (`policy_sha`). If no plan artifact exists, what exactly gets hashed —
+   a registry-entry snapshot + selection file? Does that survive audits
+   of "what policy admitted this byte" years later, when the registry has
+   since been edited?
+2. One file, 255 entries, growing per-epoch detail: merge conflicts,
+   YAML duplicate-key hazard (already bitten once), review ergonomics of
+   diffs in a 5,000-line file, blast radius of one bad edit vs per-station
+   files.
+3. Does removing the per-station reviewable artifact weaken the
+   provenance-snapshot story (plans/ are archived per sweep today)?
+4. The escalation loop: what stops a flood of trivial escalations
+   turning the registry confirm-loop into exactly the review burden we
+   are trying to remove?
+5. DU specifically: naming authority resolution (CSV→VIP→FDSN→LT) writes
+   its conclusion WHERE, with what audit trail, if not a plan line?
+6. Migration cost from the current plan-YAML machinery (ledger, apply.py
+   policy hashing, provenance snapshots) vs the simplification gained.
 
 ## Build order (branch `workflow-v3`, VM clone `eqserver_2_seiscomp_v3`)
 
