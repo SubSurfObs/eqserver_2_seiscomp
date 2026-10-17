@@ -363,3 +363,20 @@ Every experiment is structured as:
   aggregate f/s (8–16 streams) and nconnect mount effect.
 - **Caveats:** neighbouring-date proxy for cold (sizes within ~5%);
   single-threaded; conversion write phase excluded.
+
+### 12. Parallel-stream cold transfer + nconnect (post-resize VM, MRAT days)
+
+- **Date:** 2026-10-17/18. **Objective:** aggregate cold-NFS transfer ceiling
+  (the floor under any sweep) and whether nconnect lifts it.
+- **12a (single TCP, vers=4.0):** parallel `cp -r` of 6 cold day-dirs per
+  config, distinct days per config. 1 stream = 14 f/s; 4 = 43; 8 = 80;
+  16 = 88 f/s (3.3 MB/s). Knee ≈ 8 streams; ~88 f/s per-VM ceiling.
+- **12b (nconnect=8, fresh 2022 cold days):** 8 streams = 186 f/s (small-file
+  batch, 7.8 KB avg); 16 = 110 f/s; 24 = 107 f/s @ 4.0 MB/s (38 KB avg,
+  comparable to 12a's mix → like-for-like ≈ +22%; small-file ops ≈ 2×).
+- **Implication:** DU+VX ≈ 77 M files → pure-read floor ≈ 6–8 days on one
+  VM with nconnect (was ~10). Decision: keep nconnect (fstab edit pending,
+  operator-run), one-VM sweep, second VM only if week-2 margin erodes.
+- **Caveats:** file-size mix differs between batches (f/s is the honest
+  metric for this latency-bound archive); cp-only (no decode overlap);
+  cold-assumed via untouched days.
