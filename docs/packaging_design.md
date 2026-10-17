@@ -55,6 +55,17 @@ infrastructure.
   QA report → scale. We are user zero; DU is the acceptance test for the
   packaging boundaries.
 
+## Performance is site-specific; correctness is universal (operator insight 2026-10-17)
+
+UoM's slowness is a property of our storage (millions of minute-files
+behind NFS), not of the conversion. A site with the archive on local disk
+gets near-corpus speeds from the existing engine. Therefore: the package
+bakes in NO NFS workarounds. Archive access is a plain directory path;
+the staging prefetcher ("bulk-copy unit N+1 while converting unit N") and
+mount-tuning guidance ship as an optional add-on plus a site-tuning doc,
+off by default. Benchmarks published with the package must state the
+storage topology they were measured on.
+
 ## Design rules for the v3 build (so packaging stays possible)
 
 1. No absolute UoM paths outside one site config.
