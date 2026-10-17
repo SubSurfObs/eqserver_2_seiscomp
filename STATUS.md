@@ -21,7 +21,7 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 
 | Project | What | Branch / state | In flight right now |
 |---|---|---|---|
-| **1. Existing pipeline (FALLBACK)** | Audit-validated (0.98% loss). Scan DONE. Only MINOR, roll-backable patches from the scan findings (proposed: corrupt-record fallback reread fix; hourly-bundle grammar in level1; include-rule consistency — awaiting operator yes/no). DU runs on this ONLY if Project 2 disappoints. | `rewrite-suds2sds` | nothing — patch list awaiting approval |
+| **1. Existing pipeline (FALLBACK)** | Audit-validated (0.98% loss); patches landed, reviewed, frozen. **⚠ KNOWN GROSS ARCHITECTURAL DEFECT (operator-flagged 2026-10-18): the converter does NOT obey the reviewed plan's source-selection — per-day file choice is recomputed at runtime in code (cross_source), and the plan's source_priority hints are written but never read. The plan hash in ledger provenance records a summary, not the actual selection. Any proposal to run this pipeline MUST restate this caveat.** DU runs on this ONLY if Project 2 disappoints, with the caveat acknowledged. | `rewrite-suds2sds` | idle, frozen |
 | **2. Pipeline rework (MAIN EFFORT, ~1 week)** | Full architecture + speed rework. Single tracking doc: **`docs/rework_plan.md`** (amalgamates strategy/packaging/perf docs + review outcomes). Proof = REPLICATION: re-convert already-converted stations, auditor compares vs originals + v1; replications double as VW/VX repairs. If it delivers → ALL DU converts on it. | `workflow-v3` + VM clone `eqserver_2_seiscomp_v3` | packaging Codex review finishing (then: production-path benchmark harness) |
 
 Rule: one thing in flight per project; every status report names its
