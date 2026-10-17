@@ -17,6 +17,17 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 | `include: unknown` | 47 | 5 tentatively DU; need triage before any DU/VX sweep is "complete" |
 | `include: false` | 82 | artefact/test dirs, GA/AU (ANSN), S1/AUSiS, OZ, Raspberry Shake, already-converted VX (ABM*, WPM*, RDK*), closed |
 
+## The three tracks (operator decision 2026-10-17 — report against these)
+
+| Track | What | Branch / state | In flight right now |
+|---|---|---|---|
+| **1. DU production** | Convert DU with the EXISTING, audit-validated pipeline (0.98% loss, recoverable). Tweaks before launch: preflight (done), wire qa_verify as per-unit promote spot-check, Dan's 7 DU decisions (`docs/du_pre_sweep_notes.md`). No new engine. | `rewrite-suds2sds` | nothing — waiting on DU decisions |
+| **2. Pipeline improvement** | Speed + architecture as a separate project: selection-as-data chooser, eq2sds CLI, perf experiments. Adopted only after the Step-6 gate (22-day catalogue + WLSH/STBK/CLIF days); first use = Track 3 repairs, not mid-DU. | `workflow-v3` + VM clone `eqserver_2_seiscomp_v3` | 2 Codex reviews in background (hot-path efficiency; packaging draft) |
+| **3. VW/VX repair** | The audit's repair list (~dozen worst station-years + HOLS ~3%). Origin immutable, so parked until Track 2 delivers. | — | parked |
+
+Rule: at most one thing in flight per track; every status report names its
+track.
+
 ## Where each stream of work stopped (as of 2026-06-24)
 
 1. **VW scan 1 (v1)** — done and promoted. Known LT defects catalogued in
