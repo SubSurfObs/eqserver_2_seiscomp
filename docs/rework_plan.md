@@ -84,6 +84,22 @@ selection hints (machine territory). Candidate shape:
 6. Migration cost from the current plan-YAML machinery (ledger, apply.py
    policy hashing, provenance snapshots) vs the simplification gained.
 
+## Decisions made by Claude (2026-10-17 night — engineering calls, not operator items)
+
+Per the completed reviews (all conditions adopted): per-station identity
+contracts canonical behind one registry view; exhaustive selection
+artifact as the converter's ONLY input (no runtime fallback); run-scoped
+output inventories + the closure equation gate promotion; QA receipt
+required before promote. Operator items remain exactly two: the 7 DU
+decisions (incl. HML1/RNDA accelerometer keep|exclude) and the engine
+pin — each will be presented once, with a recommendation, when it blocks.
+
+**Committed schedule:** chooser + selection format + benchmark/prefetch
+results by Sun night; identity contracts + registry view + closure/
+inventory machinery Mon–Tue; replication proving runs Wed; go/no-go Thu;
+DU launches next week on the winning pipeline. Daily one-paragraph
+status to the operator.
+
 ## Build order (branch `workflow-v3`, VM clone `eqserver_2_seiscomp_v3`)
 
 1. **Production-path benchmark harness** (efficiency review F7) — phase
