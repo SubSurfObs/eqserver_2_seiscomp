@@ -45,9 +45,11 @@ selection hints (machine territory). Candidate shape:
 
 - **REGISTRY (human, iterative with scan):** the single reviewed artifact.
   Absorbs per-station identity, target network/location, channel-naming
-  basis, confirmed epochs, and the data-philosophy rule (velocity
+  basis, confirmed epochs, and the data-philosophy DEFAULT (velocity
   seismometer channels are the product; accelerometer + triggered data
-  excluded). Maintained via a scan↔registry diff loop: scan proposes
+  excluded by default — but per-stream, per-epoch keep|exclude with
+  reason and approval, NOT a silent global filter: the HML1/RNDA DU
+  accelerometer question is an open operator decision, Codex F7). Maintained via a scan↔registry diff loop: scan proposes
   discovered epochs/rates, operator confirms or corrects INTO the
   registry. Registry tooling (the diff/confirm tool) is first-class
   Project-2 work.

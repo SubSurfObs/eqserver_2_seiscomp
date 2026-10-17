@@ -69,7 +69,20 @@ merge/typo blast radius, provenance fingerprinting of a mutable file.
 (c) keeps per-station provenance snapshots trivial and diffs small;
 costs: 126+ small files instead of one view (tooling can give the
 one-document VIEW over per-station storage — the options may converge).
-**Decision needed from the operator after the pending stress-test lands.**
+**RESOLVED INPUTS (stress-test landed, 2026-10-17 —
+`reviews/2026-10-17_registry_absorbs_plan_review.md`, verdict
+adopt-with-conditions):** the operator's direction is validated — the
+current plan-approval gate is "largely ceremonial" (all 41 plans
+mechanically `ok`, no signer, runtime selection ignores the plan hints
+anyway) — and options (b) and (c) converge exactly as the operator
+suggested ("it's file management"): per-station identity contracts as
+the canonical hashed artifacts, ONE rendered registry view as the human
+interface. Seven adoption conditions (C1–C7) attach: content-addressed
+policy bundle validated before LT writes; exhaustive selection as the
+only converter input; one implemented DU authority chain; typed
+deduplicated escalation; QA + closure receipts before promotion;
+v1-compatible migration with replication tests. Awaiting operator
+sign-off of this resolved shape.
 
 ## Theme 3 — State: one event log + run-scoped workspaces
 
