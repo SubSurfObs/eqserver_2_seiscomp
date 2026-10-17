@@ -1,0 +1,34 @@
+# Per-stage repo pinning — consumed by scan/lib/preflight.py.
+#
+# Rules (CLAUDE.md "Commit-hash discipline"):
+#   - A stage may only run when every repo it uses is CLEAN (no uncommitted
+#     changes). Always enforced, regardless of pinning.
+#   - If a repo has `pinned:` set, HEAD must equal that SHA or the stage
+#     aborts. `pinned: null` means "record the SHA into the run manifest
+#     but accept any clean committed state" — use during development;
+#     production sweeps should pin everything in their stage row.
+#   - Repos are located as siblings of this repository's checkout
+#     (../<name>), which holds on both the Mac and the staging VM.
+#
+# OWED DECISION (Dan): pin disk_to_sds for the next Stage-4 production
+# run — either `20a483c` (last engine-touching commit) or current VM HEAD
+# `ec159ea` (validated clean; later commits don't touch the engine).
+
+repos:
+  eqserver_2_seiscomp:
+    pinned: null
+  sudspy:
+    pinned: null
+  disk_to_sds:
+    pinned: null          # <- set before the DU production sweep (see above)
+  sds_staging_ledger:
+    pinned: null
+
+stages:
+  registry: [eqserver_2_seiscomp]
+  manifest: [eqserver_2_seiscomp]
+  profile:  [eqserver_2_seiscomp, sudspy]
+  plan:     [eqserver_2_seiscomp]
+  convert:  [eqserver_2_seiscomp, disk_to_sds, sudspy]
+  promote:  [eqserver_2_seiscomp, sds_staging_ledger]
+  qa:       [eqserver_2_seiscomp, sudspy]
