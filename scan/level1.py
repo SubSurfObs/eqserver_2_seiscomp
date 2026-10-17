@@ -189,10 +189,13 @@ def parse_filename(name: str, dir_station: str) -> dict:
         elif len(toks) >= 2 and re.fullmatch(r"([01]\d|2[0-3])hr", toks[1],
                                              re.IGNORECASE):
             # Hourly telemetry bundle ('2019-06-15 00hr WLSH.ms.zip') — one
-            # file covering HH:00-HH:59. Previously left hhmm NULL, which
-            # made these invisible to per-minute dedup and selection.
-            # Patch 2026-10-17 (Project-1 minor patch, QA campaign finding).
-            rec["hhmm"] = toks[1][:2] + "00"
+            # file covering HH:00-HH:59. ANNOTATION ONLY: hhmm stays NULL
+            # because a minute-sized key cannot represent an hour span —
+            # keying it HH00 collides with the real HH:00 minute in
+            # per-minute dedup/selection (Codex review 2026-10-17 F1,
+            # verified: either the minute or the bundle gets suppressed).
+            # Span-aware selection of bundles is Project-2 chooser work;
+            # the flag makes them identifiable for it.
             tag = "hour_bundle"
             rec["flags"] = f"{rec['flags']},{tag}" if rec["flags"] else tag
         if len(toks) >= 4 and SS.match(toks[2]):
@@ -513,9 +516,22 @@ def main(argv=None):
                           for s, v in reg.items()
                           if isinstance(v, dict) and _in_scope(v)}
         station_to_parts = defaultdict(list)
+        skipped_out_of_scope = set()
         for s in summaries:
             sta = s.get("station") or os.path.basename(s["part_db"]).split("__")[0]
+            # Scope applies to what gets BUILT, not just the name prefix
+            # (Codex review 2026-10-17 F4: out-of-scope stations were still
+            # built, as misleading UNK.<STA>.db files).
+            if sta not in station_to_net:
+                skipped_out_of_scope.add(sta)
+                continue
             station_to_parts[sta].append(s["part_db"])
+        if skipped_out_of_scope:
+            print(f"SKIPPED {len(skipped_out_of_scope)} scanned station(s) "
+                  f"outside registry scope (no per-station DB built): "
+                  f"{sorted(skipped_out_of_scope)[:8]}"
+                  f"{'...' if len(skipped_out_of_scope) > 8 else ''}",
+                  flush=True)
         tm = time.time()
         # Workers for the per-station merge: capped at 4 (per-station builds
         # are SQLite-bound and oversaturate quickly past 4).
