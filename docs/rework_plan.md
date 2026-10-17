@@ -122,6 +122,19 @@ selection hints (machine territory). Candidate shape:
   whichever pipeline DU runs on.
 - Approval of the Project-1 minor-patch list (proposed 2026-10-17).
 
+## Push-through sizing (2026-10-17, from existing station DBs)
+
+Remaining source: DU 61 indexed stations = 1.36 TB / 67.7 M files /
+44,949 station-days; VX 18 stations = 0.57 TB / 8.8 M files / 5,193
+station-days. Total ≈ 2 TB / ~50 k station-days ≈ half the completed VW
+sweep's volume → ~2 weeks of continuous single-VM conversion at measured
+rates. The month-long push-through is feasible on current
+infrastructure; a second VM is optional acceleration. Not yet indexed:
+6 DU include-true stations + any ruled-in unknowns (MANIFEST scan needed
+first). Also approved: skeleton metadata archive (1 waveform file per
+station-day, prefer .dmx, + all .ss sidecars; tens of GB) before
+decommission; full raw mirror rejected.
+
 ## Progress log (newest first)
 
 - 2026-10-17 — Document created; preflight landed + tested; benchmark
