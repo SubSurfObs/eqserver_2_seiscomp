@@ -11,6 +11,23 @@ Codex's one-sentence verdict, which Claude endorses: *keep the safety
 shell; replace the decision core — "human-approved identity epochs plus
 machine-generated, immutable, verified source selections."*
 
+## Governing principle (operator, 2026-10-17 — overrides priority ordering below)
+
+**The UoM EqServer instance is due to be decommissioned in ~2.5 months
+(≈ early 2027-01). Conversion — capturing every byte — is the
+irreversible, deadline-bound act. Channel naming is cheap and largely
+independent afterwards:** once data is day-long SDS files, renaming is a
+mechanical header-edit + file-rename pass, auditable, reversible, doable
+any time. Consequences: (1) completeness and throughput outrank naming
+elegance everywhere; (2) Theme 7 is demoted from "DU blocker" to "don't
+LOSE data because of naming; approximate codes are acceptable, corrected
+post-hoc"; (3) VW conventions are already right; DU's deltas are modest
+and must not become a research project; (4) OPEN QUESTION for the
+operator: does decommissioning remove the 16 TB archive storage too? If
+yes, the ~1% repair work and any `include: unknown` triage are also
+deadline-bound, and capture-first may argue for converting borderline
+stations rather than triaging them.
+
 ## Theme 1 — Source selection becomes a materialized, consumed artifact
 
 **Agreement: total (both reviewers' #1).** Selection is where every
