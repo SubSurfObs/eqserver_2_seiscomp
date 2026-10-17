@@ -135,44 +135,46 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 - [ ] Decide sequencing (recommended: finish v2 Steps 4–6 → VX → DU → targeted VW resweep).
 - [ ] Write the per-stage SHA preflight script (`config/pinned_repo_shas.yaml`).
 
-## QA verification campaign — IN FLIGHT (launched 2026-10-16 ~23:30 AEDT)
+## QA verification campaign — COMPLETE (2026-10-17 ~16:30 AEDT)
 
-**A stratified sample-level audit of v1 LT output vs original archive files
-is running detached on the staging VM.** Monitoring was interrupted by a
-VPN outage on the Mac; the run itself is unaffected (setsid, survives all
-disconnects, hard `--max-hours 72` backstop, resume-by-default).
+**All 6,775 sampled days audited. Headline (uniform stratum, last-record
+dedup): 0.98% of channel-time missing from v1 LT** — 0.47% vs the
+preferred source + 0.51% existing only in unselected telemetry. Median
+day loses nothing; ~3.5% of uniform days lose >5%, clustered in a
+dozen-ish station-years (worst: DDSW 2021/2018, MARD 2021, HOGN 2019,
+WDSD 2018). All recoverable; **no full VW resweep needed — targeted
+repair list instead.** Results:
+`/mnt/seiscomp_staging/qa_verify/2026-10-16/results.jsonl` (use LAST
+record per (net,sta,date); 33 benign duplicates from a stray process;
+1 residual unverified HOLS day). HOLS.db rebuilt (2.4 GB,
+`~/station_dbs/VW.HOLS.db`) after being found missing from the
+provenance snapshot. Key confirmed defects: STBK-style B2 dual-population
+alternation gaps; Class-2 selection losses (DDNE up to ~18 ks/chan/day);
+legacy `DL*`/`SUM` channel codes inside v1-era LT years (LRWS/LRNW 2021,
+BRIG 2020). Triage into `docs/qa/` findings doc + Codex interpretation
+review still owed (Monday target).
 
-- **Run:** `scan/qa_driver.py`, PID 826025 on `rs-l-0ezd3a`, 10 workers,
-  6,775 work items (strata: uniform 4000 / boundary 402 / class2 416 /
-  pre_c 184 / qc_flagged 1447 / recorder 600). ~280 days/h expected →
-  ~24 h to complete.
-- **Paths:** queue, results, log all in
-  `/mnt/seiscomp_staging/qa_verify/2026-10-16/` (`queue.jsonl`,
-  `results.jsonl`, `driver.log`; `results_smoke_oldcode.jsonl` is a
-  discarded pre-fix smoke run; `controls/` holds the seeded-corruption SDS).
-- **Check status:** `tail driver.log`; `pgrep -af qa_driver`. Summarise:
-  `python3 scan/qa_report.py /mnt/seiscomp_staging/qa_verify/2026-10-16/results.jsonl`
-  (venv: `~/projects/SubSurfObs/disk_to_sds/.venv/bin/python3`).
-- **If dead/stalled:** safe to relaunch same command (resume skips done
-  days): see the setsid line in the session log of 2026-10-16 or
-  `driver.log` header `argv`.
-- **Harness:** `scan/qa_verify.py` (comparator), `qa_sampler.py`,
-  `qa_driver.py`, `qa_report.py` @ `ac6f8f5`. Codex-reviewed
-  (`reviews/2026-10-16_qa_harness.md`, 9 findings, all addressed;
-  controls re-run and passing). Design + known limitations:
-  `docs/qa/verification_campaign_plan.md`.
-- **Controls verified:** pre-C 45 s boundary loss (BEST), Class-2
-  selection_loss (WLSH 2019: N/E only in telemetry hourly bundles,
-  ~85 ks/day), Echo/Gecko/Minimus/RT130 clean days, seeded corruption
-  (sample/cut/loc) all detected.
-- **Confirmed new finding (pre-sweep):** STBK 2020-03-10 LT has 406 ×
-  1.648 s gaps — v1 alternated between two time-shifted duplicate
-  telemetry populations (Class-B2 selector defect), verified by hand in
-  LT + source. Sweep will measure prevalence.
-- **Next steps:** (1) check run health + `qa_report.py` rollup; (2) triage
-  categories into `docs/qa/2026-10-20_findings.md`, map to defect classes;
-  (3) Codex review of interpretation (checkpoint 3); (4) feed into the
-  assumptions-inventory session. Monday target stands.
+## Workflow v3 + perf (branch `workflow-v3`, in progress 2026-10-17)
+
+- VM resized to **16 vCPU / 62 GiB**; mounts verified post-reboot.
+- Landed: SHA preflight (`scan/lib/preflight.py` +
+  `config/pinned_repo_shas.yaml`, dirty/side-load/pin checks; .DS_Store
+  untracked). Caught real uncommitted work in Mac's disk_to_sds
+  (smartsolo script) — operator to commit.
+- Benchmark corpus: `~/perf_corpus/` on VM local disk (928 MB, 8 days,
+  md5-frozen; recorded in `docs/workflow_v3_implementation_strategy.md`).
+- Strategy doc Codex-reviewed (BLOCK, 7 findings, all addressed:
+  `reviews/2026-10-17_workflow_v3_strategy.md`). Key: engines must honor
+  per-file channel restriction (Step 5) or Class 2 isn't closed; plan +
+  selection = one fail-closed contract; 50% speedup is a hypothesis —
+  isal already deployed, worker knee w≈4–8, NFS is 94–98% of cold time.
+- Packaging track (`docs/packaging_design.md`, Codex iteration running):
+  package = generic converter + built-in auditor, ends at verified
+  staging SDS; UoM speed tricks stay out of it. Operator priority:
+  **UoM speed first**, hypothetical other sites second.
+- Speed plan (VM now idle): baseline corpus-vs-NFS on the 8 days, then
+  station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
+  year split in reserve.
 
 ## Session log (newest first, one line each)
 
