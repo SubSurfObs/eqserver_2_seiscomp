@@ -100,6 +100,27 @@ inventory machinery Mon–Tue; replication proving runs Wed; go/no-go Thu;
 DU launches next week on the winning pipeline. Daily one-paragraph
 status to the operator.
 
+## Stray-day rule (operator, 2026-10-17: don't ask me per station)
+
+Days far outside a station's own activity span are almost always bogus
+timestamps, and must NOT escalate one-by-one. Chooser auto-classifies
+relative to the station's own history (no global year floor — OUTU 2001
+is real):
+
+1. **Re-date:** `.wrno`/rollover-tagged strays are real data dated
+   ~1024 weeks (~19.7 y) early → shift to the true date and convert
+   (970 k files archive-wide; a "1999" BEGA day is likely 2018-19).
+2. **Bogus-stray:** isolated day/cluster (≤~7 days) separated from the
+   main span by years, tiny file count, epoch-default signatures
+   (1970/1980/1900, no-GPS) → auto-exclude with evidence recorded
+   (machine classification, overridable, not a human waiver).
+3. **Ambiguous:** larger clusters or plausible-against-history →
+   ONE escalation per station. Rare by construction.
+
+Corroborating probe when needed: one header read (SUDS/mseed time vs
+filename date). The closure equation counts classes 1 and 2 as
+accounted-for automatically.
+
 ## Build order (branch `workflow-v3`, VM clone `eqserver_2_seiscomp_v3`)
 
 1. **Production-path benchmark harness** (efficiency review F7) — phase
