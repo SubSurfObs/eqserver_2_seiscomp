@@ -8,9 +8,17 @@ Adding a new case is the fastest way to lock in a filename pattern we've
 encountered, so that classifier evolution doesn't quietly break parsing.
 """
 from __future__ import annotations
+import os
 import sys
 import unittest
-from scan.level1 import parse_filename
+
+# Allow both `python3 scan/test_parser.py` (documented) and `python3 -m scan.test_parser`.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    from scan.level1 import parse_filename
+except ImportError:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from level1 import parse_filename
 
 
 def _check(name, dir_sta, **expected):
@@ -131,6 +139,32 @@ class TestEdgeCases(unittest.TestCase):
                            filename_station="OUTU", station_mismatch=1,
                            exclude_reason="wrong_station")
         self.assertFalse(miss, f"mismatches: {miss}")
+
+
+class TestHourlyBundle(unittest.TestCase):
+    """Hourly telemetry bundles ('DATE HHhr STA.ms.zip'): annotation only.
+    hhmm MUST stay None (a minute key for an hour span collides with the
+    real HH:00 minute in selection — Codex review 2026-10-17 F1); the
+    hour_bundle flag marks them for the Project-2 span-aware chooser."""
+
+    def test_bundle_flag_no_hhmm(self):
+        got, miss = _check("2019-06-15 00hr WLSH.ms.zip", "WLSH",
+                           source_type="telemetry", hhmm=None,
+                           filename_station="WLSH", station_mismatch=0,
+                           exclude_reason=None)
+        self.assertFalse(miss, f"mismatches: {miss}\nfull: {got}")
+        self.assertIn("hour_bundle", got.get("flags") or "")
+
+    def test_bundle_23hr(self):
+        got, _ = _check("2019-06-15 23hr WLSH.ms.zip", "WLSH")
+        self.assertIsNone(got["hhmm"])
+        self.assertIn("hour_bundle", got.get("flags") or "")
+
+    def test_real_hh00_minute_unaffected(self):
+        got, miss = _check("2023-10-29 0001 00 ABM1Y.ms.zip", "ABM1Y",
+                           hhmm="0001", exclude_reason=None)
+        self.assertFalse(miss, f"mismatches: {miss}")
+        self.assertNotIn("hour_bundle", got.get("flags") or "")
 
 
 if __name__ == "__main__":

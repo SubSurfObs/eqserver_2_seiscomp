@@ -186,7 +186,7 @@ def _write_sds_retry(suds_convert, stream, staging_root, retries=3, backoff=2.0)
     raise last
 
 
-def _concat_zip_members(files, combined, read_errors):
+def _concat_zip_members(files, combined, read_errors, spans=None):
     """Read each .ms.zip's inner mseed and append its bytes to `combined`.
 
     Reads the whole .ms.zip in ONE sequential pass, then opens the ZIP from
@@ -196,10 +196,15 @@ def _concat_zip_members(files, combined, read_errors):
     a single round-trip — ~2x faster at workers=1 on cold NFS, which matters
     most for the Gecko/Minimus cohorts (the slow ones). Used by both the gecko
     and minimus branches so the I/O pattern is identical.
+
+    When `spans` is a list, appends one (path, start, end) tuple per file
+    marking its byte range inside `combined`, so the corrupt-record fallback
+    can re-parse per file FROM MEMORY instead of re-reading NFS.
     """
     import io as _io
     import zipfile as _zip
     for path in files:
+        start = combined.tell()
         try:
             with open(path, "rb") as fh:
                 raw = fh.read()                       # one sequential NFS read
@@ -210,6 +215,49 @@ def _concat_zip_members(files, combined, read_errors):
                         break
         except Exception as e:
             read_errors.append((path, f"{type(e).__name__}: {e}"))
+        if spans is not None:
+            spans.append((path, start, combined.tell()))
+
+
+def _parse_combined_with_fallback(all_files, read_errors):
+    """Concat + bulk-parse the day's mseed; on a corrupt record, fall back to
+    per-file parsing of the SAME in-memory bytes (no second NFS pass).
+
+    Patch 2026-10-17 (Project-1 minor patch, from the QA campaign /
+    efficiency review F4): the previous fallback re-read every .ms.zip from
+    NFS — a full extra read phase (~40-170 s cold) whenever one record was
+    corrupt. It also parsed ALL zip members where the bulk path uses only
+    the first data member per zip; the fallback now parses exactly the
+    bytes the bulk path saw, so good-day and fallback-day semantics match.
+
+    Returns (stream, bulk_fallback_used, bulk_fallback_reason).
+    """
+    import io
+    from obspy import read, Stream
+    combined = io.BytesIO()
+    spans = []
+    _concat_zip_members(all_files, combined, read_errors, spans=spans)
+    combined.seek(0)
+    try:
+        return read(combined, format="MSEED"), False, None
+    except Exception as e:
+        # Bulk-read failed — typically one corrupted mseed record (Steim
+        # integrity check failure) somewhere in the concatenated buffer.
+        # Per-file fallback from the retained buffer drops only the files
+        # that fail. Triggered ~1/100 days on gecko stations with on-disk
+        # corruption (BRTH 2021-01-08 etc).
+        reason = f"bulk: {type(e).__name__}: {e}"
+        st = Stream()
+        buf = combined.getbuffer()
+        for path, a, b in spans:
+            if b <= a:
+                continue  # file already recorded as a read error
+            try:
+                st += read(io.BytesIO(bytes(buf[a:b])), format="MSEED")
+            except Exception as fe:
+                read_errors.append(
+                    (path, f"per-file(mem) {type(fe).__name__}: {fe}"))
+        return st, True, reason
 
 
 def _start_phase3_watchdog(deadline_s=10800):
@@ -373,44 +421,18 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     the day's files and the merged stream is trimmed to [day, day+1) so only
     day's SDS file is written. See Option C in CLAUDE.md / `_trim_to_day`.
     """
-    import io, zipfile
-    from obspy import read, Stream
     boundary_files = boundary_files or []
     all_files = list(files) + list(boundary_files)
     if not all_files:
         return {"status": "no_files", "n_files": 0, "n_boundary_files": 0}
-    combined = io.BytesIO()
     read_errors = []
-    _concat_zip_members(all_files, combined, read_errors)
-    combined.seek(0)
-    bulk_fallback_used = False
-    bulk_fallback_reason = None
-    try:
-        st = read(combined, format="MSEED")
-    except Exception as e:
-        # Bulk-read failed — typically one corrupted mseed record (Steim
-        # integrity check failure) somewhere in the concatenated buffer
-        # takes the whole day down. Fall back to per-file read: open each
-        # .ms.zip individually and drop only the files that fail.
-        # Slower but tolerates corrupted records. Triggered ~1/100 days on
-        # gecko stations with on-disk corruption (BRTH 2021-01-08 etc).
-        bulk_fallback_used = True
-        bulk_fallback_reason = f"bulk: {type(e).__name__}: {e}"
-        st = Stream()
-        for f in all_files:
-            try:
-                whole = open(f, "rb").read()
-                with zipfile.ZipFile(io.BytesIO(whole)) as zf:
-                    for name in zf.namelist():
-                        if name.endswith(".ms") or name.endswith(".mseed"):
-                            st += read(io.BytesIO(zf.read(name)), format="MSEED")
-            except Exception as fe:
-                read_errors.append(f"per-file {f}: {type(fe).__name__}: {fe}")
-        if len(st) == 0:
-            return {"status": "parse_error", "n_files": len(files),
-                    "n_boundary_files": len(boundary_files),
-                    "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
-                    "read_errors": len(read_errors)}
+    st, bulk_fallback_used, bulk_fallback_reason = \
+        _parse_combined_with_fallback(all_files, read_errors)
+    if bulk_fallback_used and len(st) == 0:
+        return {"status": "parse_error", "n_files": len(files),
+                "n_boundary_files": len(boundary_files),
+                "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
+                "read_errors": len(read_errors)}
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
@@ -479,44 +501,18 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     Midnight-boundary handling identical to convert_gecko_day — see Option C
     in CLAUDE.md.
     """
-    import io, zipfile
-    from obspy import read, Stream
     boundary_files = boundary_files or []
     all_files = list(files) + list(boundary_files)
     if not all_files:
         return {"status": "no_files", "n_files": 0, "n_boundary_files": 0}
-    combined = io.BytesIO()
     read_errors = []
-    _concat_zip_members(all_files, combined, read_errors)
-    combined.seek(0)
-    bulk_fallback_used = False
-    bulk_fallback_reason = None
-    try:
-        st = read(combined, format="MSEED")
-    except Exception as e:
-        # Bulk-read failed — typically one corrupted mseed record (Steim
-        # integrity check failure) somewhere in the concatenated buffer
-        # takes the whole day down. Fall back to per-file read: open each
-        # .ms.zip individually and drop only the files that fail.
-        # Slower but tolerates corrupted records. Triggered ~1/100 days on
-        # gecko stations with on-disk corruption (BRTH 2021-01-08 etc).
-        bulk_fallback_used = True
-        bulk_fallback_reason = f"bulk: {type(e).__name__}: {e}"
-        st = Stream()
-        for f in all_files:
-            try:
-                whole = open(f, "rb").read()
-                with zipfile.ZipFile(io.BytesIO(whole)) as zf:
-                    for name in zf.namelist():
-                        if name.endswith(".ms") or name.endswith(".mseed"):
-                            st += read(io.BytesIO(zf.read(name)), format="MSEED")
-            except Exception as fe:
-                read_errors.append(f"per-file {f}: {type(fe).__name__}: {fe}")
-        if len(st) == 0:
-            return {"status": "parse_error", "n_files": len(files),
-                    "n_boundary_files": len(boundary_files),
-                    "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
-                    "read_errors": len(read_errors)}
+    st, bulk_fallback_used, bulk_fallback_reason = \
+        _parse_combined_with_fallback(all_files, read_errors)
+    if bulk_fallback_used and len(st) == 0:
+        return {"status": "parse_error", "n_files": len(files),
+                "n_boundary_files": len(boundary_files),
+                "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
+                "read_errors": len(read_errors)}
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
