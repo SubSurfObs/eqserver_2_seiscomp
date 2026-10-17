@@ -186,6 +186,15 @@ def parse_filename(name: str, dir_station: str) -> dict:
 
         if len(toks) >= 2 and HHMM.match(toks[1]):
             rec["hhmm"] = toks[1]
+        elif len(toks) >= 2 and re.fullmatch(r"([01]\d|2[0-3])hr", toks[1],
+                                             re.IGNORECASE):
+            # Hourly telemetry bundle ('2019-06-15 00hr WLSH.ms.zip') — one
+            # file covering HH:00-HH:59. Previously left hhmm NULL, which
+            # made these invisible to per-minute dedup and selection.
+            # Patch 2026-10-17 (Project-1 minor patch, QA campaign finding).
+            rec["hhmm"] = toks[1][:2] + "00"
+            tag = "hour_bundle"
+            rec["flags"] = f"{rec['flags']},{tag}" if rec["flags"] else tag
         if len(toks) >= 4 and SS.match(toks[2]):
             rec["ss"] = toks[2]
 
@@ -400,6 +409,9 @@ def main(argv=None):
     ap.add_argument("--registry", default="",
                     help="path to station_registry.yaml (REQUIRED if --per-station-dbs, "
                          "used to look up target_network for the output filename)")
+    ap.add_argument("--include-unknown", action="store_true",
+                    help="also scope registry stations with include: unknown "
+                         "(triage scans); default is include: true only")
     ap.add_argument("--unit-log", default="", help="CSV: one row per completed (station,year) unit, written live")
     ap.add_argument("--year", type=int, default=0, help="restrict scan to one calendar year")
     ap.add_argument("--month", default="", help="month(s) within --year, comma-separated (e.g. '1' or '1,2,3'); empty = all")
@@ -490,9 +502,16 @@ def main(argv=None):
             return
         import yaml
         reg = yaml.safe_load(open(args.registry))
+        # Scope rule aligned with plan_generator (Project-1 minor patch,
+        # 2026-10-17): in scope means include is EXACTLY true. The previous
+        # truthy test silently admitted include:'unknown' stations.
+        # --include-unknown widens deliberately (useful for triage scans).
+        def _in_scope(v):
+            inc = v.get("include")
+            return inc is True or (args.include_unknown and inc == "unknown")
         station_to_net = {s: v.get("target_network")
                           for s, v in reg.items()
-                          if isinstance(v, dict) and v.get("include")}
+                          if isinstance(v, dict) and _in_scope(v)}
         station_to_parts = defaultdict(list)
         for s in summaries:
             sta = s.get("station") or os.path.basename(s["part_db"]).split("__")[0]
