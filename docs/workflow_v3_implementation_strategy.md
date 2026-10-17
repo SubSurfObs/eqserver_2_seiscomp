@@ -156,6 +156,16 @@ record:
 | 4 | Skip re-decode on resume (day-output fingerprint) | big on re-runs only | resume-by-default design |
 | 5 | Worker topology re-tune after resize | ≤25% per Exp 3; re-measure, don't assume | Exp 3 |
 
+**Local-disk corpus (created 2026-10-17, operator-requested):**
+`~/perf_corpus/` on the staging VM — 928 MB, 20,319 files, 8 days
+mirroring the origin layout (BEST 2022-06-15 EchoPro clean, HOLS
+2018-06-15 EchoPro baseline, MOE3 2012-06-24 Echo, STBK 2022-10-23 B2
+canonical, STBK 2023-01-08 gecko clean, DDWB 2021-06-15 Minimus, SGWU
+2021-01-03 RT130, WLSH 2019-06-15 Class-2), each with the previous day's
+final-minute tail files; frozen via `corpus_md5.txt`. Engine A/B timings
+run against this copy (pure compute, no NFS/cache variance); NFS-path
+timings are a separate labelled series.
+
 **Sandbox protocol** (`/mnt/seiscomp_staging/perf_bench/<date>/`):
 - Catalogue of ~10 representative days (EchoPro clean / EchoPro multi-SS /
   Echo / Gecko / Gecko dual-population / Minimus / RT130), fixed in a
