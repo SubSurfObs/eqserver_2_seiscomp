@@ -26,10 +26,13 @@ and must not become a research project; (4) ANSWERED (operator,
 2026-10-17): "Everything goes. The 16 TB archive goes." All repair work,
 unknown-station triage, and future re-reads are deadline-bound; the
 'origin is immutable' safety assumption expires at decommission.
-PROPOSAL (pending operator decision): mirror the raw archive to a
-mediaflux share (30 TB auto-grant, soft-delete, offsite-replicated) as
-insurance priority zero, running in the background over the coming
-weeks; optionally ask Research IT for a backend-level copy.
+Full raw mirror REJECTED (operator: it would draw the job out —
+"I'd rather just get it done"). APPROVED instead: a small SKELETON
+archive — one waveform file per station-day (prefer .dmx: SUDS embeds
+the full instrument metadata) plus ALL ancillary metadata files (.ss
+sidecars etc.), tens of GB, for future metadata queries; waveforms live
+on only as converted SDS. PUSH-THROUGH MODE: the month's priority is
+converting every waveform byte and closing the EqServer chapter.
 
 ## Theme 1 — Source selection becomes a materialized, consumed artifact
 
