@@ -22,11 +22,14 @@ any time. Consequences: (1) completeness and throughput outrank naming
 elegance everywhere; (2) Theme 7 is demoted from "DU blocker" to "don't
 LOSE data because of naming; approximate codes are acceptable, corrected
 post-hoc"; (3) VW conventions are already right; DU's deltas are modest
-and must not become a research project; (4) OPEN QUESTION for the
-operator: does decommissioning remove the 16 TB archive storage too? If
-yes, the ~1% repair work and any `include: unknown` triage are also
-deadline-bound, and capture-first may argue for converting borderline
-stations rather than triaging them.
+and must not become a research project; (4) ANSWERED (operator,
+2026-10-17): "Everything goes. The 16 TB archive goes." All repair work,
+unknown-station triage, and future re-reads are deadline-bound; the
+'origin is immutable' safety assumption expires at decommission.
+PROPOSAL (pending operator decision): mirror the raw archive to a
+mediaflux share (30 TB auto-grant, soft-delete, offsite-replicated) as
+insurance priority zero, running in the background over the coming
+weeks; optionally ask Research IT for a backend-level copy.
 
 ## Theme 1 — Source selection becomes a materialized, consumed artifact
 
