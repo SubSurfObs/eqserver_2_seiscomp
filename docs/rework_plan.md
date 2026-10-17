@@ -32,6 +32,32 @@ replication runs double as the VW/VX repairs.
 3. **Simpler:** one command per stage; selection decisions in a
    reviewable file; preflight on every run; fewer state stores.
 
+## Settled architecture decision (operator, 2026-10-17 evening)
+
+**Registry and plan collapse into one human-owned contract.** The plan
+stage is NOT fundamentally different from the registry — it was mixing
+identity (human territory) with scan summaries and selection hints
+(machine territory). New shape:
+
+- **REGISTRY (human, iterative with scan):** the single reviewed artifact.
+  Absorbs per-station identity, target network/location, channel-naming
+  basis, confirmed epochs, and the data-philosophy rule (velocity
+  seismometer channels are the product; accelerometer + triggered data
+  excluded). Maintained via a scan↔registry diff loop: scan proposes
+  discovered epochs/rates, operator confirms or corrects INTO the
+  registry. Registry tooling (the diff/confirm tool) is first-class
+  Project-2 work.
+- **PLAN (machine, no approval):** degenerates to the generated
+  selection — which files feed conversion, per day/channel, derived from
+  registry + scan, provenance-hashed (registry entry + selection replace
+  the old plan-YAML policy_sha in the ledger contract). Nobody signs it.
+- **Escalation replaces routine review:** anything the scan finds that
+  contradicts the registry (unseen rate, unmappable channel label, DU
+  station without a naming authority) stops that station and returns as
+  a registry question. Fail closed, but only on genuine contradictions.
+- **The auditor is the back-stop:** automatic source-vs-output checking
+  before promote, instead of human pre-approval.
+
 ## Build order (branch `workflow-v3`, VM clone `eqserver_2_seiscomp_v3`)
 
 1. **Production-path benchmark harness** (efficiency review F7) — phase
