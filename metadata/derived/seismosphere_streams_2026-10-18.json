@@ -1,0 +1,440 @@
+{
+ "probed_minute": "2026-10-17T1200Z",
+ "snapshot_taken": "2026-10-18",
+ "source": "seismospheretools header scan (advisory; FDSN canonical)",
+ "streams": {
+  "AU.ARPS": [
+   "00.BHZ"
+  ],
+  "AU.BBOO": [
+   "00.BHZ"
+  ],
+  "AU.BRAT": [
+   "00.SHZ"
+  ],
+  "AU.CNB": [
+   "00.BHZ"
+  ],
+  "AU.DLN": [
+   "00.BHZ"
+  ],
+  "AU.GEXS": [
+   "00.BHZ"
+  ],
+  "AU.HTT": [
+   "00.BHZ"
+  ],
+  "AU.KELC": [
+   "00.BHZ"
+  ],
+  "AU.MABG": [
+   "00.BHZ"
+  ],
+  "AU.MGBR": [
+   "00.BHZ"
+  ],
+  "AU.MILA": [
+   "00.BHZ"
+  ],
+  "AU.MLBS": [
+   "00.BHZ"
+  ],
+  "AU.NTLH": [
+   "00.BHZ"
+  ],
+  "AU.NTLS": [
+   "00.BHZ"
+  ],
+  "AU.OKDL": [
+   "00.BHZ"
+  ],
+  "AU.RIV": [
+   "00.BHZ"
+  ],
+  "AU.SDAN": [
+   "00.BHZ"
+  ],
+  "AU.STKA": [
+   "--.BHZ"
+  ],
+  "AU.SYDS": [
+   "00.BHZ"
+  ],
+  "AU.TOO": [
+   "00.BHZ"
+  ],
+  "AU.WOLH": [
+   "00.BHZ",
+   "00.BNZ"
+  ],
+  "AU.WTPK": [
+   "00.BHZ"
+  ],
+  "AU.YAPP": [
+   "00.BHZ"
+  ],
+  "AU.YARR": [
+   "00.BHZ"
+  ],
+  "AU.YNG": [
+   "00.BHZ"
+  ],
+  "DU.ABRY": [
+   "00.HHZ"
+  ],
+  "DU.ARKL2": [
+   "00.EHZ"
+  ],
+  "DU.BAMB": [
+   "00.HHZ"
+  ],
+  "DU.BEGA": [
+   "00.HHE",
+   "00.HHN",
+   "00.HHZ"
+  ],
+  "DU.BRON": [
+   "00.HHZ"
+  ],
+  "DU.BRTS": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.CLIL": [
+   "00.HHZ"
+  ],
+  "DU.CLV2": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.DAMM": [
+   "00.HHZ"
+  ],
+  "DU.DJO": [
+   "00.HHZ"
+  ],
+  "DU.DNL": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.DNL2": [
+   "60.HHE",
+   "60.HHN",
+   "60.HHZ"
+  ],
+  "DU.ERIKA": [
+   "00.HHZ"
+  ],
+  "DU.GLNLG": [
+   "00.EHZ"
+  ],
+  "DU.HAZO": [
+   "00.HHZ"
+  ],
+  "DU.HELEN": [
+   "00.HHZ"
+  ],
+  "DU.HKRT": [
+   "00.EHZ"
+  ],
+  "DU.HML1": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.HMV1": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ",
+   "B0.EHE",
+   "B0.EHN",
+   "B0.EHZ"
+  ],
+  "DU.KBRI": [
+   "00.HHZ"
+  ],
+  "DU.KENT": [
+   "00.HHZ"
+  ],
+  "DU.MRAT": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.NNP1": [
+   "00.HHZ"
+  ],
+  "DU.NNP2": [
+   "00.HHZ"
+  ],
+  "DU.NSTM": [
+   "00.HHZ"
+  ],
+  "DU.OAT": [
+   "00.HHZ"
+  ],
+  "DU.PENW": [
+   "00.HHZ"
+  ],
+  "DU.PFLO": [
+   "00.HHZ"
+  ],
+  "DU.PLMR": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.PLYP3": [
+   "00.HHE",
+   "00.HHN",
+   "00.HHZ"
+  ],
+  "DU.RNDA": [
+   "00.HHE",
+   "00.HHN",
+   "00.HHZ"
+  ],
+  "DU.RNDA2": [
+   "00.HHZ"
+  ],
+  "DU.ROBE": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.S88P": [
+   "00.HHZ"
+  ],
+  "DU.STR2": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.SUND": [
+   "60.EHZ"
+  ],
+  "DU.TPSO": [
+   "60.HHE",
+   "60.HHN",
+   "60.HHZ"
+  ],
+  "DU.USYD": [
+   "00.HHZ"
+  ],
+  "DU.UTT": [
+   "60.EHZ"
+  ],
+  "DU.WALR": [
+   "60.HHE",
+   "60.HHN",
+   "60.HHZ"
+  ],
+  "DU.WEPH": [
+   "00.HHZ"
+  ],
+  "DU.WILM": [
+   "60.EHE",
+   "60.EHN",
+   "60.EHZ"
+  ],
+  "DU.WKA": [
+   "60.EHZ"
+  ],
+  "S1.AUALB": [
+   "--.HHZ"
+  ],
+  "S1.AUALC": [
+   "--.HHZ"
+  ],
+  "S1.AUAPY": [
+   "--.HHZ"
+  ],
+  "S1.AUAYR": [
+   "--.HHZ"
+  ],
+  "S1.AUBRM": [
+   "--.HHZ"
+  ],
+  "S1.AUBSH": [
+   "--.HHZ"
+  ],
+  "S1.AUBUS": [
+   "--.HHZ"
+  ],
+  "S1.AUCAS": [
+   "--.HHZ"
+  ],
+  "S1.AUCSH": [
+   "--.HHZ"
+  ],
+  "S1.AUDAR": [
+   "--.HHZ"
+  ],
+  "S1.AUDCS": [
+   "--.HHZ"
+  ],
+  "S1.AUDHS": [
+   "--.HHZ"
+  ],
+  "S1.AUGRF": [
+   "--.HHZ"
+  ],
+  "S1.AUHAR": [
+   "--.HHZ"
+  ],
+  "S1.AUHPC": [
+   "--.HHZ"
+  ],
+  "S1.AUJCS": [
+   "--.HHZ"
+  ],
+  "S1.AUKAL": [
+   "--.HHZ"
+  ],
+  "S1.AUKAR": [
+   "--.HHZ"
+  ],
+  "S1.AUKAT": [
+   "--.HHZ"
+  ],
+  "S1.AUKHS": [
+   "--.HHZ"
+  ],
+  "S1.AUKSC": [
+   "--.HHZ"
+  ],
+  "S1.AUKUL": [
+   "--.HHZ"
+  ],
+  "S1.AULHS": [
+   "--.HHZ"
+  ],
+  "S1.AULRC": [
+   "--.HHZ"
+  ],
+  "S1.AUMAG": [
+   "--.HHZ"
+  ],
+  "S1.AUMAZ": [
+   "--.HHZ"
+  ],
+  "S1.AUMBR": [
+   "--.HHZ"
+  ],
+  "S1.AUMHS": [
+   "--.HHZ"
+  ],
+  "S1.AUMTC": [
+   "--.HHZ"
+  ],
+  "S1.AUMTS": [
+   "--.HHZ"
+  ],
+  "S1.AUNHS": [
+   "--.HHZ"
+  ],
+  "S1.AUPHS": [
+   "--.HHZ"
+  ],
+  "S1.AURMK": [
+   "--.HHZ"
+  ],
+  "S1.AUROX": [
+   "--.HHZ"
+  ],
+  "S1.AUSMG": [
+   "--.HHZ"
+  ],
+  "S1.AUSSC": [
+   "--.HHZ"
+  ],
+  "S1.AUTAR": [
+   "--.HHZ"
+  ],
+  "S1.AUTKS": [
+   "--.HHZ"
+  ],
+  "S1.AUTOO": [
+   "--.HHZ"
+  ],
+  "S1.AUUHS": [
+   "--.HHZ"
+  ],
+  "S1.AUWSH": [
+   "--.HHZ"
+  ],
+  "VW.BEST": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.BRIG": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.BRTH": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.HDDL": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.LOCU": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.NARR": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.ORAT": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.SGWU": [
+   "00.FHE",
+   "00.FHN",
+   "00.FHZ"
+  ],
+  "VW.SOMU": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.STBK": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.TRPU": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.WDSD": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.WLSH": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ],
+  "VW.WPSH": [
+   "00.CHE",
+   "00.CHN",
+   "00.CHZ"
+  ]
+ }
+}
