@@ -1,0 +1,331 @@
+{
+ "n_stations": 45,
+ "source": "/mnt/seiscomp_archive (ro) DU channel dirs",
+ "stations": {
+  "ABRY": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "ALEX": {
+   "chans": [
+    "0.HHZ"
+   ],
+   "years": "2025-2025"
+  },
+  "ARKL2": {
+   "chans": [
+    "00.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "BAMB": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "BEGA": {
+   "chans": [
+    "00.HHE",
+    "00.HHN",
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "BRON": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "BRTS": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "CLIL": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "CLV2": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "DJO": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ",
+    "00.HHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "DNL": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "DNL2": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ",
+    "60.HHE",
+    "60.HHN",
+    "60.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "ERIKA": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "GLNLG": {
+   "chans": [
+    "00.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "HAZO": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "HELEN": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "HKER": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "HKRT": {
+   "chans": [
+    "00.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "HML1": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "HMV1": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "KBRI": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "KENT": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "LEU": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "LGMA": {
+   "chans": [
+    "0.HHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "MRAT": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "NNP1": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "NNP2": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "NSTM": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "OAT": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "PENW": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "PFLO": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "PLYP3": {
+   "chans": [
+    "00.HHE",
+    "00.HHN",
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "RNDA": {
+   "chans": [
+    "00.HHE",
+    "00.HHN",
+    "00.HHZ",
+    "50.EHE",
+    "50.EHN",
+    "50.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "ROBE": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "S88P": {
+   "chans": [
+    "00.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "STR2": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "SUND": {
+   "chans": [
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "TPSO": {
+   "chans": [
+    "60.HHE",
+    "60.HHN",
+    "60.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "USYD": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "UTT": {
+   "chans": [
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "WAH": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "WALR": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ",
+    "60.ENE",
+    "60.ENN",
+    "60.ENZ",
+    "60.HHE",
+    "60.HHN",
+    "60.HHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "WEPH": {
+   "chans": [
+    "0.HHZ",
+    "00.EHZ"
+   ],
+   "years": "2025-2026"
+  },
+  "WILM": {
+   "chans": [
+    "60.EHE",
+    "60.EHN",
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  },
+  "WKA": {
+   "chans": [
+    "60.EHZ"
+   ],
+   "years": "2026-2026"
+  }
+ },
+ "walked": "2026-10-18"
+}
