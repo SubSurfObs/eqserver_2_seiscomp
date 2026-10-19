@@ -27,6 +27,16 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 Rule: one thing in flight per project; every status report names its
 project.
 
+**VW/VX repairs (operator decision 2026-10-19):** done ONCE, with the v3
+pipeline, after its dress rehearsal passes — never with the current code.
+Tier 1: re-convert whole station-years (the ~32 pre-midnight-fix
+unit-years + the audit's dozen worst incl. HOLS ~3%); BEST and WLSH are
+the dress rehearsal itself. Tier 2: a few hundred scattered audit-flagged
+days. Sequenced AFTER DU conversion and before decommission (~Jan 2027,
+when the origin storage disappears). Repair unit = whole day-file swap;
+auditor verifies before overwrite; override gate + ledger + storage
+versioning make every repair recorded and reversible.
+
 ## Where each stream of work stopped (as of 2026-06-24)
 
 1. **VW scan 1 (v1)** — done and promoted. Known LT defects catalogued in

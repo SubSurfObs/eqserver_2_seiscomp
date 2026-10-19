@@ -1,0 +1,193 @@
+<title>BEGA through v3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column; stage rail down the left; one flow SVG, one worked-example panel, one ledger table. */
+:root{
+  --bg:#f7f6f2; --ink:#23241f; --muted:#6b6d63; --line:#d8d7cd;
+  --panel:#fffefb; --accent:#0e6b63; --accent-soft:#e3efed;
+  --warn:#9a6200; --warn-soft:#f6ecd9; --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#191a17; --ink:#e8e7df; --muted:#9a9c90; --line:#3a3b34;
+  --panel:#20211d; --accent:#5fc2b8; --accent-soft:#17332f;
+  --warn:#d9a24a; --warn-soft:#332a18; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#191a17; --ink:#e8e7df; --muted:#9a9c90; --line:#3a3b34;
+  --panel:#20211d; --accent:#5fc2b8; --accent-soft:#17332f;
+  --warn:#d9a24a; --warn-soft:#332a18; color-scheme:dark;
+}
+body{background:var(--bg); color:var(--ink); font-family:var(--sans);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0; margin:0; line-height:1.55;}
+main{max-width:860px; margin:0 auto; padding-block:40px 72px;}
+h1{font-size:1.9rem; font-weight:600; margin:0 0 4px; text-wrap:balance;}
+h2{font-size:1.05rem; font-weight:600; margin:0 0 10px; letter-spacing:.01em;}
+.kicker{font-family:var(--mono); font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:10px;}
+.sub{color:var(--muted); max-width:62ch; margin:0 0 28px;}
+.facts{display:flex; flex-wrap:wrap; gap:10px 28px; font-family:var(--mono); font-size:.8rem; color:var(--muted);
+  border-block:1px solid var(--line); padding-block:12px; margin-bottom:36px; font-variant-numeric:tabular-nums;}
+.facts b{color:var(--ink); font-weight:500;}
+.stage{display:grid; grid-template-columns:118px 1fr; gap:0 22px; position:relative;}
+.stage + .stage .cell{padding-top:26px;}
+.rail{font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  text-align:right; padding-top:3px; position:relative;}
+.rail .who{display:block; margin-top:4px; font-size:.66rem; letter-spacing:.06em;}
+.who.h{color:var(--warn);} .who.m{color:var(--accent);}
+.rail::after{content:""; position:absolute; right:-12px; top:6px; bottom:-30px; width:2px; background:var(--line);}
+.stage:last-of-type .rail::after{bottom:auto; height:14px;}
+.cell{padding-bottom:30px; min-width:0;}
+.cell p{margin:6px 0 0; max-width:62ch;}
+.cell .out{font-family:var(--mono); font-size:.76rem; color:var(--muted); margin-top:10px;}
+.cell .out b{color:var(--accent); font-weight:500;}
+.esc{margin-top:12px; border-left:3px solid var(--warn); background:var(--warn-soft);
+  padding:10px 14px; border-radius:0 6px 6px 0; font-size:.9rem;}
+.esc b{color:var(--warn);}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px 20px; margin-top:14px;}
+.panel table{border-collapse:collapse; font-family:var(--mono); font-size:.78rem; width:100%; font-variant-numeric:tabular-nums;}
+.panel th{text-align:left; font-weight:500; color:var(--muted); padding:4px 14px 6px 0; border-bottom:1px solid var(--line); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;}
+.panel td{padding:6px 14px 6px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+.panel tr:last-child td{border-bottom:none;}
+.win{color:var(--accent); font-weight:500;} .lose{color:var(--muted);}
+.tablewrap{overflow-x:auto;}
+figure{margin:40px 0 44px;}
+figcaption{font-size:.85rem; color:var(--muted); margin-top:10px; max-width:62ch;}
+svg{max-width:100%; height:auto; display:block;}
+.eq{font-family:var(--mono); font-size:.92rem; background:var(--panel); border:1px solid var(--line);
+  border-radius:8px; padding:16px 20px; margin-top:12px; overflow-x:auto; white-space:nowrap;}
+.eq .ok{color:var(--accent);} .eq .w{color:var(--warn);}
+.foot{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.88rem; max-width:66ch;}
+@media (max-width:620px){
+  .stage{grid-template-columns:1fr;}
+  .rail{text-align:left; padding-bottom:8px;}
+  .rail::after{display:none;}
+}
+</style>
+
+<main>
+<div class="kicker">Workflow v3 · one station, end to end</div>
+<h1>BEGA through v3</h1>
+<p class="sub">DU.BEGA is a real, unconverted DU station. This is the exact sequence v3 runs for it, using its measured numbers from the Stage-1 index. You touch it at the two amber moments; everything else is machine, and every machine decision leaves a record.</p>
+
+<div class="facts">
+  <span><b>1,389,000</b> source files</span>
+  <span><b>987</b> days with data</span>
+  <span>active <b>2022 → 2026</b></span>
+  <span><b>1</b> stray 1999 day</span>
+  <span><b>3,015</b> single-channel stubs from 2026-03</span>
+</div>
+
+<figure>
+<svg viewBox="0 0 760 318" role="img" aria-label="Flow of BEGA through the five v3 stages: identity, index, selection, convert plus audit, promote; two escalation arrows return to the human identity step.">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="currentColor"/>
+    </marker>
+    <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#c08a2d"/>
+    </marker>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.3" color="var(--ink)">
+    <rect x="12"  y="104" width="128" height="64" rx="6" stroke="#c08a2d" stroke-width="2"/>
+    <rect x="192" y="104" width="118" height="64" rx="6"/>
+    <rect x="362" y="104" width="118" height="64" rx="6"/>
+    <rect x="532" y="104" width="96"  height="64" rx="6"/>
+    <rect x="532" y="214" width="96"  height="56" rx="6" stroke-dasharray="4 3"/>
+    <rect x="662" y="104" width="86"  height="64" rx="6"/>
+    <line x1="140" y1="136" x2="186" y2="136" marker-end="url(#a)"/>
+    <line x1="310" y1="136" x2="356" y2="136" marker-end="url(#a)"/>
+    <line x1="480" y1="136" x2="526" y2="136" marker-end="url(#a)"/>
+    <line x1="580" y1="168" x2="580" y2="208" marker-end="url(#a)"/>
+    <line x1="628" y1="136" x2="656" y2="136" marker-end="url(#a)"/>
+    <path d="M655 170 Q640 250 400 262 Q160 274 85 174" stroke="#c08a2d" stroke-dasharray="5 4" marker-end="url(#aw)"/>
+    <path d="M420 168 Q400 220 300 226 Q150 234 80 172" stroke="#c08a2d" stroke-dasharray="5 4" marker-end="url(#aw)"/>
+  </g>
+  <g font-family="IBM Plex Mono,monospace" font-size="12" fill="currentColor" color="var(--ink)" text-anchor="middle">
+    <text x="76"  y="130">IDENTITY</text><text x="76"  y="147" font-size="10" fill="#c08a2d">you, once</text>
+    <text x="251" y="130">INDEX</text><text x="251" y="147" font-size="10" opacity=".65">1.39M files</text>
+    <text x="421" y="130">SELECTION</text><text x="421" y="147" font-size="10" opacity=".65">987 day plans</text>
+    <text x="580" y="130">CONVERT</text><text x="580" y="147" font-size="10" opacity=".65">→ SDS days</text>
+    <text x="580" y="238">AUDIT</text><text x="580" y="254" font-size="10" opacity=".65">receipt</text>
+    <text x="705" y="130">PROMOTE</text><text x="705" y="147" font-size="10" opacity=".65">dev1 only</text>
+  </g>
+  <g font-family="IBM Plex Mono,monospace" font-size="10" fill="currentColor" opacity=".7" text-anchor="middle">
+    <text x="163" y="126">reads</text>
+    <text x="333" y="126">compiles</text>
+    <text x="503" y="126">executes</text>
+    <text x="645" y="126">ships</text>
+    <text x="604" y="192" text-anchor="start">verifies vs source</text>
+  </g>
+  <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#c08a2d" text-anchor="middle">
+    <text x="390" y="286">escalation: 3,015 stubs — in product or not?</text>
+    <text x="250" y="212">escalation: 1 day outside epoch (1999)</text>
+  </g>
+  <g font-family="IBM Plex Sans,sans-serif" font-size="11" fill="currentColor" opacity=".55" text-anchor="middle">
+    <text x="76" y="92">human contract</text>
+    <text x="470" y="92">machine, every decision recorded</text>
+  </g>
+</svg>
+<figcaption>BEGA's path: your identity contract feeds a machine chain; only two things come back to you, and neither is paperwork — both are genuine questions about this station.</figcaption>
+</figure>
+
+<section class="stage">
+  <div class="rail">1 · Identity<span class="who h">HUMAN · ~5 min</span></div>
+  <div class="cell">
+    <h2>You approve one small contract for BEGA</h2>
+    <p>Network DU (pass-through), location and channel codes resolved from the DU authority chain (the operator CSV at a pinned revision, then the live inventory, then FDSN, then the long-term archive). One epoch: EchoPro, velocity channels, c01/c02/c03 → N/E/Z, band letter from the measured sample rate. Accelerometer and triggered data: excluded — your default, stated per stream so it is a decision, not a filter.</p>
+    <div class="out">artifact → <b>identity/DU/DU.BEGA.yaml</b> (hashed; this hash follows every byte to the ledger)</div>
+  </div>
+</section>
+
+<section class="stage">
+  <div class="rail">2 · Index<span class="who m">MACHINE · done</span></div>
+  <div class="cell">
+    <h2>The scan already indexed every file</h2>
+    <p>1,389,000 filenames parsed into the station database: dates, minutes, sessions, source types, grammar variants. This already exists for BEGA — it is where the numbers on this page come from.</p>
+    <div class="out">artifact → <b>DU.BEGA.db</b> (content-identified, so stale indexes are refused downstream)</div>
+  </div>
+</section>
+
+<section class="stage">
+  <div class="rail">3 · Selection<span class="who m">MACHINE · ~min</span></div>
+  <div class="cell">
+    <h2>The chooser writes 987 day-plans</h2>
+    <p>For each day and channel it picks one source population, scored by measured coverage — never alternating between overlapping copies — and gap-fills only into true holes. Every rejected file is logged with the reason.</p>
+    <div class="panel tablewrap">
+      <table aria-label="Chooser decision for 2023-01-24">
+        <tr><th>2023-01-24</th><th>minutes</th><th>decision</th></tr>
+        <tr><td>telemetry population</td><td>1,438</td><td class="win">wins the day (coverage)</td></tr>
+        <tr><td>disk population</td><td>3</td><td class="win">gap-fills 2 missing minutes</td></tr>
+        <tr><td>overlapping disk copy</td><td>1</td><td class="lose">rejected: population_lost_to telemetry</td></tr>
+      </table>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted)">A real BEGA day. Note it reverses the old "prefer disk" rule — here telemetry is the near-complete record, and the chooser follows the evidence instead of the habit that caused the WLSH losses.</p>
+    <div class="esc"><b>Escalation 1 of 2:</b> one day of data dated 1999, outside the approved epoch. The machine stops for that day only and asks: real early deployment, or corrupt timestamp? Your answer updates the contract; nothing else waits.</div>
+    <div class="esc"><b>Escalation 2 of 2:</b> 3,015 single-channel stub files from 2026-03 — vertical-channel telemetry fragments, the full data likely arriving by another route. Keep as Z-only, or exclude? One decision covers all 3,015 files.</div>
+    <div class="out">artifact → <b>DU.BEGA.2023.selection.sqlite</b> … (bound to identity hash + index identity; converter refuses anything else)</div>
+  </div>
+</section>
+
+<section class="stage">
+  <div class="rail">4 · Convert + audit<span class="who m">MACHINE · hours</span></div>
+  <div class="cell">
+    <h2>Conversion executes the plans; the auditor checks the result</h2>
+    <p>~987 station-days become SDS day files in a run-scoped workspace. Then the independent auditor reads samples back against the originals — the same tool that measured the VW archive at 99% — and checks the emitted names against your contract. It writes a receipt; no receipt, no promotion.</p>
+    <div class="out">artifacts → <b>output inventory</b> (every file, sized and checksummed) + <b>QA receipt</b></div>
+  </div>
+</section>
+
+<section class="stage">
+  <div class="rail">5 · Promote<span class="who m">MACHINE · dev1</span></div>
+  <div class="cell">
+    <h2>The books must balance before BEGA is called done</h2>
+    <p>Promotion copies exactly the inventory — never "whatever is in the staging folder" — onto the permanent archive, through the existing atomic, never-delete path. BEGA closes only when the equation holds:</p>
+    <div class="eq">expected <span class="ok">987</span> = converted <span class="ok">985</span> + no-data <span class="ok">0</span> + escalated <span class="w">2 (1999 day · stub cohort)</span> &nbsp;·&nbsp; verified <span class="ok">985/985</span></div>
+    <p style="font-size:.85rem;color:var(--muted)">Illustrative split — the two escalated items resolve into converted, no-data, or a waiver you authored. Until the columns balance, BEGA stays open and says why.</p>
+  </div>
+</section>
+
+<p class="foot">Total human time for BEGA: the five-minute contract plus two real questions. Under the old flow the same station would have produced a generated plan to approve (which review has shown was ceremonial) while the actual file choices happened silently in code. Multiply the machine lane by 61 indexed DU stations — the human lane grows only where stations raise genuine questions.</p>
+</main>
