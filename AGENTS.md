@@ -110,6 +110,20 @@ not argument. Record the outcome in the review file.
 
 `PROGRESS.md` is a historical log (to 2026-05-30); do not treat it as current.
 
+## Communicating with Dan (operator ruling 2026-10-19)
+
+Dan is a geophysicist, not a software engineer. Report in plain English:
+describe things by what they are ("the eight test days copied to the VM's
+own disk"), never by project-internal coinages ("frozen corpus days" —
+the named bad example). Commit hashes, module filenames and review
+finding-numbers are jargon; use them only when Dan needs to open the
+file. Every status update names which branch/project it concerns. When a
+decision is in play, state the options and the recommendation in one
+sentence rather than implying it through artifacts. Dan will explicitly
+flag replies that communicate well — treat those as the exemplars to
+match (recorded in agent memory under feedback-short-plain-english-
+default).
+
 ## Working conventions
 
 - Run scripts from repo root with `python3 scan/<script>.py --help` first;
