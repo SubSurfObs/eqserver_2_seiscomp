@@ -176,6 +176,14 @@ decommission; full raw mirror rejected.
 
 ## Progress log (newest first)
 
+- 2026-10-19 — Increment A PROVEN: selection-file-driven conversion is
+  byte-identical to legacy runtime selection on three test days (EchoPro
+  BEST 2022-06-15, Gecko STBK 2023-01-08, Minimus DDWB 2021-06-15);
+  harness committed as scan/ab_convert_compare.sh. Chooser swept all 249
+  DU station-years, zero errors. Repairs decided: once, with v3, after
+  the dress rehearsal. Next: increment B (per-channel selection — the
+  Class-2 recovery), WLSH day as acceptance test.
+
 - 2026-10-17 — Document created; preflight landed + tested; benchmark
   corpus frozen (928 MB, 8 days, local disk); Exp 11 baseline measured
   (cold NFS ≈ 6× local decode); architecture + efficiency reviews done,
