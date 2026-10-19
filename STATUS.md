@@ -27,6 +27,17 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 Rule: one thing in flight per project; every status report names its
 project.
 
+**Standing operating frame (operator, 2026-10-19 — report against ALL
+THREE every update, push all three every session):**
+1. **TRIAGE (primary):** battle-test the decision process that maps a day
+   directory to the subset of files converted. Maximum channel coverage,
+   evidenced.
+2. **ARCHITECTURE:** overall design view of the whole pipeline — simple,
+   clever, good software design.
+3. **SPEED:** keep generating and testing speedup ideas (currently: mount
+   micro-tests queued post-study; skip-unchanged fast path; convert+audit
+   single-read fusion).
+
 **VW/VX repairs (operator decision 2026-10-19):** done ONCE, with the v3
 pipeline, after its dress rehearsal passes — never with the current code.
 Tier 1: re-convert whole station-years (the ~32 pre-midnight-fix
