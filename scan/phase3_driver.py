@@ -407,7 +407,7 @@ def query_boundary_tail_files(conn, station, d, recorder, disk_size_floor_ratio)
 
 
 def convert_gecko_day(station, network, location, files, staging_sds_root, commit, suds_convert,
-                      boundary_files=None, day=None):
+                      boundary_files=None, day=None, orient_filter=None):
     """Gecko branch: read all .ms.zip in day, concat the inner mseed records into
     one buffer, parse with ObsPy, override network+location, merge, write SDS.
 
@@ -433,6 +433,7 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
                 "n_boundary_files": len(boundary_files),
                 "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
                 "read_errors": len(read_errors)}
+    st = _apply_orient_filter(st, orient_filter)
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
@@ -478,6 +479,18 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     return result
 
 
+def _apply_orient_filter(st, orient_filter):
+    """Keep only traces whose orientation letter is in orient_filter.
+    Used by the v3 per-channel selection (chans groups): within one engine
+    call all files share the same allowed set, so a stream-level filter is
+    exactly per-file channel restriction (build-order Step 5)."""
+    if not orient_filter:
+        return st
+    from obspy import Stream
+    return Stream([tr for tr in st
+                   if (tr.stats.channel or "?")[-1:].upper() in orient_filter])
+
+
 def query_minimus_day_files(conn, station, d):
     """Minimus per-channel files: classifier excludes them as 'single_channel',
     but for Minimus stations they ARE the data. ~4320 per day = 3 chan × 1440 min."""
@@ -492,7 +505,7 @@ def query_minimus_day_files(conn, station, d):
 
 
 def convert_minimus_day(station, network, location, files, staging_sds_root, commit, suds_convert,
-                        boundary_files=None, day=None):
+                        boundary_files=None, day=None, orient_filter=None):
     """Minimus branch: per-channel-per-minute mseed zips (~4320 files/day).
     Each zip holds one minute of one component. Same in-memory concat-then-parse
     pattern as Gecko; ObsPy groups by trace id automatically. Location override
@@ -513,6 +526,7 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
                 "n_boundary_files": len(boundary_files),
                 "error": f"{bulk_fallback_reason}; per-file fallback yielded 0 traces",
                 "read_errors": len(read_errors)}
+    st = _apply_orient_filter(st, orient_filter)
     for tr in st:
         tr.stats.network = network
         tr.stats.location = location
@@ -552,7 +566,7 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
 
 
 def convert_echopro_day(suds_convert, station, network, location, files, staging_sds_root, commit,
-                        boundary_files=None, day=None):
+                        boundary_files=None, day=None, orient_filter=None):
     """One EchoPro station-day. Returns dict with n_files, n_traces, write_results, qc.
 
     suds_convert.convert_suds_files() resolves location via FDSN inventory if
@@ -571,6 +585,7 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     if not all_files:
         return {"status": "no_files", "n_files": 0, "n_boundary_files": 0}
     stream, qc = suds_convert.convert_suds_files(all_files, network=network, station=station)
+    stream = _apply_orient_filter(stream, orient_filter)
     for tr in stream:
         tr.stats.location = location
     # Drop traces with bogus pre-2012 starttimes (no-GPS-lock guard).
@@ -647,17 +662,27 @@ def _worker_convert_day(job):
         floor_ratio = job["disk_size_floor_ratio"]
 
         selection_path = job.get("selection_path")
+        groups = None
         if selection_path:
             # v3 path: the selection database is the ONLY source of file
             # lists (fail-closed; validated once in main() before dispatch,
             # re-opened read-only here because workers are separate
             # processes). Legacy runtime selection is NOT a fallback.
+            # Files are grouped by their allowed-channel set; each group is
+            # one engine call with an orientation filter. Groups write
+            # disjoint channel day-files, so order does not matter.
             from lib.selection import Selection
             sel = Selection(selection_path, net, sta, d.year, job["db_path"])
-            files = sel.files_for_day(d_iso)
+            by_chans = {}
+            for path, chans in sel.files_for_day(d_iso):
+                by_chans.setdefault(chans, []).append(path)
+            groups = [(None if ch == "*" else set(ch), paths)
+                      for ch, paths in sorted(by_chans.items())]
+            files = [p for _, ps in groups for p in ps]
             prev = d - timedelta(days=1)
             if prev.year == d.year:
-                boundary_files = sel.tail_for_day(prev.isoformat())
+                boundary_files = [p for p, _ in
+                                  [(r, None) for r in sel.tail_for_day(prev.isoformat())]]
             else:
                 # Jan 1: prior year is outside this selection's scope; the
                 # legacy tail query is permitted for the TAIL ONLY and the
@@ -677,19 +702,49 @@ def _worker_convert_day(job):
             # scratch. See "Midnight-boundary data loss" in CLAUDE.md.
             boundary_files = query_boundary_tail_files(conn, sta, d, recorder_eff, floor_ratio)
 
-        try:
+        def _one(group_files, orient_filter):
             if recorder_eff == "echopro":
-                r = convert_echopro_day(suds_convert, sta, net, loc, files, staging, commit,
-                                        boundary_files=boundary_files, day=d)
-            elif recorder_eff == "gecko":
-                r = convert_gecko_day(sta, net, loc, files, staging, commit, suds_convert,
-                                      boundary_files=boundary_files, day=d)
-            elif recorder_eff == "minimus":
-                r = convert_minimus_day(sta, net, loc, files, staging, commit, suds_convert,
-                                        boundary_files=boundary_files, day=d)
+                return convert_echopro_day(suds_convert, sta, net, loc, group_files,
+                                           staging, commit, boundary_files=boundary_files,
+                                           day=d, orient_filter=orient_filter)
+            if recorder_eff == "gecko":
+                return convert_gecko_day(sta, net, loc, group_files, staging, commit,
+                                         suds_convert, boundary_files=boundary_files,
+                                         day=d, orient_filter=orient_filter)
+            if recorder_eff == "minimus":
+                return convert_minimus_day(sta, net, loc, group_files, staging, commit,
+                                           suds_convert, boundary_files=boundary_files,
+                                           day=d, orient_filter=orient_filter)
+            return {"status": "unsupported_recorder", "n_files": len(group_files),
+                    "n_boundary_files": len(boundary_files)}
+
+        _RANK = {"error": 6, "timeout": 5, "parse_error": 4,
+                 "unsupported_recorder": 4, "qc_flagged": 3, "ok": 2,
+                 "no_files": 1}
+        try:
+            if not groups:  # legacy mode, or a selection day with no files
+                r = _one(files, None)
+            elif len(groups) == 1 and groups[0][0] is None:
+                r = _one(files, None)
             else:
-                r = {"status": "unsupported_recorder", "n_files": len(files),
-                     "n_boundary_files": len(boundary_files)}
+                r = None
+                for ofilt, gfiles in groups:
+                    gr = _one(gfiles, ofilt)
+                    if r is None:
+                        r = gr
+                        continue
+                    # aggregate: worst status wins; counts sum; writes concat
+                    if _RANK.get(gr.get("status"), 0) > _RANK.get(r.get("status"), 0):
+                        r["status"] = gr["status"]
+                        if gr.get("error"):
+                            r["error"] = gr["error"]
+                    for k in ("n_files", "n_traces", "read_errors",
+                              "bogus_year_traces_dropped", "n_recovered"):
+                        if k in gr:
+                            r[k] = r.get(k, 0) + gr[k]
+                    r["sds_files_written"] = (r.get("sds_files_written", [])
+                                              + gr.get("sds_files_written", []))
+                r["n_chan_groups"] = len(groups)
         except TimeoutError as e:
             r = {"status": "timeout", "n_files": len(files),
                  "n_boundary_files": len(boundary_files),

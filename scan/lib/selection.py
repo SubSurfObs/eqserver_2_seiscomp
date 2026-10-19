@@ -24,7 +24,7 @@ scope) — that use is recorded by the caller in the run manifest.
 import sqlite3
 from pathlib import Path
 
-KNOWN_SCHEMAS = {"selection-v0.1"}
+KNOWN_SCHEMAS = {"selection-v0.1", "selection-v0.2"}
 
 
 class SelectionError(RuntimeError):
@@ -73,9 +73,14 @@ class Selection:
             "SELECT DISTINCT date FROM selection ORDER BY date")]
 
     def files_for_day(self, d_iso: str):
-        """Ordered file paths selected for the day (all streams)."""
-        return [r[0] for r in self.conn.execute(
-            "SELECT DISTINCT path FROM selection WHERE date=? ORDER BY path",
+        """[(path, chans)] selected for the day. chans is the orientation
+        set to take from that file ('*' = all — v0.1 selections)."""
+        if self.meta.get("schema_version") == "selection-v0.1":
+            return [(r[0], "*") for r in self.conn.execute(
+                "SELECT DISTINCT path FROM selection WHERE date=? ORDER BY path",
+                (d_iso,))]
+        return [(r[0], r[1] or "*") for r in self.conn.execute(
+            "SELECT path, chans FROM selection WHERE date=? ORDER BY path",
             (d_iso,))]
 
     def tail_for_day(self, prev_iso: str):
