@@ -646,17 +646,36 @@ def _worker_convert_day(job):
         commit = job["commit"]
         floor_ratio = job["disk_size_floor_ratio"]
 
-        # Cross-source-aware file selection: pulls disk+tele candidates and
-        # runs the per-HHMM selector in scan/cross_source.py. For clean disk
-        # days (no tele competition) the output is identical to the legacy
-        # query_day_files; for partial days the selector reclaims data from
-        # telemetry where disk has gaps.
-        files = query_cross_source_day_files(conn, sta, d, recorder_eff, floor_ratio)
-        # Midnight-boundary fix (Option C): also pull day-1's HHMM='2359'
-        # file(s) — these carry the first SS seconds of `d` that would
-        # otherwise be lost when write_sds overwrites `d`'s SDS file from
-        # scratch. See "Midnight-boundary data loss" in CLAUDE.md.
-        boundary_files = query_boundary_tail_files(conn, sta, d, recorder_eff, floor_ratio)
+        selection_path = job.get("selection_path")
+        if selection_path:
+            # v3 path: the selection database is the ONLY source of file
+            # lists (fail-closed; validated once in main() before dispatch,
+            # re-opened read-only here because workers are separate
+            # processes). Legacy runtime selection is NOT a fallback.
+            from lib.selection import Selection
+            sel = Selection(selection_path, net, sta, d.year, job["db_path"])
+            files = sel.files_for_day(d_iso)
+            prev = d - timedelta(days=1)
+            if prev.year == d.year:
+                boundary_files = sel.tail_for_day(prev.isoformat())
+            else:
+                # Jan 1: prior year is outside this selection's scope; the
+                # legacy tail query is permitted for the TAIL ONLY and the
+                # use is visible in the result for the run manifest.
+                boundary_files = query_boundary_tail_files(
+                    conn, sta, d, recorder_eff, floor_ratio)
+            sel.close()
+        else:
+            # Legacy (Branch-1) path: cross-source-aware runtime selection.
+            # KNOWN ARCHITECTURAL DEFECT (operator-flagged 2026-10-18): this
+            # recomputes selection in code; the plan's source_priority is
+            # not consulted. See STATUS.md Project-1 caveat.
+            files = query_cross_source_day_files(conn, sta, d, recorder_eff, floor_ratio)
+            # Midnight-boundary fix (Option C): also pull day-1's HHMM='2359'
+            # file(s) — these carry the first SS seconds of `d` that would
+            # otherwise be lost when write_sds overwrites `d`'s SDS file from
+            # scratch. See "Midnight-boundary data loss" in CLAUDE.md.
+            boundary_files = query_boundary_tail_files(conn, sta, d, recorder_eff, floor_ratio)
 
         try:
             if recorder_eff == "echopro":
@@ -722,6 +741,12 @@ def main():
                          "down to 80%% of tele's size). Set 0.0 for old 'absolute "
                          "disk preference' policy; 1.0 for 'most data wins, disk "
                          "only on ties'.")
+    ap.add_argument("--selection", default=None,
+                    help="v3: selection sqlite from coverage_planner. When "
+                         "given, it is the ONLY source of per-day file lists "
+                         "(validated fail-closed against this manifest DB "
+                         "before any job is dispatched); runtime cross_source "
+                         "selection is disabled.")
     ap.add_argument("--run-manifest", default=None,
                     help="path to write a phase3 run manifest (JSON) at end of run. "
                          "When set, captures run identity, per-date status, "
@@ -847,12 +872,35 @@ def main():
                 "db_path": args.db, "staging_sds": args.staging_sds,
                 "commit": args.commit, "disk_to_sds": args.disk_to_sds,
                 "disk_size_floor_ratio": args.disk_size_floor_ratio,
+                "selection_path": args.selection,
             })
             if args.limit_days and len(jobs) >= args.limit_days:
                 break
         else:
             continue
         break
+
+    if args.selection:
+        # Fail-closed validation BEFORE dispatch: schema, completeness,
+        # net/sta/year, and manifest-identity binding. A selection compiled
+        # from a different or regenerated index refuses to run.
+        from lib.selection import Selection, SelectionError
+        years = sorted({int(j["date"][:4]) for j in jobs})
+        if len(years) > 1:
+            print(f"[phase3] ERROR: --selection covers one year; jobs span {years}",
+                  flush=True)
+            sys.exit(2)
+        try:
+            _sel = Selection(args.selection, jobs[0]["network"] if jobs else "?",
+                             jobs[0]["station"] if jobs else "?",
+                             years[0] if years else 0, args.db)
+            n_sel_days = len(_sel.days())
+            _sel.close()
+        except SelectionError as e:
+            print(f"[phase3] SELECTION REFUSED: {e}", flush=True)
+            sys.exit(2)
+        print(f"[phase3] selection validated: {args.selection} "
+              f"({n_sel_days} days on record)", flush=True)
 
     print(f"[phase3] {len(jobs)} day-jobs queued, workers={args.workers}", flush=True)
 
