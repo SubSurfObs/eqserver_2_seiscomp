@@ -1,0 +1,280 @@
+#!/usr/bin/env python3
+"""triage_study — sampled proof that triage achieves maximum channel coverage.
+
+The question (operator, 2026-10-19): given a messy EqServer day directory,
+does the v3 triage + converter get every recoverable channel into the
+output (one miniSEED file per channel per day)? Tested by STRATIFIED
+SAMPLING across VW, VX and DU, weighted to the day-types where coverage
+can actually be lost:
+
+  multi_copy    both disk and telemetry copies exist for the day
+  suffixed      day contains single-channel-named files
+  bundle        day contains hourly-bundle files
+  unparsed      day contains files the scanner could not key by minute
+  mixed_rec     more than one recorder type in the day
+  clean         control: single-population days
+
+Per sampled day: compile (or reuse) the station-year selection with the
+v0.2 triage → convert the day in a sandbox via phase3 --selection →
+audit EXHAUSTIVELY (every copy of every minute read: QA_PROBE_EVERY=1,
+QA_EXTRA_CAP unlimited) against the origin archive. PASS = zero sample
+mismatches AND union-coverage not in output ≈ 0 (missing_s + sel_loss_s
+below tolerance). Results stream to results.jsonl (resume-by-default).
+
+Writes only under its --out-dir (sandbox SDS + selections + results).
+"""
+
+import argparse
+import json
+import os
+import sqlite3
+import subprocess
+import sys
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lib.preflight import REPO_ROOT  # noqa: E402
+
+PY = sys.executable
+PASS_TOL_S = 2.0  # union seconds absent from output tolerated per channel-day
+
+STRATA_SQL = {
+    "multi_copy": "SELECT 1 FROM files WHERE role='waveform' AND station_mismatch=0 "
+                  "AND file_year=? AND file_month=? AND file_day=? AND source_type='disk' LIMIT 1",
+    # evaluated in python below; SQL above used as disk-presence probe
+}
+
+
+def day_strata(db, y, m, d):
+    rows = list(db.execute(
+        "SELECT source_type, channel_suffix, hhmm, flags, recorder_type, exclude_reason "
+        "FROM files WHERE role='waveform' AND station_mismatch=0 "
+        "AND file_year=? AND file_month=? AND file_day=?", (y, m, d)))
+    if not rows:
+        return set()
+    live = [r for r in rows if r[5] is None or r[5] in ("single_channel", "unparsed")]
+    if not live:
+        return set()
+    s = set()
+    srcs = {r[0] for r in live}
+    if "disk" in srcs and "telemetry" in srcs:
+        s.add("multi_copy")
+    if any(r[1] for r in live):
+        s.add("suffixed")
+    if any(r[3] and "hour_bundle" in r[3] for r in live) or any(
+            r[2] is None and r[5] is None and r[0] == "telemetry" for r in live):
+        s.add("bundle_or_unparsed")
+    if len({r[4] for r in live}) > 1:
+        s.add("mixed_rec")
+    if not s:
+        s.add("clean")
+    return s
+
+
+def build_sample(db_dirs, networks, n_per, seed, out_path):
+    import random
+    rng = random.Random(seed)
+    buckets = {}
+    for db_dir in db_dirs:
+        for p in sorted(Path(db_dir).expanduser().glob("*.db")):
+            net, sta = p.stem.split(".", 1)
+            if net not in networks:
+                continue
+            try:
+                db = sqlite3.connect(f"file:{p}?mode=ro", uri=True)
+                days = list(db.execute(
+                    "SELECT DISTINCT file_year, file_month, file_day FROM files "
+                    "WHERE role='waveform' AND station_mismatch=0 "
+                    "AND file_year BETWEEN 1995 AND 2026"))
+                # cap per-station day scan cost: sample candidate days first
+                rng.shuffle(days)
+                for y, m, d in days[:400]:
+                    for st in day_strata(db, y, m, d):
+                        buckets.setdefault((net, st), []).append(
+                            {"net": net, "sta": sta, "db": str(p),
+                             "date": f"{y:04d}-{m:02d}-{d:02d}", "stratum": st})
+                db.close()
+            except Exception as e:
+                print(f"WARN {p.name}: {e}", flush=True)
+    sample = []
+    seen = set()
+    for (net, st), items in sorted(buckets.items()):
+        rng.shuffle(items)
+        for it in items[:n_per]:
+            k = (it["net"], it["sta"], it["date"])
+            if k not in seen:
+                seen.add(k)
+                sample.append(it)
+    rng.shuffle(sample)
+    with open(out_path, "w") as f:
+        for it in sample:
+            f.write(json.dumps(it) + "\n")
+    counts = {}
+    for it in sample:
+        counts[f'{it["net"]}:{it["stratum"]}'] = counts.get(
+            f'{it["net"]}:{it["stratum"]}', 0) + 1
+    print("sample:", json.dumps(counts, indent=0, sort_keys=True), flush=True)
+    return sample
+
+
+def _synth_plan(db_path, net, sta, registry, out_path: Path):
+    """Study-only minimal plan: per-year majority recorder epochs, status ok.
+    Real conversions use reviewed identity; this exists so phase3 can
+    dispatch engines for stations that never had a v1 plan (DU/VX).
+    Mixed-recorder days get the year's majority engine — a known
+    limitation the mixed_rec stratum is there to expose."""
+    import yaml
+    db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    rows = list(db.execute(
+        "SELECT file_year, recorder_type, COUNT(*) FROM files "
+        "WHERE role='waveform' AND station_mismatch=0 AND exclude_reason IS NULL "
+        "AND file_year BETWEEN 1995 AND 2026 GROUP BY 1,2"))
+    db.close()
+    by_year = {}
+    for y, rec, n in rows:
+        cur = by_year.get(y)
+        if cur is None or n > cur[1]:
+            by_year[y] = (rec, n)
+    entry = registry.get(sta) or {}
+    rts = entry.get("recorder_types") or []
+    epochs = []
+    for i, (y, (rec, _n)) in enumerate(sorted(by_year.items())):
+        eff = {"echopro": "echopro", "gecko": "gecko"}.get(rec, None)
+        if eff is None:
+            eff = "minimus" if "minimus" in rts else "gecko"
+        epochs.append({"id": i + 1, "start": f"{y}-01-01", "end": f"{y}-12-31",
+                       "recorder": eff, "days": 0, "classifications": {}})
+    plan = {"station": sta,
+            "network": entry.get("target_network") or net,
+            "location": entry.get("target_location") or "00",
+            "status": "ok", "epochs": epochs, "flagged_days": [],
+            "synthesised_for": "triage_study (NOT a reviewed plan)"}
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(yaml.safe_dump(plan, sort_keys=False))
+    return out_path
+
+
+def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
+    results_path = out_dir / "results.jsonl"
+    done = set()
+    if results_path.exists():
+        for line in open(results_path):
+            try:
+                r = json.loads(line)
+                done.add((r["net"], r["sta"], r["date"]))
+            except Exception:
+                pass
+    sel_dir = out_dir / "selections"
+    sds_dir = out_dir / "sds"
+    sel_dir.mkdir(parents=True, exist_ok=True)
+    env = dict(os.environ, QA_PROBE_EVERY="1", QA_EXTRA_CAP="999999")
+    deadline = time.time() + max_hours * 3600
+    out = open(results_path, "a")
+    n = 0
+    for it in sample:
+        if (it["net"], it["sta"], it["date"]) in done:
+            continue
+        if time.time() > deadline:
+            print("max-hours reached; resume to continue", flush=True)
+            break
+        year = it["date"][:4]
+        sel = sel_dir / f'{it["net"]}.{it["sta"]}.{year}.selection.sqlite'
+        rec = dict(it, ts=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+        t0 = time.time()
+        try:
+            if not sel.exists():
+                r = subprocess.run(
+                    [PY, "scan/coverage_planner.py", "--net", it["net"],
+                     "--sta", it["sta"], "--year", year, "--db", it["db"],
+                     "--out", str(sel)],
+                    capture_output=True, text=True, cwd=repo_root, timeout=3600)
+                if r.returncode != 0:
+                    rec.update(phase="triage", status="error",
+                               error=r.stderr.strip()[-300:])
+                    raise StopIteration
+            dates_f = out_dir / "dates.tmp"
+            dates_f.write_text(it["date"] + "\n")
+            day_sds = sds_dir / it["net"] / it["sta"] / it["date"]
+            plan = repo_root / "plans" / it["net"] / f'{it["net"]}.{it["sta"]}.plan.yaml'
+            if not plan.exists():
+                import yaml as _y
+                with open(repo_root / "metadata" / "station_registry.yaml") as _f:
+                    _reg = _y.safe_load(_f) or {}
+                plan = _synth_plan(it["db"], it["net"], it["sta"], _reg,
+                                   out_dir / "synth_plans" /
+                                   f'{it["net"]}.{it["sta"]}.plan.yaml')
+            cmd = [PY, "scan/phase3_driver.py", it["db"], str(plan),
+                   "--registry", "metadata/station_registry.yaml",
+                   "--staging-sds", str(day_sds), "--commit",
+                   "--dates-file", str(dates_f), "--workers", "1",
+                   "--selection", str(sel)]
+            r = subprocess.run(cmd, capture_output=True, text=True,
+                               cwd=repo_root, timeout=1800)
+            if r.returncode != 0 or "SELECTION REFUSED" in r.stdout:
+                rec.update(phase="convert", status="error",
+                           error=(r.stdout + r.stderr).strip()[-300:])
+                raise StopIteration
+            r = subprocess.run(
+                [PY, "scan/qa_verify.py", "--net", it["net"], "--sta", it["sta"],
+                 "--date", it["date"], "--sds-root", str(day_sds),
+                 "--db-dirs", str(Path(it["db"]).parent)],
+                capture_output=True, text=True, cwd=repo_root, env=env,
+                timeout=3600)
+            audit = json.loads(r.stdout)
+            miss = sel_loss = bad = 0.0
+            for ch, v in (audit.get("per_chan") or {}).items():
+                miss += v.get("missing_s", 0)
+                sel_loss += v.get("sel_loss_s", 0)
+                bad += v.get("n_bad", 0)
+            rec.update(phase="audit", status="done",
+                       missing_s=round(miss, 2), sel_loss_s=round(sel_loss, 2),
+                       n_bad=int(bad),
+                       union_gap_s=round(miss + sel_loss, 2),
+                       n_chans=len(audit.get("per_chan") or {}),
+                       verdict="PASS" if (bad == 0 and miss + sel_loss <= PASS_TOL_S
+                                          * max(1, len(audit.get("per_chan") or {})))
+                               else "FAIL")
+        except StopIteration:
+            rec["verdict"] = "ERROR"
+        except Exception as e:
+            rec.update(status="error", error=f"{type(e).__name__}: {e}",
+                       verdict="ERROR")
+        rec["elapsed_s"] = round(time.time() - t0, 1)
+        out.write(json.dumps(rec) + "\n")
+        out.flush()
+        n += 1
+        if n % 10 == 0:
+            print(f"[{datetime.now(timezone.utc).isoformat(timespec='seconds')}] "
+                  f"{n} days done", flush=True)
+        # keep the sandbox small: each day's SDS is only needed for its audit
+        import shutil
+        shutil.rmtree(sds_dir, ignore_errors=True)
+    out.close()
+    print(f"study pass complete: {n} new days")
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--db-dirs", nargs="+", required=True)
+    ap.add_argument("--networks", nargs="+", default=["VW", "VX", "DU"])
+    ap.add_argument("--out-dir", required=True)
+    ap.add_argument("--n-per-stratum", type=int, default=60)
+    ap.add_argument("--seed", type=int, default=20261019)
+    ap.add_argument("--max-hours", type=float, default=36.0)
+    args = ap.parse_args()
+    out_dir = Path(args.out_dir).expanduser()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sample_path = out_dir / "sample.jsonl"
+    if sample_path.exists():
+        sample = [json.loads(l) for l in open(sample_path)]
+        print(f"resuming with existing sample ({len(sample)} days)")
+    else:
+        sample = build_sample(args.db_dirs, set(args.networks),
+                              args.n_per_stratum, args.seed, sample_path)
+    run_study(sample, out_dir, REPO_ROOT, args.max_hours)
+
+
+if __name__ == "__main__":
+    main()

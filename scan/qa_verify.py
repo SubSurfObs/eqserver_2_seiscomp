@@ -79,10 +79,13 @@ def seed_band(rate_hz: float) -> str:
     return "L"
 
 
+import os as _os
 SAMPLE_TOL = 0.01          # fractional-sample alignment tolerance
-TELE_PROBE_EVERY_MIN = 30  # probe cadence for tele-duplicate channel check
+# Probe cadence / read caps are env-overridable for exhaustive runs
+# (triage study): QA_PROBE_EVERY=1 QA_EXTRA_CAP=999999 reads everything.
+TELE_PROBE_EVERY_MIN = int(_os.environ.get("QA_PROBE_EVERY", "30"))
 MAX_FINDINGS_PER_CAT = 10  # cap repeated findings per category per day
-EXTRA_READ_CAP = 300       # max tele_extra/revived files read per day (lower-bound beyond)
+EXTRA_READ_CAP = int(_os.environ.get("QA_EXTRA_CAP", "300"))
 
 
 # --- registry / DB resolution -------------------------------------------------
