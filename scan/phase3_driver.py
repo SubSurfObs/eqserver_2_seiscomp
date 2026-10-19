@@ -50,6 +50,8 @@ import traceback
 from collections import Counter
 from datetime import date, datetime, timedelta, timezone
 
+_ENGINE_SHA = "?"  # set in main(); carried into jobs for day fingerprints
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from cross_source import select_files_for_day, DEFAULT_DISK_SIZE_FLOOR_RATIO  # noqa: E402
@@ -479,6 +481,46 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     return result
 
 
+def _day_fingerprint(sel_rows, engine_sha, net, sta, loc):
+    """Identity of a day's conversion inputs: the selected (path, chans)
+    set, engine version, and target identity. Matching fingerprint +
+    intact outputs => the day's conversion is already done (skip)."""
+    import hashlib
+    h = hashlib.sha256()
+    h.update(f"{net}.{sta}.{loc}|{engine_sha}".encode())
+    for path, chans in sorted(sel_rows):
+        h.update(f"|{path}|{chans}".encode())
+    return h.hexdigest()
+
+
+def _skip_ledger_path(staging_root):
+    from pathlib import Path as _P
+    return _P(staging_root) / ".converted_days.jsonl"
+
+
+def _load_skip_ledger(staging_root):
+    import json as _j
+    out = {}
+    p = _skip_ledger_path(staging_root)
+    if p.exists():
+        for line in open(p):
+            try:
+                r = _j.loads(line)
+                out[r["date"]] = r
+            except Exception:
+                continue
+    return out
+
+
+def _outputs_intact(rec):
+    from pathlib import Path as _P
+    for path, size in rec.get("outputs", []):
+        q = _P(path)
+        if not q.exists() or q.stat().st_size != size:
+            return False
+    return True
+
+
 def _apply_orient_filter(st, orient_filter):
     """Keep only traces whose orientation letter is in orient_filter.
     Used by the v3 per-channel selection (chans groups): within one engine
@@ -674,11 +716,25 @@ def _worker_convert_day(job):
             from lib.selection import Selection
             sel = Selection(selection_path, net, sta, d.year, job["db_path"])
             by_chans = {}
-            for path, chans in sel.files_for_day(d_iso):
+            sel_rows = sel.files_for_day(d_iso)
+            for path, chans in sel_rows:
                 by_chans.setdefault(chans, []).append(path)
             groups = [(None if ch == "*" else set(ch), paths)
                       for ch, paths in sorted(by_chans.items())]
             files = [p for _, ps in groups for p in ps]
+            # Skip-unchanged fast path: a day whose input fingerprint
+            # matches a prior commit in this staging root, with outputs
+            # intact, is already converted — skip without reading sources.
+            if commit and job.get("skip_unchanged"):
+                fp = _day_fingerprint(sel_rows, job.get("engine_sha", "?"),
+                                      net, sta, loc)
+                prior = _load_skip_ledger(staging).get(d_iso)
+                if prior and prior.get("fingerprint") == fp and _outputs_intact(prior):
+                    sel.close()
+                    return {"status": "skipped_unchanged", "date": d_iso,
+                            "n_files": len(files), "n_boundary_files": 0,
+                            "sds_files_written": []}
+                job["_fingerprint"] = fp
             prev = d - timedelta(days=1)
             if prev.year == d.year:
                 boundary_files = [p for p, _ in
@@ -755,6 +811,14 @@ def _worker_convert_day(job):
                  "error": f"{type(e).__name__}: {e}",
                  "traceback": traceback.format_exc()}
         r["date"] = d_iso
+        if (job.get("_fingerprint") and commit
+                and r.get("status") in ("ok", "qc_flagged")
+                and r.get("sds_files_written")):
+            import json as _j
+            rec = {"date": d_iso, "fingerprint": job["_fingerprint"],
+                   "outputs": [[p, s] for p, s in r["sds_files_written"]]}
+            with open(_skip_ledger_path(staging), "a") as _f:
+                _f.write(_j.dumps(rec) + "\n")
         return r
     except TimeoutError as e:
         # Timeout fired before files/boundary_files were even resolved.
@@ -796,6 +860,10 @@ def main():
                          "down to 80%% of tele's size). Set 0.0 for old 'absolute "
                          "disk preference' policy; 1.0 for 'most data wins, disk "
                          "only on ties'.")
+    ap.add_argument("--skip-unchanged", action="store_true",
+                    help="v3: skip days whose input fingerprint matches a "
+                         "prior committed conversion in this staging root "
+                         "with outputs intact (repairs/reruns fast path)")
     ap.add_argument("--selection", default=None,
                     help="v3: selection sqlite from coverage_planner. When "
                          "given, it is the ONLY source of per-day file lists "
@@ -814,6 +882,13 @@ def main():
                          "Defaults to the current Option-B classifier. Bump when "
                          "the classifier semantics change.")
     args = ap.parse_args()
+
+    import subprocess as _sp
+    try:
+        engine_sha = _sp.run(["git", "-C", args.disk_to_sds, "rev-parse", "HEAD"],
+                             capture_output=True, text=True).stdout.strip()[:12] or "?"
+    except Exception:
+        engine_sha = "?"
 
     import yaml
     # Fail-fast: confirm suds_convert is importable from --disk-to-sds before
@@ -928,6 +1003,8 @@ def main():
                 "commit": args.commit, "disk_to_sds": args.disk_to_sds,
                 "disk_size_floor_ratio": args.disk_size_floor_ratio,
                 "selection_path": args.selection,
+                "skip_unchanged": args.skip_unchanged,
+                "engine_sha": engine_sha,
             })
             if args.limit_days and len(jobs) >= args.limit_days:
                 break
