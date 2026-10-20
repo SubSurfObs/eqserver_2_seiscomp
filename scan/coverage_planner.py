@@ -177,26 +177,43 @@ class ChannelKnowledge:
 
 def choose_day(cands, know: ChannelKnowledge, month_key):
     """Per-orientation population winner + minute-gap-fill.
-    Returns (selected {(path -> set(chans), meta)}, rejected list, n_gap)."""
+
+    Channel knowledge is PER FILE: a filename that declares its channel is
+    exact for that file; only non-declaring files inherit their
+    population's probed channel set. A file is only ever selected for
+    orientations it actually carries, and a population's coverage for an
+    orientation counts only the files that carry it. (Fix for the SCM2
+    2020-12-31 study failure: a per-channel population was sampled at
+    3 files, concluded Z-only, and two channels were filtered away.)
+
+    Returns (selected {path -> {chans, rule, cand}}, rejected list, n_gap)."""
     pops = defaultdict(list)
     for c in cands:
         pops[c["population"]].append(c)
 
-    pop_chans = {}
+    f_orients = {}
     for pk, files in pops.items():
-        union = set()
-        for f in files[:3]:  # suffix check / one probe is enough
-            ch, basis, _ = know.orientations_for(f, month_key)
-            union |= ch
-        pop_chans[pk] = union
+        probed = None
+        for f in files:
+            suf = f.get("chan_suffix")
+            if suf and suf[-1].upper() in ORIENTATIONS:
+                f_orients[f["path"]] = frozenset(suf[-1].upper())
+            else:
+                if probed is None:
+                    probed, _basis, _pp = know.orientations_for(f, month_key)
+                f_orients[f["path"]] = probed
 
-    all_orients = set().union(*pop_chans.values()) if pop_chans else set()
+    all_orients = set().union(*f_orients.values()) if f_orients else set()
     sel = defaultdict(lambda: {"chans": set(), "rule": None, "cand": None})
     rejected, n_gap = [], 0
 
     for orient in sorted(all_orients):
-        carriers = {pk: files for pk, files in pops.items()
-                    if orient in pop_chans[pk]}
+        # carriers: per population, only the FILES that carry this orientation
+        carriers = {}
+        for pk, files in pops.items():
+            fs = [f for f in files if orient in f_orients[f["path"]]]
+            if fs:
+                carriers[pk] = fs
         if not carriers:
             continue
 
@@ -207,7 +224,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             return slots
 
         ranked = sorted(
-            ((pk, files, coverage(files)) for pk, files in carriers.items()),
+            ((pk, fs, coverage(fs)) for pk, fs in carriers.items()),
             key=lambda t: (len(t[2]),
                            0.5 if t[1][0]["source"] == "disk" else 0.0,
                            sum(f["size"] for f in t[1])),
@@ -218,8 +235,8 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             e["chans"].add(orient)
             e["rule"] = e["rule"] or f"winner:{orient}:{win_pk}"
             e["cand"] = f
-        for pk, files, _cov in ranked[1:]:
-            for f in files:
+        for pk, fs, _cov in ranked[1:]:
+            for f in fs:
                 extra = minute_slots(f) - covered
                 if extra:
                     e = sel[f["path"]]
