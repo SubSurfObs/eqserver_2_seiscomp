@@ -42,8 +42,14 @@ Run:
   python3 scan/run_production_convert.py \
       --registry metadata/station_registry.yaml \
       --staging-sds /mnt/seiscomp_staging/seiscomp_archive \
+      --selections-dir <dir with NET.STA.YEAR.selection.sqlite> \
       --year-min 2012 --year-max 2025 \
       --workers 4
+
+v3 gates (review 2026-10-23 F1): the Stage-4 preflight runs first and
+aborts on dirty/unpinned repos; every unit must have a compiled selection
+in --selections-dir (missing = recorded failure, never a legacy-chooser
+fallback); only plans with status 'ok' convert.
 """
 from __future__ import annotations
 import argparse
@@ -60,6 +66,7 @@ sys.path.insert(0, str(HERE))
 from orchestrate_queue import (
     queue_dir, append_event, read_all_events, build_run_id, utc_now,
 )
+from lib.preflight import run_preflight, PreflightError
 
 DEFAULT_VENV_PY = "/home/unimelb.edu.au/dsand/projects/SubSurfObs/disk_to_sds/.venv/bin/python3"
 DEFAULT_PHASE3 = HERE / "phase3_driver.py"
@@ -107,6 +114,16 @@ def run_convert(args, station: str, year: int) -> dict:
     plan_path = Path(args.plans) / f"{args.network}.{station}.plan.yaml"
     if not db_path.exists() or not plan_path.exists():
         return {"status": "skip", "reason": "db or plan missing"}
+    # Review 2026-10-23 F1: a unit with no compiled selection is a FAILURE,
+    # never a silent fall-through to the legacy runtime chooser (phase3
+    # itself also refuses selection-less runs now, belt-and-braces).
+    sel_path = (Path(args.selections_dir)
+                / f"{args.network}.{station}.{year}.selection.sqlite")
+    if not sel_path.exists():
+        return {"status": "fail", "rc": None, "elapsed_s": 0.0,
+                "items_succeeded": 0, "run_id": build_run_id(args.network, station, year),
+                "run_manifest_path": "", "log_path": "",
+                "reason": f"no selection at {sel_path}"}
     run_id = build_run_id(args.network, station, year)
     run_manifest_path = Path(args.run_manifests_dir) / f"{run_id}.json"
     log_path = Path(args.log_dir) / f"{run_id}.log"
@@ -124,6 +141,7 @@ def run_convert(args, station: str, year: int) -> dict:
            "--staging-sds", args.staging_sds,
            "--workers", str(args.workers),
            "--commit",
+           "--selection", str(sel_path),
            "--start-date", start_date,
            "--end-date", end_date,
            "--run-manifest", str(run_manifest_path)]
@@ -184,6 +202,13 @@ def main():
                          "repo's plans/<network>/ — these are the in-git, "
                          "reviewable, reproducible policy artefacts. Override "
                          "only if you're testing against a one-off plan set.")
+    ap.add_argument("--selections-dir", required=True,
+                    help="Dir of compiled selection databases, one per "
+                         "(station, year): <NET>.<STA>.<YEAR>.selection.sqlite "
+                         "from scan/coverage_planner.py. REQUIRED — a unit "
+                         "without its selection is recorded as failed, never "
+                         "converted by the legacy runtime chooser (review "
+                         "2026-10-23 F1).")
     ap.add_argument("--registry", required=True)
     ap.add_argument("--staging-sds", required=True,
                     help="SDS root for the production output. The shared "
@@ -220,6 +245,18 @@ def main():
             file=sys.stderr, flush=True)
         return 2
 
+    # Mandatory Stage-4 preflight (review 2026-10-23 F1/F8): every repo this
+    # stage executes must be clean and committed (and on its pin when one is
+    # set) BEFORE any unit converts. Not optional, not operator-remembered.
+    try:
+        pf = run_preflight("convert")
+    except PreflightError as exc:
+        print(f"[convert] PREFLIGHT ABORT: {exc}", file=sys.stderr, flush=True)
+        return 2
+    print("[convert] preflight OK: " + ", ".join(
+        f"{c['repo']}@{c['head'][:9]}" + ("" if c["pinned"] else "(UNPINNED)")
+        for c in pf["repos"]), flush=True)
+
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_sds).parent)
     convert_done = queue / "convert_done.jsonl"
@@ -255,13 +292,19 @@ def main():
             print(f"[convert]   skip {sta}: no DB at {db_path}", flush=True)
             continue
         plan = yaml.safe_load(plan_path.open())
-        # The only legitimate station-level gate is defer_conversion: registry-
-        # annotated recorder type whose EqServer presence is misleading partial
-        # data (PiesMo HHZ-only stub). Everything else is converted as-is —
-        # per-day classifier labels are descriptive, not skip signals. See
-        # [[feedback-convert-what-is-on-disc]].
+        # Station-level gates: defer_conversion is the clean registry-driven
+        # skip (PiesMo HHZ-only stub); ANY other non-'ok' status (needs_review,
+        # BLOCKED, ...) refuses the station — the plan is the reviewed identity
+        # contract and an unapproved one must not convert (review 2026-10-23
+        # F1). Per-day classifier labels remain descriptive, not skip signals
+        # — see [[feedback-convert-what-is-on-disc]].
         if plan.get("status") == "defer_conversion":
             print(f"[convert]   skip {sta}: status=defer_conversion", flush=True)
+            continue
+        if plan.get("status") != "ok":
+            print(f"[convert]   REFUSE {sta}: plan status="
+                  f"{plan.get('status')!r} — only reviewed status 'ok' plans "
+                  f"convert", flush=True)
             continue
         for year in station_years(plan, args.year_min, args.year_max):
             if (sta, year) in done_sta_year:

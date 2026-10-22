@@ -1027,6 +1027,14 @@ def main():
                          "(validated fail-closed against this manifest DB "
                          "before any job is dispatched); runtime cross_source "
                          "selection is disabled.")
+    ap.add_argument("--legacy-chooser", action="store_true",
+                    help="EXPLICITLY use the v1 runtime cross_source chooser "
+                         "instead of a selection. KNOWN ARCHITECTURAL DEFECT: "
+                         "it does not obey the reviewed plan's source "
+                         "selection (operator-flagged 2026-10-18). Exists "
+                         "only for Branch-1 fallback comparisons; never for "
+                         "production. Without --selection OR this flag, "
+                         "phase3 refuses to run at all (review F1).")
     ap.add_argument("--run-manifest", default=None,
                     help="path to write a phase3 run manifest (JSON) at end of run. "
                          "When set, captures run identity, per-date status, "
@@ -1040,6 +1048,27 @@ def main():
                          "the classifier semantics change.")
     args = ap.parse_args()
 
+    # Structural gate (review 2026-10-23, F1): conversion REQUIRES a compiled,
+    # validated selection. The legacy runtime chooser — the v1 plan-not-obeyed
+    # defect — is unreachable by omission; it takes an explicit flag.
+    if args.selection and args.legacy_chooser:
+        print("[phase3] REFUSED: --selection and --legacy-chooser are "
+              "mutually exclusive.", file=sys.stderr, flush=True)
+        sys.exit(2)
+    if not args.selection and not args.legacy_chooser:
+        print("[phase3] REFUSING TO RUN: no --selection given. v3 converts "
+              "only what a compiled selection admits (fail-closed). Build one "
+              "with scan/coverage_planner.py. To knowingly run the v1 runtime "
+              "chooser pass --legacy-chooser (KNOWN DEFECT: it does not obey "
+              "the reviewed plan's source selection).",
+              file=sys.stderr, flush=True)
+        sys.exit(2)
+    if args.legacy_chooser:
+        print("[phase3] WARNING: --legacy-chooser — v1 runtime cross_source "
+              "selection in use; the reviewed plan's source selection is NOT "
+              "obeyed (operator-flagged defect 2026-10-18). Comparison/"
+              "fallback use only — never production.", flush=True)
+
     import subprocess as _sp
     try:
         engine_sha = _sp.run(["git", "-C", args.disk_to_sds, "rev-parse", "HEAD"],
@@ -1048,11 +1077,6 @@ def main():
         engine_sha = "?"
 
     import yaml
-    # Fail-fast: confirm suds_convert is importable from --disk-to-sds before
-    # we spin up the pool. Each worker will re-import (cheap; Python caches).
-    sys.path.insert(0, args.disk_to_sds)
-    import suds_convert  # noqa: F401,E402  (probe import only)
-
     plan = yaml.safe_load(open(args.plan))
     station = plan["station"]
     network = plan["network"]
@@ -1061,6 +1085,20 @@ def main():
 
     print(f"[phase3] station={network}.{station} loc={location!r} status={status} "
           f"commit={args.commit} dry-run={not args.commit}", flush=True)
+
+    # Plan gate (review 2026-10-23, F1): only a reviewed, approved plan may
+    # write. defer_conversion exits cleanly further down; every other
+    # non-'ok' status (needs_review, BLOCKED, ...) refuses to commit.
+    if args.commit and status not in ("ok", "defer_conversion"):
+        print(f"[phase3] PLAN GATE REFUSED: plan status={status!r} — only "
+              f"status 'ok' plans may convert with --commit. Review and "
+              f"approve the plan first.", file=sys.stderr, flush=True)
+        sys.exit(2)
+
+    # Fail-fast: confirm suds_convert is importable from --disk-to-sds before
+    # we spin up the pool. Each worker will re-import (cheap; Python caches).
+    sys.path.insert(0, args.disk_to_sds)
+    import suds_convert  # noqa: F401,E402  (probe import only)
 
     # Unit-level watchdog: force-kills the whole phase3 process after a hard
     # wall-clock deadline. Catches the multiprocessing.Pool finalisation hangs
