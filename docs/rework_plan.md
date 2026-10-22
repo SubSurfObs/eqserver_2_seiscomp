@@ -176,6 +176,18 @@ decommission; full raw mirror rejected.
 
 ## Progress log (newest first)
 
+- 2026-10-22 — **OZ.KORUM: first real station converted end-to-end under
+  v3** (colleague drop, 22 days, EchoPro with mid-deployment c01/c02/c03
+  → EHE/EHN/EHZ rename). 22/22 days pass exhaustive audit (0 missing,
+  0 selection loss, 0 bad samples). Engine SEED-passthrough reviewed +
+  committed (disk_to_sds dba4f10 — was an uncommitted side-load, caught
+  by discipline); auditor taught the same convention; registry entry
+  OZ.KORUM (loc 60, HH* @100 Hz per AusPass). Cross-check found the
+  disk_to_sds reference run CRASHED mid-Oct-18 (truncated day 291,
+  4 days missing, orphaned .partial) while looking complete in shared
+  staging — live evidence for inventory-driven promotion. Audited output
+  placed in shared staging; LT promotion operator-gated as usual.
+
 - 2026-10-19 — Increment A PROVEN: selection-file-driven conversion is
   byte-identical to legacy runtime selection on three test days (EchoPro
   BEST 2022-06-15, Gecko STBK 2023-01-08, Minimus DDWB 2021-06-15);
