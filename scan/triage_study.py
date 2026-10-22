@@ -156,6 +156,15 @@ def _synth_plan(db_path, net, sta, registry, out_path: Path):
     return out_path
 
 
+def _repo_sha(repo: Path) -> str:
+    try:
+        return subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                              capture_output=True, text=True,
+                              timeout=10).stdout.strip() or "?"
+    except Exception:
+        return "?"
+
+
 def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
     results_path = out_dir / "results.jsonl"
     done = set()
@@ -163,7 +172,10 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
         for line in open(results_path):
             try:
                 r = json.loads(line)
-                done.add((r["net"], r["sta"], r["date"]))
+                # Review 2026-10-23 F10: only an actually-audited outcome is
+                # terminal. ERROR days are retried on every resume.
+                if r.get("verdict") in ("PASS", "FAIL"):
+                    done.add((r["net"], r["sta"], r["date"]))
             except Exception:
                 pass
     sel_dir = out_dir / "selections"
@@ -171,6 +183,12 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
     sel_dir.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, QA_PROBE_EVERY="1", QA_EXTRA_CAP="999999")
     deadline = time.time() + max_hours * 3600
+    # Review F10: every result is bound to the code that produced it.
+    code_id = {
+        "eqserver_sha": _repo_sha(repo_root),
+        "sudspy_sha": _repo_sha(repo_root.parent / "sudspy"),
+        "disk_to_sds_sha": _repo_sha(repo_root.parent / "disk_to_sds"),
+    }
     out = open(results_path, "a")
     n = 0
     for it in sample:
@@ -181,9 +199,22 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
             break
         year = it["date"][:4]
         sel = sel_dir / f'{it["net"]}.{it["sta"]}.{year}.selection.sqlite'
-        rec = dict(it, ts=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+        rec = dict(it, ts=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                   **code_id)
         t0 = time.time()
         try:
+            # Review F10: a cached selection compiled by a DIFFERENT chooser
+            # version is stale evidence — recompile it.
+            if sel.exists():
+                try:
+                    sc = sqlite3.connect(f"file:{sel}?mode=ro", uri=True)
+                    gsha = dict(sc.execute(
+                        "SELECT key, value FROM meta")).get("generator_sha")
+                    sc.close()
+                except Exception:
+                    gsha = None
+                if gsha != code_id["eqserver_sha"]:
+                    sel.unlink()
             if not sel.exists():
                 r = subprocess.run(
                     [PY, "scan/coverage_planner.py", "--net", it["net"],
@@ -223,18 +254,41 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
                 capture_output=True, text=True, cwd=repo_root, env=env,
                 timeout=3600)
             audit = json.loads(r.stdout)
+            per_chan = audit.get("per_chan") or {}
             miss = sel_loss = bad = 0.0
-            for ch, v in (audit.get("per_chan") or {}).items():
+            for ch, v in per_chan.items():
                 miss += v.get("missing_s", 0)
                 sel_loss += v.get("sel_loss_s", 0)
                 bad += v.get("n_bad", 0)
-            rec.update(phase="audit", status="done",
+            # Review 2026-10-23 F10: PASS requires a USABLE audit. Finding
+            # categories are classified fail-closed: audit-infrastructure
+            # failures => ERROR (retried); any category that is not the
+            # numeric missing/selection-loss pair (already measured by the
+            # per-channel bound) => FAIL, including categories this code
+            # does not know.
+            cats = {}
+            for f in (audit.get("findings") or []):
+                c = f.get("category", "unknown")
+                cats[c] = cats.get(c, 0) + 1
+            AUDIT_ERROR_CATS = {"comparator_error", "no_station_db"}
+            QUANTIFIED_CATS = {"missing_channel", "selection_loss"}
+            hard_fail = sorted(c for c in cats
+                               if c not in AUDIT_ERROR_CATS
+                               and c not in QUANTIFIED_CATS)
+            rec.update(phase="audit",
                        missing_s=round(miss, 2), sel_loss_s=round(sel_loss, 2),
                        n_bad=int(bad),
                        union_gap_s=round(miss + sel_loss, 2),
-                       n_chans=len(audit.get("per_chan") or {}),
-                       verdict="PASS" if (bad == 0 and miss + sel_loss <= PASS_TOL_S
-                                          * max(1, len(audit.get("per_chan") or {})))
+                       n_chans=len(per_chan), finding_cats=cats)
+            if (cats.keys() & AUDIT_ERROR_CATS) or not per_chan:
+                rec.update(status="error",
+                           error=f"audit unusable: cats={sorted(cats)} "
+                                 f"n_chans={len(per_chan)}")
+                raise StopIteration
+            rec.update(status="done",
+                       verdict="PASS" if (not hard_fail and bad == 0
+                                          and miss + sel_loss
+                                          <= PASS_TOL_S * len(per_chan))
                                else "FAIL")
         except StopIteration:
             rec["verdict"] = "ERROR"
