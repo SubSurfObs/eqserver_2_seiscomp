@@ -27,6 +27,27 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 Rule: one thing in flight per project; every status report names its
 project.
 
+**Standing operating frame (operator, 2026-10-19 — report against ALL
+THREE every update, push all three every session):**
+1. **TRIAGE (primary):** battle-test the decision process that maps a day
+   directory to the subset of files converted. Maximum channel coverage,
+   evidenced.
+2. **ARCHITECTURE:** overall design view of the whole pipeline — simple,
+   clever, good software design.
+3. **SPEED:** keep generating and testing speedup ideas (currently: mount
+   micro-tests queued post-study; skip-unchanged fast path; convert+audit
+   single-read fusion).
+
+**VW/VX repairs (operator decision 2026-10-19):** done ONCE, with the v3
+pipeline, after its dress rehearsal passes — never with the current code.
+Tier 1: re-convert whole station-years (the ~32 pre-midnight-fix
+unit-years + the audit's dozen worst incl. HOLS ~3%); BEST and WLSH are
+the dress rehearsal itself. Tier 2: a few hundred scattered audit-flagged
+days. Sequenced AFTER DU conversion and before decommission (~Jan 2027,
+when the origin storage disappears). Repair unit = whole day-file swap;
+auditor verifies before overwrite; override gate + ledger + storage
+versioning make every repair recorded and reversible.
+
 ## Where each stream of work stopped (as of 2026-06-24)
 
 1. **VW scan 1 (v1)** — done and promoted. Known LT defects catalogued in
@@ -185,6 +206,49 @@ review still owed (Monday target).
 - Speed plan (VM now idle): baseline corpus-vs-NFS on the 8 days, then
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
+
+## SAVE-POINT 2026-10-22 (pre-compact; operator allowance nearly out — Codex to implement during a 3-4 day break, Claude reviews on return)
+
+**Path A approved** (fix everything, then DU; full-Codex-review hard gate
+— see docs/rework_plan.md "Path A"). Exact position:
+
+- FIX 1 DONE+PROVEN — timestamp fidelity at BOTH layers (sudspy 8d7b5db
+  merge-grid rule + reader-level drift-split in phase3). LKHRT
+  2023-07-28: 6.47M bad samples → 0 (PASS); KORUM day byte-identical.
+  Regression tests in sudspy tests/test_timestamp_fidelity.py.
+- FIXES 2+3 CODED, COMMITTED, **NOT YET TESTED** (chooser: multi-file
+  probe union — root cause of SCM2+TYHS big gaps; sub-minute short-file
+  fill). Test = rerun `bash ~/v3_test/fix_one_day.sh VW TYHS 2023-08-31
+  <provenance-db> plans/VW/VW.TYHS.plan.yaml` on the VM; expect
+  missing≈0 (was 3,236 s).
+- FIX 4 (mixed-format per-engine dispatch) COMMITTED; TYHS test showed
+  its 54-min gap was actually the probe issue (fix 2), not formats.
+- FIX 5 NOT BUILT: identity-driven channel naming override (needed for
+  DU loc-60 EH* stations; engine _enforce_band_instrument forces HH).
+- NOT YET RUN: overnight re-run of all failed study days (strip
+  non-PASS from ~/v3_test/triage_study/results.jsonl, delete those
+  station-years' cached selections, relaunch triage_study — same
+  procedure as 2026-10-20).
+- NOT YET WRITTEN: (a) Codex take-over handoff, (b) comprehensive Codex
+  review brief (operator-ordered hard gate). Scope for (b): chooser
+  (coverage_planner), lib/selection, phase3 selection/fidelity/dispatch
+  changes, qa_verify, triage_study, preflight, skip-unchanged,
+  sudspy 8d7b5db, disk_to_sds dba4f10.
+- Working rules for whoever resumes: AGENTS.md "Communicating with Dan";
+  memory notes feedback-discussion-is-not-decision (phase starts need
+  explicit permission), project-timing-quality-later (timestamps AS-IS,
+  never corrected), project-plan-not-obeyed-defect (flag if running
+  Branch 1).
+- MIX-UP NOTE: operator instruction about OZ.KORUM server metadata was
+  meant for ANOTHER project; an AusPass channel-level StationXML was
+  committed to uom_seismic_metadata fdsnxml/oz_korum_auspass.xml
+  (harmless, provenance-noted, PROD NEVER TOUCHED). Operator may revert
+  or adopt there.
+- KORUM conversion itself: complete + audited 22/22 in shared staging;
+  LT promotion still operator-gated. DU pilot leftovers frozen at
+  ~/v3_test/du_pilot (unapproved start, stopped; delete freely).
+- VM idle; nconnect mount STILL NOT in fstab (reverts on reboot;
+  `sudo bash ~/nconnect_remount.sh` restores).
 
 ## Session log (newest first, one line each)
 
