@@ -152,27 +152,44 @@ class ChannelKnowledge:
         self.cache = {}       # (population, 'YYYY-MM') -> (chans frozenset, basis, probe_path)
         self.probe_enabled = probe_enabled
 
+    N_PROBES = 4  # files probed per (population, month); union of contents.
+    # One probe proved unsafe twice: SCM2 (first file was Z-only in a
+    # per-channel population) and TYHS (first disk file was a 1-channel
+    # sidecar in a mostly 3-channel population; 27 min/day of E+Z lost).
+
     def orientations_for(self, cand, month_key):
         suf = cand.get("chan_suffix")
         if suf and suf[-1].upper() in ORIENTATIONS:
             return frozenset(suf[-1].upper()), "filename_suffix", None
         key = (cand["population"], month_key)
         if key not in self.cache:
-            self.cache[key] = self._probe(cand)
+            self.cache[key] = (frozenset(), "pending", None)
         return self.cache[key]
 
-    def _probe(self, cand):
-        if self.probe_enabled:
+    def probe_population(self, files, population, month_key):
+        """Union channel content over up to N_PROBES spread-out files."""
+        key = (population, month_key)
+        cached = self.cache.get(key)
+        if cached and cached[1] not in ("pending",):
+            return cached
+        chans = set()
+        probed = None
+        if self.probe_enabled and files:
             try:
                 from qa_verify import read_source_file
-                traces = read_source_file(cand["path"], [], {})
-                chans = frozenset(t["orient"] for t in traces
-                                  if t["orient"] in ORIENTATIONS)
-                if chans:
-                    return chans, "header_probe", cand["path"]
+                step = max(1, len(files) // self.N_PROBES)
+                for f in files[::step][:self.N_PROBES]:
+                    for t in read_source_file(f["path"], [], {}):
+                        if t["orient"] in ORIENTATIONS:
+                            chans.add(t["orient"])
+                    probed = f["path"]
             except Exception:
                 pass
-        return frozenset("ZNE"), "assumed_broadband", None
+        if chans:
+            self.cache[key] = (frozenset(chans), "header_probe_union", probed)
+        else:
+            self.cache[key] = (frozenset("ZNE"), "assumed_broadband", None)
+        return self.cache[key]
 
 
 def choose_day(cands, know: ChannelKnowledge, month_key):
@@ -193,15 +210,18 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
 
     f_orients = {}
     for pk, files in pops.items():
-        probed = None
+        unsuffixed = [f for f in files
+                      if not (f.get("chan_suffix")
+                              and f["chan_suffix"][-1].upper() in ORIENTATIONS)]
+        pop_set = None
+        if unsuffixed:
+            pop_set, _basis, _pp = know.probe_population(unsuffixed, pk, month_key)
         for f in files:
             suf = f.get("chan_suffix")
             if suf and suf[-1].upper() in ORIENTATIONS:
                 f_orients[f["path"]] = frozenset(suf[-1].upper())
             else:
-                if probed is None:
-                    probed, _basis, _pp = know.orientations_for(f, month_key)
-                f_orients[f["path"]] = probed
+                f_orients[f["path"]] = pop_set
 
     all_orients = set().union(*f_orients.values()) if f_orients else set()
     sel = defaultdict(lambda: {"chans": set(), "rule": None, "cand": None})
@@ -230,11 +250,28 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                            sum(f["size"] for f in t[1])),
             reverse=True)
         win_pk, win_files, covered = ranked[0]
+        sizes = sorted(f["size"] for f in win_files if f["size"])
+        med = sizes[len(sizes) // 2] if sizes else 0
+        short_minutes = {f["hhmm"] for f in win_files
+                         if f["hhmm"] and med and f["size"] < 0.88 * med}
         for f in win_files:
             e = sel[f["path"]]
             e["chans"].add(orient)
             e["rule"] = e["rule"] or f"winner:{orient}:{win_pk}"
             e["cand"] = f
+        # Sub-minute gap-fill: a winner file well below its population's
+        # median size is likely seconds short; also take the best other
+        # copy of that minute so the merge can supply the tail (overlap
+        # policy trims the duplicated span).
+        if short_minutes:
+            for pk, fs, _cov in ranked[1:]:
+                for f in fs:
+                    if f["hhmm"] in short_minutes:
+                        e = sel[f["path"]]
+                        e["chans"].add(orient)
+                        e["rule"] = e["rule"] or f"short_fill:{orient}:{pk}"
+                        e["cand"] = f
+                        short_minutes.discard(f["hhmm"])
         for pk, fs, _cov in ranked[1:]:
             for f in fs:
                 extra = minute_slots(f) - covered
