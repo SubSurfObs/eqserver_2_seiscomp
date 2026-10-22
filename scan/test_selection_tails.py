@@ -44,6 +44,9 @@ def main():
             # final NE coverage of the day (no later NE file exists).
             ("2023-05-01", "s", "tele", "/t/bundle_ne.ms", "0100", 82800, "w", "r", "NE"),
             ("2023-05-01", "s", "tele", "/t/0030_ne.ms", "0030", 60, "w", "r", "NE"),
+            # A fill row: must sort AFTER every winner row (F5 priority).
+            ("2023-05-01", "s", "tele", "/t/0000_z_fill.ms", "0000", 60, "w",
+             "short_fill:Z:tele", "Z"),
         ]
         c.executemany("INSERT INTO selection VALUES (?,?,?,?,?,?,?,?,?)", rows)
         c.commit()
@@ -51,7 +54,16 @@ def main():
 
         s = Selection(sp, "VW", "FAKE", 2023, manifest)
         tails = s.tail_for_day("2023-05-01")
+        day_rows = s.files_for_day("2023-05-01")
         s.close()
+
+        ok = (day_rows[-1][0] == "/t/0000_z_fill.ms"
+              and all(not r[2].startswith(("short_fill", "gap_fill"))
+                      for r in day_rows[:-1]))
+        print(f"{'PASS' if ok else 'FAIL'}  fill rows sort after winners")
+        if not ok:
+            print(f"      got {day_rows!r}")
+            return 1
 
         want = [("/d/2359_z.dmx", "Z"), ("/t/bundle_ne.ms", "NE")]
         ok = sorted(tails) == sorted(want)

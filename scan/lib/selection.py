@@ -94,14 +94,16 @@ class Selection:
             "SELECT DISTINCT date FROM selection ORDER BY date")]
 
     def files_for_day(self, d_iso: str):
-        """[(path, chans)] selected for the day. chans is the orientation
-        set to take from that file ('*' = all — v0.1 selections)."""
-        if self.meta.get("schema_version") == "selection-v0.1":
-            return [(r[0], "*") for r in self.conn.execute(
-                "SELECT DISTINCT path FROM selection WHERE date=? ORDER BY path",
-                (d_iso,))]
-        return [(r[0], r[1] or "*") for r in self.conn.execute(
-            "SELECT path, chans FROM selection WHERE date=? ORDER BY path",
+        """[(path, chans, rule)] selected for the day, WINNERS FIRST: fill
+        rows (short_fill/gap_fill) sort after winner rows, and the converter
+        preserves this order into the merge, whose equal-start tie break is
+        input order — so the chooser's winner, not pathname or format,
+        decides which samples survive an overlap (review 2026-10-23 F5).
+        chans is the orientation set to take from that file."""
+        return [(r[0], r[1] or "*", r[2] or "") for r in self.conn.execute(
+            "SELECT path, chans, rule FROM selection WHERE date=? "
+            "ORDER BY CASE WHEN rule LIKE 'short_fill%' "
+            "OR rule LIKE 'gap_fill%' THEN 1 ELSE 0 END, path",
             (d_iso,))]
 
     def tail_for_day(self, prev_iso: str):
@@ -114,13 +116,9 @@ class Selection:
         final coverage comes from an hourly/23-hour bundle has its last
         selected file at an earlier hhmm, so this takes the max-hhmm row(s)
         per chans group."""
-        if self.meta.get("schema_version") == "selection-v0.1":
-            rows = [(r[0], "*", r[1]) for r in self.conn.execute(
-                "SELECT path, hhmm FROM selection WHERE date=?", (prev_iso,))]
-        else:
-            rows = [(r[0], r[1] or "*", r[2]) for r in self.conn.execute(
-                "SELECT path, chans, hhmm FROM selection WHERE date=?",
-                (prev_iso,))]
+        rows = [(r[0], r[1] or "*", r[2]) for r in self.conn.execute(
+            "SELECT path, chans, hhmm FROM selection WHERE date=?",
+            (prev_iso,))]
         best = {}  # chans -> (max_hhmm, {paths})
         for path, chans, hhmm in rows:
             h = hhmm or ""

@@ -665,8 +665,8 @@ def _day_fingerprint(sel_rows, code_id, net, sta, loc):
     import hashlib
     h = hashlib.sha256()
     h.update(f"{net}.{sta}.{loc}|{code_id}".encode())
-    for path, chans in sorted(sel_rows):
-        h.update(f"|{path}|{chans}".encode())
+    for row in sorted(sel_rows):
+        h.update(f"|{row[0]}|{row[1]}|{row[2] if len(row) > 2 else ''}".encode())
     return h.hexdigest()
 
 
@@ -917,7 +917,10 @@ def _worker_convert_day(job):
             sel = Selection(selection_path, net, sta, d.year, job["db_path"])
             by_chans = {}
             sel_rows = sel.files_for_day(d_iso)
-            for path, chans in sel_rows:
+            # Row order is winner-first (fills sort last, review F5) and is
+            # PRESERVED into each group's file list and from there into the
+            # engines' read order — the merge's equal-start tie break.
+            for path, chans, _rule in sel_rows:
                 by_chans.setdefault(chans, []).append(path)
             groups = [(None if ch == "*" else set(ch), paths)
                       for ch, paths in sorted(by_chans.items())]
@@ -997,16 +1000,25 @@ def _worker_convert_day(job):
             mseed = [f for f in group_files if not _is_suds(f)]
             b_suds = [f for f in b_files if _is_suds(f)]
             b_mseed = [f for f in b_files if not _is_suds(f)]
-            results = []
+            engine_calls = []
             if suds or b_suds:
-                results.append(convert_echopro_day(
+                engine_calls.append(("suds", lambda: convert_echopro_day(
                     suds_convert, sta, net, loc, suds, staging, commit,
-                    boundary_files=b_suds, day=d, orient_filter=orient_filter))
+                    boundary_files=b_suds, day=d, orient_filter=orient_filter)))
             if mseed or b_mseed:
                 eng = convert_minimus_day if recorder_eff == "minimus" else convert_gecko_day
-                results.append(eng(sta, net, loc, mseed, staging, commit,
-                                   suds_convert, boundary_files=b_mseed,
-                                   day=d, orient_filter=orient_filter))
+                engine_calls.append(("mseed", lambda: eng(
+                    sta, net, loc, mseed, staging, commit,
+                    suds_convert, boundary_files=b_mseed,
+                    day=d, orient_filter=orient_filter)))
+            # Review F5: on a mixed-format group, the format of the FIRST
+            # file (a winner — fills sort last) writes first. write_sds puts
+            # existing-file data before new data, so the first write wins
+            # equal-time overlaps: the chooser's winner, not format order.
+            lead = group_files[0] if group_files else (b_files[0] if b_files else None)
+            if lead is not None and not _is_suds(lead):
+                engine_calls.reverse()
+            results = [call() for _fmt, call in engine_calls]
             if not results:
                 return {"status": "no_files", "n_files": 0,
                         "n_boundary_files": len(b_files)}
