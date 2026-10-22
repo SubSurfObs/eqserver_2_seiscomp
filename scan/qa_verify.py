@@ -221,12 +221,20 @@ def split_populations(files: list[dict]) -> tuple[list, list, list]:
 
 # --- source readers ------------------------------------------------------------
 
+SEED_SEISMO_RE = __import__("re").compile(r"^[ESHB]H[ZNE123]$")
+
+
 def _suds_component(chan: str) -> str | None:
     c = (chan or "").strip().lower()
     if c in SUDS_COMPONENT:
         return SUDS_COMPONENT[c]
     if c.endswith(SUDS_DROP_SUFFIXES) or c.startswith(SUDS_DROP_PREFIXES):
         return None
+    # Already-SEED-named seismometer channels inside SUDS (KORUM
+    # EHE/EHN/EHZ mid-deployment rename) — mirrors the engine's
+    # conservative passthrough (disk_to_sds dba4f10).
+    if SEED_SEISMO_RE.match((chan or "").strip().upper()):
+        return (chan or "").strip().upper()[-1]
     return "?" + chan  # unknown label — surfaces in triage
 
 
