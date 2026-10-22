@@ -898,21 +898,51 @@ def _worker_convert_day(job):
             # scratch. See "Midnight-boundary data loss" in CLAUDE.md.
             boundary_files = query_boundary_tail_files(conn, sta, d, recorder_eff, floor_ratio)
 
+        def _is_suds(path):
+            return path.endswith((".dmx", ".dmx.gz"))
+
+        def _combine(r, gr):
+            if _RANK.get(gr.get("status"), 0) > _RANK.get(r.get("status"), 0):
+                r["status"] = gr["status"]
+                if gr.get("error"):
+                    r["error"] = gr["error"]
+            for k in ("n_files", "n_traces", "read_errors",
+                      "bogus_year_traces_dropped", "n_recovered"):
+                if k in gr:
+                    r[k] = r.get(k, 0) + gr[k]
+            r["sds_files_written"] = (r.get("sds_files_written", [])
+                                      + gr.get("sds_files_written", []))
+            return r
+
         def _one(group_files, orient_filter):
-            if recorder_eff == "echopro":
-                return convert_echopro_day(suds_convert, sta, net, loc, group_files,
-                                           staging, commit, boundary_files=boundary_files,
-                                           day=d, orient_filter=orient_filter)
-            if recorder_eff == "gecko":
-                return convert_gecko_day(sta, net, loc, group_files, staging, commit,
-                                         suds_convert, boundary_files=boundary_files,
-                                         day=d, orient_filter=orient_filter)
-            if recorder_eff == "minimus":
-                return convert_minimus_day(sta, net, loc, group_files, staging, commit,
-                                           suds_convert, boundary_files=boundary_files,
-                                           day=d, orient_filter=orient_filter)
-            return {"status": "unsupported_recorder", "n_files": len(group_files),
-                    "n_boundary_files": len(boundary_files)}
+            # MIXED-FORMAT DAYS (evidence map row 7): a day directory can
+            # hold BOTH SUDS and miniSEED (recorder transitions, ingest
+            # quirks). One engine per day silently ignored the minority
+            # format. Each format now goes to its own engine; outputs
+            # land in disjoint-or-merged SDS day files via write_sds.
+            suds = [f for f in group_files if _is_suds(f)]
+            mseed = [f for f in group_files if not _is_suds(f)]
+            b_suds = [f for f in boundary_files if _is_suds(f)]
+            b_mseed = [f for f in boundary_files if not _is_suds(f)]
+            results = []
+            if suds:
+                results.append(convert_echopro_day(
+                    suds_convert, sta, net, loc, suds, staging, commit,
+                    boundary_files=b_suds, day=d, orient_filter=orient_filter))
+            if mseed:
+                eng = convert_minimus_day if recorder_eff == "minimus" else convert_gecko_day
+                results.append(eng(sta, net, loc, mseed, staging, commit,
+                                   suds_convert, boundary_files=b_mseed,
+                                   day=d, orient_filter=orient_filter))
+            if not results:
+                return {"status": "no_files", "n_files": 0,
+                        "n_boundary_files": len(boundary_files)}
+            r = results[0]
+            for gr in results[1:]:
+                r = _combine(r, gr)
+            if len(results) > 1:
+                r["mixed_formats"] = True
+            return r
 
         _RANK = {"error": 6, "timeout": 5, "parse_error": 4,
                  "unsupported_recorder": 4, "qc_flagged": 3, "ok": 2,
@@ -926,20 +956,7 @@ def _worker_convert_day(job):
                 r = None
                 for ofilt, gfiles in groups:
                     gr = _one(gfiles, ofilt)
-                    if r is None:
-                        r = gr
-                        continue
-                    # aggregate: worst status wins; counts sum; writes concat
-                    if _RANK.get(gr.get("status"), 0) > _RANK.get(r.get("status"), 0):
-                        r["status"] = gr["status"]
-                        if gr.get("error"):
-                            r["error"] = gr["error"]
-                    for k in ("n_files", "n_traces", "read_errors",
-                              "bogus_year_traces_dropped", "n_recovered"):
-                        if k in gr:
-                            r[k] = r.get(k, 0) + gr[k]
-                    r["sds_files_written"] = (r.get("sds_files_written", [])
-                                              + gr.get("sds_files_written", []))
+                    r = gr if r is None else _combine(r, gr)
                 r["n_chan_groups"] = len(groups)
         except TimeoutError as e:
             r = {"status": "timeout", "n_files": len(files),
