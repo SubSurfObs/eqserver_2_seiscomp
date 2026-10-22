@@ -53,7 +53,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-SCHEMA_VERSION = "selection-v0.2"
+SCHEMA_VERSION = "selection-v0.3"
 HOURBUNDLE_RE = re.compile(r"[ _](\d{2})hr[ _]", re.IGNORECASE)
 ORIENTATIONS = set("ZNEO12")
 
@@ -66,7 +66,8 @@ CREATE TABLE IF NOT EXISTS selection (
 CREATE TABLE IF NOT EXISTS rejected (
     date TEXT, stream TEXT, population TEXT, path TEXT, reason TEXT);
 CREATE TABLE IF NOT EXISTS probes (
-    population TEXT, month TEXT, chans TEXT, probe_path TEXT,
+    population TEXT, month TEXT, chans TEXT, basis TEXT,
+    probe_paths TEXT, errors TEXT,
     PRIMARY KEY (population, month));
 CREATE TABLE IF NOT EXISTS day_summary (
     date TEXT, stream TEXT, n_selected INT, n_rejected INT,
@@ -145,51 +146,67 @@ class ChannelKnowledge:
     """Which orientations a population carries, per month.
 
     Priority: single-channel filename suffix (exact, per file) →
-    header probe (one file per population-month, cached) →
-    broadband Z/N/E assumption (recorded)."""
+    month-wide header-probe union → NOTHING. Review 2026-10-23 F4: probes
+    sample the whole population-month (first, middle AND last files across
+    all its days, not the first day encountered), every probe and error is
+    persisted, and a population whose probes all fail is BLOCKED — the old
+    silent broadband Z/N/E assumption invented channels. The assumption
+    survives only under explicit --no-probe, which conversion refuses.
+
+    One probe proved unsafe twice: SCM2 (first file was Z-only in a
+    per-channel population) and TYHS (first disk file was a 1-channel
+    sidecar in a mostly 3-channel population; 27 min/day of E+Z lost)."""
+
+    N_FIRST = 2   # first files of the month
+    N_MID = 1     # a mid-month file (catches mid-month config changes)
+    N_LAST = 2    # rolling: always ends holding the month's final files
 
     def __init__(self, probe_enabled=True):
-        self.cache = {}       # (population, 'YYYY-MM') -> (chans frozenset, basis, probe_path)
+        self.samples = {}  # (pop, 'YYYY-MM') -> {"first": [], "mid": [], "last": []}
+        self.cache = {}    # (pop, 'YYYY-MM') -> (chans fset, basis, [paths], [errors])
         self.probe_enabled = probe_enabled
 
-    N_PROBES = 4  # files probed per (population, month); union of contents.
-    # One probe proved unsafe twice: SCM2 (first file was Z-only in a
-    # per-channel population) and TYHS (first disk file was a 1-channel
-    # sidecar in a mostly 3-channel population; 27 min/day of E+Z lost).
+    def observe(self, cand, month_key, day_of_month):
+        """Pass 1: register an unsuffixed candidate as a probe sample."""
+        s = self.samples.setdefault(
+            (cand["population"], month_key), {"first": [], "mid": [], "last": []})
+        if len(s["first"]) < self.N_FIRST:
+            s["first"].append(cand["path"])
+        if day_of_month >= 14 and len(s["mid"]) < self.N_MID:
+            s["mid"].append(cand["path"])
+        s["last"].append(cand["path"])
+        if len(s["last"]) > self.N_LAST:
+            s["last"].pop(0)
 
-    def orientations_for(self, cand, month_key):
-        suf = cand.get("chan_suffix")
-        if suf and suf[-1].upper() in ORIENTATIONS:
-            return frozenset(suf[-1].upper()), "filename_suffix", None
-        key = (cand["population"], month_key)
-        if key not in self.cache:
-            self.cache[key] = (frozenset(), "pending", None)
-        return self.cache[key]
-
-    def probe_population(self, files, population, month_key):
-        """Union channel content over up to N_PROBES spread-out files."""
-        key = (population, month_key)
-        cached = self.cache.get(key)
-        if cached and cached[1] not in ("pending",):
-            return cached
-        chans = set()
-        probed = None
-        if self.probe_enabled and files:
-            try:
+    def probe_all(self):
+        """End of pass 1: probe every observed (population, month) once."""
+        for key, s in sorted(self.samples.items()):
+            if key in self.cache:
+                continue
+            paths = list(dict.fromkeys(s["first"] + s["mid"] + s["last"]))
+            chans, probed, errors = set(), [], []
+            if self.probe_enabled:
                 from qa_verify import read_source_file
-                step = max(1, len(files) // self.N_PROBES)
-                for f in files[::step][:self.N_PROBES]:
-                    for t in read_source_file(f["path"], [], {}):
-                        if t["orient"] in ORIENTATIONS:
-                            chans.add(t["orient"])
-                    probed = f["path"]
-            except Exception:
-                pass
-        if chans:
-            self.cache[key] = (frozenset(chans), "header_probe_union", probed)
-        else:
-            self.cache[key] = (frozenset("ZNE"), "assumed_broadband", None)
-        return self.cache[key]
+                for p in paths:
+                    try:
+                        for t in read_source_file(p, [], {}):
+                            if t["orient"] in ORIENTATIONS:
+                                chans.add(t["orient"])
+                        probed.append(p)
+                    except Exception as e:
+                        errors.append(f"{p}: {type(e).__name__}: {e}")
+            if chans:
+                self.cache[key] = (frozenset(chans), "header_probe_union",
+                                   probed, errors)
+            elif not self.probe_enabled:
+                self.cache[key] = (frozenset("ZNE"),
+                                   "assumed_broadband_noprobe", [], [])
+            else:
+                self.cache[key] = (frozenset(), "probe_failed", probed, errors)
+
+    def channels(self, population, month_key):
+        return self.cache.get((population, month_key),
+                              (frozenset(), "unobserved", [], []))
 
 
 def choose_day(cands, know: ChannelKnowledge, month_key):
@@ -203,19 +220,25 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
     2020-12-31 study failure: a per-channel population was sampled at
     3 files, concluded Z-only, and two channels were filtered away.)
 
-    Returns (selected {path -> {chans, rule, cand}}, rejected list, n_gap)."""
+    Returns (selected {path -> {chans, rule, cand}}, rejected list, n_gap,
+    blocked [(population, basis)] — populations whose unsuffixed files have
+    no evidenced channel set; review F4: these BLOCK the selection rather
+    than being guessed)."""
     pops = defaultdict(list)
     for c in cands:
         pops[c["population"]].append(c)
 
     f_orients = {}
+    blocked = set()
     for pk, files in pops.items():
         unsuffixed = [f for f in files
                       if not (f.get("chan_suffix")
                               and f["chan_suffix"][-1].upper() in ORIENTATIONS)]
-        pop_set = None
+        pop_set = frozenset()
         if unsuffixed:
-            pop_set, _basis, _pp = know.probe_population(unsuffixed, pk, month_key)
+            pop_set, basis, _paths, _errs = know.channels(pk, month_key)
+            if not pop_set:
+                blocked.add((pk, basis))
         for f in files:
             suf = f.get("chan_suffix")
             if suf and suf[-1].upper() in ORIENTATIONS:
@@ -285,7 +308,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                 else:
                     rejected.append(dict(
                         f, reason=f"{orient}:population_lost_to:{win_pk}"))
-    return sel, rejected, n_gap
+    return sel, rejected, n_gap, sorted(blocked)
 
 
 def compile_selection(net, sta, year, db_path: Path, out_path: Path,
@@ -314,13 +337,29 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
     out.executemany("INSERT OR REPLACE INTO meta VALUES (?,?)", meta.items())
 
     know = ChannelKnowledge(probe_enabled=probe)
+    # Pass 1 (review 2026-10-23 F4): register every unsuffixed candidate
+    # across the WHOLE month, so probes sample first/middle/last files of
+    # each (population, month) — not just the first day encountered — then
+    # probe each once.
+    d = date_cls(year, 1, 1)
+    while d.year == year:
+        for c in load_day_candidates(src_db, d, minimus):
+            suf = c.get("chan_suffix")
+            if not (suf and suf[-1].upper() in ORIENTATIONS):
+                know.observe(c, f"{d.year}-{d.month:02d}", d.day)
+        d += timedelta(days=1)
+    know.probe_all()
+
+    blocked_days = {}  # (population, basis) -> day count
     d = date_cls(year, 1, 1)
     n_days = n_sel = 0
     while d.year == year:
         cands = load_day_candidates(src_db, d, minimus)
         if cands:
             mk = f"{d.year}-{d.month:02d}"
-            sel, rejected, gaps = choose_day(cands, know, mk)
+            sel, rejected, gaps, blocked = choose_day(cands, know, mk)
+            for b in blocked:
+                blocked_days[b] = blocked_days.get(b, 0) + 1
             iso = d.isoformat()
             rows = []
             for path, e in sel.items():
@@ -343,9 +382,16 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
             n_days += 1
             n_sel += len(rows)
         d += timedelta(days=1)
-    out.executemany("INSERT OR REPLACE INTO probes VALUES (?,?,?,?)",
-                    [(pk, mo, "".join(sorted(ch)), pp or "")
-                     for (pk, mo), (ch, basis, pp) in know.cache.items()])
+    out.executemany(
+        "INSERT OR REPLACE INTO probes VALUES (?,?,?,?,?,?)",
+        [(pk, mo, "".join(sorted(ch)), basis,
+          json.dumps(paths), json.dumps(errs))
+         for (pk, mo), (ch, basis, paths, errs) in know.cache.items()])
+    # Review F4: populations with unsuffixed files but NO evidenced channel
+    # set block conversion — recorded here; the loader refuses when non-empty.
+    out.execute("INSERT OR REPLACE INTO meta VALUES ('probe_blocked', ?)",
+                (json.dumps([{"population": pk, "basis": basis, "days": n}
+                             for (pk, basis), n in sorted(blocked_days.items())]),))
     out.execute("INSERT OR REPLACE INTO meta VALUES ('complete_marker','1')")
     out.execute("INSERT OR REPLACE INTO meta VALUES ('n_days', ?)", (str(n_days),))
     out.commit()
@@ -364,8 +410,9 @@ def main():
     ap.add_argument("--db", required=True, help="station manifest DB")
     ap.add_argument("--out", required=True, help="selection sqlite path")
     ap.add_argument("--no-probe", action="store_true",
-                    help="skip header probes (fall back to broadband ZNE "
-                         "assumption for multi-channel populations)")
+                    help="skip header probes (broadband ZNE assumed). "
+                         "INSPECTION ONLY: the converter refuses a "
+                         "selection compiled this way (review F4).")
     ap.add_argument("--repo-root",
                     default=str(Path(__file__).resolve().parent.parent))
     args = ap.parse_args()

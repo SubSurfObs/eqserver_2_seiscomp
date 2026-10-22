@@ -24,7 +24,10 @@ legacy runtime tail query is never used in selection mode (review
 import sqlite3
 from pathlib import Path
 
-KNOWN_SCHEMAS = {"selection-v0.1", "selection-v0.2"}
+# v0.1/v0.2 artifacts predate the month-wide probe evidence and the
+# blocked-population record (review 2026-10-23 F4) — they are refused, not
+# migrated: recompile with the current coverage_planner.
+KNOWN_SCHEMAS = {"selection-v0.3"}
 
 
 class SelectionError(RuntimeError):
@@ -66,6 +69,24 @@ class Selection:
                 "selection was compiled — recompile the selection "
                 f"(selection={meta.get('manifest_identity', '')[:12]}, "
                 f"index={got[:12]})")
+        # Review 2026-10-23 F4: channel knowledge must be EVIDENCED. A
+        # selection compiled with --no-probe assumed broadband Z/N/E; one
+        # with probe-blocked populations has files whose channels nobody
+        # could establish. Both refuse to convert.
+        if meta.get("probe_enabled") != "True":
+            raise SelectionError(
+                "selection compiled with --no-probe (channel sets assumed, "
+                "not evidenced) — recompile without --no-probe")
+        import json as _json
+        blocked = _json.loads(meta.get("probe_blocked") or "[]")
+        if blocked:
+            names = ", ".join(f"{b['population']} ({b['basis']}, "
+                              f"{b['days']}d)" for b in blocked[:5])
+            raise SelectionError(
+                f"selection has {len(blocked)} probe-blocked population(s) "
+                f"— channel content could not be established: {names}. "
+                f"Investigate the probe errors in the probes table, then "
+                f"recompile.")
         self.meta = meta
 
     def days(self):

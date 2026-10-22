@@ -32,9 +32,10 @@ def main():
             " path TEXT, hhmm TEXT, span_s REAL, role TEXT, rule TEXT,"
             " chans TEXT, PRIMARY KEY (date, stream, path, chans));")
         c.executemany("INSERT INTO meta VALUES (?,?)", [
-            ("schema_version", "selection-v0.2"), ("complete_marker", "1"),
+            ("schema_version", "selection-v0.3"), ("complete_marker", "1"),
             ("net", "VW"), ("sta", "FAKE"), ("year", "2023"),
-            ("manifest_identity", ident)])
+            ("manifest_identity", ident), ("probe_enabled", "True"),
+            ("probe_blocked", "[]")])
         rows = [
             # Z comes from disk minute-files; last one is 2359.
             ("2023-05-01", "s", "disk", "/d/0000_z.dmx", "0000", 60, "w", "r", "Z"),
@@ -52,12 +53,40 @@ def main():
         tails = s.tail_for_day("2023-05-01")
         s.close()
 
-    want = [("/d/2359_z.dmx", "Z"), ("/t/bundle_ne.ms", "NE")]
-    ok = sorted(tails) == sorted(want)
-    print(f"{'PASS' if ok else 'FAIL'}  tail_for_day per-group with bundle")
-    if not ok:
-        print(f"      got {tails!r}, want {want!r}")
-        return 1
+        want = [("/d/2359_z.dmx", "Z"), ("/t/bundle_ne.ms", "NE")]
+        ok = sorted(tails) == sorted(want)
+        print(f"{'PASS' if ok else 'FAIL'}  tail_for_day per-group with bundle")
+        if not ok:
+            print(f"      got {tails!r}, want {want!r}")
+            return 1
+
+        # F4 loader refusals: unprobed and probe-blocked selections.
+        c = sqlite3.connect(sp)
+        c.execute("UPDATE meta SET value='False' WHERE key='probe_enabled'")
+        c.commit(); c.close()
+        try:
+            Selection(sp, "VW", "FAKE", 2023, manifest)
+            print("FAIL  no-probe selection refused"); return 1
+        except Exception as e:
+            ok = "no-probe" in str(e)
+            print(f"{'PASS' if ok else 'FAIL'}  no-probe selection refused")
+            if not ok:
+                return 1
+        c = sqlite3.connect(sp)
+        c.execute("UPDATE meta SET value='True' WHERE key='probe_enabled'")
+        c.execute("UPDATE meta SET value=? WHERE key='probe_blocked'",
+                  ('[{"population": "disk|x", "basis": "probe_failed", '
+                   '"days": 3}]',))
+        c.commit(); c.close()
+        try:
+            Selection(sp, "VW", "FAKE", 2023, manifest)
+            print("FAIL  probe-blocked selection refused"); return 1
+        except Exception as e:
+            ok = "probe-blocked" in str(e)
+            print(f"{'PASS' if ok else 'FAIL'}  probe-blocked selection refused")
+            if not ok:
+                return 1
+
     print("all selection-tail tests passed")
     return 0
 
