@@ -174,6 +174,26 @@ first). Also approved: skeleton metadata archive (1 waveform file per
 station-day, prefer .dmx, + all .ss sidecars; tens of GB) before
 decommission; full raw mirror rejected.
 
+## Path A — the approved finish sequence (operator, 2026-10-22)
+
+Fix everything first; DU converts only after ALL gates pass:
+1. Four fixes: as-timestamped merge (output times = file times, segments
+   split rather than welded when files' own times disagree >0.5 sample —
+   NO clock correction ever, per operator ruling; timing QUALITY is a
+   separate post-conversion task, see memory project-timing-quality-later);
+   sub-minute gap-fill; mixed-format-day engine dispatch; identity-driven
+   channel naming (plan/contract codes override band-by-rate).
+2. Re-run all failed study days until the evidence map is green
+   (identity-waiting rows excepted).
+3. Build closure equation + inventory-driven promotion.
+4. Dress rehearsal: BEST + WLSH full replication + STBK/CLIF acceptance
+   days through the complete chain.
+5. **HARD GATE (operator): full Codex review of the ENTIRE v3 code set**
+   — chooser, selection lib, phase3 changes, auditor, study harness,
+   preflight, skip-path, engine delta — as one review, before any DU
+   station converts in anger.
+6. Operator sign-offs: DU identity session + engine pin. Then DU.
+
 ## Progress log (newest first)
 
 - 2026-10-22 — **OZ.KORUM: first real station converted end-to-end under
