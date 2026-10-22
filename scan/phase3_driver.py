@@ -654,15 +654,31 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     return result
 
 
-def _day_fingerprint(sel_rows, engine_sha, net, sta, loc):
-    """Identity of a day's conversion inputs: the selected (path, chans)
-    set, engine version, and target identity. Matching fingerprint +
-    intact outputs => the day's conversion is already done (skip)."""
+def _day_fingerprint(sel_rows, code_id, net, sta, loc):
+    """Identity of a day's conversion inputs (review 2026-10-23 F7): the
+    selected (path, chans) set, the full selection artifact digest (which
+    itself binds the manifest identity, so an index rebuild invalidates),
+    the SHAs of ALL THREE executing code bases (this repo, disk_to_sds,
+    sudspy) and the target identity. Matching fingerprint + intact outputs
+    => the day's conversion is already done (skip). A fix in ANY code
+    layer changes the fingerprint and forces reconversion."""
     import hashlib
     h = hashlib.sha256()
-    h.update(f"{net}.{sta}.{loc}|{engine_sha}".encode())
+    h.update(f"{net}.{sta}.{loc}|{code_id}".encode())
     for path, chans in sorted(sel_rows):
         h.update(f"|{path}|{chans}".encode())
+    return h.hexdigest()
+
+
+def _file_sha256(path, _bufsize=1 << 20):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        while True:
+            b = f.read(_bufsize)
+            if not b:
+                break
+            h.update(b)
     return h.hexdigest()
 
 
@@ -686,10 +702,19 @@ def _load_skip_ledger(staging_root):
 
 
 def _outputs_intact(rec):
+    """Outputs must match the recorded size AND content hash (review
+    2026-10-23 F7: size-only let same-size corruption skip). Ledger
+    entries written before hashes were recorded never qualify."""
     from pathlib import Path as _P
-    for path, size in rec.get("outputs", []):
+    for entry in rec.get("outputs", []):
+        if len(entry) < 3:
+            return False  # pre-F7 ledger line: no hash recorded
+        path, size, sha = entry[0], entry[1], entry[2]
         q = _P(path)
-        if not q.exists() or q.stat().st_size != size:
+        try:
+            if q.stat().st_size != size or _file_sha256(q) != sha:
+                return False
+        except OSError:
             return False
     return True
 
@@ -901,7 +926,7 @@ def _worker_convert_day(job):
             # matches a prior commit in this staging root, with outputs
             # intact, is already converted — skip without reading sources.
             if commit and job.get("skip_unchanged"):
-                fp = _day_fingerprint(sel_rows, job.get("engine_sha", "?"),
+                fp = _day_fingerprint(sel_rows, job.get("code_id", "?"),
                                       net, sta, loc)
                 prior = _load_skip_ledger(staging).get(d_iso)
                 if prior and prior.get("fingerprint") == fp and _outputs_intact(prior):
@@ -1053,10 +1078,20 @@ def _worker_convert_day(job):
                 and r.get("status") in ("ok", "qc_flagged")
                 and r.get("sds_files_written")):
             import json as _j
-            rec = {"date": d_iso, "fingerprint": job["_fingerprint"],
-                   "outputs": [[p, s] for p, s in r["sds_files_written"]]}
-            with open(_skip_ledger_path(staging), "a") as _f:
-                _f.write(_j.dumps(rec) + "\n")
+            # Outputs recorded with content hashes (review F7): same-size
+            # corruption can no longer satisfy a later skip check.
+            outs = []
+            for p, s in r["sds_files_written"]:
+                try:
+                    outs.append([p, s, _file_sha256(p)])
+                except OSError:
+                    outs = None
+                    break
+            if outs is not None:
+                rec = {"date": d_iso, "fingerprint": job["_fingerprint"],
+                       "outputs": outs}
+                with open(_skip_ledger_path(staging), "a") as _f:
+                    _f.write(_j.dumps(rec) + "\n")
         return r
     except TimeoutError as e:
         # Timeout fired before files/boundary_files were even resolved.
@@ -1188,6 +1223,32 @@ def main():
     sys.path.insert(0, args.disk_to_sds)
     import suds_convert  # noqa: F401,E402  (probe import only)
 
+    # Composite code identity (review 2026-10-23 F7): every layer whose
+    # change must invalidate skip-unchanged — this repo, the engine repo,
+    # sudspy — plus the digest of the selection artifact itself (which in
+    # turn binds the manifest identity).
+    _here_dir = os.path.dirname(os.path.abspath(__file__))
+    def _sha_of_repo(p):
+        try:
+            return (_sp.run(["git", "-C", p, "rev-parse", "HEAD"],
+                            capture_output=True, text=True, timeout=10)
+                    .stdout.strip()[:12] or "?")
+        except Exception:
+            return "?"
+    project_sha = _sha_of_repo(_here_dir)
+    try:
+        import sudspy as _sudspy_mod
+        sudspy_sha = _sha_of_repo(os.path.dirname(os.path.dirname(
+            os.path.abspath(_sudspy_mod.__file__))))
+    except Exception:
+        sudspy_sha = "?"
+    selection_sha = None
+    if args.selection:
+        selection_sha = hashlib.sha256(
+            open(args.selection, "rb").read()).hexdigest()
+    code_id = "|".join([project_sha, engine_sha, sudspy_sha,
+                        (selection_sha or "-")[:16]])
+
     # Unit-level watchdog: force-kills the whole phase3 process after a hard
     # wall-clock deadline. Catches the multiprocessing.Pool finalisation hangs
     # (LOYU 2016 2026-06-06, DDWB 2022 2026-06-04) that the per-day-job
@@ -1220,6 +1281,12 @@ def main():
             "plan_path_abs": plan_path_abs,
             "plan_sha": plan_sha,
             "project_git": project_git,
+            # Review 2026-10-23 (F2/F7): the run manifest names the exact
+            # selection artifact and every code layer that produced bytes.
+            "selection_path": args.selection,
+            "selection_sha": selection_sha,
+            "engine_sha": engine_sha,
+            "sudspy_sha": sudspy_sha,
             "phase3_argv": sys.argv,
         }
         print(f"[phase3] run-manifest target: {args.run_manifest}", flush=True)
@@ -1288,7 +1355,7 @@ def main():
                 "selection_path": args.selection,
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
-                "engine_sha": engine_sha,
+                "code_id": code_id,
             })
             if args.limit_days and len(jobs) >= args.limit_days:
                 break
