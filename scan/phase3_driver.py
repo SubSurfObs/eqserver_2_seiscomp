@@ -221,6 +221,124 @@ def _concat_zip_members(files, combined, read_errors, spans=None):
             spans.append((path, start, combined.tell()))
 
 
+
+def _mseed_record_scan(buf: bytes):
+    """Walk fixed miniSEED headers in a concatenated buffer.
+
+    Yields (offset, reclen, id_key, stated_start_epoch, npts, rate).
+    Pure header arithmetic — no decoding. Returns None (not raises) on any
+    shape this quick parser doesn't understand; callers fall back to the
+    plain whole-buffer read (previous behaviour).
+    """
+    import struct
+    out = []
+    pos, n = 0, len(buf)
+    reclen = None
+    while pos + 48 <= n:
+        rec = buf[pos:pos + 48]
+        if not (rec[0:6].isdigit() and rec[6:7] in b"DRQM"):
+            return None
+        if reclen is None:
+            # blockette 1000 carries the record length; find it via the
+            # first-blockette offset (bytes 46-47), chain limited to 4 hops
+            for bo in (">H", "<H"):
+                try:
+                    b_off = struct.unpack(bo, rec[46:48])[0]
+                except struct.error:
+                    return None
+                hops = 0
+                cur = b_off
+                found = None
+                while 48 <= cur <= 256 and hops < 4 and pos + cur + 8 <= n:
+                    btype, bnext = struct.unpack(bo, buf[pos+cur:pos+cur+2])[0], struct.unpack(bo, buf[pos+cur+2:pos+cur+4])[0]
+                    if btype == 1000:
+                        found = 2 ** buf[pos + cur + 6]
+                        break
+                    if bnext <= cur:
+                        break
+                    cur = bnext
+                    hops += 1
+                if found:
+                    reclen, order = found, bo
+                    break
+            if reclen is None:
+                return None
+        sta = rec[8:13].decode("ascii", "replace").strip()
+        loc = rec[13:15].decode("ascii", "replace").strip()
+        cha = rec[15:18].decode("ascii", "replace").strip()
+        net = rec[18:20].decode("ascii", "replace").strip()
+        import struct as _s
+        try:
+            year, jday = _s.unpack(order, rec[20:22])[0], _s.unpack(order, rec[22:24])[0]
+            if not (1950 <= year <= 2100 and 1 <= jday <= 366):
+                return None
+            hh, mm, ss = rec[24], rec[25], rec[26]
+            t0001 = _s.unpack(order, rec[28:30])[0]
+            npts = _s.unpack(order, rec[30:32])[0]
+            rf = _s.unpack(order.replace("H", "h"), rec[32:34])[0]
+            rm = _s.unpack(order.replace("H", "h"), rec[34:36])[0]
+        except (ValueError, _s.error):
+            return None
+        if rf > 0 and rm > 0: rate = rf * rm
+        elif rf > 0 and rm < 0: rate = -rf / rm
+        elif rf < 0 and rm > 0: rate = -rm / rf
+        elif rf < 0 and rm < 0: rate = 1.0 / (rf * rm)
+        else: return None
+        from datetime import datetime, timezone, timedelta
+        try:
+            t = (datetime(year, 1, 1, tzinfo=timezone.utc)
+                 + timedelta(days=jday - 1, hours=hh, minutes=mm,
+                             seconds=ss, microseconds=t0001 * 100)).timestamp()
+        except ValueError:
+            return None
+        out.append((pos, reclen, f"{net}.{sta}.{loc}.{cha}", t, npts, rate))
+        pos += reclen
+    return out if pos == n else None
+
+
+def _drift_split_segments(buf: bytes):
+    """Byte segments of `buf` per trace-id such that, within a segment,
+    every record's STATED time stays within half a sample of the grid
+    anchored at the segment's first record. None => no split needed (or
+    buffer not cleanly parseable; caller uses the plain read).
+
+    This is the timestamp-fidelity guard at the READER level: obspy's
+    record joining steps record-by-record, so recorder clock drift
+    (DU.LKHRT ~10 ms/hour) accumulates into silently shifted sample
+    times. Convert the data as it is timestamped (operator 2026-10-22).
+    """
+    recs = _mseed_record_scan(buf)
+    if not recs:
+        return None
+    by_id = {}
+    for off, reclen, key, t, npts, rate in recs:
+        by_id.setdefault(key, []).append((off, reclen, t, npts, rate))
+    segments = {}
+    any_split = False
+    for key, rows in by_id.items():
+        segs, cur = [], []
+        anchor_t = grid_n = None
+        for off, reclen, t, npts, rate in rows:
+            if rate <= 0:
+                return None
+            dt = 1.0 / rate
+            if cur and abs((t - anchor_t) - grid_n * dt) > 0.5 * dt:
+                segs.append(cur)
+                cur = []
+            if not cur:
+                anchor_t, grid_n = t, 0
+            cur.append((off, reclen))
+            grid_n += npts
+        if cur:
+            segs.append(cur)
+        if len(segs) > 1:
+            any_split = True
+        segments[key] = segs
+    if not any_split:
+        return None
+    return segments
+
+
 def _parse_combined_with_fallback(all_files, read_errors):
     """Concat + bulk-parse the day's mseed; on a corrupt record, fall back to
     per-file parsing of the SAME in-memory bytes (no second NFS pass).
@@ -239,6 +357,28 @@ def _parse_combined_with_fallback(all_files, read_errors):
     combined = io.BytesIO()
     spans = []
     _concat_zip_members(all_files, combined, read_errors, spans=spans)
+    buf = combined.getvalue()
+    # Timestamp-fidelity pre-scan: if any id's records drift >0.5 sample
+    # from their segment grid, parse drift-consistent byte segments
+    # separately so stated times are preserved (otherwise obspy's record
+    # joining welds them). None => clean => single fast read as before.
+    try:
+        segs = _drift_split_segments(buf)
+    except Exception:
+        segs = None
+    if segs is not None:
+        from obspy import Stream as _Stream
+        st = _Stream()
+        for key, seglist in segs.items():
+            for seg in seglist:
+                part = b"".join(buf[o:o + L] for o, L in seg)
+                try:
+                    st += read(io.BytesIO(part), format="MSEED")
+                except Exception as fe:
+                    read_errors.append((key, f"segment: {type(fe).__name__}: {fe}"))
+        if len(st) > 0:
+            return st, False, None
+        # fall through to the plain read if segment parsing failed wholesale
     combined.seek(0)
     try:
         return read(combined, format="MSEED"), False, None
