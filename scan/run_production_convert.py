@@ -255,7 +255,7 @@ def main():
     # stage executes must be clean and committed (and on its pin when one is
     # set) BEFORE any unit converts. Not optional, not operator-remembered.
     try:
-        pf = run_preflight("convert")
+        pf = run_preflight("convert", strict=True)
     except PreflightError as exc:
         print(f"[convert] PREFLIGHT ABORT: {exc}", file=sys.stderr, flush=True)
         return 2

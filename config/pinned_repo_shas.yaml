@@ -14,13 +14,20 @@
 # run — either `20a483c` (last engine-touching commit) or current VM HEAD
 # `ec159ea` (validated clean; later commits don't touch the engine).
 
+# code_roots: where untracked .py/.sh ABORTS the preflight (import and
+# entry-point paths — the side-load class). Untracked code elsewhere in
+# the repo is recorded as a warning only (review 2026-10-23 F8). Omitted
+# code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
     pinned: null
+    code_roots: [scan]
   sudspy:
     pinned: null
+    code_roots: [sudspy]
   disk_to_sds:
     pinned: null          # <- set before the DU production sweep (see above)
+    code_roots: [scripts]
   sds_staging_ledger:
     pinned: null
 
