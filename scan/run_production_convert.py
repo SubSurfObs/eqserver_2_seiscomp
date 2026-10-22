@@ -141,7 +141,13 @@ def run_convert(args, station: str, year: int) -> dict:
            "--staging-sds", args.staging_sds,
            "--workers", str(args.workers),
            "--commit",
-           "--selection", str(sel_path),
+           "--selection", str(sel_path)]
+    prev_sel = (Path(args.selections_dir)
+                / f"{args.network}.{station}.{year - 1}.selection.sqlite")
+    if prev_sel.exists():
+        # Jan-1 boundary tail comes from the prior year's selection (F3).
+        cmd += ["--prev-selection", str(prev_sel)]
+    cmd += [
            "--start-date", start_date,
            "--end-date", end_date,
            "--run-manifest", str(run_manifest_path)]

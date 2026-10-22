@@ -14,11 +14,11 @@ to run, never fall back silently):
     (same size/mtime/rowcount fingerprint the compiler recorded — a
     regenerated index invalidates the selection).
 
-Increment A scope (2026-10-19): whole-file selection. Per-channel
-restriction (channels_to_use) is increment B. Boundary tails are served
-from the previous day's '2359' rows; January 1 is the one day the caller
-may use the legacy tail query (prior year is outside this selection's
-scope) — that use is recorded by the caller in the run manifest.
+Boundary tails are served per channel-assignment group from the previous
+day's final selected file(s) — see tail_for_day. January 1 takes its tail
+from the PRIOR year's compiled selection (phase3 --prev-selection); the
+legacy runtime tail query is never used in selection mode (review
+2026-10-23 F3).
 """
 
 import sqlite3
@@ -84,10 +84,31 @@ class Selection:
             (d_iso,))]
 
     def tail_for_day(self, prev_iso: str):
-        """Previous day's final-minute rows (midnight-boundary Option C)."""
-        return [r[0] for r in self.conn.execute(
-            "SELECT DISTINCT path FROM selection WHERE date=? AND hhmm='2359' "
-            "ORDER BY path", (prev_iso,))]
+        """Previous day's FINAL selected file(s) per channel-assignment
+        group, WITH their channel restrictions (midnight-boundary Option C).
+
+        Review 2026-10-23 F3: returns [(path, chans)] — the caller must
+        honour each tail's own channel assignment, not feed every tail to
+        every channel group. Also not literally hhmm='2359': a day whose
+        final coverage comes from an hourly/23-hour bundle has its last
+        selected file at an earlier hhmm, so this takes the max-hhmm row(s)
+        per chans group."""
+        if self.meta.get("schema_version") == "selection-v0.1":
+            rows = [(r[0], "*", r[1]) for r in self.conn.execute(
+                "SELECT path, hhmm FROM selection WHERE date=?", (prev_iso,))]
+        else:
+            rows = [(r[0], r[1] or "*", r[2]) for r in self.conn.execute(
+                "SELECT path, chans, hhmm FROM selection WHERE date=?",
+                (prev_iso,))]
+        best = {}  # chans -> (max_hhmm, {paths})
+        for path, chans, hhmm in rows:
+            h = hhmm or ""
+            cur = best.get(chans)
+            if cur is None or h > cur[0]:
+                best[chans] = (h, {path})
+            elif h == cur[0]:
+                cur[1].add(path)
+        return sorted((p, ch) for ch, (_h, ps) in best.items() for p in ps)
 
     def close(self):
         self.conn.close()

@@ -878,6 +878,8 @@ def _worker_convert_day(job):
 
         selection_path = job.get("selection_path")
         groups = None
+        boundary_rows = []
+        jan1_tail_unavailable = False
         if selection_path:
             # v3 path: the selection database is the ONLY source of file
             # lists (fail-closed; validated once in main() before dispatch,
@@ -910,14 +912,23 @@ def _worker_convert_day(job):
                 job["_fingerprint"] = fp
             prev = d - timedelta(days=1)
             if prev.year == d.year:
-                boundary_files = [p for p, _ in
-                                  [(r, None) for r in sel.tail_for_day(prev.isoformat())]]
+                boundary_rows = sel.tail_for_day(prev.isoformat())
+            elif job.get("prev_selection_path"):
+                # Jan 1 (review 2026-10-23 F3): the prior year's tail comes
+                # from the prior year's COMPILED selection — never the legacy
+                # runtime query. Fail-closed: a stale/mismatched prior
+                # selection raises and the day errors loudly.
+                psel = Selection(job["prev_selection_path"], net, sta,
+                                 prev.year, job["db_path"])
+                boundary_rows = psel.tail_for_day(prev.isoformat())
+                psel.close()
             else:
-                # Jan 1: prior year is outside this selection's scope; the
-                # legacy tail query is permitted for the TAIL ONLY and the
-                # use is visible in the result for the run manifest.
-                boundary_files = query_boundary_tail_files(
-                    conn, sta, d, recorder_eff, floor_ratio)
+                # No prior-year selection supplied: convert WITHOUT the tail
+                # (first SS seconds of Jan 1 stay unconverted) and flag it —
+                # fail-closed beats pulling unselected files.
+                boundary_rows = []
+                jan1_tail_unavailable = True
+            boundary_files = [p for p, _ in boundary_rows]
             sel.close()
         else:
             # Legacy (Branch-1) path: cross-source-aware runtime selection.
@@ -947,29 +958,33 @@ def _worker_convert_day(job):
                                       + gr.get("sds_files_written", []))
             return r
 
-        def _one(group_files, orient_filter):
+        def _one(group_files, orient_filter, b_files):
             # MIXED-FORMAT DAYS (evidence map row 7): a day directory can
             # hold BOTH SUDS and miniSEED (recorder transitions, ingest
             # quirks). One engine per day silently ignored the minority
             # format. Each format now goes to its own engine; outputs
             # land in disjoint-or-merged SDS day files via write_sds.
+            # b_files (review F3): THIS call's boundary tails only — a tail
+            # contributes solely to calls whose filter its own selected
+            # channel set covers. A boundary-only call (empty group_files)
+            # converts just the midnight sliver.
             suds = [f for f in group_files if _is_suds(f)]
             mseed = [f for f in group_files if not _is_suds(f)]
-            b_suds = [f for f in boundary_files if _is_suds(f)]
-            b_mseed = [f for f in boundary_files if not _is_suds(f)]
+            b_suds = [f for f in b_files if _is_suds(f)]
+            b_mseed = [f for f in b_files if not _is_suds(f)]
             results = []
-            if suds:
+            if suds or b_suds:
                 results.append(convert_echopro_day(
                     suds_convert, sta, net, loc, suds, staging, commit,
                     boundary_files=b_suds, day=d, orient_filter=orient_filter))
-            if mseed:
+            if mseed or b_mseed:
                 eng = convert_minimus_day if recorder_eff == "minimus" else convert_gecko_day
                 results.append(eng(sta, net, loc, mseed, staging, commit,
                                    suds_convert, boundary_files=b_mseed,
                                    day=d, orient_filter=orient_filter))
             if not results:
                 return {"status": "no_files", "n_files": 0,
-                        "n_boundary_files": len(boundary_files)}
+                        "n_boundary_files": len(b_files)}
             r = results[0]
             for gr in results[1:]:
                 r = _combine(r, gr)
@@ -981,16 +996,49 @@ def _worker_convert_day(job):
                  "unsupported_recorder": 4, "qc_flagged": 3, "ok": 2,
                  "no_files": 1}
         try:
-            if not groups:  # legacy mode, or a selection day with no files
-                r = _one(files, None)
-            elif len(groups) == 1 and groups[0][0] is None:
-                r = _one(files, None)
+            if groups is None:  # legacy (--legacy-chooser) mode only
+                r = _one(files, None, boundary_files)
             else:
+                # Selection mode (review F3): route each boundary tail only
+                # to channel groups its OWN selected channel set covers; a
+                # tail with channels no group's filter covers gets its own
+                # boundary-only call restricted to exactly those channels.
+                calls = []          # (orient_filter, group_files, tail_paths)
+                routed = {}         # tail path -> orientations already routed
+                for F, gfiles in groups:
+                    blist = []
+                    if F is not None:
+                        for path, ch in boundary_rows:
+                            if ch != "*" and F <= set(ch):
+                                blist.append(path)
+                                routed.setdefault(path, set()).update(F)
+                    calls.append((F, gfiles, blist))
+                tail_only = {}      # frozenset(chans) or None -> [paths]
+                for path, ch in boundary_rows:
+                    if ch == "*":
+                        tail_only.setdefault(None, []).append(path)
+                        continue
+                    leftover = set(ch) - routed.get(path, set())
+                    if leftover:
+                        tail_only.setdefault(frozenset(leftover), []).append(path)
+                for key in sorted(tail_only, key=lambda k: "" if k is None
+                                  else "".join(sorted(k))):
+                    calls.append((None if key is None else set(key),
+                                  [], tail_only[key]))
                 r = None
-                for ofilt, gfiles in groups:
-                    gr = _one(gfiles, ofilt)
+                for ofilt, gfiles, blist in calls:
+                    if not gfiles and not blist:
+                        continue
+                    gr = _one(gfiles, ofilt, blist)
                     r = gr if r is None else _combine(r, gr)
-                r["n_chan_groups"] = len(groups)
+                if r is None:
+                    r = {"status": "no_files", "n_files": 0,
+                         "n_boundary_files": 0}
+                n_g = sum(1 for F, g, _b in calls if g)
+                if n_g > 1:
+                    r["n_chan_groups"] = n_g
+                if jan1_tail_unavailable:
+                    r["jan1_tail_unavailable"] = True
         except TimeoutError as e:
             r = {"status": "timeout", "n_files": len(files),
                  "n_boundary_files": len(boundary_files),
@@ -1060,6 +1108,13 @@ def main():
                          "(validated fail-closed against this manifest DB "
                          "before any job is dispatched); runtime cross_source "
                          "selection is disabled.")
+    ap.add_argument("--prev-selection", default=None,
+                    help="v3: the PRIOR year's selection sqlite, used only "
+                         "for the January-1 midnight boundary tail (review "
+                         "F3). Without it, Jan 1 converts without its first "
+                         "seconds and the day is flagged "
+                         "jan1_tail_unavailable — the legacy tail query is "
+                         "never used in selection mode.")
     ap.add_argument("--legacy-chooser", action="store_true",
                     help="EXPLICITLY use the v1 runtime cross_source chooser "
                          "instead of a selection. KNOWN ARCHITECTURAL DEFECT: "
@@ -1231,6 +1286,7 @@ def main():
                 "commit": args.commit, "disk_to_sds": args.disk_to_sds,
                 "disk_size_floor_ratio": args.disk_size_floor_ratio,
                 "selection_path": args.selection,
+                "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "engine_sha": engine_sha,
             })
