@@ -227,69 +227,81 @@ def _mseed_record_scan(buf: bytes):
 
     Yields (offset, reclen, id_key, stated_start_epoch, npts, rate).
     Pure header arithmetic — no decoding. Returns None (not raises) on any
-    shape this quick parser doesn't understand; callers fall back to the
-    plain whole-buffer read (previous behaviour).
+    shape this parser doesn't understand; the caller then degrades to a
+    QC-FLAGGED per-file read, never a silent whole-buffer read (review
+    2026-10-23, F6).
+
+    Per review F6 this scan handles, per record (not per buffer): byte
+    order (year plausibility), record length (each record's own blockette
+    1000), the fixed-header time correction (0.0001 s units, applied only
+    when activity-flag bit 0x02 says it has not been applied yet) and the
+    blockette-1001 microsecond refinement — matching the effective start
+    times ObsPy/libmseed computes, so split decisions and the final parse
+    agree. Records with no waveform samples (log/admin, npts or rate 0)
+    are stepped over, not treated as scan failure.
     """
     import struct
     out = []
     pos, n = 0, len(buf)
-    reclen = None
     while pos + 48 <= n:
         rec = buf[pos:pos + 48]
         if not (rec[0:6].isdigit() and rec[6:7] in b"DRQM"):
             return None
-        if reclen is None:
-            # blockette 1000 carries the record length; find it via the
-            # first-blockette offset (bytes 46-47), chain limited to 4 hops
-            for bo in (">H", "<H"):
-                try:
-                    b_off = struct.unpack(bo, rec[46:48])[0]
-                except struct.error:
-                    return None
-                hops = 0
-                cur = b_off
-                found = None
-                while 48 <= cur <= 256 and hops < 4 and pos + cur + 8 <= n:
-                    btype, bnext = struct.unpack(bo, buf[pos+cur:pos+cur+2])[0], struct.unpack(bo, buf[pos+cur+2:pos+cur+4])[0]
-                    if btype == 1000:
-                        found = 2 ** buf[pos + cur + 6]
-                        break
-                    if bnext <= cur:
-                        break
-                    cur = bnext
-                    hops += 1
-                if found:
-                    reclen, order = found, bo
-                    break
-            if reclen is None:
-                return None
+        order = None
+        for bo in (">", "<"):
+            y = struct.unpack(bo + "H", rec[20:22])[0]
+            j = struct.unpack(bo + "H", rec[22:24])[0]
+            if 1950 <= y <= 2100 and 1 <= j <= 366:
+                order, year, jday = bo, y, j
+                break
+        if order is None:
+            return None
+        hh, mm, ss = rec[24], rec[25], rec[26]
+        t0001 = struct.unpack(order + "H", rec[28:30])[0]
+        npts = struct.unpack(order + "H", rec[30:32])[0]
+        rf = struct.unpack(order + "h", rec[32:34])[0]
+        rm = struct.unpack(order + "h", rec[34:36])[0]
+        act_flags = rec[36]
+        tcorr = struct.unpack(order + "i", rec[40:44])[0]
+        # Blockette chain for THIS record: 1000 (record length, required)
+        # and 1001 (microsecond refinement, optional).
+        reclen = None
+        usec1001 = 0
+        cur = struct.unpack(order + "H", rec[46:48])[0]
+        hops = 0
+        while 48 <= cur <= 4096 and hops < 8 and pos + cur + 8 <= n:
+            btype = struct.unpack(order + "H", buf[pos + cur:pos + cur + 2])[0]
+            bnext = struct.unpack(order + "H", buf[pos + cur + 2:pos + cur + 4])[0]
+            if btype == 1000:
+                reclen = 2 ** buf[pos + cur + 6]
+            elif btype == 1001:
+                usec1001 = struct.unpack("b", buf[pos + cur + 5:pos + cur + 6])[0]
+            if bnext <= cur:
+                break
+            cur = bnext
+            hops += 1
+        if reclen is None or reclen < 64 or pos + reclen > n:
+            return None
+        if npts == 0 or rf == 0 or rm == 0:
+            pos += reclen            # log/admin record: no waveform time
+            continue
+        if rf > 0 and rm > 0: rate = rf * rm
+        elif rf > 0 and rm < 0: rate = -rf / rm
+        elif rf < 0 and rm > 0: rate = -rm / rf
+        else: rate = 1.0 / (rf * rm)
         sta = rec[8:13].decode("ascii", "replace").strip()
         loc = rec[13:15].decode("ascii", "replace").strip()
         cha = rec[15:18].decode("ascii", "replace").strip()
         net = rec[18:20].decode("ascii", "replace").strip()
-        import struct as _s
-        try:
-            year, jday = _s.unpack(order, rec[20:22])[0], _s.unpack(order, rec[22:24])[0]
-            if not (1950 <= year <= 2100 and 1 <= jday <= 366):
-                return None
-            hh, mm, ss = rec[24], rec[25], rec[26]
-            t0001 = _s.unpack(order, rec[28:30])[0]
-            npts = _s.unpack(order, rec[30:32])[0]
-            rf = _s.unpack(order.replace("H", "h"), rec[32:34])[0]
-            rm = _s.unpack(order.replace("H", "h"), rec[34:36])[0]
-        except (ValueError, _s.error):
-            return None
-        if rf > 0 and rm > 0: rate = rf * rm
-        elif rf > 0 and rm < 0: rate = -rf / rm
-        elif rf < 0 and rm > 0: rate = -rm / rf
-        elif rf < 0 and rm < 0: rate = 1.0 / (rf * rm)
-        else: return None
         from datetime import datetime, timezone, timedelta
+        usec = t0001 * 100 + usec1001
+        if not (act_flags & 0x02):   # time correction not yet applied
+            usec += tcorr * 100
         try:
             t = (datetime(year, 1, 1, tzinfo=timezone.utc)
                  + timedelta(days=jday - 1, hours=hh, minutes=mm,
-                             seconds=ss, microseconds=t0001 * 100)).timestamp()
-        except ValueError:
+                             seconds=ss, microseconds=usec)).timestamp()
+        except (ValueError, OverflowError):
             return None
         out.append((pos, reclen, f"{net}.{sta}.{loc}.{cha}", t, npts, rate))
         pos += reclen
@@ -297,10 +309,11 @@ def _mseed_record_scan(buf: bytes):
 
 
 def _drift_split_segments(buf: bytes):
-    """Byte segments of `buf` per trace-id such that, within a segment,
-    every record's STATED time stays within half a sample of the grid
-    anchored at the segment's first record. None => no split needed (or
-    buffer not cleanly parseable; caller uses the plain read).
+    """Returns (status, segments): status is "clean" (grid-consistent, the
+    plain bulk read is safe), "split" (segments holds drift-consistent byte
+    runs per trace-id), or "scan_failed" (buffer not parseable by the header
+    scan — the caller must use a timestamp-preserving per-file read, NEVER
+    the silent whole-buffer weld; review 2026-10-23 F6).
 
     This is the timestamp-fidelity guard at the READER level: obspy's
     record joining steps record-by-record, so recorder clock drift
@@ -308,8 +321,10 @@ def _drift_split_segments(buf: bytes):
     times. Convert the data as it is timestamped (operator 2026-10-22).
     """
     recs = _mseed_record_scan(buf)
+    if recs is None:
+        return "scan_failed", None
     if not recs:
-        return None
+        return "clean", None
     by_id = {}
     for off, reclen, key, t, npts, rate in recs:
         by_id.setdefault(key, []).append((off, reclen, t, npts, rate))
@@ -320,7 +335,7 @@ def _drift_split_segments(buf: bytes):
         anchor_t = grid_n = None
         for off, reclen, t, npts, rate in rows:
             if rate <= 0:
-                return None
+                return "scan_failed", None
             dt = 1.0 / rate
             if cur and abs((t - anchor_t) - grid_n * dt) > 0.5 * dt:
                 segs.append(cur)
@@ -335,8 +350,8 @@ def _drift_split_segments(buf: bytes):
             any_split = True
         segments[key] = segs
     if not any_split:
-        return None
-    return segments
+        return "clean", None
+    return "split", segments
 
 
 def _parse_combined_with_fallback(all_files, read_errors):
@@ -361,12 +376,17 @@ def _parse_combined_with_fallback(all_files, read_errors):
     # Timestamp-fidelity pre-scan: if any id's records drift >0.5 sample
     # from their segment grid, parse drift-consistent byte segments
     # separately so stated times are preserved (otherwise obspy's record
-    # joining welds them). None => clean => single fast read as before.
+    # joining welds them). "clean" => single fast read as before.
+    # "scan_failed" => the buffer's shape defeated the header scan; degrade
+    # to a PER-FILE read (timestamp drift within one minute-file is
+    # negligible) and QC-flag the day — never the silent whole-buffer weld
+    # (review 2026-10-23, F6).
     try:
-        segs = _drift_split_segments(buf)
-    except Exception:
-        segs = None
-    if segs is not None:
+        scan_status, segs = _drift_split_segments(buf)
+    except Exception as se:
+        scan_status, segs = "scan_failed", None
+        read_errors.append(("record-scan", f"{type(se).__name__}: {se}"))
+    if scan_status == "split":
         from obspy import Stream as _Stream
         st = _Stream()
         for key, seglist in segs.items():
@@ -379,6 +399,19 @@ def _parse_combined_with_fallback(all_files, read_errors):
         if len(st) > 0:
             return st, False, None
         # fall through to the plain read if segment parsing failed wholesale
+    elif scan_status == "scan_failed":
+        st = Stream()
+        bb = combined.getbuffer()
+        for path, a, b in spans:
+            if b <= a:
+                continue  # file already recorded as a read error
+            try:
+                st += read(io.BytesIO(bytes(bb[a:b])), format="MSEED")
+            except Exception as fe:
+                read_errors.append(
+                    (path, f"per-file(mem) {type(fe).__name__}: {fe}"))
+        return st, True, ("record-scan unparseable; per-file read "
+                          "(timestamp-preserving degradation)")
     combined.seek(0)
     try:
         return read(combined, format="MSEED"), False, None
