@@ -216,24 +216,27 @@ review still owed (Monday target).
   merge-grid rule + reader-level drift-split in phase3). LKHRT
   2023-07-28: 6.47M bad samples → 0 (PASS); KORUM day byte-identical.
   Regression tests in sudspy tests/test_timestamp_fidelity.py.
-- FIXES 2+3 CODED, COMMITTED, **NOT YET TESTED** (chooser: multi-file
-  probe union — root cause of SCM2+TYHS big gaps; sub-minute short-file
-  fill). Test = rerun `bash ~/v3_test/fix_one_day.sh VW TYHS 2023-08-31
-  <provenance-db> plans/VW/VW.TYHS.plan.yaml` on the VM; expect
-  missing≈0 (was 3,236 s).
+- FIXES 2+3 DONE+PROVEN (chooser: multi-file probe union — root cause of
+  SCM2+TYHS big gaps; sub-minute short-file fill). Tested 2026-10-22 on
+  the worst day: TYHS 2023-08-31 missing 3,236 s → **0.0 s, 0 bad
+  samples, PASS** (`bash ~/v3_test/fix_one_day.sh`).
 - FIX 4 (mixed-format per-engine dispatch) COMMITTED; TYHS test showed
   its 54-min gap was actually the probe issue (fix 2), not formats.
 - FIX 5 NOT BUILT: identity-driven channel naming override (needed for
   DU loc-60 EH* stations; engine _enforce_band_instrument forces HH).
-- NOT YET RUN: overnight re-run of all failed study days (strip
-  non-PASS from ~/v3_test/triage_study/results.jsonl, delete those
-  station-years' cached selections, relaunch triage_study — same
-  procedure as 2026-10-20).
-- NOT YET WRITTEN: (a) Codex take-over handoff, (b) comprehensive Codex
-  review brief (operator-ordered hard gate). Scope for (b): chooser
-  (coverage_planner), lib/selection, phase3 selection/fidelity/dispatch
-  changes, qa_verify, triage_study, preflight, skip-unchanged,
-  sudspy 8d7b5db, disk_to_sds dba4f10.
+- RE-RUN LAUNCHED 2026-10-22 (detached, survives disconnect): all 182
+  non-PASS study days (96 FAIL + 86 ERROR across 93 station-years) are
+  re-converting overnight with the fixed chooser; cached selections for
+  those station-years were deleted so they rebuild. Baseline kept 474
+  PASS of 656. Watch: `tail ~/v3_test/triage_study/rerun_20261022.log`;
+  score: count `"verdict": "PASS"` in ~/v3_test/triage_study/results.jsonl
+  (pre-rerun backup saved alongside as results.pre_rerun.*.jsonl).
+- HANDOFF + REVIEW BRIEF WRITTEN: `docs/codex_handoff_2026-10-22.md`
+  (Codex implements during the break — task list, bounds, invariants) and
+  `docs/codex_review_brief_v3.md` (the operator-ordered full-v3 review
+  gate before DU; scope: chooser, lib/selection, phase3
+  selection/fidelity/dispatch, qa_verify, triage_study, preflight,
+  skip-unchanged, sudspy 8d7b5db, disk_to_sds dba4f10).
 - Working rules for whoever resumes: AGENTS.md "Communicating with Dan";
   memory notes feedback-discussion-is-not-decision (phase starts need
   explicit permission), project-timing-quality-later (timestamps AS-IS,
