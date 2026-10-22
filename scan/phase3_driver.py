@@ -1386,9 +1386,13 @@ def main():
                   flush=True)
             sys.exit(2)
         try:
+            # deep=True (review F2): once per run, verify the manifest's
+            # full content hash, the generator == running code, and that
+            # every selected path exists in the manifest. Workers repeat
+            # only the cheap identity check per day.
             _sel = Selection(args.selection, jobs[0]["network"] if jobs else "?",
                              jobs[0]["station"] if jobs else "?",
-                             years[0] if years else 0, args.db)
+                             years[0] if years else 0, args.db, deep=True)
             n_sel_days = len(_sel.days())
             _sel.close()
         except SelectionError as e:

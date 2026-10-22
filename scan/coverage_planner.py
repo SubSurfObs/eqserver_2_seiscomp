@@ -84,14 +84,10 @@ def git_sha(repo: Path) -> str:
         return "unknown"
 
 
-def manifest_identity(db_path: Path) -> str:
-    st = db_path.stat()
-    c = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    n = c.execute("SELECT COUNT(*) FROM files").fetchone()[0]
-    c.close()
-    return hashlib.sha256(
-        f"{db_path.name}:{st.st_size}:{int(st.st_mtime)}:{n}".encode()
-    ).hexdigest()
+# Single implementation shared with the loader so compiler and converter
+# can never drift apart (review 2026-10-23 F2).
+from lib.selection import _manifest_identity as manifest_identity  # noqa: E402
+from lib.selection import _file_sha256  # noqa: E402
 
 
 def population_key(source_type: str, path: str, hhmm, flags) -> str:
@@ -330,6 +326,11 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
         "generator_sha": git_sha(repo_root),
         "manifest_db": str(db_path),
         "manifest_identity": manifest_identity(db_path),
+        # Full content hash of the manifest DB (review 2026-10-23 F2): the
+        # cheap identity above is checked per day-job; this one is checked
+        # once per phase3 run (deep validation) and cannot be satisfied by
+        # a different database with the same size/mtime/rowcount.
+        "manifest_sha256": _file_sha256(db_path),
         "net": net, "sta": sta, "year": str(year),
         "probe_enabled": str(bool(probe)),
         "created_utc": __import__("datetime").datetime.utcnow().isoformat(),
@@ -394,6 +395,7 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                              for (pk, basis), n in sorted(blocked_days.items())]),))
     out.execute("INSERT OR REPLACE INTO meta VALUES ('complete_marker','1')")
     out.execute("INSERT OR REPLACE INTO meta VALUES ('n_days', ?)", (str(n_days),))
+    out.execute("INSERT OR REPLACE INTO meta VALUES ('n_rows', ?)", (str(n_sel),))
     out.commit()
     out.close()
     src_db.close()

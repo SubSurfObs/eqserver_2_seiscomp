@@ -35,18 +35,31 @@ class SelectionError(RuntimeError):
 
 
 def _manifest_identity(db_path: Path) -> str:
+    """Cheap per-day-job identity of the manifest DB. The compiler records
+    it and every job re-checks it. The full-content binding is the
+    compiler-recorded manifest_sha256, verified once per run via
+    Selection(deep=True) (review 2026-10-23 F2)."""
     import hashlib
     st = db_path.stat()
     c = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     n = c.execute("SELECT COUNT(*) FROM files").fetchone()[0]
     c.close()
     return hashlib.sha256(
-        f"{db_path.name}:{st.st_size}:{int(st.st_mtime)}:{n}".encode()
+        f"{db_path.name}:{st.st_size}:{st.st_mtime_ns}:{n}".encode()
     ).hexdigest()
 
 
+def _file_sha256(path, _bufsize=1 << 20):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(_bufsize), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 class Selection:
-    def __init__(self, path, net, sta, year, manifest_db_path):
+    def __init__(self, path, net, sta, year, manifest_db_path, deep=False):
         self.path = Path(path)
         if not self.path.is_file():
             raise SelectionError(f"selection not found: {self.path}")
@@ -87,7 +100,75 @@ class Selection:
                 f"— channel content could not be established: {names}. "
                 f"Investigate the probe errors in the probes table, then "
                 f"recompile.")
+        # Row/day counts must match what the compiler recorded (truncation
+        # and tamper guard beyond the complete marker; review F2).
+        n_rows = self.conn.execute(
+            "SELECT COUNT(*) FROM selection").fetchone()[0]
+        n_days = self.conn.execute(
+            "SELECT COUNT(DISTINCT date) FROM selection").fetchone()[0]
+        for key, got in (("n_rows", n_rows), ("n_days", n_days)):
+            want = meta.get(key)
+            if want is not None and int(want) != got:
+                raise SelectionError(
+                    f"selection {key}={got} != compiler-recorded {want} "
+                    f"— artifact altered or truncated; recompile")
+        if deep:
+            self._deep_validate(Path(manifest_db_path), meta)
         self.meta = meta
+
+    def _deep_validate(self, manifest_db_path: Path, meta: dict):
+        """Once-per-run binding checks (review 2026-10-23 F2): full manifest
+        content hash, generator == running code, and every selected path
+        present in the manifest."""
+        want = meta.get("manifest_sha256")
+        if want and _file_sha256(manifest_db_path) != want:
+            raise SelectionError(
+                "manifest CONTENT hash mismatch — the station DB's bytes "
+                "differ from what this selection was compiled against; "
+                "recompile the selection")
+        import subprocess
+        repo = Path(__file__).resolve().parent.parent.parent
+        try:
+            head = subprocess.run(
+                ["git", "-C", str(repo), "rev-parse", "HEAD"],
+                capture_output=True, text=True, timeout=10).stdout.strip()
+        except Exception:
+            head = ""
+        gen = meta.get("generator_sha") or ""
+        if head and gen and gen != head:
+            raise SelectionError(
+                f"selection compiled by a different chooser version "
+                f"(generator {gen[:12]}, running {head[:12]}) — recompile "
+                f"so evidence and code match")
+        mc = sqlite3.connect(f"file:{manifest_db_path}?mode=ro", uri=True)
+        try:
+            missing, first_missing, batch = 0, None, []
+
+            def _check(b):
+                nonlocal missing, first_missing
+                q = ",".join("?" * len(b))
+                found = {r[0] for r in mc.execute(
+                    f"SELECT path FROM files WHERE path IN ({q})", b)}
+                for p in b:
+                    if p not in found:
+                        missing += 1
+                        if first_missing is None:
+                            first_missing = p
+
+            for (p,) in self.conn.execute("SELECT DISTINCT path FROM selection"):
+                batch.append(p)
+                if len(batch) >= 500:
+                    _check(batch)
+                    batch = []
+            if batch:
+                _check(batch)
+            if missing:
+                raise SelectionError(
+                    f"{missing} selected path(s) are not in the manifest "
+                    f"(first: {first_missing}) — selection and index "
+                    f"disagree; recompile")
+        finally:
+            mc.close()
 
     def days(self):
         return [r[0] for r in self.conn.execute(
