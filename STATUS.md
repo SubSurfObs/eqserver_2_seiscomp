@@ -207,51 +207,51 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
-## SAVE-POINT 2026-10-22 (pre-compact; operator allowance nearly out — Codex to implement during a 3-4 day break, Claude reviews on return)
+## SAVE-POINT 2026-10-23 (DORMANCY — credits out; Codex + Dan hold the fort)
 
-**Path A approved** (fix everything, then DU; full-Codex-review hard gate
-— see docs/rework_plan.md "Path A"). Exact position:
+**The full-gate Codex review ran: BLOCK, 11 findings
+(`reviews/2026-10-23_v3_full_gate.md`). Claude fixed NINE the same day —
+the Response section there maps every finding to its commit; headline:
+conversion now structurally requires a validated selection (the v1
+plan-not-obeyed defect is unreachable without an explicit flagged
+override).** Position at dormancy:
 
-- FIX 1 DONE+PROVEN — timestamp fidelity at BOTH layers (sudspy 8d7b5db
-  merge-grid rule + reader-level drift-split in phase3). LKHRT
-  2023-07-28: 6.47M bad samples → 0 (PASS); KORUM day byte-identical.
-  Regression tests in sudspy tests/test_timestamp_fidelity.py.
-- FIXES 2+3 DONE+PROVEN (chooser: multi-file probe union — root cause of
-  SCM2+TYHS big gaps; sub-minute short-file fill). Tested 2026-10-22 on
-  the worst day: TYHS 2023-08-31 missing 3,236 s → **0.0 s, 0 bad
-  samples, PASS** (`bash ~/v3_test/fix_one_day.sh`).
-- FIX 4 (mixed-format per-engine dispatch) COMMITTED; TYHS test showed
-  its 54-min gap was actually the probe issue (fix 2), not formats.
-- FIX 5 NOT BUILT: identity-driven channel naming override (needed for
-  DU loc-60 EH* stations; engine _enforce_band_instrument forces HH).
-- RE-RUN LAUNCHED 2026-10-22 (detached, survives disconnect): all 182
-  non-PASS study days (96 FAIL + 86 ERROR across 93 station-years) are
-  re-converting overnight with the fixed chooser; cached selections for
-  those station-years were deleted so they rebuild. Baseline kept 474
-  PASS of 656. Watch: `tail ~/v3_test/triage_study/rerun_20261022.log`;
-  score: count `"verdict": "PASS"` in ~/v3_test/triage_study/results.jsonl
-  (pre-rerun backup saved alongside as results.pre_rerun.*.jsonl).
-- HANDOFF + REVIEW BRIEF WRITTEN: `docs/codex_handoff_2026-10-22.md`
-  (Codex implements during the break — task list, bounds, invariants) and
-  `docs/codex_review_brief_v3.md` (the operator-ordered full-v3 review
-  gate before DU; scope: chooser, lib/selection, phase3
-  selection/fidelity/dispatch, qa_verify, triage_study, preflight,
-  skip-unchanged, sudspy 8d7b5db, disk_to_sds dba4f10).
-- Working rules for whoever resumes: AGENTS.md "Communicating with Dan";
-  memory notes feedback-discussion-is-not-decision (phase starts need
-  explicit permission), project-timing-quality-later (timestamps AS-IS,
-  never corrected), project-plan-not-obeyed-defect (flag if running
-  Branch 1).
-- MIX-UP NOTE: operator instruction about OZ.KORUM server metadata was
-  meant for ANOTHER project; an AusPass channel-level StationXML was
-  committed to uom_seismic_metadata fdsnxml/oz_korum_auspass.xml
-  (harmless, provenance-noted, PROD NEVER TOUCHED). Operator may revert
-  or adopt there.
-- KORUM conversion itself: complete + audited 22/22 in shared staging;
-  LT promotion still operator-gated. DU pilot leftovers frozen at
-  ~/v3_test/du_pilot (unapproved start, stopped; delete freely).
-- VM idle; nconnect mount STILL NOT in fstab (reverts on reboot;
-  `sudo bash ~/nconnect_remount.sh` restores).
+- Fix commits (workflow-v3): 12321c3 F1, fcc642a+sudspy 0febe26 F6,
+  fca5ea8 F3, 96a265d F8, 498302b F10, 7d52e99 F7, dd12fbb F4
+  (selection schema now v0.3 — ALL older selections refused, recompile),
+  8178fea+disk_to_sds d277741 F5, c8e161a F2. OPEN: F9 (independent
+  witness tool) and F11 (evidence re-runs), plus F2's plan-driven-compile
+  remainder — all assigned to Codex.
+- Unit suites all pass on VM and Mac: scan/test_convert_gates.py,
+  test_selection_tails.py, test_preflight_gates.py, sudspy
+  tests/test_timestamp_fidelity.py (now covers BOTH drift directions).
+  Proving days on final code: WLSH 2019-06-15 PASS (0.0 s missing, 0 bad);
+  TYHS + LKHRT battery legs were finishing at save time — check
+  `~/v3_test/oneday/*/audit.json` or rerun `~/v3_test/fix_one_day.sh`.
+- FULL 656-day study relaunched FROM SCRATCH 2026-10-23 on the pinned
+  final code (old mixed-version results archived as
+  results.mixedcode.*.jsonl). Log: ~/v3_test/triage_study/
+  fullrun_20261023.log; resume command inside ~/v3_test/full_fresh_study.sh
+  header (re-invoke triage_study with same args; it skips PASS/FAIL,
+  retries ERROR).
+- **DORMANCY RULES: `docs/codex_dormancy_brief_2026-10-23.md`** — Codex
+  re-reviews the fix diffs (report to reviews/ on branch `codex-break`),
+  runs sandboxed behavioural tests (VM `~/codex_sandbox/` ONLY, copies
+  fix_one_day there), commits only on `codex-break` prefixed `Codex: `,
+  writes docs/codex_break_handoff.md at end. Claude on return: read that
+  handoff FIRST, review codex-break, then Path A resumes (closure
+  equation + inventory build → dress rehearsal → gate re-review → Dan's
+  sign-offs → DU).
+- Fix 5 (identity-driven channel naming override, DU loc-60 EH*) still
+  unbuilt — Codex task 2; needs no identity guesses, mechanism only.
+- Standing rules: AGENTS.md "Communicating with Dan"; timestamps AS-IS
+  (never corrected); phase starts need explicit operator go; one writer
+  per directory (2026-10-23 race lesson).
+- KORUM: converted+audited 22/22 in shared staging, LT promotion
+  operator-gated. du_pilot leftovers frozen (delete freely). nconnect
+  mount still not in fstab (`sudo bash ~/nconnect_remount.sh` restores).
+  OZ.KORUM metadata mix-up note: see git log of uom_seismic_metadata
+  (harmless, prod never touched).
 
 ## Session log (newest first, one line each)
 
