@@ -40,19 +40,38 @@ Everything else in AGENTS.md still binds, especially:
 - Overnight re-run of all previously failed study days — launch state
   recorded in STATUS.md.
 
-## Codex's task list, in order
+> **UPDATE 2026-10-23:** the full-gate review ran (BLOCK, 11 findings —
+> `reviews/2026-10-23_v3_full_gate.md`). Claude fixed nine the same day;
+> the Response section in that file maps every finding to its commit.
+> The task list below is REVISED accordingly: the old item 1 (triage the
+> re-run) is superseded by the fresh full-study re-run on the fixed code,
+> and two review remainders are added.
 
-1. **Triage the failed-day re-run** when it finishes:
-   `~/v3_test/triage_study/results.jsonl` on the VM
-   (`dsand@172.26.144.41`). Count PASS/FAIL; for each remaining FAIL,
-   reproduce with `bash ~/v3_test/fix_one_day.sh NET STA DATE DB PLAN`
-   (station DBs: `/mnt/seiscomp_staging/eqserver_provenance/VW/2026-06-10/
-   station_dbs/` for VW; `~/station_dbs/` for DU; synth plans under
-   `~/v3_test/triage_study/synth_plans/`). Root-cause and fix in the
-   chooser/converter; re-run the day to prove it. If a failure class looks
-   like source-data reality (true gap) rather than a code defect, record it
-   in `docs/qa/triage_evidence_map.md` instead of forcing a fix.
-2. **Build Fix 5 — identity-driven channel naming override.** In the
+## Codex's task list, in order (revised 2026-10-23)
+
+0. **F9 — independent witness tool** (review finding 9, open). A small
+   standalone checker that, for a given converted day, enumerates SUDS
+   waveform blocks/payload lengths and source channel labels WITHOUT
+   importing sudspy, qa_verify or suds_convert (that independence is the
+   whole point), compares against the SDS output's channel presence and
+   sample counts, and takes expected channel identities from the reviewed
+   plan/StationXML rather than any regex copied from the engine. Read-only;
+   report per day. Wire it into triage_study as a second verdict column.
+1. **Watch the fresh full-study re-run** (all 656 days, recompiled v0.3
+   selections, one pinned code identity — launched by Claude 2026-10-23).
+   When it finishes: score it, root-cause remaining FAILs with
+   `~/v3_test/fix_one_day.sh`, fix code defects, record true source gaps
+   in `docs/qa/triage_evidence_map.md`. This is review finding 11's
+   evidence base.
+
+   (Paths for item 1: results in `~/v3_test/triage_study/results.jsonl`
+   on the VM `dsand@172.26.144.41`; station DBs in
+   `/mnt/seiscomp_staging/eqserver_provenance/VW/2026-06-10/station_dbs/`
+   for VW and `~/station_dbs/` for DU; synth plans under
+   `~/v3_test/triage_study/synth_plans/`.)
+2. **Build Fix 5 — identity-driven channel naming override** (also the
+   open remainder of review finding 2: the chooser compiling FROM the
+   reviewed plan/identity contract). In the
    convert path, channel codes coming from the plan/identity contract must
    override `_enforce_band_instrument`'s band-by-sample-rate renaming
    (engine side lives in `disk_to_sds/scripts/suds_convert.py`; the call
