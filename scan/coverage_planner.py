@@ -69,6 +69,9 @@ CREATE TABLE IF NOT EXISTS probes (
     population TEXT, month TEXT, chans TEXT, basis TEXT,
     probe_paths TEXT, errors TEXT,
     PRIMARY KEY (population, month));
+CREATE TABLE IF NOT EXISTS blocked_days (
+    date TEXT, population TEXT, basis TEXT,
+    PRIMARY KEY (date, population));
 CREATE TABLE IF NOT EXISTS day_summary (
     date TEXT, stream TEXT, n_selected INT, n_rejected INT,
     n_gap_filled INT, populations_considered TEXT,
@@ -180,17 +183,30 @@ class ChannelKnowledge:
             if key in self.cache:
                 continue
             paths = list(dict.fromkeys(s["first"] + s["mid"] + s["last"]))
-            per_path, probed, errors = {}, [], []
+            per_path, probed, errors, notes = {}, [], [], []
             if self.probe_enabled:
                 from qa_verify import read_source_file
                 for p in paths:
+                    ierrs, ictrs = [], {}
                     try:
                         found = set()
-                        for t in read_source_file(p, [], {}):
+                        for t in read_source_file(p, ierrs, ictrs):
                             if t["orient"] in ORIENTATIONS:
                                 found.add(t["orient"])
                         per_path[p] = frozenset(found)
                         probed.append(p)
+                        # Verdict-affecting: internal read errors (the file
+                        # may carry channels the failed members hold).
+                        if ierrs:
+                            errors.append(
+                                f"{p}: reader_errors="
+                                f"{[e.get('err', str(e)) for e in ierrs][:3]}")
+                        # Informational, NOT verdict-affecting: raw labels
+                        # the reader saw but does not recognize (Codex item
+                        # 2 — these make empty probes classifiable).
+                        if ictrs.get("dropped_labels"):
+                            notes.append(
+                                f"{p}: unrecognized_labels={ictrs['dropped_labels']}")
                     except Exception as e:
                         errors.append(f"{p}: {type(e).__name__}: {e}")
             if not self.probe_enabled:
@@ -206,16 +222,18 @@ class ChannelKnowledge:
             sets = set(per_path.values())
             agreed = next(iter(sets)) if len(sets) == 1 else None
             if probed and not errors and agreed:
-                self.cache[key] = (agreed, "header_probe_agreed", probed, [])
+                self.cache[key] = (agreed, "header_probe_agreed", probed, notes)
             elif probed and not errors and len(sets) > 1:
                 detail = [f"{p}: {''.join(sorted(s)) or '-'}"
                           for p, s in per_path.items()]
                 self.cache[key] = (frozenset(), "probe_disagree",
-                                   probed, detail)
+                                   probed, detail + notes)
             elif probed and errors:
-                self.cache[key] = (frozenset(), "probe_errors", probed, errors)
+                self.cache[key] = (frozenset(), "probe_errors", probed,
+                                   errors + notes)
             else:
-                self.cache[key] = (frozenset(), "probe_failed", probed, errors)
+                self.cache[key] = (frozenset(), "probe_failed", probed,
+                                   errors + notes)
 
     def channels(self, population, month_key):
         return self.cache.get((population, month_key),
@@ -393,6 +411,12 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
             sel, rejected, gaps, blocked = choose_day(cands, know, mk)
             for b in blocked:
                 blocked_days[b] = blocked_days.get(b, 0) + 1
+            # Per-DAY blocked record (Codex targeted review item 3: one bad
+            # population-month must not block the whole station-year — only
+            # the days where that population actually offers files).
+            out.executemany(
+                "INSERT OR REPLACE INTO blocked_days VALUES (?,?,?)",
+                [(d.isoformat(), pk, basis) for pk, basis in blocked])
             iso = d.isoformat()
             rows = []
             for path, e in sel.items():

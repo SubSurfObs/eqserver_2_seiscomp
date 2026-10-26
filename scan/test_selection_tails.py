@@ -93,15 +93,22 @@ def main():
         c.execute("UPDATE meta SET value=? WHERE key='probe_blocked'",
                   ('[{"population": "disk|x", "basis": "probe_failed", '
                    '"days": 3}]',))
+        c.execute("CREATE TABLE blocked_days (date TEXT, population TEXT, "
+                  "basis TEXT, PRIMARY KEY (date, population))")
+        c.execute("INSERT INTO blocked_days VALUES "
+                  "('2023-05-02', 'disk|x', 'probe_failed')")
         c.commit(); c.close()
-        try:
-            Selection(sp, "VW", "FAKE", 2023, manifest)
-            print("FAIL  probe-blocked selection refused"); return 1
-        except Exception as e:
-            ok = "probe-blocked" in str(e)
-            print(f"{'PASS' if ok else 'FAIL'}  probe-blocked selection refused")
-            if not ok:
-                return 1
+        # Blocking is PER DAY now: the artifact loads, the affected day
+        # reports its blocked populations, other days are clean.
+        s = Selection(sp, "VW", "FAKE", 2023, manifest)
+        b_hit = s.blocked_for_day("2023-05-02")
+        b_miss = s.blocked_for_day("2023-05-01")
+        s.close()
+        ok = b_hit == [("disk|x", "probe_failed")] and b_miss == []
+        print(f"{'PASS' if ok else 'FAIL'}  probe-block scoped per day")
+        if not ok:
+            print(f"      hit={b_hit!r} miss={b_miss!r}")
+            return 1
 
     print("all selection-tail tests passed")
     return 0

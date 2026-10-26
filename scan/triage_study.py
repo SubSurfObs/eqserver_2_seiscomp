@@ -132,9 +132,14 @@ def _synth_plan(db_path, net, sta, registry, out_path: Path):
     limitation the mixed_rec stratum is there to expose."""
     import yaml
     db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    # No exclude_reason filter (Codex item 5): the study deliberately
+    # REVIVES single_channel/unparsed cohorts as candidates, so the synth
+    # plan's epochs must cover the years those files span — filtering them
+    # out left 12 DU stations with no epochs at all and dates outside every
+    # epoch, which converted nothing and FAILed as whole missing days.
     rows = list(db.execute(
         "SELECT file_year, recorder_type, COUNT(*) FROM files "
-        "WHERE role='waveform' AND station_mismatch=0 AND exclude_reason IS NULL "
+        "WHERE role='waveform' AND station_mismatch=0 "
         "AND file_year BETWEEN 1995 AND 2026 GROUP BY 1,2"))
     db.close()
     by_year = {}
@@ -286,6 +291,17 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
                 if "SELECTION REFUSED" in r.stdout:
                     sel.unlink(missing_ok=True)
                 raise StopIteration
+            if "blocked_identity" in r.stdout:
+                # Per-day identity block (Codex item 3 rescope): terminal
+                # verdict; the day is operator work, not a retry.
+                tail_line = [ln for ln in r.stdout.splitlines()
+                             if "blocked_identity" in ln]
+                rec.update(phase="convert", status="done", verdict="BLOCKED",
+                           error=(tail_line[-1] if tail_line else "")[-300:])
+                out.write(json.dumps(rec) + "\n")
+                out.flush()
+                n += 1
+                continue
             r = subprocess.run(
                 [PY, "scan/qa_verify.py", "--net", it["net"], "--sta", it["sta"],
                  "--date", it["date"], "--sds-root", str(day_sds),
@@ -351,8 +367,20 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
         if n % 10 == 0:
             print(f"[{datetime.now(timezone.utc).isoformat(timespec='seconds')}] "
                   f"{n} days done", flush=True)
-        # keep the sandbox small: each day's SDS is only needed for its audit
+        # Keep the sandbox small — but RETAIN the converted output of every
+        # non-PASS day (Codex item 6: distinguishing converter trimming
+        # from auditor arithmetic needs the actual SDS bytes). PASS days
+        # are deleted as before.
         import shutil
+        if rec.get("verdict") in ("FAIL", "ERROR"):
+            keep = out_dir / "failed_sds" / f'{it["net"]}.{it["sta"]}.{it["date"]}'
+            try:
+                if day_sds.exists():
+                    shutil.rmtree(keep, ignore_errors=True)
+                    keep.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.move(str(day_sds), str(keep))
+            except OSError:
+                pass
         shutil.rmtree(sds_dir, ignore_errors=True)
     out.close()
     print(f"study pass complete: {n} new days")

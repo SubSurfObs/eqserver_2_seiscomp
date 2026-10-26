@@ -273,6 +273,11 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                 if orient is None:
                     counters["n_suds_chans_dropped"] = counters.get(
                         "n_suds_chans_dropped", 0) + 1
+                    # Keep the raw labels (Codex item 2: silently discarded
+                    # labels made BEST's empty probes unclassifiable).
+                    labels = counters.setdefault("dropped_labels", [])
+                    if tr.stats.channel not in labels and len(labels) < 20:
+                        labels.append(tr.stats.channel)
                     continue
                 traces.append({
                     "orient": orient, "src_chan": tr.stats.channel,
@@ -305,6 +310,9 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                 for tr in st:
                     orient = _mseed_orientation(tr.stats.channel)
                     if orient is None:
+                        labels = counters.setdefault("dropped_labels", [])
+                        if tr.stats.channel not in labels and len(labels) < 20:
+                            labels.append(tr.stats.channel)
                         continue
                     traces.append({
                         "orient": orient, "src_chan": tr.stats.channel,
@@ -391,6 +399,47 @@ def total(ivs: list) -> float:
 
 
 # --- sample comparison ----------------------------------------------------------
+
+def topology_breaks(src_traces, conv_traces):
+    """Value-independent weld detector (Codex targeted review 2026-10-27,
+    item 4: value comparison alone misses welds over constant/clipped
+    data). Every converted trace must be TILEABLE by source traces placed
+    at their stated times rounded onto the converted grid, consecutive
+    tiles leaving no gap. A converted trace that spans a point where no
+    source copy continues grid-consistently carries a weld — the
+    converter should have split there — regardless of sample values.
+    Correct drift-split output tiles exactly (every file within a segment
+    is grid-consistent to half a sample by construction)."""
+    n_break = 0
+    for ct in conv_traces:
+        rate = ct["rate"]
+        c0 = float(ct["start"].timestamp)
+        n = len(ct["data"])
+        if n == 0 or rate <= 0:
+            continue
+        tiles = []
+        for st_ in src_traces:
+            if abs(st_["rate"] - rate) > 1e-6 or len(st_["data"]) == 0:
+                continue
+            pi = int(round((float(st_["start"].timestamp) - c0) * rate))
+            a, b = max(0, pi), min(n, pi + len(st_["data"]))
+            if b > a:
+                tiles.append((a, b))
+        if not tiles:
+            n_break += 1
+            continue
+        tiles.sort()
+        cov_end = 0
+        contiguous = True
+        for a, b in tiles:
+            if a > cov_end:
+                contiguous = False
+                break
+            cov_end = max(cov_end, b)
+        if not (contiguous and cov_end >= n):
+            n_break += 1
+    return n_break
+
 
 def compare_samples(src_traces, conv_traces, day_start, day_end):
     """Match-any-copy comparison: per converted trace, a sample counts as bad
@@ -630,6 +679,12 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
             _add(rec, "sample_mismatch", counts, channel=orient,
                  detail=f"{n_bad}/{n_cmp} samples differ (no source copy "
                         f"agrees)")
+        n_topo = topology_breaks(src_for, conv_for)
+        if n_topo:
+            _add(rec, "timing_topology", counts, channel=orient,
+                 detail=f"{n_topo} converted trace(s) span a source "
+                        f"timeline break no copy supports (weld signature, "
+                        f"value-independent)")
         conv_dur = sum(len(t["data"]) / t["rate"] for t in conv_for)
         if conv_dur > 1.05 * total(c_iv) and conv_dur - total(c_iv) > 60:
             _add(rec, "duplicated_data", counts, channel=orient,

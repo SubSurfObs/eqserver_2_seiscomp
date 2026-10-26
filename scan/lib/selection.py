@@ -107,16 +107,10 @@ class Selection:
             raise SelectionError(
                 "selection compiled with --no-probe (channel sets assumed, "
                 "not evidenced) — recompile without --no-probe")
-        import json as _json
-        blocked = _json.loads(meta.get("probe_blocked") or "[]")
-        if blocked:
-            names = ", ".join(f"{b['population']} ({b['basis']}, "
-                              f"{b['days']}d)" for b in blocked[:5])
-            raise SelectionError(
-                f"selection has {len(blocked)} probe-blocked population(s) "
-                f"— channel content could not be established: {names}. "
-                f"Investigate the probe errors in the probes table, then "
-                f"recompile.")
+        # probe_blocked populations no longer refuse the whole artifact
+        # (Codex targeted review item 3: that blocked entire station-years
+        # over one bad population-month). Blocking is PER DAY via
+        # blocked_for_day(); the converter refuses only the affected days.
         # Row/day counts must match what the compiler recorded (truncation
         # and tamper guard beyond the complete marker; review F2).
         n_rows = self.conn.execute(
@@ -221,6 +215,18 @@ class Selection:
             sidecar.write_text(_json.dumps(key))
         except OSError:
             pass  # read-only location: validation still ran, just uncached
+
+    def blocked_for_day(self, d_iso: str):
+        """[(population, basis)] whose channel content could not be
+        established for THIS day (the day offers files from a probe-blocked
+        population-month). Such a day must not convert — it is an identity
+        question for the operator — but other days convert normally."""
+        try:
+            return list(self.conn.execute(
+                "SELECT population, basis FROM blocked_days WHERE date=? "
+                "ORDER BY population", (d_iso,)))
+        except sqlite3.OperationalError:
+            return []  # pre-blocked_days artifact (refused upstream anyway)
 
     def days(self):
         return [r[0] for r in self.conn.execute(

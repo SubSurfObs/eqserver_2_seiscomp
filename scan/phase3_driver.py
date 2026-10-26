@@ -926,6 +926,17 @@ def _worker_convert_day(job):
             # disjoint channel day-files, so order does not matter.
             from lib.selection import Selection
             sel = Selection(selection_path, net, sta, d.year, job["db_path"])
+            blocked_pops = sel.blocked_for_day(d_iso)
+            if blocked_pops:
+                # Fail-closed PER DAY (Codex item 3): this day offers files
+                # from population(s) whose channel content nobody could
+                # establish. Operator identity work, not a conversion.
+                sel.close()
+                return {"status": "blocked_identity", "date": d_iso,
+                        "n_files": 0, "n_boundary_files": 0,
+                        "blocked_populations": [
+                            f"{pk} ({basis})" for pk, basis in blocked_pops],
+                        "sds_files_written": []}
             by_chans = {}
             sel_rows = sel.files_for_day(d_iso)
             # Row order is winner-first (fills sort last, review F5) and is
