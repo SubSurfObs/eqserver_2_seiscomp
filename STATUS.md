@@ -207,6 +207,26 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-27 — Codex targeted review actioned; witness scores its first kill
+
+All six items from `reviews/2026-10-27_v3_targeted_checks.md` fixed
+(`e1b55f8`): value-independent weld detector (timing_topology — closes
+the constant-data hole Codex proved in the half-sample tolerance change),
+probe blocking rescoped PER DAY (blocked_days table; whole station-years
+no longer refused), probe evidence now persists reader errors + raw
+labels, synthetic study plans cover revived cohorts (22 false whole-day
+FAILs), non-PASS days keep their SDS under failed_sds/ for forensics.
+THEN the independent witness resolved BEST 2019: the "unreadable"
+telemetry stubs are CHZ-labelled SUDS — and the shared recognition regex
+excluded the C band, so chooser, engine and auditor all dropped them
+identically (the F9 common-mode risk, caught by the witness). Regex
+fixed in both repos (`25a1051`, disk_to_sds `fc1b1f2`-ish — see its log);
+orientation sets gain '3'. Earlier false-FAIL fix: auditor alignment
+tolerance at the physical half-sample bound (`6922f6d`). Full study
+relaunched FROM SCRATCH on this identity
+(VM log `~/v3_test/triage_study/fullrun_20261027b.log`). WPNH-class
+mixed per-file cohorts remain the resolver build's job.
+
 ## 2026-10-26 — fix round 2 (Codex re-review) complete
 
 Codex's fix re-review (`reviews/2026-10-24_v3_fix_review.md`, BLOCK,
