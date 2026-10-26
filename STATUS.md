@@ -207,7 +207,29 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
-## SAVE-POINT 2026-10-23 (DORMANCY — credits out; Codex + Dan hold the fort)
+## 2026-10-26 — fix round 2 (Codex re-review) complete
+
+Codex's fix re-review (`reviews/2026-10-24_v3_fix_review.md`, BLOCK,
+11 partial/not-fixed verdicts) was worked through same-day on return:
+commit `66e4b53` closes the escapes it found (legacy chooser can no
+longer write at all; all provenance fields mandatory + row-level
+manifest binding + dirty-tree compile refusal; bundle-aware boundary
+tails ranked by coverage end; probe sets used only when all probes
+succeed AND agree; fill-only groups write last; failed drift-segments
+degrade to QC per-file read; source size/mtime in the skip fingerprint
+and verified skips counted with inventory; preflight pins the EXECUTING
+checkout — the VM `_v3` name bug — and gates promote too; study resume
+is version-pure with a per-channel loss bound). Codex's independent
+SUDS witness (F9) merged from `codex-break` (`07d6e91`) after review —
+verified against a real archive file (3×15,000 samples, counts agree).
+Full 656-day study restarted FROM SCRATCH at this identity
+(log: VM `~/v3_test/triage_study/fullrun_20261026.log`). Still open:
+F5/F6 deeper designs (per-orientation priority model; provenance-aware
+duplicate handling vs the 1-s heuristic — counterexamples in the
+review), plan-driven selection compile (with fix 5), dress rehearsal,
+third gate review.
+
+## SAVE-POINT 2026-10-23 (DORMANCY — superseded by the 2026-10-26 entry above)
 
 **The full-gate Codex review ran: BLOCK, 11 findings
 (`reviews/2026-10-23_v3_full_gate.md`). Claude fixed NINE the same day —
