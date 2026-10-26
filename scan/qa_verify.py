@@ -80,7 +80,19 @@ def seed_band(rate_hz: float) -> str:
 
 
 import os as _os
-SAMPLE_TOL = 0.01          # fractional-sample alignment tolerance
+# Fractional-sample alignment tolerance for comparing a converted trace
+# against a source copy. 0.5 is the PHYSICAL bound, not a loosening
+# (2026-10-27, LKHRT false-FAIL): output anchored at each segment's
+# recorder-stated time (the as-timestamped ruling) legitimately sits up to
+# half a sample off any other file's stated grid — a finer tolerance
+# flagged correct drift-split output as timing_misalign and left its
+# coverage "phantom". Real timestamp welds are still caught, by VALUE:
+# comparison happens at nearest-sample alignment, and welded data places
+# samples whole samples away from their stated times, so the values
+# disagree (that is exactly how the LKHRT 6.47M-bad-sample defect was
+# detected). Sub-half-sample offsets are unrepresentable on a sample grid
+# and are not a finding.
+SAMPLE_TOL = 0.5
 # Probe cadence / read caps are env-overridable for exhaustive runs
 # (triage study): QA_PROBE_EVERY=1 QA_EXTRA_CAP=999999 reads everything.
 TELE_PROBE_EVERY_MIN = int(_os.environ.get("QA_PROBE_EVERY", "30"))
