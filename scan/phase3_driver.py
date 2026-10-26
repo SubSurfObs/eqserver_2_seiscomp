@@ -1375,6 +1375,15 @@ def main():
             continue
         break
 
+    if not jobs:
+        # Requested dates fall outside every supported plan epoch. Nothing
+        # to convert — exit cleanly (the auditor still measures the day
+        # against the sources, so a wrongly-narrow plan surfaces as a
+        # missing-day FAIL with evidence, not as a confusing refusal here).
+        print("[phase3] 0 day-jobs: requested date(s) outside the plan's "
+              "supported epochs — nothing to convert", flush=True)
+        sys.exit(0)
+
     if args.selection:
         # Fail-closed validation BEFORE dispatch: schema, completeness,
         # net/sta/year, and manifest-identity binding. A selection compiled
@@ -1390,9 +1399,8 @@ def main():
             # full content hash, the generator == running code, and that
             # every selected path exists in the manifest. Workers repeat
             # only the cheap identity check per day.
-            _sel = Selection(args.selection, jobs[0]["network"] if jobs else "?",
-                             jobs[0]["station"] if jobs else "?",
-                             years[0] if years else 0, args.db, deep=True)
+            _sel = Selection(args.selection, network, station,
+                             years[0], args.db, deep=True)
             n_sel_days = len(_sel.days())
             _sel.close()
         except SelectionError as e:

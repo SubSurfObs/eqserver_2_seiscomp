@@ -246,6 +246,11 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
             if r.returncode != 0 or "SELECTION REFUSED" in r.stdout:
                 rec.update(phase="convert", status="error",
                            error=(r.stdout + r.stderr).strip()[-300:])
+                # A refused selection is stale evidence (identity drift,
+                # schema change): drop it so the retry recompiles fresh
+                # instead of refusing forever.
+                if "SELECTION REFUSED" in r.stdout:
+                    sel.unlink(missing_ok=True)
                 raise StopIteration
             r = subprocess.run(
                 [PY, "scan/qa_verify.py", "--net", it["net"], "--sta", it["sta"],
