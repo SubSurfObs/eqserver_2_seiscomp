@@ -55,7 +55,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 SCHEMA_VERSION = "selection-v0.3"
 HOURBUNDLE_RE = re.compile(r"[ _](\d{2})hr[ _]", re.IGNORECASE)
-ORIENTATIONS = set("ZNEO12")
+ORIENTATIONS = set("ZNEO123")  # SEED orientations incl. borehole 1/2/3
 
 DDL = """
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);

@@ -61,7 +61,7 @@ SUDS_COMPONENT = {
 SUDS_DROP_SUFFIXES = ("-a",)
 SUDS_DROP_PREFIXES = ("c04", "c05", "c06", "c07", "c08", "c09")
 
-ORIENTATIONS = set("ZNEO12")
+ORIENTATIONS = set("ZNEO123")  # SEED orientations incl. borehole 1/2/3
 
 HHMM_RE = re.compile(r"[ _](\d{4})[ _]")
 
@@ -233,7 +233,13 @@ def split_populations(files: list[dict]) -> tuple[list, list, list]:
 
 # --- source readers ------------------------------------------------------------
 
-SEED_SEISMO_RE = __import__("re").compile(r"^[ESHB]H[ZNE123]$")
+# All SEED band letters in this archive's universe (B/S@50, H/E@100-200,
+# C/D@250-800, F/G@1000+): the earlier [ESHB] set silently excluded the
+# C band — VW's own 250 sps convention — so SUDS telemetry stubs labelled
+# CHZ were invisible to chooser, engine AND auditor at once (found by the
+# independent witness on BEST 2019, 2026-10-27; the F9 common-mode risk
+# made real). Keep textually identical to disk_to_sds _SEED_SEISMO_RE.
+SEED_SEISMO_RE = __import__("re").compile(r"^[FGCDHESB]H[ZNE123]$")
 
 
 def _suds_component(chan: str) -> str | None:
