@@ -139,6 +139,17 @@ def main():
                          "polling overhead)")
     args = ap.parse_args()
 
+    # Mandatory Stage-5 preflight (Codex fix-review F8): promotion must not
+    # run with dirty/unpinned code any more than conversion may.
+    from lib.preflight import run_preflight, PreflightError
+    try:
+        pf = run_preflight("promote", strict=True)
+    except PreflightError as exc:
+        print(f"[promote] PREFLIGHT ABORT: {exc}", file=sys.stderr, flush=True)
+        return 2
+    print("[promote] preflight OK: " + ", ".join(
+        f"{c['repo']}@{c['head'][:9]}" for c in pf["repos"]), flush=True)
+
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_root).parent)
     queue.mkdir(parents=True, exist_ok=True)

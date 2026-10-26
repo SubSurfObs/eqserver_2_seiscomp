@@ -386,20 +386,10 @@ def _parse_combined_with_fallback(all_files, read_errors):
     except Exception as se:
         scan_status, segs = "scan_failed", None
         read_errors.append(("record-scan", f"{type(se).__name__}: {se}"))
-    if scan_status == "split":
-        from obspy import Stream as _Stream
-        st = _Stream()
-        for key, seglist in segs.items():
-            for seg in seglist:
-                part = b"".join(buf[o:o + L] for o, L in seg)
-                try:
-                    st += read(io.BytesIO(part), format="MSEED")
-                except Exception as fe:
-                    read_errors.append((key, f"segment: {type(fe).__name__}: {fe}"))
-        if len(st) > 0:
-            return st, False, None
-        # fall through to the plain read if segment parsing failed wholesale
-    elif scan_status == "scan_failed":
+    def _per_file_read(reason):
+        # Timestamp-preserving degradation, always QC-flagged: parse each
+        # file's own bytes from the retained buffer. Never the whole-buffer
+        # weld (Codex fix-review F6 closed the split-failure fall-through).
         st = Stream()
         bb = combined.getbuffer()
         for path, a, b in spans:
@@ -410,8 +400,27 @@ def _parse_combined_with_fallback(all_files, read_errors):
             except Exception as fe:
                 read_errors.append(
                     (path, f"per-file(mem) {type(fe).__name__}: {fe}"))
-        return st, True, ("record-scan unparseable; per-file read "
-                          "(timestamp-preserving degradation)")
+        return st, True, reason
+
+    if scan_status == "split":
+        from obspy import Stream as _Stream
+        st = _Stream()
+        seg_fail = False
+        for key, seglist in segs.items():
+            for seg in seglist:
+                part = b"".join(buf[o:o + L] for o, L in seg)
+                try:
+                    st += read(io.BytesIO(part), format="MSEED")
+                except Exception as fe:
+                    seg_fail = True
+                    read_errors.append((key, f"segment: {type(fe).__name__}: {fe}"))
+        if len(st) > 0:
+            return st, seg_fail, ("some drift segments unparseable; "
+                                  "parsed remainder" if seg_fail else None)
+        return _per_file_read("all drift segments unparseable; per-file read")
+    elif scan_status == "scan_failed":
+        return _per_file_read("record-scan unparseable; per-file read "
+                              "(timestamp-preserving degradation)")
     combined.seek(0)
     try:
         return read(combined, format="MSEED"), False, None
@@ -654,7 +663,7 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     return result
 
 
-def _day_fingerprint(sel_rows, code_id, net, sta, loc):
+def _day_fingerprint(sel_rows, code_id, net, sta, loc, src_ids=None):
     """Identity of a day's conversion inputs (review 2026-10-23 F7): the
     selected (path, chans) set, the full selection artifact digest (which
     itself binds the manifest identity, so an index rebuild invalidates),
@@ -666,7 +675,9 @@ def _day_fingerprint(sel_rows, code_id, net, sta, loc):
     h = hashlib.sha256()
     h.update(f"{net}.{sta}.{loc}|{code_id}".encode())
     for row in sorted(sel_rows):
-        h.update(f"|{row[0]}|{row[1]}|{row[2] if len(row) > 2 else ''}".encode())
+        sid = (src_ids or {}).get(row[0], "")
+        h.update(f"|{row[0]}|{row[1]}|{row[2] if len(row) > 2 else ''}"
+                 f"|{sid}".encode())
     return h.hexdigest()
 
 
@@ -920,23 +931,51 @@ def _worker_convert_day(job):
             # Row order is winner-first (fills sort last, review F5) and is
             # PRESERVED into each group's file list and from there into the
             # engines' read order — the merge's equal-start tie break.
-            for path, chans, _rule in sel_rows:
+            # GROUP order matters too (Codex fix-review F5): a fill-only
+            # group (e.g. chans "N", rule short_fill) must write AFTER the
+            # winner-bearing group whose set overlaps it (e.g. "NE"),
+            # because the first write becomes the protected existing data.
+            fill_only = {}
+            for path, chans, rule in sel_rows:
                 by_chans.setdefault(chans, []).append(path)
+                if not rule.startswith(("short_fill", "gap_fill")):
+                    fill_only[chans] = False
+                else:
+                    fill_only.setdefault(chans, True)
             groups = [(None if ch == "*" else set(ch), paths)
-                      for ch, paths in sorted(by_chans.items())]
+                      for ch, paths in sorted(
+                          by_chans.items(),
+                          key=lambda kv: (fill_only.get(kv[0], False), kv[0]))]
             files = [p for _, ps in groups for p in ps]
             # Skip-unchanged fast path: a day whose input fingerprint
             # matches a prior commit in this staging root, with outputs
             # intact, is already converted — skip without reading sources.
             if commit and job.get("skip_unchanged"):
+                # Fix-review F7: bind the manifest-recorded size+mtime of
+                # every selected source file into the fingerprint, so a
+                # re-indexed source change forces reconversion (the origin
+                # archive itself is immutable by invariant; live stat of
+                # 1,440 NFS files per day would defeat the fast path).
+                src_ids = {}
+                paths_only = [r[0] for r in sel_rows]
+                for i in range(0, len(paths_only), 500):
+                    b = paths_only[i:i + 500]
+                    qm = ",".join("?" * len(b))
+                    for p, sz, mt in conn.execute(
+                            f"SELECT path, size_bytes, mtime FROM files "
+                            f"WHERE path IN ({qm})", b):
+                        src_ids[p] = f"{sz}:{mt}"
                 fp = _day_fingerprint(sel_rows, job.get("code_id", "?"),
-                                      net, sta, loc)
+                                      net, sta, loc, src_ids)
                 prior = _load_skip_ledger(staging).get(d_iso)
                 if prior and prior.get("fingerprint") == fp and _outputs_intact(prior):
                     sel.close()
+                    # Verified-intact outputs are REAL inventory (F7): the
+                    # day counts as succeeded and its files are reported.
                     return {"status": "skipped_unchanged", "date": d_iso,
                             "n_files": len(files), "n_boundary_files": 0,
-                            "sds_files_written": []}
+                            "sds_files_written": [
+                                [p, s] for p, s, *_ in prior.get("outputs", [])]}
                 job["_fingerprint"] = fp
             prev = d - timedelta(days=1)
             if prev.year == d.year:
@@ -1190,6 +1229,15 @@ def main():
         print("[phase3] REFUSED: --selection and --legacy-chooser are "
               "mutually exclusive.", file=sys.stderr, flush=True)
         sys.exit(2)
+    if args.legacy_chooser and args.commit:
+        # Codex fix-review F1: the defective chooser may never WRITE on
+        # this branch — comparison runs are dry-run here; a committed
+        # legacy conversion belongs to the frozen fallback branch only.
+        print("[phase3] REFUSED: --legacy-chooser cannot be combined with "
+              "--commit on this branch (plan-not-obeyed defect). Dry-run "
+              "comparisons only; committed legacy conversions run from the "
+              "rewrite-suds2sds checkout.", file=sys.stderr, flush=True)
+        sys.exit(2)
     if not args.selection and not args.legacy_chooser:
         print("[phase3] REFUSING TO RUN: no --selection given. v3 converts "
               "only what a compiled selection admits (fail-closed). Build one "
@@ -1439,6 +1487,11 @@ def main():
                 "bytes_written": day_bytes,
                 "error": r.get("error", ""),
                 "bulk_fallback_used": r.get("bulk_fallback_used", False),
+                # Fix-review F3: promotion must be able to gate on a Jan 1
+                # converted without its prior-year boundary tail.
+                "jan1_tail_unavailable": r.get("jan1_tail_unavailable", False),
+                "sds_files_written": [[p, s] for p, s in
+                                      r.get("sds_files_written", [])],
             })
         if r["status"] == "error":
             print(f"  [{iso}] ERROR {r.get('error')}", flush=True)
@@ -1536,7 +1589,8 @@ def main():
         n_err = results.get("error", 0)
         n_parse_err = results.get("parse_error", 0)
         n_no_files = results.get("no_files", 0)
-        items_succeeded = n_ok + n_qc
+        # skipped_unchanged = hash-verified existing output (F7): succeeded.
+        items_succeeded = n_ok + n_qc + results.get("skipped_unchanged", 0)
         items_failed = n_err + n_parse_err
         finished_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         manifest_doc = {

@@ -77,7 +77,16 @@ def check_repo(name: str, pinned: str | None,
     """One repo: exists, clean (no tracked modifications, no untracked
     code in its code roots), and on its pin (when set; strict requires a
     pin to BE set — production mode)."""
-    repo = REPO_ROOT if name == REPO_ROOT.name else REPO_ROOT.parent / name
+    # The MAIN repo is always the checkout this very file executes from,
+    # regardless of its directory name (Codex fix-review F8: the VM clone
+    # is named eqserver_2_seiscomp_v3, and matching by basename made the
+    # preflight validate the old sibling checkout instead of the code
+    # actually running). Siblings resolve by name as before.
+    MAIN_REPO = "eqserver_2_seiscomp"
+    if name == MAIN_REPO or name == REPO_ROOT.name:
+        repo = REPO_ROOT
+    else:
+        repo = REPO_ROOT.parent / name
     if not (repo / ".git").exists():
         raise PreflightError(f"{name}: repo not found at {repo}")
     head = _git(repo, "rev-parse", "HEAD")

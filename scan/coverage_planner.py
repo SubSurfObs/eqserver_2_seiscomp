@@ -180,23 +180,40 @@ class ChannelKnowledge:
             if key in self.cache:
                 continue
             paths = list(dict.fromkeys(s["first"] + s["mid"] + s["last"]))
-            chans, probed, errors = set(), [], []
+            per_path, probed, errors = {}, [], []
             if self.probe_enabled:
                 from qa_verify import read_source_file
                 for p in paths:
                     try:
+                        found = set()
                         for t in read_source_file(p, [], {}):
                             if t["orient"] in ORIENTATIONS:
-                                chans.add(t["orient"])
+                                found.add(t["orient"])
+                        per_path[p] = frozenset(found)
                         probed.append(p)
                     except Exception as e:
                         errors.append(f"{p}: {type(e).__name__}: {e}")
-            if chans:
-                self.cache[key] = (frozenset(chans), "header_probe_union",
-                                   probed, errors)
-            elif not self.probe_enabled:
+            if not self.probe_enabled:
                 self.cache[key] = (frozenset("ZNE"),
                                    "assumed_broadband_noprobe", [], [])
+                continue
+            # Codex fix-review F4: a month's channel set is trusted only
+            # when every probe SUCCEEDED and they AGREE. Disagreement means
+            # a mid-month configuration change — assigning the union would
+            # credit early files with channels they don't carry (the Class-2
+            # counterexample). Errors alongside successes mean the failing
+            # files could be the ones carrying other channels. Both block.
+            sets = set(per_path.values())
+            agreed = next(iter(sets)) if len(sets) == 1 else None
+            if probed and not errors and agreed:
+                self.cache[key] = (agreed, "header_probe_agreed", probed, [])
+            elif probed and not errors and len(sets) > 1:
+                detail = [f"{p}: {''.join(sorted(s)) or '-'}"
+                          for p, s in per_path.items()]
+                self.cache[key] = (frozenset(), "probe_disagree",
+                                   probed, detail)
+            elif probed and errors:
+                self.cache[key] = (frozenset(), "probe_errors", probed, errors)
             else:
                 self.cache[key] = (frozenset(), "probe_failed", probed, errors)
 
@@ -321,9 +338,24 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
         tmp.unlink()
     out = sqlite3.connect(tmp)
     out.executescript(DDL)
+    # Fix-review F2: a dirty working tree makes generator_sha a lie (it
+    # records HEAD, not the edited code that actually ran). Refuse.
+    dirty = subprocess.run(
+        ["git", "-C", str(repo_root), "status", "--porcelain"],
+        capture_output=True, text=True).stdout.strip()
+    dirty_code = [ln for ln in dirty.splitlines()
+                  if not ln.startswith("??") or
+                  ln[3:].strip('"').endswith((".py", ".sh", ".bash"))]
+    if dirty_code:
+        raise SystemExit(
+            f"coverage_planner REFUSES to compile from a dirty working "
+            f"tree ({len(dirty_code)} modified/untracked code file(s), "
+            f"first: {dirty_code[0]}): commit first so generator_sha "
+            f"describes the code that ran")
     meta = {
         "schema_version": SCHEMA_VERSION,
         "generator_sha": git_sha(repo_root),
+        "generator_dirty": "False",
         "manifest_db": str(db_path),
         "manifest_identity": manifest_identity(db_path),
         # Full content hash of the manifest DB (review 2026-10-23 F2): the
@@ -365,7 +397,10 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
             rows = []
             for path, e in sel.items():
                 f = e["cand"]
-                span = 3600.0 if "hour_bundle" in f["population"] else 60.0
+                # Real covered minutes, not a one-hour guess: a 23-hour
+                # bundle must out-rank a 23:59 minute in the tail lookup
+                # when it truly carries the day's end (fix-review F3).
+                span = 60.0 * max(1, len(minute_slots(f)))
                 rows.append((iso, stream_base, f["population"], path,
                              f["hhmm"], span, "waveform", e["rule"],
                              "".join(sorted(e["chans"]))))

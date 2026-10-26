@@ -34,16 +34,20 @@ def main():
         c.executemany("INSERT INTO meta VALUES (?,?)", [
             ("schema_version", "selection-v0.3"), ("complete_marker", "1"),
             ("net", "VW"), ("sta", "FAKE"), ("year", "2023"),
-            ("manifest_identity", ident), ("probe_enabled", "True"),
-            ("probe_blocked", "[]")])
+            ("manifest_identity", ident),
+            ("manifest_sha256", sel_mod._file_sha256(manifest)),
+            ("generator_sha", "deadbeef"), ("generator_dirty", "False"),
+            ("probe_enabled", "True"), ("probe_blocked", "[]"),
+            ("n_days", "1"), ("n_rows", "5")])
         rows = [
             # Z comes from disk minute-files; last one is 2359.
             ("2023-05-01", "s", "disk", "/d/0000_z.dmx", "0000", 60, "w", "r", "Z"),
             ("2023-05-01", "s", "disk", "/d/2359_z.dmx", "2359", 60, "w", "r", "Z"),
-            # N+E come from a 23-hour bundle whose hhmm is 0100 — it IS the
-            # final NE coverage of the day (no later NE file exists).
-            ("2023-05-01", "s", "tele", "/t/bundle_ne.ms", "0100", 82800, "w", "r", "NE"),
-            ("2023-05-01", "s", "tele", "/t/0030_ne.ms", "0030", 60, "w", "r", "NE"),
+            # N+E come from a 23-hour bundle stored the way level1 really
+            # stores bundles: hhmm NULL. Its coverage END (0 + 1380 min)
+            # must out-rank the 22:00 minute file (fix-review F3).
+            ("2023-05-01", "s", "tele", "/t/bundle_ne.ms", None, 82800, "w", "r", "NE"),
+            ("2023-05-01", "s", "tele", "/t/2200_ne.ms", "2200", 60, "w", "r", "NE"),
             # A fill row: must sort AFTER every winner row (F5 priority).
             ("2023-05-01", "s", "tele", "/t/0000_z_fill.ms", "0000", 60, "w",
              "short_fill:Z:tele", "Z"),

@@ -88,7 +88,12 @@ def build_sample(db_dirs, networks, n_per, seed, out_path):
                     "SELECT DISTINCT file_year, file_month, file_day FROM files "
                     "WHERE role='waveform' AND station_mismatch=0 "
                     "AND file_year BETWEEN 1995 AND 2026"))
-                # cap per-station day scan cost: sample candidate days first
+                # cap per-station day scan cost: sample candidate days first.
+                # HONESTY LABEL (fix-review F10): strata are built from this
+                # bounded random pre-sample (400 shuffled days per station),
+                # NOT an exhaustive index scan — a rare mode confined to a
+                # station's other days can be missed. Exhaustive stratum
+                # predicates are a tracked follow-up.
                 rng.shuffle(days)
                 for y, m, d in days[:400]:
                     for st in day_strata(db, y, m, d):
@@ -165,30 +170,45 @@ def _repo_sha(repo: Path) -> str:
         return "?"
 
 
+def _repo_dirty(repo: Path) -> bool:
+    try:
+        return bool(subprocess.run(
+            ["git", "-C", str(repo), "status", "--porcelain"],
+            capture_output=True, text=True, timeout=10).stdout.strip())
+    except Exception:
+        return True
+
+
 def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
     results_path = out_dir / "results.jsonl"
-    done = set()
-    if results_path.exists():
-        for line in open(results_path):
-            try:
-                r = json.loads(line)
-                # Review 2026-10-23 F10: only an actually-audited outcome is
-                # terminal. ERROR days are retried on every resume.
-                if r.get("verdict") in ("PASS", "FAIL"):
-                    done.add((r["net"], r["sta"], r["date"]))
-            except Exception:
-                pass
     sel_dir = out_dir / "selections"
     sds_dir = out_dir / "sds"
     sel_dir.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, QA_PROBE_EVERY="1", QA_EXTRA_CAP="999999")
     deadline = time.time() + max_hours * 3600
-    # Review F10: every result is bound to the code that produced it.
+    # Codex fix-review F10: every result is bound to the code that produced
+    # it, a dirty tree is marked as such (its SHA describes nothing), and
+    # resume treats a prior PASS/FAIL as terminal ONLY when it was produced
+    # by the SAME three code identities — restarting after a code change
+    # re-runs everything instead of mixing versions.
     code_id = {
-        "eqserver_sha": _repo_sha(repo_root),
-        "sudspy_sha": _repo_sha(repo_root.parent / "sudspy"),
-        "disk_to_sds_sha": _repo_sha(repo_root.parent / "disk_to_sds"),
+        "eqserver_sha": _repo_sha(repo_root)
+        + ("+dirty" if _repo_dirty(repo_root) else ""),
+        "sudspy_sha": _repo_sha(repo_root.parent / "sudspy")
+        + ("+dirty" if _repo_dirty(repo_root.parent / "sudspy") else ""),
+        "disk_to_sds_sha": _repo_sha(repo_root.parent / "disk_to_sds")
+        + ("+dirty" if _repo_dirty(repo_root.parent / "disk_to_sds") else ""),
     }
+    done = set()
+    if results_path.exists():
+        for line in open(results_path):
+            try:
+                r = json.loads(line)
+                if (r.get("verdict") in ("PASS", "FAIL")
+                        and all(r.get(k) == v for k, v in code_id.items())):
+                    done.add((r["net"], r["sta"], r["date"]))
+            except Exception:
+                pass
     out = open(results_path, "a")
     n = 0
     for it in sample:
@@ -258,13 +278,22 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
                  "--db-dirs", str(Path(it["db"]).parent)],
                 capture_output=True, text=True, cwd=repo_root, env=env,
                 timeout=3600)
+            try:
+                import hashlib as _hl
+                rec["selection_sha"] = _hl.sha256(
+                    sel.read_bytes()).hexdigest()[:16]
+            except OSError:
+                pass
             audit = json.loads(r.stdout)
             per_chan = audit.get("per_chan") or {}
             miss = sel_loss = bad = 0.0
+            worst_chan_s = 0.0
             for ch, v in per_chan.items():
                 miss += v.get("missing_s", 0)
                 sel_loss += v.get("sel_loss_s", 0)
                 bad += v.get("n_bad", 0)
+                worst_chan_s = max(worst_chan_s,
+                                   v.get("missing_s", 0) + v.get("sel_loss_s", 0))
             # Review 2026-10-23 F10: PASS requires a USABLE audit. Finding
             # categories are classified fail-closed: audit-infrastructure
             # failures => ERROR (retried); any category that is not the
@@ -290,10 +319,11 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
                            error=f"audit unusable: cats={sorted(cats)} "
                                  f"n_chans={len(per_chan)}")
                 raise StopIteration
-            rec.update(status="done",
+            # Fix-review F10: the loss bound applies PER CHANNEL — one
+            # channel may not spend the whole multi-channel allowance.
+            rec.update(status="done", worst_chan_s=round(worst_chan_s, 2),
                        verdict="PASS" if (not hard_fail and bad == 0
-                                          and miss + sel_loss
-                                          <= PASS_TOL_S * len(per_chan))
+                                          and worst_chan_s <= PASS_TOL_S)
                                else "FAIL")
         except StopIteration:
             rec["verdict"] = "ERROR"

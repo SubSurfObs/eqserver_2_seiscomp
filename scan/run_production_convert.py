@@ -357,6 +357,7 @@ def main():
                 "end_date_used": args.end_date or f"{year:04d}-12-31",
                 "partial_completion_reason": args.partial_completion_reason,
                 "run_manifest_path": r["run_manifest_path"],
+                "preflight": pf,
                 "staging_root": args.staging_sds,
                 "items_succeeded": r["items_succeeded"],
                 "elapsed_s": r["elapsed_s"],

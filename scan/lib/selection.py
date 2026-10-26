@@ -69,8 +69,25 @@ class Selection:
             raise SelectionError(
                 f"unknown selection schema {meta.get('schema_version')!r} "
                 f"(known: {sorted(KNOWN_SCHEMAS)})")
+        # Every provenance field is MANDATORY (Codex fix-review F2: a
+        # stripped artifact omitting the hashes was accepted). Absence is
+        # refusal, not leniency.
+        REQUIRED = ("complete_marker", "net", "sta", "year",
+                    "manifest_identity", "manifest_sha256", "generator_sha",
+                    "generator_dirty", "probe_enabled", "probe_blocked",
+                    "n_days", "n_rows")
+        missing = [k for k in REQUIRED if meta.get(k) in (None, "")]
+        if missing:
+            raise SelectionError(
+                f"selection missing required provenance field(s) {missing} "
+                f"— not a complete artifact; recompile")
         if meta.get("complete_marker") != "1":
             raise SelectionError(f"selection incomplete/truncated: {self.path}")
+        if meta.get("generator_dirty") != "False":
+            raise SelectionError(
+                "selection was compiled from a DIRTY working tree — its "
+                "generator_sha does not describe the code that ran; "
+                "commit and recompile")
         for k, want in (("net", net), ("sta", sta), ("year", str(year))):
             if meta.get(k) != want:
                 raise SelectionError(
@@ -107,10 +124,9 @@ class Selection:
         n_days = self.conn.execute(
             "SELECT COUNT(DISTINCT date) FROM selection").fetchone()[0]
         for key, got in (("n_rows", n_rows), ("n_days", n_days)):
-            want = meta.get(key)
-            if want is not None and int(want) != got:
+            if int(meta[key]) != got:
                 raise SelectionError(
-                    f"selection {key}={got} != compiler-recorded {want} "
+                    f"selection {key}={got} != compiler-recorded {meta[key]} "
                     f"— artifact altered or truncated; recompile")
         if deep:
             self._deep_validate(Path(manifest_db_path), meta)
@@ -140,33 +156,45 @@ class Selection:
                 f"selection compiled by a different chooser version "
                 f"(generator {gen[:12]}, running {head[:12]}) — recompile "
                 f"so evidence and code match")
+        # Row-level binding (fix-review F2): every selected (path, date)
+        # must name a manifest file OF THIS STATION dated to that day —
+        # bare path membership would accept a path swapped for any other
+        # file that merely exists somewhere in the index.
+        sta = meta.get("sta")
         mc = sqlite3.connect(f"file:{manifest_db_path}?mode=ro", uri=True)
         try:
-            missing, first_missing, batch = 0, None, []
+            bad, first_bad, batch = 0, None, []
 
             def _check(b):
-                nonlocal missing, first_missing
+                nonlocal bad, first_bad
                 q = ",".join("?" * len(b))
-                found = {r[0] for r in mc.execute(
-                    f"SELECT path FROM files WHERE path IN ({q})", b)}
-                for p in b:
-                    if p not in found:
-                        missing += 1
-                        if first_missing is None:
-                            first_missing = p
+                info = {r[0]: (r[1], f"{r[2]:04d}-{r[3]:02d}-{r[4]:02d}"
+                               if r[2] else None)
+                        for r in mc.execute(
+                            f"SELECT path, station, file_year, file_month, "
+                            f"file_day FROM files WHERE path IN ({q})",
+                            [p for p, _ in b])}
+                for p, d_iso in b:
+                    got = info.get(p)
+                    if got is None or got[0] != sta or (
+                            got[1] is not None and got[1] != d_iso):
+                        bad += 1
+                        if first_bad is None:
+                            first_bad = f"{p} (manifest: {got})"
 
-            for (p,) in self.conn.execute("SELECT DISTINCT path FROM selection"):
-                batch.append(p)
+            for p, d_iso in self.conn.execute(
+                    "SELECT DISTINCT path, date FROM selection"):
+                batch.append((p, d_iso))
                 if len(batch) >= 500:
                     _check(batch)
                     batch = []
             if batch:
                 _check(batch)
-            if missing:
+            if bad:
                 raise SelectionError(
-                    f"{missing} selected path(s) are not in the manifest "
-                    f"(first: {first_missing}) — selection and index "
-                    f"disagree; recompile")
+                    f"{bad} selected row(s) disagree with the manifest on "
+                    f"existence, station or date (first: {first_bad}) — "
+                    f"selection and index disagree; recompile")
         finally:
             mc.close()
 
@@ -197,18 +225,27 @@ class Selection:
         final coverage comes from an hourly/23-hour bundle has its last
         selected file at an earlier hhmm, so this takes the max-hhmm row(s)
         per chans group."""
-        rows = [(r[0], r[1] or "*", r[2]) for r in self.conn.execute(
-            "SELECT path, chans, hhmm FROM selection WHERE date=?",
-            (prev_iso,))]
-        best = {}  # chans -> (max_hhmm, {paths})
-        for path, chans, hhmm in rows:
-            h = hhmm or ""
-            cur = best.get(chans)
-            if cur is None or h > cur[0]:
-                best[chans] = (h, {path})
-            elif h == cur[0]:
+        rows = self.conn.execute(
+            "SELECT path, chans, hhmm, span_s FROM selection WHERE date=?",
+            (prev_iso,)).fetchall()
+        # Rank by estimated COVERAGE END, not raw hhmm: hour/day bundles are
+        # stored with hhmm NULL (level1 convention) yet can carry the final
+        # minutes of the day — a bare max-hhmm rule skipped them (Codex
+        # fix-review F3). end = start-minute (NULL -> 0) + span in minutes.
+        best = {}  # chans -> (max_end_min, {paths})
+        for path, chans, hhmm, span_s in rows:
+            ch = chans or "*"
+            if hhmm and len(hhmm) == 4 and hhmm.isdigit():
+                start_min = int(hhmm[:2]) * 60 + int(hhmm[2:])
+            else:
+                start_min = 0
+            end_min = start_min + max(1.0, float(span_s or 60.0) / 60.0)
+            cur = best.get(ch)
+            if cur is None or end_min > cur[0]:
+                best[ch] = (end_min, {path})
+            elif end_min == cur[0]:
                 cur[1].add(path)
-        return sorted((p, ch) for ch, (_h, ps) in best.items() for p in ps)
+        return sorted((p, ch) for ch, (_e, ps) in best.items() for p in ps)
 
     def close(self):
         self.conn.close()

@@ -54,12 +54,17 @@ def main():
         check("selection + legacy flag refuses",
               base + ["--selection", str(td / "s.sqlite"), "--legacy-chooser"],
               2, "mutually exclusive")
+        check("legacy flag + commit refuses (fix-review F1)",
+              base + ["--legacy-chooser", "--commit"], 2,
+              "cannot be combined with --commit")
         check("commit with needs_review plan refuses",
-              base + ["--legacy-chooser", "--commit"], 2, "PLAN GATE REFUSED")
+              base + ["--selection", str(td / "s.sqlite"), "--commit"],
+              2, "PLAN GATE REFUSED")
         check("commit with BLOCKED plan refuses",
               [PY, str(HERE / "phase3_driver.py"), str(db),
                str(plans["BLOCKED"]), "--registry", str(td / "reg.yaml"),
-               "--staging-sds", str(td / "sds"), "--legacy-chooser",
+               "--staging-sds", str(td / "sds"),
+               "--selection", str(td / "s.sqlite"),
                "--commit"], 2, "PLAN GATE REFUSED")
         check("wrapper requires --selections-dir",
               [PY, str(HERE / "run_production_convert.py"),
