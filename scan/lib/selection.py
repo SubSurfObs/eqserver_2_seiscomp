@@ -134,8 +134,28 @@ class Selection:
 
     def _deep_validate(self, manifest_db_path: Path, meta: dict):
         """Once-per-run binding checks (review 2026-10-23 F2): full manifest
-        content hash, generator == running code, and every selected path
-        present in the manifest."""
+        content hash, generator == running code, and every selected row
+        bound to the manifest.
+
+        Result is CACHED in a sidecar keyed by the selection file's own
+        content hash + the manifest's cheap identity: re-validating the
+        same pair skips the expensive full-DB hash and row join (the study
+        invokes phase3 per DAY; without this, a multi-GB station DB gets
+        re-hashed hundreds of times — observed ~20 min/day, 2026-10-26).
+        The sidecar only ever SHORT-CIRCUITS work that would succeed: it is
+        trusted only when the selection bytes and manifest identity both
+        still match what was validated."""
+        import json as _json
+        sidecar = self.path.with_name(self.path.name + ".deepok.json")
+        sel_sha = _file_sha256(self.path)
+        key = {"selection_sha256": sel_sha,
+               "manifest_identity": meta.get("manifest_identity"),
+               "generator_sha": meta.get("generator_sha")}
+        try:
+            if sidecar.is_file() and _json.loads(sidecar.read_text()) == key:
+                return
+        except Exception:
+            pass
         want = meta.get("manifest_sha256")
         if want and _file_sha256(manifest_db_path) != want:
             raise SelectionError(
@@ -197,6 +217,10 @@ class Selection:
                     f"selection and index disagree; recompile")
         finally:
             mc.close()
+        try:
+            sidecar.write_text(_json.dumps(key))
+        except OSError:
+            pass  # read-only location: validation still ran, just uncached
 
     def days(self):
         return [r[0] for r in self.conn.execute(

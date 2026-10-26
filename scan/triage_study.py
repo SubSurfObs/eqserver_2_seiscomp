@@ -204,7 +204,7 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
         for line in open(results_path):
             try:
                 r = json.loads(line)
-                if (r.get("verdict") in ("PASS", "FAIL")
+                if (r.get("verdict") in ("PASS", "FAIL", "BLOCKED")
                         and all(r.get(k) == v for k, v in code_id.items())):
                     done.add((r["net"], r["sta"], r["date"]))
             except Exception:
@@ -264,11 +264,25 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
             r = subprocess.run(cmd, capture_output=True, text=True,
                                cwd=repo_root, timeout=1800)
             if r.returncode != 0 or "SELECTION REFUSED" in r.stdout:
+                out_text = (r.stdout + r.stderr).strip()
+                # probe-blocked is a TERMINAL verdict, not an error to
+                # retry: the chooser established that nobody can prove the
+                # population's channels — operator identity work. KEEP the
+                # selection (its probes table IS the evidence); deleting it
+                # both destroyed the evidence and made every retry re-probe
+                # the month (observed 2026-10-26).
+                if "probe-blocked" in out_text:
+                    rec.update(phase="convert", status="done",
+                               verdict="BLOCKED",
+                               error=out_text[-300:])
+                    out.write(json.dumps(rec) + "\n")
+                    out.flush()
+                    n += 1
+                    continue
                 rec.update(phase="convert", status="error",
-                           error=(r.stdout + r.stderr).strip()[-300:])
-                # A refused selection is stale evidence (identity drift,
-                # schema change): drop it so the retry recompiles fresh
-                # instead of refusing forever.
+                           error=out_text[-300:])
+                # Any OTHER refused selection is stale evidence (identity
+                # drift, schema change): drop it so the retry recompiles.
                 if "SELECTION REFUSED" in r.stdout:
                     sel.unlink(missing_ok=True)
                 raise StopIteration
@@ -358,7 +372,7 @@ def main():
     sample_path = out_dir / "sample.jsonl"
     if sample_path.exists():
         sample = [json.loads(l) for l in open(sample_path)]
-        print(f"resuming with existing sample ({len(sample)} days)")
+        print(f"resuming with existing sample ({len(sample)} days)", flush=True)
     else:
         sample = build_sample(args.db_dirs, set(args.networks),
                               args.n_per_stratum, args.seed, sample_path)
