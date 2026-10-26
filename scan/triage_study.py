@@ -227,6 +227,7 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
         rec = dict(it, ts=datetime.now(timezone.utc).isoformat(timespec="seconds"),
                    **code_id)
         t0 = time.time()
+        day_sds = None  # assigned after selection compile; retention guards on it
         try:
             # Review F10: a cached selection compiled by a DIFFERENT chooser
             # version is stale evidence — recompile it.
@@ -372,7 +373,7 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
         # from auditor arithmetic needs the actual SDS bytes). PASS days
         # are deleted as before.
         import shutil
-        if rec.get("verdict") in ("FAIL", "ERROR"):
+        if rec.get("verdict") in ("FAIL", "ERROR") and day_sds is not None:
             keep = out_dir / "failed_sds" / f'{it["net"]}.{it["sta"]}.{it["date"]}'
             try:
                 if day_sds.exists():
