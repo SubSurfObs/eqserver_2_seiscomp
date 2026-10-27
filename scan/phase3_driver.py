@@ -939,7 +939,14 @@ def _resolve_tiers(tier_streams):
         for s in resolved:
             stats = templates[key].copy()
             stats.starttime = _UTC(s["t0"])
-            out += _Trace(data=_np.asarray(s["data"]), header=stats)
+            # The template's npts is stale (its own trace's length) and a
+            # slice is a view into the parent buffer: force both, or the
+            # writer packs template-length windows of the parent array
+            # (observed: every WLSH trace written as 3,777 samples —
+            # 34.7M written vs 21.3M resolved, 54M garbage samples).
+            data = _np.ascontiguousarray(s["data"])
+            stats.npts = len(data)
+            out += _Trace(data=data, header=stats)
     return out
 
 
