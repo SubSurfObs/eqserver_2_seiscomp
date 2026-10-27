@@ -79,6 +79,13 @@ def main():
     check("same-population whole-minute duplicate is clean",
           topology_breaks(src, [tr(0.0, 200, None)], lin2), 0)
 
+    # Boundary-sample duplication (SGWU RT130 shape): 101-sample files,
+    # each repeating the boundary sample — junction cont = -1.00 exactly,
+    # same lineage. Converter dedups to 201 samples. Clean.
+    src = [tr(0.0, 101, "/a"), tr(1.0, 101, "/b")]
+    check("integer boundary-sample duplication is clean",
+          topology_breaks(src, [tr(0.0, 201, None)], lin2), 0)
+
     if FAILURES:
         print(f"\n{len(FAILURES)} topology test(s) FAILED: {FAILURES}")
         return 1
