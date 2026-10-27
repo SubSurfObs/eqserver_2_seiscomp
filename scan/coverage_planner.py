@@ -239,24 +239,31 @@ class ChannelKnowledge:
                 # channels contribute nothing and are recorded.
                 detail = [f"{p}: {''.join(sorted(s)) or '-'}"
                           for p, s in per_path.items()]
-                full = {}
-                for p in self.all_paths.get(key, []):
-                    if p in per_path:
-                        full[p] = per_path[p]
-                        continue
+                def _probe_one(p):
                     ie, ic = [], {}
                     try:
                         found = set()
                         for t in read_source_file(p, ie, ic):
                             if t["orient"] in ORIENTATIONS:
                                 found.add(t["orient"])
-                        full[p] = frozenset(found)
-                        if ic.get("dropped_labels"):
-                            notes.append(f"{p}: unrecognized_labels="
-                                         f"{ic['dropped_labels']}")
+                        return p, frozenset(found), ic.get("dropped_labels"), None
                     except Exception as e:
-                        full[p] = frozenset()
-                        errors.append(f"{p}: {type(e).__name__}: {e}")
+                        return p, frozenset(), None, f"{type(e).__name__}: {e}"
+
+                full = dict(per_path)
+                todo = [p for p in self.all_paths.get(key, [])
+                        if p not in per_path]
+                # NFS-latency-bound single-file reads: 8 threads cut the
+                # wall time ~6-8x (single-threaded, BEST's mostly-empty
+                # cohort blew the study's 1 h compile budget, 2026-10-28).
+                from concurrent.futures import ThreadPoolExecutor
+                with ThreadPoolExecutor(max_workers=8) as ex:
+                    for p, found, dropped, err in ex.map(_probe_one, todo):
+                        full[p] = found
+                        if dropped:
+                            notes.append(f"{p}: unrecognized_labels={dropped}")
+                        if err:
+                            errors.append(f"{p}: {err}")
                 self.per_file[key] = full
                 union = frozenset().union(*full.values()) if full else frozenset()
                 self.cache[key] = (union, "per_file_probe", probed,

@@ -21,6 +21,8 @@ def tr(start_s, n, path):
 
 
 def check(name, got, want):
+    if isinstance(got, tuple):
+        got = got[0]
     ok = got == want
     print(f"{'PASS' if ok else 'FAIL'}  {name} (breaks={got}, want {want})")
     if not ok:

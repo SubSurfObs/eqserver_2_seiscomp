@@ -246,7 +246,8 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
                     [PY, "scan/coverage_planner.py", "--net", it["net"],
                      "--sta", it["sta"], "--year", year, "--db", it["db"],
                      "--out", str(sel)],
-                    capture_output=True, text=True, cwd=repo_root, timeout=3600)
+                    capture_output=True, text=True, cwd=repo_root,
+                    timeout=14400)
                 if r.returncode != 0:
                     rec.update(phase="triage", status="error",
                                error=r.stderr.strip()[-300:])

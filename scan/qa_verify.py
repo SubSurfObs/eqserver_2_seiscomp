@@ -425,6 +425,13 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
     to SELECTED copies; without it, every source is its own lineage and
     overlap legitimacy cannot be masked by an unselected copy."""
     n_break = 0
+    details = []
+
+    def _note(why, ct, extra=""):
+        if len(details) < 3:
+            details.append(
+                f"{why} conv@{ct['start']} n={len(ct['data'])} {extra}")
+
     for ct in conv_traces:
         rate = ct["rate"]
         c0 = float(ct["start"].timestamp)
@@ -446,6 +453,7 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
             tiles.append((p, len(st_["data"]), lin))
         if not tiles:
             n_break += 1
+            _note("no-selected-source", ct)
             continue
         tiles.sort(key=lambda t: t[0])
         # Two separate notions: FRONTIER is raw coverage (any selected
@@ -461,6 +469,7 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
             if frontier is None:
                 if p > 0.5:
                     broke = True  # trace starts before any source does
+                    _note("starts-before-sources", ct, f"first tile at +{p:.2f} samples")
                     break
                 frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
                 continue
@@ -485,6 +494,9 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                     # Same-lineage tail-sliver overlap, a whole file-length
                     # from the chain file's start: weld signature.
                     broke = True
+                    _note("same-lineage-sliver", ct,
+                          f"junction cont={cont:.2f} smp, lin={lin}, "
+                          f"chain=({cur_start - (0 if frontier is None else 0):.1f},{cur_len})")
                     break
             else:
                 # Ahead of the chain: fine only if other copies already
@@ -494,10 +506,16 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                     frontier = max(frontier, p + L)
                 else:
                     broke = True  # uncovered span inside the trace
+                    _note("uncovered-span", ct,
+                          f"junction cont=+{cont:.2f} smp beyond chain, "
+                          f"frontier gap={p - frontier:.2f} smp, lin={lin}")
                     break
         if broke or frontier is None or frontier < n - 0.5:
             n_break += 1
-    return n_break
+            if not broke:
+                _note("coverage-short", ct,
+                      f"frontier {0 if frontier is None else frontier:.1f} of {n}")
+    return n_break, details
 
 
 def compare_samples(src_traces, conv_traces, day_start, day_end):
@@ -759,12 +777,12 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry,
             _add(rec, "sample_mismatch", counts, channel=orient,
                  detail=f"{n_bad}/{n_cmp} samples differ (no source copy "
                         f"agrees)")
-        n_topo = topology_breaks(src_for, conv_for, lineages)
+        n_topo, topo_details = topology_breaks(src_for, conv_for, lineages)
         if n_topo:
             _add(rec, "timing_topology", counts, channel=orient,
                  detail=f"{n_topo} converted trace(s) span a source "
-                        f"timeline break no copy supports (weld signature, "
-                        f"value-independent)")
+                        f"timeline break no copy supports: "
+                        f"{'; '.join(topo_details)}")
         conv_dur = sum(len(t["data"]) / t["rate"] for t in conv_for)
         if conv_dur > 1.05 * total(c_iv) and conv_dur - total(c_iv) > 60:
             _add(rec, "duplicated_data", counts, channel=orient,
