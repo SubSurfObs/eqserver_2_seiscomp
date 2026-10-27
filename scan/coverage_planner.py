@@ -162,13 +162,17 @@ class ChannelKnowledge:
 
     def __init__(self, probe_enabled=True):
         self.samples = {}  # (pop, 'YYYY-MM') -> {"first": [], "mid": [], "last": []}
+        self.all_paths = {}  # (pop, 'YYYY-MM') -> every unsuffixed path
         self.cache = {}    # (pop, 'YYYY-MM') -> (chans fset, basis, [paths], [errors])
+        self.per_file = {}  # (pop, 'YYYY-MM') -> {path: frozenset(chans)}
         self.probe_enabled = probe_enabled
 
     def observe(self, cand, month_key, day_of_month):
         """Pass 1: register an unsuffixed candidate as a probe sample."""
+        key = (cand["population"], month_key)
+        self.all_paths.setdefault(key, []).append(cand["path"])
         s = self.samples.setdefault(
-            (cand["population"], month_key), {"first": [], "mid": [], "last": []})
+            key, {"first": [], "mid": [], "last": []})
         if len(s["first"]) < self.N_FIRST:
             s["first"].append(cand["path"])
         if day_of_month >= 14 and len(s["mid"]) < self.N_MID:
@@ -223,14 +227,40 @@ class ChannelKnowledge:
             agreed = next(iter(sets)) if len(sets) == 1 else None
             if probed and not errors and agreed:
                 self.cache[key] = (agreed, "header_probe_agreed", probed, notes)
-            elif probed and not errors and len(sets) > 1:
+            elif probed and (errors or len(sets) > 1):
+                # ADAPTIVE PER-FILE EVIDENCE (Codex design B, 2026-10-27):
+                # a disagreeing or error-bearing month means a population-
+                # level channel fact is NOT a safe execution input (WPNH
+                # mixes Z-only and ZNE files on the same day; TYHS mixes
+                # 1-channel sidecars into a 3-channel population). Probe
+                # EVERY unsuffixed file of this population-month and keep
+                # the channel set per path — expensive, but confined to
+                # the exceptional cohort. Files with no recognised
+                # channels contribute nothing and are recorded.
                 detail = [f"{p}: {''.join(sorted(s)) or '-'}"
                           for p, s in per_path.items()]
-                self.cache[key] = (frozenset(), "probe_disagree",
-                                   probed, detail + notes)
-            elif probed and errors:
-                self.cache[key] = (frozenset(), "probe_errors", probed,
-                                   errors + notes)
+                full = {}
+                for p in self.all_paths.get(key, []):
+                    if p in per_path:
+                        full[p] = per_path[p]
+                        continue
+                    ie, ic = [], {}
+                    try:
+                        found = set()
+                        for t in read_source_file(p, ie, ic):
+                            if t["orient"] in ORIENTATIONS:
+                                found.add(t["orient"])
+                        full[p] = frozenset(found)
+                        if ic.get("dropped_labels"):
+                            notes.append(f"{p}: unrecognized_labels="
+                                         f"{ic['dropped_labels']}")
+                    except Exception as e:
+                        full[p] = frozenset()
+                        errors.append(f"{p}: {type(e).__name__}: {e}")
+                self.per_file[key] = full
+                union = frozenset().union(*full.values()) if full else frozenset()
+                self.cache[key] = (union, "per_file_probe", probed,
+                                   detail[:10] + errors[:10] + notes[:10])
             else:
                 self.cache[key] = (frozenset(), "probe_failed", probed,
                                    errors + notes)
@@ -266,20 +296,35 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                       if not (f.get("chan_suffix")
                               and f["chan_suffix"][-1].upper() in ORIENTATIONS)]
         pop_set = frozenset()
+        per_file = None
         if unsuffixed:
             pop_set, basis, _paths, _errs = know.channels(pk, month_key)
-            if not pop_set:
+            if basis == "per_file_probe":
+                # Mixed cohort (WPNH/TYHS class): channel knowledge is
+                # exact PER FILE; a file with no recognised channels
+                # contributes nothing (recorded below), the rest convert.
+                per_file = know.per_file.get((pk, month_key), {})
+            elif not pop_set:
                 blocked.add((pk, basis))
         for f in files:
             suf = f.get("chan_suffix")
             if suf and suf[-1].upper() in ORIENTATIONS:
                 f_orients[f["path"]] = frozenset(suf[-1].upper())
+            elif per_file is not None:
+                f_orients[f["path"]] = per_file.get(f["path"], frozenset())
             else:
                 f_orients[f["path"]] = pop_set
 
+    rejected, n_gap = [], 0
+    # Visibility: files that end up with NO channel evidence (empty probes,
+    # unrecognised labels) are recorded as rejected, never silently skipped.
+    for pk, files in pops.items():
+        for f in files:
+            if not f_orients.get(f["path"]):
+                rejected.append(dict(f, reason=f"no_channel_evidence:{pk}"))
+
     all_orients = set().union(*f_orients.values()) if f_orients else set()
     sel = defaultdict(lambda: {"chans": set(), "rule": None, "cand": None})
-    rejected, n_gap = [], 0
 
     for orient in sorted(all_orients):
         # carriers: per population, only the FILES that carry this orientation

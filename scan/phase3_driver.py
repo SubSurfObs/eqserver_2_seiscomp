@@ -939,16 +939,29 @@ def _write_day_replace(suds_convert, stream, sds_root, retries=3):
                 tr.data = tr.data.astype("int32")
         path.parent.mkdir(parents=True, exist_ok=True)
         part = _P(str(path) + ".partial")
-        for attempt in range(retries):
+        from obspy.io.mseed import InternalMSEEDError as _IME
+        encoding = "STEIM2"
+        attempt = 0
+        while True:
             try:
                 st_.write(str(part), format="MSEED",
-                          encoding="STEIM2", reclen=512)
+                          encoding=encoding, reclen=512)
                 _os.replace(part, path)
                 break
-            except OSError:
-                if attempt == retries - 1:
+            except _IME:
+                if encoding != "STEIM2":
                     raise
-                _time.sleep(2.0 * (attempt + 1))
+                # Glitch sample (digitizer bit error: sample-to-sample
+                # delta >30 bits) — STEIM2 cannot encode it. Same fallback
+                # the engine adopted in June (disk_to_sds 88323ec): keep
+                # the day at ~3.4x size in uncompressed INT32 rather than
+                # lose it. WLSH 2019-06-15 CHE reproduces this.
+                encoding = "INT32"
+            except OSError:
+                attempt += 1
+                if attempt >= retries:
+                    raise
+                _time.sleep(2.0 * attempt)
         written.append((path, path.stat().st_size))
     return written
 
