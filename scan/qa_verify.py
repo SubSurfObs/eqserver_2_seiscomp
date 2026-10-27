@@ -448,6 +448,12 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
             n_break += 1
             continue
         tiles.sort(key=lambda t: t[0])
+        # Two separate notions: FRONTIER is raw coverage (any selected
+        # copy); the PRIMARY chain (cur_*) is the lineage whose grid the
+        # trace is currently following. Duplicate whole-minute copies —
+        # selected-normal in this archive (BEST 2019-06-09: 1,464 files
+        # for 1,440 minutes) — extend coverage but never the chain, or
+        # their couple-sample offsets would poison the next junction.
         broke = False
         frontier = None
         cur_lin = cur_start = cur_len = None
@@ -459,25 +465,36 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                 frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
                 continue
             if p + L <= frontier - 0.5:
-                continue  # fully duplicate, adds nothing
-            d = p - frontier
-            if d > 0.5:
-                broke = True  # uncovered span inside the trace
-                break
-            if d < -0.5 and lin == cur_lin:
-                # Same-lineage overlap. This archive routinely carries
-                # DUPLICATE whole-minute copies inside one population
-                # (glitchy telemetry dispatch — BEST 2019-06-09 has 1,464
-                # files for 1,440 minutes), and the chooser selects them
-                # together; those duplicates share the same minute slot,
-                # so their stated starts nearly coincide. A WELD's overlap
-                # is the opposite shape: a sub-sample sliver at the END of
-                # the previous file, starts a whole file-length apart.
-                if p - cur_start > 0.5 * cur_len:
-                    broke = True  # tail-sliver overlap: weld signature
+                continue  # fully behind coverage, adds nothing
+            cont = p - (cur_start + cur_len)  # junction vs the chain
+            if abs(cont) <= 0.5:
+                # Grid-consistent next file: the chain advances.
+                cur_lin, cur_start, cur_len = lin, p, L
+                frontier = max(frontier, p + L)
+            elif cont < -0.5:
+                if lin == cur_lin and p - cur_start <= 0.5 * cur_len:
+                    # Duplicate copy of the chain's current minute slot
+                    # (stated starts nearly coincide): coverage only.
+                    frontier = max(frontier, p + L)
+                elif lin != cur_lin:
+                    # Cross-lineage overlap: the fill mechanism. It takes
+                    # over as the chain.
+                    cur_lin, cur_start, cur_len = lin, p, L
+                    frontier = max(frontier, p + L)
+                else:
+                    # Same-lineage tail-sliver overlap, a whole file-length
+                    # from the chain file's start: weld signature.
+                    broke = True
                     break
-            if p + L > frontier:
-                frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
+            else:
+                # Ahead of the chain: fine only if other copies already
+                # covered the junction.
+                if p <= frontier + 0.5:
+                    cur_lin, cur_start, cur_len = lin, p, L
+                    frontier = max(frontier, p + L)
+                else:
+                    broke = True  # uncovered span inside the trace
+                    break
         if broke or frontier is None or frontier < n - 0.5:
             n_break += 1
     return n_break
