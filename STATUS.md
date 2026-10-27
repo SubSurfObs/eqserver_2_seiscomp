@@ -207,6 +207,30 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-27 (evening) — RESOLVER BUILT AND PROVEN; gate run launched
+
+The Codex F5/F6 resolver design is implemented (commits `d6d4ecb` →
+`b804c75`): engines read+relabel only; selection priority tiers overlay
+in memory via `scan/lib/resolver.py` (order-free, 8 unit tests incl.
+order-reversal); the day writes ONCE via a replace writer (.partial +
+os.replace, INT32 glitch fallback); adaptive per-file probing resolves
+mixed cohorts (WPNH/TYHS class) instead of blocking them, with
+evidence-less files recorded as rejected. Real-data proving caught and
+fixed three integration faults same-day (missing synth plan; missing
+glitch fallback; stale-npts/view bug that packed 54M garbage samples on
+WLSH — caught by the exhaustive audit, the exact catastrophe class the
+proving loop exists for). FINAL PROOF: all three proving days PASS
+through the full architecture — TYHS 2023-08-31 (mixed formats + mixed
+cohort) 0.0 s missing; WLSH 2019-06-15 (hardest multi-copy) 0.5 s;
+LKHRT 2023-07-28 (drifting clock) 0.5 s; zero bad samples everywhere,
+lineage-aware topology auditor watching. **THE GATE RUN is now live**:
+full 656-day study at this identity, log VM
+`~/v3_test/triage_study/fullrun_gate.log`. Remaining before the third
+gate review: gate-run score + blocked-cohort classifications (Codex),
+schema v0.4 normalization (component_decision windows — mechanical),
+dress rehearsal. Dan's items unchanged: identity sheet, engine pin
+(recommend disk_to_sds HEAD ≥ `ad8d9d3`).
+
 ## 2026-10-27 — Codex targeted review actioned; witness scores its first kill
 
 All six items from `reviews/2026-10-27_v3_targeted_checks.md` fixed
