@@ -928,8 +928,14 @@ def _resolve_tiers(tier_streams):
             prev_end = max(prev_end or s["t0"],
                            s["t0"] + len(s["data"]) * dt)
         if debug:
-            print(f"[resolver] {key}: {len(by_key[key])} in -> "
-                  f"{len(resolved)} out", flush=True)
+            n_in = sum(len(s["data"]) for s in by_key[key])
+            n_out = sum(len(s["data"]) for s in resolved)
+            t0s = min(s["t0"] for s in by_key[key]) if by_key[key] else 0
+            print(f"[resolver] {key}: {len(by_key[key])} segs/{n_in} samp in "
+                  f"-> {len(resolved)} segs/{n_out} samp out", flush=True)
+            for s in resolved[:6]:
+                print(f"[resolver]   out t0+{s['t0']-t0s:.3f}s "
+                      f"n={len(s['data'])}", flush=True)
         for s in resolved:
             stats = templates[key].copy()
             stats.starttime = _UTC(s["t0"])
