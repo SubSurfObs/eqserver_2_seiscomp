@@ -904,9 +904,33 @@ def _resolve_tiers(tier_streams):
                 # the resolver's identity-collapse must not merge distinct
                 # copies that lost their path inside an engine merge.
                 "path": f"t{tier}#{n}"})
+    import os as _os
+    debug = _os.environ.get("RESOLVER_DEBUG")
     out = _Stream()
     for key in sorted(by_key):
-        for s in resolve_segments(by_key[key]):
+        resolved = resolve_segments(by_key[key])
+        # Hard guarantee: the resolver's contract is non-overlapping
+        # output. Verify it here so a violation can never be written.
+        prev_end = None
+        dt = 1.0 / key[1]
+        for s in resolved:
+            if prev_end is not None and s["t0"] < prev_end - 0.5 * dt:
+                if debug:
+                    print(f"[resolver] OVERLAP {key}: seg@{s['t0']} < "
+                          f"prev_end {prev_end}", flush=True)
+                    for seg in by_key[key][:200]:
+                        print(f"[resolver]   in: p{seg['priority']} "
+                              f"t0={seg['t0']:.4f} n={len(seg['data'])} "
+                              f"{seg['path']}", flush=True)
+                raise RuntimeError(
+                    f"resolver emitted overlapping segments for {key} "
+                    f"(seg@{s['t0']} vs prev_end {prev_end})")
+            prev_end = max(prev_end or s["t0"],
+                           s["t0"] + len(s["data"]) * dt)
+        if debug:
+            print(f"[resolver] {key}: {len(by_key[key])} in -> "
+                  f"{len(resolved)} out", flush=True)
+        for s in resolved:
             stats = templates[key].copy()
             stats.starttime = _UTC(s["t0"])
             out += _Trace(data=_np.asarray(s["data"]), header=stats)
