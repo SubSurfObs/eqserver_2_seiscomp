@@ -452,9 +452,18 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
     out.execute("INSERT OR REPLACE INTO meta VALUES ('probe_blocked', ?)",
                 (json.dumps([{"population": pk, "basis": basis, "days": n}
                              for (pk, basis), n in sorted(blocked_days.items())]),))
+    # Counts come FROM THE TABLE, never from loop counters: a day with
+    # candidates but zero selected rows (fully blocked, or everything
+    # rejected) made the visited-days counter disagree with the loader's
+    # distinct-date count and refuse valid artifacts (LOCU/HOGN
+    # 2026-10-27).
+    n_days_tbl, n_rows_tbl = out.execute(
+        "SELECT COUNT(DISTINCT date), COUNT(*) FROM selection").fetchone()
     out.execute("INSERT OR REPLACE INTO meta VALUES ('complete_marker','1')")
-    out.execute("INSERT OR REPLACE INTO meta VALUES ('n_days', ?)", (str(n_days),))
-    out.execute("INSERT OR REPLACE INTO meta VALUES ('n_rows', ?)", (str(n_sel),))
+    out.execute("INSERT OR REPLACE INTO meta VALUES ('n_days', ?)",
+                (str(n_days_tbl),))
+    out.execute("INSERT OR REPLACE INTO meta VALUES ('n_rows', ?)",
+                (str(n_rows_tbl),))
     out.commit()
     out.close()
     src_db.close()

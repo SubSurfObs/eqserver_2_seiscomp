@@ -287,6 +287,7 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                     continue
                 traces.append({
                     "orient": orient, "src_chan": tr.stats.channel,
+                    "src_path": path,
                     "start": tr.stats.starttime,
                     "rate": float(tr.stats.sampling_rate),
                     "data": np.asarray(tr.data, dtype=np.int64),
@@ -322,6 +323,7 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                         continue
                     traces.append({
                         "orient": orient, "src_chan": tr.stats.channel,
+                        "src_path": path,
                         "start": tr.stats.starttime,
                         "rate": float(tr.stats.sampling_rate),
                         "data": np.asarray(tr.data, dtype=np.int64),
@@ -406,16 +408,22 @@ def total(ivs: list) -> float:
 
 # --- sample comparison ----------------------------------------------------------
 
-def topology_breaks(src_traces, conv_traces):
-    """Value-independent weld detector (Codex targeted review 2026-10-27,
-    item 4: value comparison alone misses welds over constant/clipped
-    data). Every converted trace must be TILEABLE by source traces placed
-    at their stated times rounded onto the converted grid, consecutive
-    tiles leaving no gap. A converted trace that spans a point where no
-    source copy continues grid-consistently carries a weld — the
-    converter should have split there — regardless of sample values.
-    Correct drift-split output tiles exactly (every file within a segment
-    is grid-consistent to half a sample by construction)."""
+def topology_breaks(src_traces, conv_traces, lineages=None):
+    """Value-independent weld detector, lineage-aware (Codex fix review
+    2026-10-27 F1: rounding source starts let the 0.51-sample constant-
+    data weld tile cleanly, and unselected alternative copies masked
+    breaks in the selected lineage).
+
+    Walks each converted trace's coverage frontier with UNROUNDED source
+    positions on the converted grid. A source may continue the frontier
+    when its stated position sits within half a sample of it. It may
+    OVERLAP the frontier (the trim/fill mechanism) only when it comes
+    from a DIFFERENT lineage: one recorder lineage writes sequential
+    minutes, so a same-lineage file overlapping its own continuation is a
+    weld by construction — no duration threshold. `lineages` maps source
+    path -> lineage key (the selection's population), restricting tiling
+    to SELECTED copies; without it, every source is its own lineage and
+    overlap legitimacy cannot be masked by an unselected copy."""
     n_break = 0
     for ct in conv_traces:
         rate = ct["rate"]
@@ -427,22 +435,40 @@ def topology_breaks(src_traces, conv_traces):
         for st_ in src_traces:
             if abs(st_["rate"] - rate) > 1e-6 or len(st_["data"]) == 0:
                 continue
-            pi = int(round((float(st_["start"].timestamp) - c0) * rate))
-            a, b = max(0, pi), min(n, pi + len(st_["data"]))
-            if b > a:
-                tiles.append((a, b))
+            path = st_.get("src_path")
+            if lineages is not None and path not in lineages:
+                continue  # unselected copy: cannot legitimize output bytes
+            p = (float(st_["start"].timestamp) - c0) * rate
+            if p + len(st_["data"]) <= -0.5 or p >= n - 0.5:
+                continue
+            lin = (lineages.get(path) if lineages is not None
+                   else (path or id(st_)))
+            tiles.append((p, len(st_["data"]), lin))
         if not tiles:
             n_break += 1
             continue
-        tiles.sort()
-        cov_end = 0
-        contiguous = True
-        for a, b in tiles:
-            if a > cov_end:
-                contiguous = False
+        tiles.sort(key=lambda t: t[0])
+        broke = False
+        frontier = None
+        cur_lin = None
+        for p, L, lin in tiles:
+            if frontier is None:
+                if p > 0.5:
+                    broke = True  # trace starts before any source does
+                    break
+                frontier, cur_lin = p + L, lin
+                continue
+            if p + L <= frontier - 0.5:
+                continue  # fully duplicate, adds nothing
+            d = p - frontier
+            if d > 0.5:
+                broke = True  # uncovered span inside the trace
                 break
-            cov_end = max(cov_end, b)
-        if not (contiguous and cov_end >= n):
+            if d < -0.5 and lin == cur_lin:
+                broke = True  # same-lineage overlap: weld signature
+                break
+            frontier, cur_lin = max(frontier, p + L), lin
+        if broke or frontier is None or frontier < n - 0.5:
             n_break += 1
     return n_break
 
@@ -534,22 +560,43 @@ def _add(rec, category, counts, **kw):
         rec["findings"].append({"category": category, **kw})
 
 
+def load_selection_lineages(selection_path, day: date_cls):
+    """{path: population} for the day AND the previous day (boundary
+    tails), parsed directly from the selection sqlite with our own query —
+    deliberately NOT via lib.selection, so the auditor's view of the
+    selection shares no loader code with the converter (Codex fix review
+    2026-10-27: topology must tile only from SELECTED copies, with
+    lineage, independently parsed)."""
+    prev = (day - timedelta(days=1)).isoformat()
+    c = sqlite3.connect(f"file:{selection_path}?mode=ro", uri=True)
+    try:
+        return {r[0]: r[1] or "?" for r in c.execute(
+            "SELECT path, population FROM selection WHERE date IN (?, ?)",
+            (day.isoformat(), prev))}
+    finally:
+        c.close()
+
+
 def verify_day(net: str, sta: str, day: date_cls, db_dirs, sds_root: Path,
-               registry: dict, stratum: str = "uniform") -> dict:
+               registry: dict, stratum: str = "uniform",
+               selection_path=None) -> dict:
     rec = {"t": "day", "net": net, "sta": sta, "date": day.isoformat(),
            "stratum": stratum, "findings": [], "metrics": {}}
     if isinstance(db_dirs, (str, Path)):
         db_dirs = [Path(db_dirs)]
     try:
+        lineages = (load_selection_lineages(selection_path, day)
+                    if selection_path else None)
         return _verify_day(rec, net, sta, day, [Path(d) for d in db_dirs],
-                           Path(sds_root), registry)
+                           Path(sds_root), registry, lineages)
     except Exception as exc:
         rec["findings"].append({"category": "comparator_error",
                                 "detail": f"{type(exc).__name__}: {exc}"})
         return rec
 
 
-def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
+def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry,
+                lineages=None):
     counts: dict = {}
     entry = registry.get(sta) or {}
     rts = entry.get("recorder_types") or []
@@ -685,7 +732,7 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry):
             _add(rec, "sample_mismatch", counts, channel=orient,
                  detail=f"{n_bad}/{n_cmp} samples differ (no source copy "
                         f"agrees)")
-        n_topo = topology_breaks(src_for, conv_for)
+        n_topo = topology_breaks(src_for, conv_for, lineages)
         if n_topo:
             _add(rec, "timing_topology", counts, channel=orient,
                  detail=f"{n_topo} converted trace(s) span a source "
@@ -763,6 +810,10 @@ def main():
     ap.add_argument("--date", required=True, help="YYYY-MM-DD")
     ap.add_argument("--db-dirs", nargs="*", default=DEFAULT_DB_DIRS)
     ap.add_argument("--sds-root", default="/mnt/seiscomp_archive")
+    ap.add_argument("--selection", default=None,
+                    help="selection sqlite for this station-year: restricts "
+                         "the timing-topology check to SELECTED source "
+                         "copies with lineage (independently parsed here)")
     ap.add_argument("--repo-root",
                     default=str(Path(__file__).resolve().parent.parent))
     args = ap.parse_args()
@@ -770,7 +821,8 @@ def main():
     registry = load_registry(Path(args.repo_root))
     db_dirs = [Path(d).expanduser() for d in args.db_dirs]
     rec = verify_day(args.net, args.sta, date_cls.fromisoformat(args.date),
-                     db_dirs, Path(args.sds_root), registry)
+                     db_dirs, Path(args.sds_root), registry,
+                     selection_path=args.selection)
     json.dump(rec, sys.stdout, indent=2)
     print()
 

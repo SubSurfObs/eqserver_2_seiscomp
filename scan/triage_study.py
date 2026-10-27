@@ -306,6 +306,7 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
             r = subprocess.run(
                 [PY, "scan/qa_verify.py", "--net", it["net"], "--sta", it["sta"],
                  "--date", it["date"], "--sds-root", str(day_sds),
+                 "--selection", str(sel),
                  "--db-dirs", str(Path(it["db"]).parent)],
                 capture_output=True, text=True, cwd=repo_root, env=env,
                 timeout=3600)
