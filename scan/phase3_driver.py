@@ -591,7 +591,8 @@ def query_boundary_tail_files(conn, station, d, recorder, disk_size_floor_ratio)
 
 
 def convert_gecko_day(station, network, location, files, staging_sds_root, commit, suds_convert,
-                      boundary_files=None, day=None, orient_filter=None):
+                      boundary_files=None, day=None, orient_filter=None,
+                      resolve_mode=False):
     """Gecko branch: read all .ms.zip in day, concat the inner mseed records into
     one buffer, parse with ObsPy, override network+location, merge, write SDS.
 
@@ -657,6 +658,9 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
     }
     if bulk_fallback_reason:
         result["error"] = bulk_fallback_reason
+    if resolve_mode:
+        result["stream"] = st
+        return result
     if commit and len(st) > 0:
         written = _write_sds_retry(suds_convert, st, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
@@ -756,7 +760,8 @@ def query_minimus_day_files(conn, station, d):
 
 
 def convert_minimus_day(station, network, location, files, staging_sds_root, commit, suds_convert,
-                        boundary_files=None, day=None, orient_filter=None):
+                        boundary_files=None, day=None, orient_filter=None,
+                        resolve_mode=False):
     """Minimus branch: per-channel-per-minute mseed zips (~4320 files/day).
     Each zip holds one minute of one component. Same in-memory concat-then-parse
     pattern as Gecko; ObsPy groups by trace id automatically. Location override
@@ -810,6 +815,9 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
     }
     if bulk_fallback_reason:
         result["error"] = bulk_fallback_reason
+    if resolve_mode:
+        result["stream"] = st
+        return result
     if commit and len(st) > 0:
         written = _write_sds_retry(suds_convert, st, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
@@ -817,7 +825,8 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
 
 
 def convert_echopro_day(suds_convert, station, network, location, files, staging_sds_root, commit,
-                        boundary_files=None, day=None, orient_filter=None):
+                        boundary_files=None, day=None, orient_filter=None,
+                        resolve_mode=False):
     """One EchoPro station-day. Returns dict with n_files, n_traces, write_results, qc.
 
     suds_convert.convert_suds_files() resolves location via FDSN inventory if
@@ -861,10 +870,87 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
         "bogus_year_traces_dropped": len(bogus),
         "sds_files_written": [],
     }
+    if resolve_mode:
+        result["stream"] = stream
+        return result
     if commit and stream:
         written = _write_sds_retry(suds_convert, stream, staging_sds_root)
         result["sds_files_written"] = [(str(p), sz) for p, sz in written]
     return result
+
+
+def _resolve_tiers(tier_streams):
+    """Overlay engine outputs by selection priority (Codex F5/F6 design):
+    tier_streams is [(priority, obspy Stream)]; segments resolve per
+    (SEED id, rate) through lib.resolver — explicit precedence, not read/
+    write order. Returns one resolved Stream."""
+    import numpy as _np
+    from obspy import Stream as _Stream, Trace as _Trace, UTCDateTime as _UTC
+    from lib.resolver import resolve_segments
+    by_key, templates = {}, {}
+    n = 0
+    for tier, st in tier_streams:
+        for tr in st:
+            if len(tr.data) == 0:
+                continue
+            key = (tr.id, round(float(tr.stats.sampling_rate), 6))
+            templates.setdefault(key, tr.stats)
+            n += 1
+            by_key.setdefault(key, []).append({
+                "t0": float(tr.stats.starttime.timestamp),
+                "rate": float(tr.stats.sampling_rate),
+                "data": tr.data, "priority": int(tier),
+                # unique token: upstream selection already dedups paths;
+                # the resolver's identity-collapse must not merge distinct
+                # copies that lost their path inside an engine merge.
+                "path": f"t{tier}#{n}"})
+    out = _Stream()
+    for key in sorted(by_key):
+        for s in resolve_segments(by_key[key]):
+            stats = templates[key].copy()
+            stats.starttime = _UTC(s["t0"])
+            out += _Trace(data=_np.asarray(s["data"]), header=stats)
+    return out
+
+
+def _write_day_replace(suds_convert, stream, sds_root, retries=3):
+    """Write-once REPLACE writer for resolved day output (Codex design:
+    existing staging bytes never participate in precedence). Each (SEED
+    id, day) file is built fresh and atomically swapped in via .partial +
+    os.replace. disk_to_sds's merge-on-write writer is deliberately left
+    to the SD-card workflow."""
+    import os as _os
+    import time as _time
+    import numpy as _np
+    from pathlib import Path as _P
+    from obspy import Stream as _Stream
+    groups = {}
+    for tr in stream:
+        s = tr.stats
+        for year, julday, piece in suds_convert._split_trace_by_utc_day(tr):
+            path = suds_convert._sds_day_path_for(
+                sds_root, s.network, s.station, s.location, s.channel,
+                year, julday)
+            groups.setdefault(_P(path), _Stream()).append(piece)
+    written = []
+    for path, st_ in groups.items():
+        for tr in st_:
+            if tr.data.dtype != _np.int32:
+                tr.data = tr.data.astype("int32")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        part = _P(str(path) + ".partial")
+        for attempt in range(retries):
+            try:
+                st_.write(str(part), format="MSEED",
+                          encoding="STEIM2", reclen=512)
+                _os.replace(part, path)
+                break
+            except OSError:
+                if attempt == retries - 1:
+                    raise
+                _time.sleep(2.0 * (attempt + 1))
+        written.append((path, path.stat().st_size))
+    return written
 
 
 def _worker_convert_day(job):
@@ -947,8 +1033,12 @@ def _worker_convert_day(job):
             # winner-bearing group whose set overlaps it (e.g. "NE"),
             # because the first write becomes the protected existing data.
             fill_only = {}
+            prio_map = {}  # path -> selection priority tier (0 = winner)
             for path, chans, rule in sel_rows:
                 by_chans.setdefault(chans, []).append(path)
+                prio_map[path] = (1 if rule.startswith("short_fill")
+                                  else 2 if rule.startswith("gap_fill")
+                                  else 0)
                 if not rule.startswith(("short_fill", "gap_fill")):
                     fill_only[chans] = False
                 else:
@@ -1036,7 +1126,7 @@ def _worker_convert_day(job):
                                       + gr.get("sds_files_written", []))
             return r
 
-        def _one(group_files, orient_filter, b_files):
+        def _one(group_files, orient_filter, b_files, resolve=False):
             # MIXED-FORMAT DAYS (evidence map row 7): a day directory can
             # hold BOTH SUDS and miniSEED (recorder transitions, ingest
             # quirks). One engine per day silently ignored the minority
@@ -1054,13 +1144,15 @@ def _worker_convert_day(job):
             if suds or b_suds:
                 engine_calls.append(("suds", lambda: convert_echopro_day(
                     suds_convert, sta, net, loc, suds, staging, commit,
-                    boundary_files=b_suds, day=d, orient_filter=orient_filter)))
+                    boundary_files=b_suds, day=d, orient_filter=orient_filter,
+                    resolve_mode=resolve)))
             if mseed or b_mseed:
                 eng = convert_minimus_day if recorder_eff == "minimus" else convert_gecko_day
                 engine_calls.append(("mseed", lambda: eng(
                     sta, net, loc, mseed, staging, commit,
                     suds_convert, boundary_files=b_mseed,
-                    day=d, orient_filter=orient_filter)))
+                    day=d, orient_filter=orient_filter,
+                    resolve_mode=resolve)))
             # Review F5: on a mixed-format group, the format of the FIRST
             # file (a winner — fills sort last) writes first. write_sds puts
             # existing-file data before new data, so the first write wins
@@ -1112,15 +1204,39 @@ def _worker_convert_day(job):
                                   else "".join(sorted(k))):
                     calls.append((None if key is None else set(key),
                                   [], tail_only[key]))
+                # RESOLVER PATH (Codex F5/F6 design, 2026-10-27): engines
+                # only read and relabel; selection priority tiers overlay
+                # in memory; the day is written ONCE by the replace writer.
+                # No read/format/write order influences which samples win.
                 r = None
+                tier_streams = []
                 for ofilt, gfiles, blist in calls:
                     if not gfiles and not blist:
                         continue
-                    gr = _one(gfiles, ofilt, blist)
-                    r = gr if r is None else _combine(r, gr)
+                    tiers = {}
+                    for f in gfiles:
+                        tiers.setdefault(prio_map.get(f, 0),
+                                         ([], []))[0].append(f)
+                    for f in blist:
+                        tiers.setdefault(0, ([], []))[1].append(f)
+                    for tier in sorted(tiers):
+                        tf, tb = tiers[tier]
+                        gr = _one(tf, ofilt, tb, resolve=True)
+                        st_ = gr.pop("stream", None)
+                        if st_ is not None and len(st_) > 0:
+                            tier_streams.append((tier, st_))
+                        r = gr if r is None else _combine(r, gr)
                 if r is None:
                     r = {"status": "no_files", "n_files": 0,
                          "n_boundary_files": 0}
+                elif tier_streams and r.get("status") in ("ok", "qc_flagged"):
+                    resolved = _resolve_tiers(tier_streams)
+                    r["n_traces"] = len(resolved)
+                    if commit and len(resolved) > 0:
+                        written = _write_day_replace(suds_convert, resolved,
+                                                     staging)
+                        r["sds_files_written"] = [(str(p), sz)
+                                                  for p, sz in written]
                 n_g = sum(1 for F, g, _b in calls if g)
                 if n_g > 1:
                     r["n_chan_groups"] = n_g
