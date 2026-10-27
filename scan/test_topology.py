@@ -70,6 +70,13 @@ def main():
     check("contiguous lineage is clean",
           topology_breaks(src, [tr(0.0, 200, None)], lin), 0)
 
+    # Same-population DUPLICATE whole-minute copy (glitchy telemetry
+    # dispatch, both selected): stated starts nearly coincide — allowed.
+    lin2 = {"/a": "pop1", "/a2": "pop1", "/b": "pop1"}
+    src = [tr(0.0, 100, "/a"), tr(0.02, 100, "/a2"), tr(1.0, 100, "/b")]
+    check("same-population whole-minute duplicate is clean",
+          topology_breaks(src, [tr(0.0, 200, None)], lin2), 0)
+
     if FAILURES:
         print(f"\n{len(FAILURES)} topology test(s) FAILED: {FAILURES}")
         return 1

@@ -450,13 +450,13 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
         tiles.sort(key=lambda t: t[0])
         broke = False
         frontier = None
-        cur_lin = None
+        cur_lin = cur_start = cur_len = None
         for p, L, lin in tiles:
             if frontier is None:
                 if p > 0.5:
                     broke = True  # trace starts before any source does
                     break
-                frontier, cur_lin = p + L, lin
+                frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
                 continue
             if p + L <= frontier - 0.5:
                 continue  # fully duplicate, adds nothing
@@ -465,9 +465,19 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                 broke = True  # uncovered span inside the trace
                 break
             if d < -0.5 and lin == cur_lin:
-                broke = True  # same-lineage overlap: weld signature
-                break
-            frontier, cur_lin = max(frontier, p + L), lin
+                # Same-lineage overlap. This archive routinely carries
+                # DUPLICATE whole-minute copies inside one population
+                # (glitchy telemetry dispatch — BEST 2019-06-09 has 1,464
+                # files for 1,440 minutes), and the chooser selects them
+                # together; those duplicates share the same minute slot,
+                # so their stated starts nearly coincide. A WELD's overlap
+                # is the opposite shape: a sub-sample sliver at the END of
+                # the previous file, starts a whole file-length apart.
+                if p - cur_start > 0.5 * cur_len:
+                    broke = True  # tail-sliver overlap: weld signature
+                    break
+            if p + L > frontier:
+                frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
         if broke or frontier is None or frontier < n - 0.5:
             n_break += 1
     return n_break
