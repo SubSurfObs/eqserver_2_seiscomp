@@ -56,6 +56,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 SCHEMA_VERSION = "selection-v0.3"
 HOURBUNDLE_RE = re.compile(r"[ _](\d{2})hr[ _]", re.IGNORECASE)
 ORIENTATIONS = set("ZNEO123")  # SEED orientations incl. borehole 1/2/3
+NS_ = 1_000_000_000
+PRIORITY_OF = {"winner": 0, "boundary_tail": 0, "short_fill": 1,
+               "gap_fill": 2}
 
 DDL = """
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
@@ -69,6 +72,31 @@ CREATE TABLE IF NOT EXISTS probes (
     population TEXT, month TEXT, chans TEXT, basis TEXT,
     probe_paths TEXT, errors TEXT,
     PRIMARY KEY (population, month));
+CREATE TABLE IF NOT EXISTS selected_file (
+    file_id INTEGER PRIMARY KEY,
+    date TEXT NOT NULL, stream TEXT NOT NULL, path TEXT NOT NULL,
+    population TEXT NOT NULL, source_format TEXT NOT NULL,
+    UNIQUE(date, stream, path));
+CREATE TABLE IF NOT EXISTS component_decision (
+    decision_id TEXT NOT NULL,
+    file_id INTEGER NOT NULL REFERENCES selected_file(file_id),
+    orientation TEXT NOT NULL,
+    window_start_ns INTEGER NOT NULL,
+    window_end_ns INTEGER NOT NULL,
+    priority INTEGER NOT NULL,
+    selection_reason TEXT NOT NULL,
+    PRIMARY KEY(decision_id, file_id, orientation,
+                window_start_ns, window_end_ns));
+CREATE INDEX IF NOT EXISTS cd_window ON component_decision
+    (window_start_ns, window_end_ns);
+CREATE TABLE IF NOT EXISTS file_channel_evidence (
+    path TEXT NOT NULL,
+    raw_channel TEXT NOT NULL,
+    orientation TEXT,
+    trace_count INTEGER NOT NULL,
+    reader_status TEXT NOT NULL,
+    evidence_method TEXT NOT NULL,
+    PRIMARY KEY(path, raw_channel));
 CREATE TABLE IF NOT EXISTS blocked_days (
     date TEXT, population TEXT, basis TEXT,
     PRIMARY KEY (date, population));
@@ -240,32 +268,60 @@ class ChannelKnowledge:
                 detail = [f"{p}: {''.join(sorted(s)) or '-'}"
                           for p, s in per_path.items()]
                 def _probe_one(p):
+                    """Full per-file evidence (Codex resolver review F5):
+                    status is 'resolved' (recognized channels), 'empty' (no
+                    waveform traces at all), or 'unresolved' (read errors,
+                    or traces whose labels nobody recognizes) — unresolved
+                    NEVER silently rejects; it blocks the affected days."""
                     ie, ic = [], {}
+                    rec = {"chans": frozenset(), "raw": [], "traces": 0,
+                           "status": "unresolved", "err": ""}
                     try:
                         found = set()
                         for t in read_source_file(p, ie, ic):
+                            rec["traces"] += 1
+                            rec["raw"].append(t.get("src_chan", "?"))
                             if t["orient"] in ORIENTATIONS:
                                 found.add(t["orient"])
-                        return p, frozenset(found), ic.get("dropped_labels"), None
+                        rec["chans"] = frozenset(found)
+                        dropped = ic.get("dropped_labels") or []
+                        rec["raw"] += [f"?{c}" for c in dropped]
+                        if ie:
+                            rec["status"] = "unresolved"
+                            rec["err"] = str([e.get("err", str(e))
+                                              for e in ie][:2])
+                        elif found:
+                            rec["status"] = "resolved"
+                        elif dropped or rec["traces"]:
+                            rec["status"] = "unresolved"  # labels unknown
+                        else:
+                            rec["status"] = "empty"  # no waveform content
                     except Exception as e:
-                        return p, frozenset(), None, f"{type(e).__name__}: {e}"
+                        rec["err"] = f"{type(e).__name__}: {e}"
+                    return p, rec
 
-                full = dict(per_path)
+                full = {p: {"chans": c, "raw": [], "traces": -1,
+                            "status": "resolved", "err": ""}
+                        for p, c in per_path.items() if c}
+                # re-probe sampled empties too: only _probe_one records the
+                # raw labels that distinguish junk-empty from unresolved.
                 todo = [p for p in self.all_paths.get(key, [])
-                        if p not in per_path]
+                        if p not in full]
                 # NFS-latency-bound single-file reads: 8 threads cut the
                 # wall time ~6-8x (single-threaded, BEST's mostly-empty
                 # cohort blew the study's 1 h compile budget, 2026-10-28).
                 from concurrent.futures import ThreadPoolExecutor
                 with ThreadPoolExecutor(max_workers=8) as ex:
-                    for p, found, dropped, err in ex.map(_probe_one, todo):
-                        full[p] = found
-                        if dropped:
-                            notes.append(f"{p}: unrecognized_labels={dropped}")
-                        if err:
-                            errors.append(f"{p}: {err}")
+                    for p, rec in ex.map(_probe_one, todo):
+                        full[p] = rec
+                        if rec["err"]:
+                            errors.append(f"{p}: {rec['err']}")
+                        unk = [c for c in rec["raw"] if c.startswith("?")]
+                        if unk:
+                            notes.append(f"{p}: unrecognized_labels={unk}")
                 self.per_file[key] = full
-                union = frozenset().union(*full.values()) if full else frozenset()
+                union = (frozenset().union(*(v["chans"] for v in full.values()))
+                         if full else frozenset())
                 self.cache[key] = (union, "per_file_probe", probed,
                                    detail[:10] + errors[:10] + notes[:10])
             else:
@@ -318,7 +374,17 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             if suf and suf[-1].upper() in ORIENTATIONS:
                 f_orients[f["path"]] = frozenset(suf[-1].upper())
             elif per_file is not None:
-                f_orients[f["path"]] = per_file.get(f["path"], frozenset())
+                rec = per_file.get(f["path"])
+                if rec is None:
+                    f_orients[f["path"]] = frozenset()
+                elif rec["status"] == "unresolved":
+                    # Codex F5: a candidate whose channel identity could
+                    # not be established blocks ITS day — never a silent
+                    # rejection, never the whole year.
+                    blocked.add((pk, "file_unresolved"))
+                    f_orients[f["path"]] = frozenset()
+                else:
+                    f_orients[f["path"]] = rec["chans"]
             else:
                 f_orients[f["path"]] = pop_set
 
@@ -364,6 +430,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             e = sel[f["path"]]
             e["chans"].add(orient)
             e["rule"] = e["rule"] or f"winner:{orient}:{win_pk}"
+            e.setdefault("by_orient", {})[orient] = f"winner:{orient}:{win_pk}"
             e["cand"] = f
         # Sub-minute gap-fill: a winner file well below its population's
         # median size is likely seconds short; also take the best other
@@ -376,6 +443,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                         e = sel[f["path"]]
                         e["chans"].add(orient)
                         e["rule"] = e["rule"] or f"short_fill:{orient}:{pk}"
+                        e.setdefault("by_orient", {})[orient] = f"short_fill:{orient}:{pk}"
                         e["cand"] = f
                         short_minutes.discard(f["hhmm"])
         for pk, fs, _cov in ranked[1:]:
@@ -385,6 +453,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                     e = sel[f["path"]]
                     e["chans"].add(orient)
                     e["rule"] = e["rule"] or f"gap_fill:{orient}:{pk}"
+                    e.setdefault("by_orient", {})[orient] = f"gap_fill:{orient}:{pk}"
                     e["cand"] = f
                     covered |= extra
                     n_gap += 1
@@ -483,6 +552,53 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
             out.executemany(
                 "INSERT OR REPLACE INTO selection VALUES (?,?,?,?,?,?,?,?,?)",
                 rows)
+            # v0.4 normalized decisions (Codex resolver review F3): one row
+            # per (file, orientation) with an authorized UTC window and an
+            # explicit priority — the resolver's execution contract. The
+            # final day's spill decision authorizes the boundary sliver of
+            # the NEXT day explicitly (replacing the tail heuristics).
+            import calendar as _cal
+            day_ns = _cal.timegm(d.timetuple()) * NS_
+            tail_best = {}  # orientation -> (window_end_ns, file_id)
+            for path, e in sel.items():
+                f = e["cand"]
+                out.execute(
+                    "INSERT OR IGNORE INTO selected_file"
+                    "(date, stream, path, population, source_format) "
+                    "VALUES (?,?,?,?,?)",
+                    (iso, stream_base, path, f["population"],
+                     "suds" if path.endswith((".dmx", ".dmx.gz"))
+                     else "mseed"))
+                fid = out.execute(
+                    "SELECT file_id FROM selected_file WHERE date=? AND "
+                    "stream=? AND path=?",
+                    (iso, stream_base, path)).fetchone()[0]
+                slots = sorted(minute_slots(f))
+                if slots:
+                    ws = day_ns + (int(slots[0][:2]) * 3600
+                                   + int(slots[0][2:]) * 60) * NS_
+                    we = day_ns + (int(slots[-1][:2]) * 3600
+                                   + int(slots[-1][2:]) * 60 + 60) * NS_
+                else:
+                    ws, we = day_ns, day_ns + 86400 * NS_
+                for orient, reason in sorted(
+                        (e.get("by_orient") or {}).items()):
+                    out.execute(
+                        "INSERT OR REPLACE INTO component_decision "
+                        "VALUES (?,?,?,?,?,?,?)",
+                        (f"{iso}:{orient}", fid, orient, ws, we,
+                         PRIORITY_OF.get(reason.split(":")[0], 0), reason))
+                    if reason.startswith("winner") and \
+                            we >= tail_best.get(orient, (0, 0))[0]:
+                        tail_best[orient] = (we, fid)
+            next_iso = (d + timedelta(days=1)).isoformat()
+            for orient, (_we, fid) in sorted(tail_best.items()):
+                out.execute(
+                    "INSERT OR REPLACE INTO component_decision "
+                    "VALUES (?,?,?,?,?,?,?)",
+                    (f"{next_iso}:{orient}", fid, orient,
+                     day_ns + 86400 * NS_, day_ns + 86460 * NS_,
+                     0, "boundary_tail"))
             out.executemany(
                 "INSERT INTO rejected VALUES (?,?,?,?,?)",
                 [(iso, stream_base, f["population"], f["path"], f["reason"])
@@ -499,6 +615,24 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
         [(pk, mo, "".join(sorted(ch)), basis,
           json.dumps(paths), json.dumps(errs))
          for (pk, mo), (ch, basis, paths, errs) in know.cache.items()])
+    # Per-file channel evidence (Codex resolver review F5): every exhaust-
+    # ively probed file's raw labels, trace count and read status persist
+    # reviewably, keyed by path (evidence predates selection, so no FK).
+    ev_rows = []
+    for (pk, mo), files_map in know.per_file.items():
+        for path, rec in files_map.items():
+            raws = rec.get("raw") or [""]
+            for raw in sorted(set(raws))[:12]:
+                orient = (raw[-1].upper()
+                          if raw and not raw.startswith("?")
+                          and raw[-1].upper() in ORIENTATIONS else None)
+                ev_rows.append((path, raw, orient, rec.get("traces", -1),
+                                rec["status"] + (f": {rec['err'][:120]}"
+                                                 if rec.get("err") else ""),
+                                "per_file_probe"))
+    out.executemany(
+        "INSERT OR REPLACE INTO file_channel_evidence VALUES (?,?,?,?,?,?)",
+        ev_rows)
     # Review F4: populations with unsuffixed files but NO evidenced channel
     # set block conversion — recorded here; the loader refuses when non-empty.
     out.execute("INSERT OR REPLACE INTO meta VALUES ('probe_blocked', ?)",
