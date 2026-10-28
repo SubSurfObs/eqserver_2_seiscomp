@@ -382,6 +382,11 @@ def run_study(sample, out_dir: Path, repo_root: Path, max_hours: float):
                     shutil.rmtree(keep, ignore_errors=True)
                     keep.parent.mkdir(parents=True, exist_ok=True)
                     shutil.move(str(day_sds), str(keep))
+                    # Keep the full audit report beside the output: finding
+                    # details classify without any rerun, and auditor-only
+                    # fixes re-adjudicate by re-AUDIT, never re-convert.
+                    if rec.get("verdict") == "FAIL" and "audit" in dir():
+                        (keep / "audit.json").write_text(json.dumps(audit))
             except OSError:
                 pass
         shutil.rmtree(sds_dir, ignore_errors=True)
