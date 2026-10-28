@@ -207,7 +207,36 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-28 (night) — Codex BLOCKs the resolver implementation; v0.4 build is THE work
+
+`reviews/2026-10-28_resolver_topology_gate.md` (codex-break `57066dc`):
+seven findings, accepted in full. Decisive: the resolver's epoch-float
+arithmetic silently drops boundary samples at real timestamps (the
+"0.5 s missing" on the WLSH/LKHRT proving passes was probably this);
+mixed-format tiers can discard one format's stream; one path-level rule
+cannot carry per-orientation priority; adapters still pre-trim with the
+1-second heuristic the design abolished; per-file probe errors can
+reject silently; exact-integer drift passes both detectors (Codex
+formally OBJECTS to accepting it); reruns can leave stale channel
+files. The defects cluster on ONE seam: exact per-file, per-channel
+provenance from selection through conversion and audit — i.e. the
+normalized v0.4 design I wrongly deferred as "mechanical".
+**Agreed plan (Codex recommendation, operator-visible): STOP the
+patch–relaunch cycle. The running 4-shard study is DIAGNOSTIC ONLY
+(failure classification, blocked cohorts, SGWU) — never gate evidence.
+No further study launches until: (1) v0.4 normalized selection schema
+(per path+orientation+window+decision-group, evidence table), (2)
+integer-nanosecond time arithmetic end to end (no epoch floats), (3)
+adapters return per-file segments (no destructive pre-merge), (4) the
+adversarial test set Codex specified (mixed formats one tier, realistic
+epochs, E-winner/N-fill, midnight priority, reader failure,
+exact-integer drift) passes, (5) Codex review of the build.**
+Evidence for Codex's Task-3 classification copied to Mac
+/tmp/codex_inbox/ (4 shard results + SGWU/LRNW retained SDS+audits).
+
 ## 2026-10-27 (evening) — RESOLVER BUILT AND PROVEN; gate run launched
+**(SUPERSEDED same-week: see the 2026-10-28 BLOCK above — "proven" was
+premature; the proving passes' 0.5 s losses were resolver-caused.)**
 
 The Codex F5/F6 resolver design is implemented (commits `d6d4ecb` →
 `b804c75`): engines read+relabel only; selection priority tiers overlay
