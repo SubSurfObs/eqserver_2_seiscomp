@@ -897,7 +897,8 @@ def _resolve_tiers(tier_streams):
             templates.setdefault(key, tr.stats)
             n += 1
             by_key.setdefault(key, []).append({
-                "t0": float(tr.stats.starttime.timestamp),
+                # exact integer nanoseconds (resolver v2): obspy keeps ns
+                "t0_ns": int(tr.stats.starttime.ns),
                 "rate": float(tr.stats.sampling_rate),
                 "data": tr.data, "priority": int(tier),
                 # unique token: upstream selection already dedups paths;
@@ -912,33 +913,29 @@ def _resolve_tiers(tier_streams):
         # Hard guarantee: the resolver's contract is non-overlapping
         # output. Verify it here so a violation can never be written.
         prev_end = None
-        dt = 1.0 / key[1]
+        dt_ns = 1_000_000_000 // round(key[1])
         for s in resolved:
-            if prev_end is not None and s["t0"] < prev_end - 0.5 * dt:
+            if prev_end is not None and s["t0_ns"] < prev_end:
                 if debug:
-                    print(f"[resolver] OVERLAP {key}: seg@{s['t0']} < "
+                    print(f"[resolver] OVERLAP {key}: seg@{s['t0_ns']} < "
                           f"prev_end {prev_end}", flush=True)
-                    for seg in by_key[key][:200]:
-                        print(f"[resolver]   in: p{seg['priority']} "
-                              f"t0={seg['t0']:.4f} n={len(seg['data'])} "
-                              f"{seg['path']}", flush=True)
                 raise RuntimeError(
                     f"resolver emitted overlapping segments for {key} "
-                    f"(seg@{s['t0']} vs prev_end {prev_end})")
-            prev_end = max(prev_end or s["t0"],
-                           s["t0"] + len(s["data"]) * dt)
+                    f"(seg@{s['t0_ns']} vs prev_end {prev_end})")
+            prev_end = max(prev_end or s["t0_ns"],
+                           s["t0_ns"] + len(s["data"]) * dt_ns)
         if debug:
             n_in = sum(len(s["data"]) for s in by_key[key])
             n_out = sum(len(s["data"]) for s in resolved)
-            t0s = min(s["t0"] for s in by_key[key]) if by_key[key] else 0
+            t0s = min(s["t0_ns"] for s in by_key[key]) if by_key[key] else 0
             print(f"[resolver] {key}: {len(by_key[key])} segs/{n_in} samp in "
                   f"-> {len(resolved)} segs/{n_out} samp out", flush=True)
             for s in resolved[:6]:
-                print(f"[resolver]   out t0+{s['t0']-t0s:.3f}s "
+                print(f"[resolver]   out t0+{(s['t0_ns']-t0s)/1e9:.3f}s "
                       f"n={len(s['data'])}", flush=True)
         for s in resolved:
             stats = templates[key].copy()
-            stats.starttime = _UTC(s["t0"])
+            stats.starttime = _UTC(ns=s["t0_ns"])
             # The template's npts is stale (its own trace's length) and a
             # slice is a view into the parent buffer: force both, or the
             # writer packs template-length windows of the parent array
