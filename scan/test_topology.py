@@ -86,6 +86,13 @@ def main():
     check("integer boundary-sample duplication is clean",
           topology_breaks(src, [tr(0.0, 201, None)], lin2), 0)
 
+    # Deep ON-GRID overlap (HKER shape): the dispatcher re-sends a window
+    # overlapping the previous file by 30 whole samples, same lineage and
+    # grid (frac 0.00). Duplicate data, dedup'd by the merge. Clean.
+    src = [tr(0.0, 100, "/a"), tr(0.70, 100, "/b")]
+    check("deep on-grid dispatcher overlap is clean",
+          topology_breaks(src, [tr(0.0, 170, None)], lin2), 0)
+
     if FAILURES:
         print(f"\n{len(FAILURES)} topology test(s) FAILED: {FAILURES}")
         return 1

@@ -482,15 +482,16 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                 frontier = max(frontier, p + L)
             elif cont < -0.5:
                 frac = abs(cont - round(cont))
-                if lin == cur_lin and frac <= 0.25 and -4 <= round(cont) <= -1:
-                    # BOUNDARY-SAMPLE DUPLICATION: the next file of the
-                    # same lineage overlaps by a small WHOLE number of
-                    # samples on the same grid (SGWU RT130 minute files
-                    # carry 12,001 samples — the minute-boundary sample is
-                    # repeated at every junction, cont = -1.00 exactly).
-                    # Recorder packetisation, not a weld: a weld's stated
-                    # time sits OFF-grid (Codex's 0.51-sample case has
-                    # frac 0.49). The chain advances to this file.
+                if lin == cur_lin and frac <= 0.25:
+                    # ON-GRID OVERLAP, any depth: duplicated data from the
+                    # same recorder stream — boundary-sample packetisation
+                    # (SGWU RT130: cont = -1.00 at every junction) or
+                    # re-dispatched overlapping telemetry windows (HKER:
+                    # cont = -2300/-2900.00, frac 0.00). The merge dedups
+                    # identically-timed samples; the value check catches a
+                    # "duplicate" that disagrees. A WELD's stated time sits
+                    # OFF-grid (Codex's 0.51-sample case: frac 0.49). The
+                    # chain advances when this file extends it.
                     cur_lin, cur_start, cur_len = lin, p, L
                     frontier = max(frontier, p + L)
                 elif lin == cur_lin and p - cur_start <= 0.5 * cur_len:
