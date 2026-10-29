@@ -44,8 +44,12 @@ def _manifest_identity(db_path: Path) -> str:
     c = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     n = c.execute("SELECT COUNT(*) FROM files").fetchone()[0]
     c.close()
+    # Second-precision mtime: CIFS attribute caching makes st_mtime_ns
+    # flap between readers (13 both-direction identity mismatches in the
+    # 2026-10-29 diagnostic run). Content binding is the deep sha256;
+    # this cheap check only needs to catch real regeneration.
     return hashlib.sha256(
-        f"{db_path.name}:{st.st_size}:{st.st_mtime_ns}:{n}".encode()
+        f"{db_path.name}:{st.st_size}:{int(st.st_mtime)}:{n}".encode()
     ).hexdigest()
 
 
