@@ -24,10 +24,10 @@ legacy runtime tail query is never used in selection mode (review
 import sqlite3
 from pathlib import Path
 
-# v0.1/v0.2 artifacts predate the month-wide probe evidence and the
-# blocked-population record (review 2026-10-23 F4) — they are refused, not
+# Pre-v0.4 artifacts predate the normalized per-orientation decision
+# contract (resolver review F3) — they are refused, not
 # migrated: recompile with the current coverage_planner.
-KNOWN_SCHEMAS = {"selection-v0.3"}
+KNOWN_SCHEMAS = {"selection-v0.4"}
 
 
 class SelectionError(RuntimeError):
@@ -79,7 +79,7 @@ class Selection:
         REQUIRED = ("complete_marker", "net", "sta", "year",
                     "manifest_identity", "manifest_sha256", "generator_sha",
                     "generator_dirty", "probe_enabled", "probe_blocked",
-                    "n_days", "n_rows")
+                    "n_days", "n_rows", "n_decisions")
         missing = [k for k in REQUIRED if meta.get(k) in (None, "")]
         if missing:
             raise SelectionError(
@@ -121,7 +121,15 @@ class Selection:
             "SELECT COUNT(*) FROM selection").fetchone()[0]
         n_days = self.conn.execute(
             "SELECT COUNT(DISTINCT date) FROM selection").fetchone()[0]
-        for key, got in (("n_rows", n_rows), ("n_days", n_days)):
+        try:
+            n_dec = self.conn.execute(
+                "SELECT COUNT(*) FROM component_decision").fetchone()[0]
+        except sqlite3.OperationalError:
+            raise SelectionError(
+                "selection has no component_decision table — pre-v0.4 "
+                "artifact; recompile")
+        for key, got in (("n_rows", n_rows), ("n_days", n_days),
+                         ("n_decisions", n_dec)):
             if int(meta[key]) != got:
                 raise SelectionError(
                     f"selection {key}={got} != compiler-recorded {meta[key]} "

@@ -53,7 +53,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-SCHEMA_VERSION = "selection-v0.3"
+SCHEMA_VERSION = "selection-v0.4"
 HOURBUNDLE_RE = re.compile(r"[ _](\d{2})hr[ _]", re.IGNORECASE)
 ORIENTATIONS = set("ZNEO123")  # SEED orientations incl. borehole 1/2/3
 NS_ = 1_000_000_000
@@ -300,13 +300,12 @@ class ChannelKnowledge:
                         rec["err"] = f"{type(e).__name__}: {e}"
                     return p, rec
 
-                full = {p: {"chans": c, "raw": [], "traces": -1,
-                            "status": "resolved", "err": ""}
-                        for p, c in per_path.items() if c}
-                # re-probe sampled empties too: only _probe_one records the
-                # raw labels that distinguish junk-empty from unresolved.
-                todo = [p for p in self.all_paths.get(key, [])
-                        if p not in full]
+                # Re-probe EVERYTHING per-file (Codex launch list, probe
+                # errors): a sampled probe that partially read could hide
+                # channels; evidence must come from _probe_one's full
+                # per-file record for every path in the month.
+                full = {}
+                todo = list(self.all_paths.get(key, []))
                 # NFS-latency-bound single-file reads: 8 threads cut the
                 # wall time ~6-8x (single-threaded, BEST's mostly-empty
                 # cohort blew the study's 1 h compile budget, 2026-10-28).
@@ -431,6 +430,8 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             e["chans"].add(orient)
             e["rule"] = e["rule"] or f"winner:{orient}:{win_pk}"
             e.setdefault("by_orient", {})[orient] = f"winner:{orient}:{win_pk}"
+            e.setdefault("o_slots", {}).setdefault(orient, set()).update(
+                minute_slots(f))
             e["cand"] = f
         # Sub-minute gap-fill: a winner file well below its population's
         # median size is likely seconds short; also take the best other
@@ -444,6 +445,9 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                         e["chans"].add(orient)
                         e["rule"] = e["rule"] or f"short_fill:{orient}:{pk}"
                         e.setdefault("by_orient", {})[orient] = f"short_fill:{orient}:{pk}"
+                        if f["hhmm"]:
+                            e.setdefault("o_slots", {}).setdefault(
+                                orient, set()).add(f["hhmm"])
                         e["cand"] = f
                         short_minutes.discard(f["hhmm"])
         for pk, fs, _cov in ranked[1:]:
@@ -454,6 +458,8 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                     e["chans"].add(orient)
                     e["rule"] = e["rule"] or f"gap_fill:{orient}:{pk}"
                     e.setdefault("by_orient", {})[orient] = f"gap_fill:{orient}:{pk}"
+                    e.setdefault("o_slots", {}).setdefault(
+                        orient, set()).update(extra)
                     e["cand"] = f
                     covered |= extra
                     n_gap += 1
@@ -559,7 +565,7 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
             # the NEXT day explicitly (replacing the tail heuristics).
             import calendar as _cal
             day_ns = _cal.timegm(d.timetuple()) * NS_
-            tail_best = {}  # orientation -> (window_end_ns, file_id)
+            tail_best = {}  # orientation -> (window_end_ns, window_start_ns, file_id)
             for path, e in sel.items():
                 f = e["cand"]
                 out.execute(
@@ -573,26 +579,45 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                     "SELECT file_id FROM selected_file WHERE date=? AND "
                     "stream=? AND path=?",
                     (iso, stream_base, path)).fetchone()[0]
-                slots = sorted(minute_slots(f))
-                if slots:
-                    ws = day_ns + (int(slots[0][:2]) * 3600
-                                   + int(slots[0][2:]) * 60) * NS_
-                    we = day_ns + (int(slots[-1][:2]) * 3600
-                                   + int(slots[-1][2:]) * 60 + 60) * NS_
-                else:
-                    ws, we = day_ns, day_ns + 86400 * NS_
                 for orient, reason in sorted(
                         (e.get("by_orient") or {}).items()):
-                    out.execute(
-                        "INSERT OR REPLACE INTO component_decision "
-                        "VALUES (?,?,?,?,?,?,?)",
-                        (f"{iso}:{orient}", fid, orient, ws, we,
-                         PRIORITY_OF.get(reason.split(":")[0], 0), reason))
-                    if reason.startswith("winner") and \
-                            we >= tail_best.get(orient, (0, 0))[0]:
-                        tail_best[orient] = (we, fid)
+                    # Windows are the GRANTED slots for this orientation
+                    # (Codex launch list: fills were over-broad — a
+                    # gap-fill's window is the gap it supplies, never the
+                    # whole file), one decision row per contiguous run.
+                    slots = sorted((e.get("o_slots") or {}).get(orient)
+                                   or minute_slots(f))
+                    runs = []
+                    if slots:
+                        mins = [int(s0[:2]) * 60 + int(s0[2:])
+                                for s0 in slots]
+                        a = b = mins[0]
+                        for m in mins[1:]:
+                            if m == b + 1:
+                                b = m
+                            else:
+                                runs.append((a, b))
+                                a = b = m
+                        runs.append((a, b))
+                    else:
+                        runs = [(0, 1439)]
+                    prio = PRIORITY_OF.get(reason.split(":")[0], 0)
+                    for a, b in runs:
+                        ws = day_ns + a * 60 * NS_
+                        we = day_ns + (b + 1) * 60 * NS_
+                        out.execute(
+                            "INSERT OR REPLACE INTO component_decision "
+                            "VALUES (?,?,?,?,?,?,?)",
+                            (f"{iso}:{orient}", fid, orient, ws, we,
+                             prio, reason))
+                        if reason.startswith("winner") and \
+                                (we, ws) >= tail_best.get(orient, (0, 0))[:2]:
+                            # Midnight source = the winner decision ending
+                            # latest, tie-broken by LATEST start (the file
+                            # actually spanning 23:59), not path order.
+                            tail_best[orient] = (we, ws, fid)
             next_iso = (d + timedelta(days=1)).isoformat()
-            for orient, (_we, fid) in sorted(tail_best.items()):
+            for orient, (_we, _ws, fid) in sorted(tail_best.items()):
                 out.execute(
                     "INSERT OR REPLACE INTO component_decision "
                     "VALUES (?,?,?,?,?,?,?)",
@@ -650,6 +675,10 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                 (str(n_days_tbl),))
     out.execute("INSERT OR REPLACE INTO meta VALUES ('n_rows', ?)",
                 (str(n_rows_tbl),))
+    n_dec = out.execute(
+        "SELECT COUNT(*) FROM component_decision").fetchone()[0]
+    out.execute("INSERT OR REPLACE INTO meta VALUES ('n_decisions', ?)",
+                (str(n_dec),))
     out.commit()
     out.close()
     src_db.close()
