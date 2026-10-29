@@ -604,7 +604,14 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                     prio = PRIORITY_OF.get(reason.split(":")[0], 0)
                     for a, b in runs:
                         ws = day_ns + a * 60 * NS_
-                        we = day_ns + (b + 1) * 60 * NS_
+                        # One slot of grace at the window end: minute files
+                        # STRADDLE their nominal slot (session offset SS —
+                        # a file labelled 0001 holds 00:01:SS..00:02:SS).
+                        # Clipping to the bare slot discarded the carry-over
+                        # (TYHS 2026-10-29: fixed seconds lost per file).
+                        # Benign overlap between consecutive same-priority
+                        # files is dedup'd by the resolver's occupancy.
+                        we = day_ns + (b + 2) * 60 * NS_
                         out.execute(
                             "INSERT OR REPLACE INTO component_decision "
                             "VALUES (?,?,?,?,?,?,?)",
