@@ -963,6 +963,86 @@ def _write_day_replace(suds_convert, stream, sds_root, net, sta, day,
         _sh.rmtree(build, ignore_errors=True)
 
 
+def _clip_trace_ns(tr, ws_ns, we_ns):
+    """Clip one obspy trace to the authorized window [ws, we) in exact
+    integer nanoseconds. Returns (t0_ns, data_slice) or None."""
+    s0 = int(tr.stats.starttime.ns)
+    rate = round(float(tr.stats.sampling_rate))
+    if rate <= 0 or 1_000_000_000 % rate:
+        return None
+    dt = 1_000_000_000 // rate
+    n = len(tr.data)
+    i0 = max(0, -((s0 - ws_ns) // dt))
+    i1 = min(n, -((s0 - we_ns) // dt))
+    if i1 <= i0:
+        return None
+    return (s0 + i0 * dt, tr.data[i0:i1])
+
+
+def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
+                      read_errors, chan_map=None):
+    """Per-file adapter (Codex resolver review F1/F4): read ONE source
+    file, relabel to target identity, return its traces. No cross-file
+    and no cross-format merging — a file's internal drift is split (a
+    bundle is one file); everything else is the resolver's job."""
+    from obspy import Stream
+    if source_format == "suds":
+        stream, qc = suds_convert.convert_suds_files(
+            [path], network=net, station=sta)
+        for e in qc.get("read_errors", []):
+            read_errors.append((path, str(e)))
+        st = stream
+    else:
+        import io
+        from obspy import read
+        buf = io.BytesIO()
+        spans = []
+        _concat_zip_members([path], buf, read_errors, spans=spans)
+        b = buf.getvalue()
+        st = Stream()
+        if not b:
+            return st
+        try:
+            scan_status, segs = _drift_split_segments(b)
+        except Exception:
+            scan_status, segs = "scan_failed", None
+        if scan_status == "split":
+            for key, seglist in segs.items():
+                for seg in seglist:
+                    part = b"".join(b[o:o + L] for o, L in seg)
+                    try:
+                        st += read(io.BytesIO(part), format="MSEED")
+                    except Exception as fe:
+                        read_errors.append(
+                            (path, f"segment: {type(fe).__name__}: {fe}"))
+        else:
+            try:
+                st += read(io.BytesIO(b), format="MSEED")
+            except Exception as fe:
+                read_errors.append((path, f"{type(fe).__name__}: {fe}"))
+                return Stream()
+            if scan_status == "scan_failed":
+                read_errors.append(
+                    (path, "record-scan unparseable (single-file read)"))
+        for tr in st:
+            tr.stats.network = net
+        st = _enforce_band_instrument(st)
+    for tr in st:
+        tr.stats.location = loc
+    # IDENTITY-DRIVEN NAMING (operator procedure 2026-10-29): for SUDS
+    # sources — whose files carry no usable channel names — the reviewed
+    # plan's target codes override the engine's rate-derived fallback
+    # (DU EchoPro archives as EH* @ loc 60 on the server, where band-by-
+    # rate would say HH*). miniSEED stays passthrough: its headers ARE
+    # the names.
+    if chan_map and source_format == "suds":
+        for tr in st:
+            o = (tr.stats.channel or "?")[-1:].upper()
+            if o in chan_map:
+                tr.stats.location, tr.stats.channel = chan_map[o]
+    return st
+
+
 def _worker_convert_day(job):
     """Pickle-safe worker. Opens its own DB connection, imports suds_convert
     internally (so the parent doesn't have to pass the module across pickle).
@@ -1183,7 +1263,8 @@ def _worker_convert_day(job):
                 templates = {}
                 for (path, fmt), drows in sorted(by_path.items()):
                     st = _read_file_traces(path, fmt, net, sta, loc,
-                                           suds_convert, read_errors)
+                                           suds_convert, read_errors,
+                                           job.get("chan_map"))
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1522,6 +1603,14 @@ def main():
         ep_start = date.fromisoformat(ep["start"])
         ep_end = date.fromisoformat(ep["end"])
         recorder_eff = effective(ep)
+        # Per-epoch channel targets from the reviewed plan (orientation ->
+        # (location, channel)); empty when the plan carries none.
+        ep_chan_map = {}
+        for ch in (ep.get("channels") or []):
+            tgt = str(ch.get("target") or "")
+            parts = tgt.split(".")
+            if len(parts) == 4 and parts[3]:
+                ep_chan_map[parts[3][-1].upper()] = (parts[2], parts[3])
         for d in _iter_days(ep_start, ep_end):
             iso = d.isoformat()
             if user_dates is not None:
@@ -1539,6 +1628,7 @@ def main():
                 "commit": args.commit, "disk_to_sds": args.disk_to_sds,
                 "disk_size_floor_ratio": args.disk_size_floor_ratio,
                 "selection_path": args.selection,
+                "chan_map": ep_chan_map or None,
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "code_id": code_id,
