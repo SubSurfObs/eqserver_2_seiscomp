@@ -963,6 +963,38 @@ def _write_day_replace(suds_convert, stream, sds_root, net, sta, day,
         _sh.rmtree(build, ignore_errors=True)
 
 
+def _coalesce_pieces(pieces, dt_ns):
+    """Join resolver output pieces into grid-consistent traces: a piece
+    joins the current run while its STATED start sits within half a
+    sample of the run grid's continuation; otherwise a new trace anchors
+    at the piece's stated time (the sudspy grid rule, in exact integer
+    ns). Without this, a drifting day writes thousands of micro-segments
+    whose record times sit within readers' half-sample join tolerance —
+    and every standard reader welds them back onto one grid (LKHRT
+    2026-10-30: 2 read-back traces, 7M value mismatches). Joining within
+    half a sample is representability, not re-timing; the split point is
+    where fidelity demands a new anchor."""
+    runs = []
+    cur_t0 = None
+    cur_parts = []
+    cur_n = 0
+    for pc in pieces:
+        t0 = pc["t0_ns"]
+        if cur_t0 is None:
+            cur_t0, cur_parts, cur_n = t0, [pc["data"]], len(pc["data"])
+            continue
+        d = t0 - (cur_t0 + cur_n * dt_ns)
+        if -(dt_ns // 2) <= d <= dt_ns // 2:
+            cur_parts.append(pc["data"])
+            cur_n += len(pc["data"])
+        else:
+            runs.append((cur_t0, cur_parts))
+            cur_t0, cur_parts, cur_n = t0, [pc["data"]], len(pc["data"])
+    if cur_t0 is not None:
+        runs.append((cur_t0, cur_parts))
+    return runs
+
+
 def _clip_trace_ns(tr, ws_ns, we_ns):
     """Clip one obspy trace to the authorized window [ws, we) in exact
     integer nanoseconds. Returns (t0_ns, data_slice) or None."""
@@ -1298,9 +1330,12 @@ def _worker_convert_day(job):
                             raise RuntimeError(
                                 f"resolver overlap for {key}")
                         prev_end = sgm["t0_ns"] + len(sgm["data"]) * dtn
+                    for run_t0, parts in _coalesce_pieces(pieces, dtn):
                         stats = templates[key].copy()
-                        stats.starttime = _U(ns=sgm["t0_ns"])
-                        data = _np.ascontiguousarray(sgm["data"])
+                        stats.starttime = _U(ns=run_t0)
+                        data = _np.ascontiguousarray(
+                            _np.concatenate(parts) if len(parts) > 1
+                            else parts[0])
                         stats.npts = len(data)
                         resolved_stream += _T(data=data, header=stats)
                 resolved_stream = _trim_to_day(resolved_stream, d)
