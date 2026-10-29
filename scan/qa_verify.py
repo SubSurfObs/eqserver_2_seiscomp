@@ -450,7 +450,7 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                 continue
             lin = (lineages.get(path) if lineages is not None
                    else (path or id(st_)))
-            tiles.append((p, len(st_["data"]), lin))
+            tiles.append((p, len(st_["data"]), lin, st_["data"]))
         if not tiles:
             n_break += 1
             _note("no-selected-source", ct)
@@ -465,13 +465,16 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
         broke = False
         frontier = None
         cur_lin = cur_start = cur_len = None
-        for p, L, lin in tiles:
+        placed = []  # (integer grid pos, data) of accepted on-grid tiles
+        for p, L, lin, tdata in tiles:
             if frontier is None:
                 if p > 0.5:
                     broke = True  # trace starts before any source does
                     _note("starts-before-sources", ct, f"first tile at +{p:.2f} samples")
                     break
                 frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
+                if abs(p - round(p)) <= 0.25:
+                    placed.append((int(round(p)), tdata))
                 continue
             if p + L <= frontier - 0.5:
                 continue  # fully behind coverage, adds nothing
@@ -480,18 +483,36 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                 # Grid-consistent next file: the chain advances.
                 cur_lin, cur_start, cur_len = lin, p, L
                 frontier = max(frontier, p + L)
+                if abs(p - round(p)) <= 0.25:
+                    placed.append((int(round(p)), tdata))
             elif cont < -0.5:
                 frac = abs(cont - round(cont))
                 if lin == cur_lin and frac <= 0.25:
-                    # ON-GRID OVERLAP, any depth: duplicated data from the
-                    # same recorder stream — boundary-sample packetisation
-                    # (SGWU RT130: cont = -1.00 at every junction) or
-                    # re-dispatched overlapping telemetry windows (HKER:
-                    # cont = -2300/-2900.00, frac 0.00). The merge dedups
-                    # identically-timed samples; the value check catches a
-                    # "duplicate" that disagrees. A WELD's stated time sits
-                    # OFF-grid (Codex's 0.51-sample case: frac 0.49). The
-                    # chain advances when this file extends it.
+                    # ON-GRID OVERLAP: claimed duplication of the same
+                    # recorder stream (SGWU boundary packets; HKER
+                    # re-dispatched windows). ACCEPTED ONLY when the
+                    # overlapping PAYLOADS are byte-equal — then discarding
+                    # a copy provably loses nothing (Codex F6, accepted
+                    # residual). Differing values fail LOUDLY here: no
+                    # match-any-copy rule can mask them.
+                    pos = int(round(p))
+                    bad = None
+                    for q_pos, q_data in placed:
+                        o_lo = max(pos, q_pos)
+                        o_hi = min(pos + L, q_pos + len(q_data))
+                        if o_hi <= o_lo:
+                            continue
+                        a = np.asarray(tdata[o_lo - pos:o_hi - pos])
+                        b = np.asarray(q_data[o_lo - q_pos:o_hi - q_pos])
+                        if not np.array_equal(a, b):
+                            bad = (o_lo, o_hi)
+                            break
+                    if bad:
+                        broke = True
+                        _note("ongrid-overlap-values-differ", ct,
+                              f"samples [{bad[0]},{bad[1]}) lin={lin}")
+                        break
+                    placed.append((pos, tdata))
                     cur_lin, cur_start, cur_len = lin, p, L
                     frontier = max(frontier, p + L)
                 elif lin == cur_lin and p - cur_start <= 0.5 * cur_len:

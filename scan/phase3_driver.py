@@ -879,194 +879,88 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     return result
 
 
-def _resolve_tiers(tier_streams):
-    """Overlay engine outputs by selection priority (Codex F5/F6 design):
-    tier_streams is [(priority, obspy Stream)]; segments resolve per
-    (SEED id, rate) through lib.resolver — explicit precedence, not read/
-    write order. Returns one resolved Stream."""
-    import numpy as _np
-    from obspy import Stream as _Stream, Trace as _Trace, UTCDateTime as _UTC
-    from lib.resolver import resolve_segments
-    by_key, templates = {}, {}
-    n = 0
-    for tier, st in tier_streams:
-        for tr in st:
-            if len(tr.data) == 0:
-                continue
-            key = (tr.id, round(float(tr.stats.sampling_rate), 6))
-            templates.setdefault(key, tr.stats)
-            n += 1
-            by_key.setdefault(key, []).append({
-                # exact integer nanoseconds (resolver v2): obspy keeps ns
-                "t0_ns": int(tr.stats.starttime.ns),
-                "rate": float(tr.stats.sampling_rate),
-                "data": tr.data, "priority": int(tier),
-                # unique token: upstream selection already dedups paths;
-                # the resolver's identity-collapse must not merge distinct
-                # copies that lost their path inside an engine merge.
-                "path": f"t{tier}#{n}"})
-    import os as _os
-    debug = _os.environ.get("RESOLVER_DEBUG")
-    out = _Stream()
-    for key in sorted(by_key):
-        resolved = resolve_segments(by_key[key])
-        # Hard guarantee: the resolver's contract is non-overlapping
-        # output. Verify it here so a violation can never be written.
-        prev_end = None
-        dt_ns = 1_000_000_000 // round(key[1])
-        for s in resolved:
-            if prev_end is not None and s["t0_ns"] < prev_end:
-                if debug:
-                    print(f"[resolver] OVERLAP {key}: seg@{s['t0_ns']} < "
-                          f"prev_end {prev_end}", flush=True)
-                raise RuntimeError(
-                    f"resolver emitted overlapping segments for {key} "
-                    f"(seg@{s['t0_ns']} vs prev_end {prev_end})")
-            prev_end = max(prev_end or s["t0_ns"],
-                           s["t0_ns"] + len(s["data"]) * dt_ns)
-        if debug:
-            n_in = sum(len(s["data"]) for s in by_key[key])
-            n_out = sum(len(s["data"]) for s in resolved)
-            t0s = min(s["t0_ns"] for s in by_key[key]) if by_key[key] else 0
-            print(f"[resolver] {key}: {len(by_key[key])} segs/{n_in} samp in "
-                  f"-> {len(resolved)} segs/{n_out} samp out", flush=True)
-            for s in resolved[:6]:
-                print(f"[resolver]   out t0+{(s['t0_ns']-t0s)/1e9:.3f}s "
-                      f"n={len(s['data'])}", flush=True)
-        for s in resolved:
-            stats = templates[key].copy()
-            stats.starttime = _UTC(ns=s["t0_ns"])
-            # The template's npts is stale (its own trace's length) and a
-            # slice is a view into the parent buffer: force both, or the
-            # writer packs template-length windows of the parent array
-            # (observed: every WLSH trace written as 3,777 samples —
-            # 34.7M written vs 21.3M resolved, 54M garbage samples).
-            data = _np.ascontiguousarray(s["data"])
-            stats.npts = len(data)
-            out += _Trace(data=data, header=stats)
-    return out
-
-
-def _write_day_replace(suds_convert, stream, sds_root, retries=3):
-    """Write-once REPLACE writer for resolved day output (Codex design:
-    existing staging bytes never participate in precedence). Each (SEED
-    id, day) file is built fresh and atomically swapped in via .partial +
-    os.replace. disk_to_sds's merge-on-write writer is deliberately left
-    to the SD-card workflow."""
+def _write_day_replace(suds_convert, stream, sds_root, net, sta, day,
+                       retries=3):
+    """Clean-room day writer (Codex resolver review F7): the full day is
+    materialized in a temporary directory on the same filesystem, then the
+    target's inventory for this (station, day) is RECONCILED — expected
+    files replace atomically, stale channel day-files from earlier runs
+    are quarantined (never left to pose as current output). Existing bytes
+    never participate in precedence. disk_to_sds's merge-on-write writer
+    is deliberately untouched (SD-card workflow)."""
     import os as _os
     import time as _time
+    import shutil as _sh
     import numpy as _np
     from pathlib import Path as _P
     from obspy import Stream as _Stream
+    from obspy.io.mseed import InternalMSEEDError as _IME
+
     groups = {}
     for tr in stream:
-        s = tr.stats
+        st_ = tr.stats
         for year, julday, piece in suds_convert._split_trace_by_utc_day(tr):
             path = suds_convert._sds_day_path_for(
-                sds_root, s.network, s.station, s.location, s.channel,
-                year, julday)
+                sds_root, st_.network, st_.station, st_.location,
+                st_.channel, year, julday)
             groups.setdefault(_P(path), _Stream()).append(piece)
-    written = []
-    for path, st_ in groups.items():
-        for tr in st_:
-            if tr.data.dtype != _np.int32:
-                tr.data = tr.data.astype("int32")
-        path.parent.mkdir(parents=True, exist_ok=True)
-        part = _P(str(path) + ".partial")
-        from obspy.io.mseed import InternalMSEEDError as _IME
-        encoding = "STEIM2"
-        attempt = 0
-        while True:
-            try:
-                st_.write(str(part), format="MSEED",
-                          encoding=encoding, reclen=512)
-                _os.replace(part, path)
-                break
-            except _IME:
-                if encoding != "STEIM2":
-                    raise
-                # Glitch sample (digitizer bit error: sample-to-sample
-                # delta >30 bits) — STEIM2 cannot encode it. Same fallback
-                # the engine adopted in June (disk_to_sds 88323ec): keep
-                # the day at ~3.4x size in uncompressed INT32 rather than
-                # lose it. WLSH 2019-06-15 CHE reproduces this.
-                encoding = "INT32"
-            except OSError:
-                attempt += 1
-                if attempt >= retries:
-                    raise
-                _time.sleep(2.0 * attempt)
-        written.append((path, path.stat().st_size))
-    return written
 
+    jday = int(day.strftime("%j"))
+    build = (_P(sds_root)
+             / f".day_build.{net}.{sta}.{day.year}.{jday:03d}.{_os.getpid()}")
+    build.mkdir(parents=True, exist_ok=True)
+    staged = {}
+    try:
+        for path, st_ in groups.items():
+            for tr in st_:
+                if tr.data.dtype != _np.int32:
+                    tr.data = tr.data.astype("int32")
+            tmp = build / path.name
+            encoding = "STEIM2"
+            attempt = 0
+            while True:
+                try:
+                    st_.write(str(tmp), format="MSEED",
+                              encoding=encoding, reclen=512)
+                    break
+                except _IME:
+                    if encoding != "STEIM2":
+                        raise
+                    # Glitch sample: STEIM2 cannot encode a >30-bit delta
+                    # (disk_to_sds 88323ec). Keep the day in INT32.
+                    encoding = "INT32"
+                except OSError:
+                    attempt += 1
+                    if attempt >= retries:
+                        raise
+                    _time.sleep(2.0 * attempt)
+            staged[path] = tmp
 
-def _clip_trace_ns(tr, ws_ns, we_ns):
-    """Clip one obspy trace to the authorized window [ws, we) in exact
-    integer nanoseconds. Returns (t0_ns, data_slice) or None."""
-    s0 = int(tr.stats.starttime.ns)
-    rate = round(float(tr.stats.sampling_rate))
-    if rate <= 0 or 1_000_000_000 % rate:
-        return None
-    dt = 1_000_000_000 // rate
-    n = len(tr.data)
-    i0 = max(0, -((s0 - ws_ns) // dt))
-    i1 = min(n, -((s0 - we_ns) // dt))
-    if i1 <= i0:
-        return None
-    return (s0 + i0 * dt, tr.data[i0:i1])
+        # Reconcile: anything on target for this station+day that the
+        # resolved output does not contain is STALE — quarantine it.
+        sta_root = _P(sds_root) / str(day.year) / net / sta
+        stale = []
+        if sta_root.is_dir():
+            pat = f"{net}.{sta}.*.{day.year}.{jday:03d}"
+            for q in sta_root.glob(f"*/{pat}"):
+                if q not in staged:
+                    stale.append(q)
+        if stale:
+            qdir = (_P(sds_root) / ".stale_quarantine"
+                    / f"{net}.{sta}.{day.year}.{jday:03d}."
+                    f"{int(_time.time())}")
+            qdir.mkdir(parents=True, exist_ok=True)
+            for q in stale:
+                _sh.move(str(q), str(qdir / q.name))
 
-
-def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
-                      read_errors):
-    """Per-file adapter (Codex resolver review F1/F4): read ONE source
-    file, relabel to target identity, return its traces. No cross-file
-    and no cross-format merging — a file's internal drift is split (a
-    bundle is one file), and everything else is the resolver's job."""
-    from obspy import Stream
-    if source_format == "suds":
-        stream, qc = suds_convert.convert_suds_files(
-            [path], network=net, station=sta)
-        for e in qc.get("read_errors", []):
-            read_errors.append((path, str(e)))
-        st = stream
-    else:
-        import io
-        from obspy import read
-        buf = io.BytesIO()
-        spans = []
-        _concat_zip_members([path], buf, read_errors, spans=spans)
-        b = buf.getvalue()
-        st = Stream()
-        if not b:
-            return st
-        try:
-            scan_status, segs = _drift_split_segments(b)
-        except Exception:
-            scan_status, segs = "scan_failed", None
-        if scan_status == "split":
-            for key, seglist in segs.items():
-                for seg in seglist:
-                    part = b"".join(b[o:o + L] for o, L in seg)
-                    try:
-                        st += read(io.BytesIO(part), format="MSEED")
-                    except Exception as fe:
-                        read_errors.append(
-                            (path, f"segment: {type(fe).__name__}: {fe}"))
-        else:
-            try:
-                st += read(io.BytesIO(b), format="MSEED")
-            except Exception as fe:
-                read_errors.append((path, f"{type(fe).__name__}: {fe}"))
-                return Stream()
-            if scan_status == "scan_failed":
-                read_errors.append(
-                    (path, "record-scan unparseable (single-file read)"))
-        for tr in st:
-            tr.stats.network = net
-        st = _enforce_band_instrument(st)
-    for tr in st:
-        tr.stats.location = loc
-    return st
+        written = []
+        for path, tmp in staged.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            _os.replace(tmp, path)
+            written.append((path, path.stat().st_size))
+        return written
+    finally:
+        _sh.rmtree(build, ignore_errors=True)
 
 
 def _worker_convert_day(job):
@@ -1343,7 +1237,8 @@ def _worker_convert_day(job):
                     r["error"] = str(read_errors[:3])
                 if commit and len(resolved_stream) > 0:
                     written = _write_day_replace(
-                        suds_convert, resolved_stream, staging)
+                        suds_convert, resolved_stream, staging,
+                        net, sta, d)
                     r["sds_files_written"] = [(str(p), sz)
                                               for p, sz in written]
                 if jan1_tail_unavailable:

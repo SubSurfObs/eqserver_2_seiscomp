@@ -15,9 +15,9 @@ RATE = 100.0
 FAILURES = []
 
 
-def tr(start_s, n, path):
+def tr(start_s, n, path, val=0):
     return {"start": types.SimpleNamespace(timestamp=start_s),
-            "rate": RATE, "data": [0] * n, "src_path": path, "orient": "Z"}
+            "rate": RATE, "data": [val] * n, "src_path": path, "orient": "Z"}
 
 
 def check(name, got, want):
@@ -92,6 +92,19 @@ def main():
     src = [tr(0.0, 100, "/a"), tr(0.70, 100, "/b")]
     check("deep on-grid dispatcher overlap is clean",
           topology_breaks(src, [tr(0.0, 170, None)], lin2), 0)
+
+    # Codex F6 counterexample: exact-integer early weld over DIFFERING
+    # values (A zeros, B ones, B starts 0.99 s = exactly 99 samples):
+    # payload comparison must fail LOUDLY.
+    src = [tr(0.0, 100, "/a", 0), tr(0.99, 100, "/b", 1)]
+    check("on-grid overlap with differing values fails loudly",
+          topology_breaks(src, [tr(0.0, 199, None)], lin2), 1)
+
+    # Identical payloads at the same junction: proven-lossless duplication.
+    srcA = [tr(0.0, 100, "/a", 7)]
+    srcB = [tr(0.99, 100, "/b", 7)]
+    check("on-grid overlap with equal values is clean",
+          topology_breaks(srcA + srcB, [tr(0.0, 199, None, 7)], lin2), 0)
 
     if FAILURES:
         print(f"\n{len(FAILURES)} topology test(s) FAILED: {FAILURES}")
