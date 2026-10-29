@@ -220,6 +220,31 @@ class Selection:
         except OSError:
             pass  # read-only location: validation still ran, just uncached
 
+    def decisions_for_day(self, d_iso: str):
+        """v0.4 execution contract (Codex resolver review F3): every
+        decision whose authorized window intersects [day, day+1), as
+        (path, population, source_format, orientation, window_start_ns,
+        window_end_ns, priority, reason). Midnight spill arrives here as
+        the previous day's explicit boundary_tail decision; there is no
+        separate tail mechanism."""
+        import calendar
+        from datetime import date as _date
+        d = _date.fromisoformat(d_iso)
+        d0 = calendar.timegm(d.timetuple()) * 1_000_000_000
+        d1 = d0 + 86400 * 1_000_000_000
+        try:
+            return list(self.conn.execute(
+                "SELECT sf.path, sf.population, sf.source_format, "
+                "cd.orientation, cd.window_start_ns, cd.window_end_ns, "
+                "cd.priority, cd.selection_reason "
+                "FROM component_decision cd JOIN selected_file sf "
+                "ON sf.file_id = cd.file_id "
+                "WHERE cd.window_start_ns < ? AND cd.window_end_ns > ? "
+                "ORDER BY cd.priority, sf.path, cd.orientation",
+                (d1, d0)))
+        except sqlite3.OperationalError:
+            return []  # pre-v0.4 artifact: caller refuses fail-closed
+
     def blocked_for_day(self, d_iso: str):
         """[(population, basis)] whose channel content could not be
         established for THIS day (the day offers files from a probe-blocked

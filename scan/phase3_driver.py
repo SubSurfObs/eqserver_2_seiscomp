@@ -1000,6 +1000,75 @@ def _write_day_replace(suds_convert, stream, sds_root, retries=3):
     return written
 
 
+def _clip_trace_ns(tr, ws_ns, we_ns):
+    """Clip one obspy trace to the authorized window [ws, we) in exact
+    integer nanoseconds. Returns (t0_ns, data_slice) or None."""
+    s0 = int(tr.stats.starttime.ns)
+    rate = round(float(tr.stats.sampling_rate))
+    if rate <= 0 or 1_000_000_000 % rate:
+        return None
+    dt = 1_000_000_000 // rate
+    n = len(tr.data)
+    i0 = max(0, -((s0 - ws_ns) // dt))
+    i1 = min(n, -((s0 - we_ns) // dt))
+    if i1 <= i0:
+        return None
+    return (s0 + i0 * dt, tr.data[i0:i1])
+
+
+def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
+                      read_errors):
+    """Per-file adapter (Codex resolver review F1/F4): read ONE source
+    file, relabel to target identity, return its traces. No cross-file
+    and no cross-format merging — a file's internal drift is split (a
+    bundle is one file), and everything else is the resolver's job."""
+    from obspy import Stream
+    if source_format == "suds":
+        stream, qc = suds_convert.convert_suds_files(
+            [path], network=net, station=sta)
+        for e in qc.get("read_errors", []):
+            read_errors.append((path, str(e)))
+        st = stream
+    else:
+        import io
+        from obspy import read
+        buf = io.BytesIO()
+        spans = []
+        _concat_zip_members([path], buf, read_errors, spans=spans)
+        b = buf.getvalue()
+        st = Stream()
+        if not b:
+            return st
+        try:
+            scan_status, segs = _drift_split_segments(b)
+        except Exception:
+            scan_status, segs = "scan_failed", None
+        if scan_status == "split":
+            for key, seglist in segs.items():
+                for seg in seglist:
+                    part = b"".join(b[o:o + L] for o, L in seg)
+                    try:
+                        st += read(io.BytesIO(part), format="MSEED")
+                    except Exception as fe:
+                        read_errors.append(
+                            (path, f"segment: {type(fe).__name__}: {fe}"))
+        else:
+            try:
+                st += read(io.BytesIO(b), format="MSEED")
+            except Exception as fe:
+                read_errors.append((path, f"{type(fe).__name__}: {fe}"))
+                return Stream()
+            if scan_status == "scan_failed":
+                read_errors.append(
+                    (path, "record-scan unparseable (single-file read)"))
+        for tr in st:
+            tr.stats.network = net
+        st = _enforce_band_instrument(st)
+    for tr in st:
+        tr.stats.location = loc
+    return st
+
+
 def _worker_convert_day(job):
     """Pickle-safe worker. Opens its own DB connection, imports suds_convert
     internally (so the parent doesn't have to pass the module across pickle).
@@ -1046,8 +1115,7 @@ def _worker_convert_day(job):
         floor_ratio = job["disk_size_floor_ratio"]
 
         selection_path = job.get("selection_path")
-        groups = None
-        boundary_rows = []
+        decisions = None  # v0.4 decision list in selection mode
         jan1_tail_unavailable = False
         if selection_path:
             # v3 path: the selection database is the ONLY source of file
@@ -1070,42 +1138,41 @@ def _worker_convert_day(job):
                         "blocked_populations": [
                             f"{pk} ({basis})" for pk, basis in blocked_pops],
                         "sds_files_written": []}
-            by_chans = {}
-            sel_rows = sel.files_for_day(d_iso)
-            # Row order is winner-first (fills sort last, review F5) and is
-            # PRESERVED into each group's file list and from there into the
-            # engines' read order — the merge's equal-start tie break.
-            # GROUP order matters too (Codex fix-review F5): a fill-only
-            # group (e.g. chans "N", rule short_fill) must write AFTER the
-            # winner-bearing group whose set overlaps it (e.g. "NE"),
-            # because the first write becomes the protected existing data.
-            fill_only = {}
-            prio_map = {}  # path -> selection priority tier (0 = winner)
-            for path, chans, rule in sel_rows:
-                by_chans.setdefault(chans, []).append(path)
-                prio_map[path] = (1 if rule.startswith("short_fill")
-                                  else 2 if rule.startswith("gap_fill")
-                                  else 0)
-                if not rule.startswith(("short_fill", "gap_fill")):
-                    fill_only[chans] = False
+            # v0.4 EXECUTION CONTRACT (Codex resolver review F3): the day's
+            # work is its component_decision rows — per (file, orientation),
+            # with authorized windows and explicit priorities. Midnight
+            # spill arrives as the previous day's boundary_tail decision;
+            # Jan 1's lives in the prior year's artifact.
+            decisions = sel.decisions_for_day(d_iso)
+            prev = d - timedelta(days=1)
+            if prev.year != d.year:
+                if job.get("prev_selection_path"):
+                    psel = Selection(job["prev_selection_path"], net, sta,
+                                     prev.year, job["db_path"])
+                    decisions = list(decisions) + list(
+                        psel.decisions_for_day(d_iso))
+                    psel.close()
                 else:
-                    fill_only.setdefault(chans, True)
-            groups = [(None if ch == "*" else set(ch), paths)
-                      for ch, paths in sorted(
-                          by_chans.items(),
-                          key=lambda kv: (fill_only.get(kv[0], False), kv[0]))]
-            files = [p for _, ps in groups for p in ps]
-            # Skip-unchanged fast path: a day whose input fingerprint
-            # matches a prior commit in this staging root, with outputs
-            # intact, is already converted — skip without reading sources.
+                    jan1_tail_unavailable = True
+            if not decisions:
+                if sel.files_for_day(d_iso):
+                    # Rows exist but no decisions: a pre-v0.4 artifact.
+                    sel.close()
+                    return {"status": "error", "date": d_iso, "n_files": 0,
+                            "n_boundary_files": 0, "sds_files_written": [],
+                            "error": "selection has no component decisions "
+                                     "(pre-v0.4 artifact) — recompile"}
+                sel.close()
+                return {"status": "no_files", "date": d_iso, "n_files": 0,
+                        "n_boundary_files": 0, "sds_files_written": []}
+            # Skip-unchanged fast path, fingerprinted over the DECISIONS
+            # (path, orientation, window, priority) plus manifest-recorded
+            # source identities and all code SHAs (F7).
+            dec_rows = sorted((p, o, f"{ws}:{we}:{pr}")
+                              for p, _pop, _f, o, ws, we, pr, _r in decisions)
             if commit and job.get("skip_unchanged"):
-                # Fix-review F7: bind the manifest-recorded size+mtime of
-                # every selected source file into the fingerprint, so a
-                # re-indexed source change forces reconversion (the origin
-                # archive itself is immutable by invariant; live stat of
-                # 1,440 NFS files per day would defeat the fast path).
                 src_ids = {}
-                paths_only = [r[0] for r in sel_rows]
+                paths_only = sorted({r[0] for r in dec_rows})
                 for i in range(0, len(paths_only), 500):
                     b = paths_only[i:i + 500]
                     qm = ",".join("?" * len(b))
@@ -1113,37 +1180,17 @@ def _worker_convert_day(job):
                             f"SELECT path, size_bytes, mtime FROM files "
                             f"WHERE path IN ({qm})", b):
                         src_ids[p] = f"{sz}:{mt}"
-                fp = _day_fingerprint(sel_rows, job.get("code_id", "?"),
+                fp = _day_fingerprint(dec_rows, job.get("code_id", "?"),
                                       net, sta, loc, src_ids)
                 prior = _load_skip_ledger(staging).get(d_iso)
                 if prior and prior.get("fingerprint") == fp and _outputs_intact(prior):
                     sel.close()
-                    # Verified-intact outputs are REAL inventory (F7): the
-                    # day counts as succeeded and its files are reported.
                     return {"status": "skipped_unchanged", "date": d_iso,
-                            "n_files": len(files), "n_boundary_files": 0,
+                            "n_files": len(paths_only),
+                            "n_boundary_files": 0,
                             "sds_files_written": [
                                 [p, s] for p, s, *_ in prior.get("outputs", [])]}
                 job["_fingerprint"] = fp
-            prev = d - timedelta(days=1)
-            if prev.year == d.year:
-                boundary_rows = sel.tail_for_day(prev.isoformat())
-            elif job.get("prev_selection_path"):
-                # Jan 1 (review 2026-10-23 F3): the prior year's tail comes
-                # from the prior year's COMPILED selection — never the legacy
-                # runtime query. Fail-closed: a stale/mismatched prior
-                # selection raises and the day errors loudly.
-                psel = Selection(job["prev_selection_path"], net, sta,
-                                 prev.year, job["db_path"])
-                boundary_rows = psel.tail_for_day(prev.isoformat())
-                psel.close()
-            else:
-                # No prior-year selection supplied: convert WITHOUT the tail
-                # (first SS seconds of Jan 1 stay unconverted) and flag it —
-                # fail-closed beats pulling unselected files.
-                boundary_rows = []
-                jan1_tail_unavailable = True
-            boundary_files = [p for p, _ in boundary_rows]
             sel.close()
         else:
             # Legacy (Branch-1) path: cross-source-aware runtime selection.
@@ -1222,80 +1269,90 @@ def _worker_convert_day(job):
                  "unsupported_recorder": 4, "qc_flagged": 3, "ok": 2,
                  "no_files": 1}
         try:
-            if groups is None:  # legacy (--legacy-chooser) mode only
+            if decisions is None:  # legacy (--legacy-chooser) mode only
                 r = _one(files, None, boundary_files)
             else:
-                # Selection mode (review F3): route each boundary tail only
-                # to channel groups its OWN selected channel set covers; a
-                # tail with channels no group's filter covers gets its own
-                # boundary-only call restricted to exactly those channels.
-                calls = []          # (orient_filter, group_files, tail_paths)
-                routed = {}         # tail path -> orientations already routed
-                for F, gfiles in groups:
-                    blist = []
-                    if F is not None:
-                        for path, ch in boundary_rows:
-                            if ch != "*" and F <= set(ch):
-                                blist.append(path)
-                                routed.setdefault(path, set()).update(F)
-                    calls.append((F, gfiles, blist))
-                tail_only = {}      # frozenset(chans) or None -> [paths]
-                for path, ch in boundary_rows:
-                    if ch == "*":
-                        tail_only.setdefault(None, []).append(path)
-                        continue
-                    leftover = set(ch) - routed.get(path, set())
-                    if leftover:
-                        tail_only.setdefault(frozenset(leftover), []).append(path)
-                for key in sorted(tail_only, key=lambda k: "" if k is None
-                                  else "".join(sorted(k))):
-                    calls.append((None if key is None else set(key),
-                                  [], tail_only[key]))
-                # RESOLVER PATH (Codex F5/F6 design, 2026-10-27): engines
-                # only read and relabel; selection priority tiers overlay
-                # in memory; the day is written ONCE by the replace writer.
-                # No read/format/write order influences which samples win.
-                r = None
-                tier_streams = []
-                for ofilt, gfiles, blist in calls:
-                    if not gfiles and not blist:
-                        continue
-                    tiers = {}
-                    for f in gfiles:
-                        tiers.setdefault(prio_map.get(f, 0),
-                                         ([], []))[0].append(f)
-                    for f in blist:
-                        tiers.setdefault(0, ([], []))[1].append(f)
-                    for tier in sorted(tiers):
-                        tf, tb = tiers[tier]
-                        gr = _one(tf, ofilt, tb, resolve=True)
-                        st_ = gr.pop("stream", None)
-                        if st_ is not None and len(st_) > 0:
-                            tier_streams.append((tier, st_))
-                        r = gr if r is None else _combine(r, gr)
-                if r is None:
-                    r = {"status": "no_files", "n_files": 0,
-                         "n_boundary_files": 0}
-                elif tier_streams and r.get("status") in ("ok", "qc_flagged"):
-                    resolved = _resolve_tiers(tier_streams)
-                    r["n_traces"] = len(resolved)
-                    if commit and len(resolved) > 0:
-                        written = _write_day_replace(suds_convert, resolved,
-                                                     staging)
-                        r["sds_files_written"] = [(str(p), sz)
-                                                  for p, sz in written]
-                n_g = sum(1 for F, g, _b in calls if g)
-                if n_g > 1:
-                    r["n_chan_groups"] = n_g
+                # DECISION-DRIVEN CONVERSION (Codex resolver review F1+F4):
+                # each selected file is read ONCE by its own-format per-file
+                # adapter — no cross-file and no cross-format merging — then
+                # every decision clips that file's traces of its orientation
+                # to the authorized window; the integer-ns resolver overlays
+                # by explicit priority; the day is written ONCE.
+                read_errors = []
+                n_bogus = 0
+                by_path = {}
+                for path, _pop, fmt, orient, ws, we, prio, _rsn in decisions:
+                    by_path.setdefault((path, fmt), []).append(
+                        (orient, int(ws), int(we), int(prio)))
+                mixed = len({fmt for _p, fmt in by_path}) > 1
+                by_key = {}
+                templates = {}
+                for (path, fmt), drows in sorted(by_path.items()):
+                    st = _read_file_traces(path, fmt, net, sta, loc,
+                                           suds_convert, read_errors)
+                    bog = []
+                    st = _filter_bogus_year_traces(
+                        st, DEFAULT_MIN_DATA_YEAR, bog)
+                    n_bogus += len(bog)
+                    for tr in st:
+                        o = (tr.stats.channel or "?")[-1:].upper()
+                        key = (tr.id, round(float(tr.stats.sampling_rate), 6))
+                        for orient, ws, we, prio in drows:
+                            if o != orient:
+                                continue
+                            piece = _clip_trace_ns(tr, ws, we)
+                            if piece is None:
+                                continue
+                            templates.setdefault(key, tr.stats)
+                            by_key.setdefault(key, []).append({
+                                "t0_ns": piece[0],
+                                "rate": float(tr.stats.sampling_rate),
+                                "data": piece[1], "priority": prio,
+                                "path": f"{path}#{orient}#{prio}"})
+                from lib.resolver import resolve_segments
+                from obspy import (Stream as _S, Trace as _T,
+                                   UTCDateTime as _U)
+                import numpy as _np
+                resolved_stream = _S()
+                for key in sorted(by_key):
+                    pieces = resolve_segments(by_key[key])
+                    prev_end = None
+                    dtn = 1_000_000_000 // round(key[1])
+                    for sgm in pieces:
+                        if prev_end is not None and sgm["t0_ns"] < prev_end:
+                            raise RuntimeError(
+                                f"resolver overlap for {key}")
+                        prev_end = sgm["t0_ns"] + len(sgm["data"]) * dtn
+                        stats = templates[key].copy()
+                        stats.starttime = _U(ns=sgm["t0_ns"])
+                        data = _np.ascontiguousarray(sgm["data"])
+                        stats.npts = len(data)
+                        resolved_stream += _T(data=data, header=stats)
+                resolved_stream = _trim_to_day(resolved_stream, d)
+                r = {"status": "ok" if not read_errors else "qc_flagged",
+                     "n_files": len(by_path), "n_boundary_files": 0,
+                     "n_traces": len(resolved_stream),
+                     "rate_hz": (resolved_stream[0].stats.sampling_rate
+                                 if len(resolved_stream) else None),
+                     "read_errors": len(read_errors),
+                     "bogus_year_traces_dropped": n_bogus,
+                     "sds_files_written": []}
+                if mixed:
+                    r["mixed_formats"] = True
+                if read_errors:
+                    r["error"] = str(read_errors[:3])
+                if commit and len(resolved_stream) > 0:
+                    written = _write_day_replace(
+                        suds_convert, resolved_stream, staging)
+                    r["sds_files_written"] = [(str(p), sz)
+                                              for p, sz in written]
                 if jan1_tail_unavailable:
                     r["jan1_tail_unavailable"] = True
         except TimeoutError as e:
-            r = {"status": "timeout", "n_files": len(files),
-                 "n_boundary_files": len(boundary_files),
+            r = {"status": "timeout", "n_files": 0, "n_boundary_files": 0,
                  "error": str(e)}
         except Exception as e:
-            r = {"status": "error", "n_files": len(files),
-                 "n_boundary_files": len(boundary_files),
+            r = {"status": "error", "n_files": 0, "n_boundary_files": 0,
                  "error": f"{type(e).__name__}: {e}",
                  "traceback": traceback.format_exc()}
         r["date"] = d_iso
