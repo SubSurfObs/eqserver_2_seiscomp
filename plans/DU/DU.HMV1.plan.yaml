@@ -1,8 +1,8 @@
 station: HMV1
 network: DU
-location: '00'
+location: '60'
 naming: server_verbatim
-status: needs_review
+status: ok
 epochs:
 - id: 1
   start: '2008-01-01'
@@ -10,84 +10,192 @@ epochs:
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 2
   start: '2009-01-01'
   end: '2009-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 3
   start: '2017-01-01'
   end: '2017-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 4
   start: '2018-01-01'
   end: '2018-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 5
   start: '2019-01-01'
   end: '2019-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 6
   start: '2020-01-01'
   end: '2020-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 7
   start: '2021-01-01'
   end: '2021-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 8
   start: '2022-01-01'
   end: '2022-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 9
   start: '2023-01-01'
   end: '2023-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 10
   start: '2024-01-01'
   end: '2024-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 11
   start: '2025-01-01'
   end: '2025-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 - id: 12
   start: '2026-01-01'
   end: '2026-12-31'
   recorder: echopro
   days: 0
   classifications: {}
-  channels: []
+  channels:
+  - component: E
+    target: DU.HMV1.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.HMV1.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.HMV1.60.EHZ
+    basis: server_verbatim:2026
 flagged_days: []
 generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
 notes:
@@ -102,76 +210,3 @@ notes:
 - '2023: codes from nearest server year 2026'
 - '2024: codes from nearest server year 2026'
 - '2025: codes from nearest server year 2026'
-unresolved:
-- 'HMV1 2008: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2008: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2008: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2009: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2009: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2009: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2017: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2017: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2017: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2018: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2018: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2018: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2019: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2019: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2019: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2020: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2020: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2020: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2021: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2021: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2021: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2022: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2022: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2022: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2023: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2023: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2023: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2024: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2024: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2024: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2025: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2025: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2025: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'
-- 'HMV1 2026: orientation E has several server codes [(''60'', ''EHE''), (''B0'',
-  ''EHE'')] (server year 2026)'
-- 'HMV1 2026: orientation N has several server codes [(''60'', ''EHN''), (''B0'',
-  ''EHN'')] (server year 2026)'
-- 'HMV1 2026: orientation Z has several server codes [(''60'', ''EHZ''), (''B0'',
-  ''EHZ'')] (server year 2026)'

@@ -60,7 +60,7 @@ def seed_sp_band(rate):
     return None
 
 
-def make_plan(sta, rows, lt, facts=None):
+def make_plan(sta, rows, lt, facts=None, ruling=None):
     years = sorted({r[0] for r in rows})
     total = sum(r[2] for r in rows) or 1
     mseed_frac = sum(r[2] for r in rows if r[1] in MSEED) / total
@@ -99,6 +99,12 @@ def make_plan(sta, rows, lt, facts=None):
                     by_orient.setdefault(chan[-1], []).append((loc, chan))
             chans = []
             for orient, cands in sorted(by_orient.items()):
+                if len(cands) > 1 and ruling:
+                    pick = [c for c in cands
+                            if c[0] == str(ruling.get("location"))
+                            and c[1][:2] == ruling.get("code")]
+                    if len(pick) == 1:
+                        cands = pick
                 if len(cands) > 1:
                     unresolved.append(
                         f"{sta} {y}: orientation {orient} has several server "
@@ -146,6 +152,8 @@ def main():
     census = json.load(open(args.census))
     lt_all = json.load(open(args.lt_codes))
     facts = json.load(open(args.facts)) if Path(args.facts).exists() else {}
+    rp = Path("metadata/derived/du_naming_rulings.yaml")
+    rulings = yaml.safe_load(open(rp)) if rp.exists() else {}
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     for sta in [s.strip() for s in args.stations.split(",") if s.strip()]:
@@ -153,7 +161,8 @@ def main():
         if not rows:
             print(f"SKIP {sta}: no census rows")
             continue
-        plan, why = make_plan(sta, rows, lt_all.get(sta), facts)
+        plan, why = make_plan(sta, rows, lt_all.get(sta), facts,
+                              (rulings or {}).get(sta))
         if plan is None:
             print(f"UNRESOLVED {why}")
             continue

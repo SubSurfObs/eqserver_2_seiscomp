@@ -1,0 +1,9 @@
+# Operator naming rulings (Dan, 2026-10-30) for DU stations where the
+# SeisComP server holds more than one code for the same component.
+# make_du_plans.py picks the candidate matching (location, first two
+# letters). Correctable later (operator: renaming is cheap).
+DJO:  {location: "0",  code: "HH"}   # matches the EqServer files (HHZ, 200 sps, loc 0)
+DNL2: {location: "60", code: "EH"}   # EchoPro convention (as CLV2, BRTS)
+RNDA: {location: "50", code: "EH"}   # short-period; files labelled SH*
+WALR: {location: "60", code: "EH"}   # EchoPro convention
+HMV1: {location: "60", code: "EH"}   # server holds identical copies at 60 and B0; operator fallback = 60
