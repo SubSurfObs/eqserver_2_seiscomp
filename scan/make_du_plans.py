@@ -44,7 +44,23 @@ def lt_codes_for(lt, year):
     return lt[near], int(near)
 
 
-def make_plan(sta, rows, lt):
+def seed_sp_band(rate):
+    """SEED short-period band letter by sample rate (operator default when
+    the instrument class is unknown)."""
+    if rate is None:
+        return None
+    if rate >= 1000:
+        return "G"
+    if rate >= 250:
+        return "D"
+    if rate >= 80:
+        return "E"
+    if rate >= 10:
+        return "S"
+    return None
+
+
+def make_plan(sta, rows, lt, facts=None):
     years = sorted({r[0] for r in rows})
     total = sum(r[2] for r in rows) or 1
     mseed_frac = sum(r[2] for r in rows if r[1] in MSEED) / total
@@ -54,8 +70,21 @@ def make_plan(sta, rows, lt):
     elif mseed_frac >= 0.95:
         naming = "passthrough"
     else:
-        return None, f"{sta}: not on server and SUDS-era — needs the SEED " \
-                     f"short-period default pass (sample rate per epoch)"
+        # Not on the server, SUDS (wholly or partly): SEED short-period
+        # default from the sample rate measured in the station's own files
+        # (metadata/derived/du_station_facts.json). miniSEED files of the
+        # same station keep their header names (naming passthrough; the
+        # SEED map applies to SUDS only).
+        f = (facts or {}).get(sta) or {}
+        rates = f.get("rates") or []
+        band = seed_sp_band(rates[0]) if (f.get("format") == "suds"
+                                          and len(rates) == 1) else None
+        if band is None:
+            return None, (f"{sta}: not on server, SUDS — no single measured "
+                          f"SUDS sample rate (facts: format={f.get('format')}, "
+                          f"rates={rates}); SEED default cannot be derived")
+        naming = "passthrough"
+        seed_targets = {o: f"DU.{sta}.00.{band}H{o}" for o in "ZNE"}
     locs = []
     for i, y in enumerate(years, 1):
         yr_rows = [r for r in rows if r[0] == y]
@@ -83,6 +112,11 @@ def make_plan(sta, rows, lt):
             ep["channels"] = chans
             if src_year != y:
                 notes.append(f"{y}: codes from nearest server year {src_year}")
+        if naming == "passthrough" and "seed_targets" in locals():
+            ep["channels"] = [{"component": o, "target": t,
+                               "basis": f"seed_short_period_default:"
+                                        f"{rates[0]:g}sps"}
+                              for o, t in sorted(seed_targets.items())]
         epochs.append(ep)
     plan = {
         "station": sta, "network": "DU",
@@ -106,9 +140,12 @@ def main():
     ap.add_argument("--lt-codes", default="metadata/derived/du_lt_codes.json")
     ap.add_argument("--stations", required=True, help="comma-separated")
     ap.add_argument("--out-dir", default="plans/DU")
+    ap.add_argument("--facts", default="metadata/derived/du_station_facts.json",
+                    help="sample-file facts (format, measured rates)")
     args = ap.parse_args()
     census = json.load(open(args.census))
     lt_all = json.load(open(args.lt_codes))
+    facts = json.load(open(args.facts)) if Path(args.facts).exists() else {}
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     for sta in [s.strip() for s in args.stations.split(",") if s.strip()]:
@@ -116,7 +153,7 @@ def main():
         if not rows:
             print(f"SKIP {sta}: no census rows")
             continue
-        plan, why = make_plan(sta, rows, lt_all.get(sta))
+        plan, why = make_plan(sta, rows, lt_all.get(sta), facts)
         if plan is None:
             print(f"UNRESOLVED {why}")
             continue

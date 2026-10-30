@@ -1,0 +1,25 @@
+station: S88M
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2011-01-01'
+  end: '2011-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88M.00.DHE
+    basis: seed_short_period_default:250sps
+  - component: N
+    target: DU.S88M.00.DHN
+    basis: seed_short_period_default:250sps
+  - component: Z
+    target: DU.S88M.00.DHZ
+    basis: seed_short_period_default:250sps
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes: []

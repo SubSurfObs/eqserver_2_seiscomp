@@ -1,0 +1,185 @@
+station: S88U
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2011-01-01'
+  end: '2011-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 2
+  start: '2012-01-01'
+  end: '2012-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 3
+  start: '2013-01-01'
+  end: '2013-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 4
+  start: '2014-01-01'
+  end: '2014-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 5
+  start: '2015-01-01'
+  end: '2015-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 6
+  start: '2016-01-01'
+  end: '2016-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 7
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 8
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 9
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 10
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 11
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.S88U.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.S88U.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.S88U.00.EHZ
+    basis: seed_short_period_default:100sps
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes: []
