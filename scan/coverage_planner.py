@@ -194,11 +194,13 @@ class ChannelKnowledge:
         self.cache = {}    # (pop, 'YYYY-MM') -> (chans fset, basis, [paths], [errors])
         self.per_file = {}  # (pop, 'YYYY-MM') -> {path: frozenset(chans)}
         self.probe_enabled = probe_enabled
+        self.sizes = {}  # (pop, 'YYYY-MM') -> {path: size_bytes}
 
     def observe(self, cand, month_key, day_of_month):
         """Pass 1: register an unsuffixed candidate as a probe sample."""
         key = (cand["population"], month_key)
         self.all_paths.setdefault(key, []).append(cand["path"])
+        self.sizes.setdefault(key, {})[cand["path"]] = cand.get("size") or 0
         s = self.samples.setdefault(
             key, {"first": [], "mid": [], "last": []})
         if len(s["first"]) < self.N_FIRST:
@@ -208,6 +210,40 @@ class ChannelKnowledge:
         s["last"].append(cand["path"])
         if len(s["last"]) > self.N_LAST:
             s["last"].pop(0)
+
+    def _probe_file(self, p):
+        """Full per-file evidence (Codex resolver review F5):
+        status is 'resolved' (recognized channels), 'empty' (no
+        waveform traces at all), or 'unresolved' (read errors,
+        or traces whose labels nobody recognizes) — unresolved
+        NEVER silently rejects; it blocks the affected days."""
+        from qa_verify import read_source_file
+        ie, ic = [], {}
+        rec = {"chans": frozenset(), "raw": [], "traces": 0,
+               "status": "unresolved", "err": ""}
+        try:
+            found = set()
+            for t in read_source_file(p, ie, ic):
+                rec["traces"] += 1
+                rec["raw"].append(t.get("src_chan", "?"))
+                if t["orient"] in ORIENTATIONS:
+                    found.add(t["orient"])
+            rec["chans"] = frozenset(found)
+            dropped = ic.get("dropped_labels") or []
+            rec["raw"] += [f"?{c}" for c in dropped]
+            if ie:
+                rec["status"] = "unresolved"
+                rec["err"] = str([e.get("err", str(e))
+                                  for e in ie][:2])
+            elif found:
+                rec["status"] = "resolved"
+            elif dropped or rec["traces"]:
+                rec["status"] = "unresolved"  # labels unknown
+            else:
+                rec["status"] = "empty"  # no waveform content
+        except Exception as e:
+            rec["err"] = f"{type(e).__name__}: {e}"
+        return p, rec
 
     def probe_all(self):
         """End of pass 1: probe every observed (population, month) once."""
@@ -254,6 +290,40 @@ class ChannelKnowledge:
             sets = set(per_path.values())
             agreed = next(iter(sets)) if len(sets) == 1 else None
             if probed and not errors and agreed:
+                # SIZE-OUTLIER CHECK (2026-10-30, CLV2 2021): sampled probes
+                # can agree on "Z only" while rare files in the month carry
+                # three channels (8 one-minute 3-channel files per day at
+                # CLV2 — their E/N were silently dropped). A file holding
+                # more channels is several times larger, so every file well
+                # above the month's median size is probed individually —
+                # near-free (sizes are in the index; only outliers are read).
+                sz = self.sizes.get(key, {})
+                vals = sorted(v for v in sz.values() if v)
+                med = vals[len(vals) // 2] if vals else 0
+                outliers = [q for q, v in sz.items()
+                            if med and v > 1.6 * med and q not in per_path]
+                if outliers:
+                    from concurrent.futures import ThreadPoolExecutor
+                    with ThreadPoolExecutor(max_workers=8) as ex:
+                        recs = list(ex.map(self._probe_file, outliers))
+                    differing = [q for q, rec in recs
+                                 if rec["chans"] != agreed
+                                 or rec["status"] != "resolved"]
+                    if differing:
+                        full = {q: {"chans": agreed, "raw": [], "traces": -1,
+                                    "status": "resolved", "err": ""}
+                                for q in self.all_paths.get(key, [])}
+                        for q, rec in recs:
+                            full[q] = rec
+                        self.per_file[key] = full
+                        union = frozenset().union(
+                            *(v["chans"] for v in full.values()))
+                        self.cache[key] = (
+                            union, "per_file_size_outliers", probed,
+                            notes + [f"{len(differing)} size-outlier file(s) "
+                                     f"differ from agreed "
+                                     f"{''.join(sorted(agreed))}"])
+                        continue
                 self.cache[key] = (agreed, "header_probe_agreed", probed, notes)
             elif probed and (errors or len(sets) > 1):
                 # ADAPTIVE PER-FILE EVIDENCE (Codex design B, 2026-10-27):
@@ -267,38 +337,6 @@ class ChannelKnowledge:
                 # channels contribute nothing and are recorded.
                 detail = [f"{p}: {''.join(sorted(s)) or '-'}"
                           for p, s in per_path.items()]
-                def _probe_one(p):
-                    """Full per-file evidence (Codex resolver review F5):
-                    status is 'resolved' (recognized channels), 'empty' (no
-                    waveform traces at all), or 'unresolved' (read errors,
-                    or traces whose labels nobody recognizes) — unresolved
-                    NEVER silently rejects; it blocks the affected days."""
-                    ie, ic = [], {}
-                    rec = {"chans": frozenset(), "raw": [], "traces": 0,
-                           "status": "unresolved", "err": ""}
-                    try:
-                        found = set()
-                        for t in read_source_file(p, ie, ic):
-                            rec["traces"] += 1
-                            rec["raw"].append(t.get("src_chan", "?"))
-                            if t["orient"] in ORIENTATIONS:
-                                found.add(t["orient"])
-                        rec["chans"] = frozenset(found)
-                        dropped = ic.get("dropped_labels") or []
-                        rec["raw"] += [f"?{c}" for c in dropped]
-                        if ie:
-                            rec["status"] = "unresolved"
-                            rec["err"] = str([e.get("err", str(e))
-                                              for e in ie][:2])
-                        elif found:
-                            rec["status"] = "resolved"
-                        elif dropped or rec["traces"]:
-                            rec["status"] = "unresolved"  # labels unknown
-                        else:
-                            rec["status"] = "empty"  # no waveform content
-                    except Exception as e:
-                        rec["err"] = f"{type(e).__name__}: {e}"
-                    return p, rec
 
                 # Re-probe EVERYTHING per-file (Codex launch list, probe
                 # errors): a sampled probe that partially read could hide
@@ -311,7 +349,7 @@ class ChannelKnowledge:
                 # cohort blew the study's 1 h compile budget, 2026-10-28).
                 from concurrent.futures import ThreadPoolExecutor
                 with ThreadPoolExecutor(max_workers=8) as ex:
-                    for p, rec in ex.map(_probe_one, todo):
+                    for p, rec in ex.map(self._probe_file, todo):
                         full[p] = rec
                         if rec["err"]:
                             errors.append(f"{p}: {rec['err']}")
@@ -361,7 +399,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
         per_file = None
         if unsuffixed:
             pop_set, basis, _paths, _errs = know.channels(pk, month_key)
-            if basis == "per_file_probe":
+            if basis.startswith("per_file"):
                 # Mixed cohort (WPNH/TYHS class): channel knowledge is
                 # exact PER FILE; a file with no recognised channels
                 # contributes nothing (recorded below), the rest convert.
