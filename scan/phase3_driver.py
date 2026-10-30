@@ -1381,7 +1381,16 @@ def _worker_convert_day(job):
                     r["mixed_formats"] = True
                 if read_errors:
                     r["error"] = str(read_errors[:3])
-                if len(resolved_stream) == 0:
+                if len(resolved_stream) == 0 and all(
+                        d_[7] == "boundary_tail" for d_ in decisions):
+                    # Only the previous day's midnight spill-over was
+                    # authorized and it carried nothing into today: an
+                    # empty day, not a failure (live scrutiny 2026-10-30,
+                    # NSTM 2025-10-19 false error).
+                    r["status"] = "no_files"
+                    if commit:
+                        _quarantine_stale_day(staging, net, sta, d)
+                elif len(resolved_stream) == 0:
                     # Decisions existed but nothing usable came out:
                     # a FAILED day, never a success (Codex launch F1).
                     r["status"] = "error"

@@ -134,14 +134,24 @@ def population_key(source_type: str, path: str, hhmm, flags) -> str:
     return f"{source_type}:{sep}{n_tok}"
 
 
-def minute_slots(cand) -> set:
-    """Minute keys a candidate file covers (a bundle covers its hour)."""
+def minute_slots(cand, span_min=1) -> set:
+    """Minute keys a candidate file covers: an hour bundle covers its hour;
+    any other file covers `span_min` minutes from its start — the file
+    length MEASURED for its population-month (ChannelKnowledge.span_for).
+    Live scrutiny 2026-10-30: DAMM/NSTM write five-minute files; assuming
+    one minute authorized 2 of every 5 minutes and dropped 60% of the
+    data."""
     name = Path(cand["path"]).name
     m = HOURBUNDLE_RE.search(name)
     if m:
         hh = m.group(1)
         return {f"{hh}{mm:02d}" for mm in range(60)}
-    return {cand["hhmm"]} if cand["hhmm"] else set()
+    hhmm = cand["hhmm"]
+    if not hhmm or len(hhmm) != 4 or not hhmm.isdigit():
+        return set()
+    m0 = int(hhmm[:2]) * 60 + int(hhmm[2:])
+    return {f"{mm // 60:02d}{mm % 60:02d}"
+            for mm in range(m0, min(1440, m0 + max(1, span_min)))}
 
 
 def load_day_candidates(db, day: date_cls, minimus: bool):
@@ -195,6 +205,48 @@ class ChannelKnowledge:
         self.per_file = {}  # (pop, 'YYYY-MM') -> {path: frozenset(chans)}
         self.probe_enabled = probe_enabled
         self.sizes = {}  # (pop, 'YYYY-MM') -> {path: size_bytes}
+        self.span_samples = {}  # (pop, 'YYYY-MM') -> {"first","mid","last"}
+        self.spans = {}  # (pop, 'YYYY-MM') -> measured file length, minutes
+        self.span_evidence = {}  # (pop, 'YYYY-MM') -> [seconds per probed file]
+
+    def observe_span(self, cand, month_key, day_of_month):
+        """Pass 1, EVERY candidate (suffixed too): sample a few files per
+        population-month whose real duration will be measured."""
+        s = self.span_samples.setdefault(
+            (cand["population"], month_key),
+            {"first": None, "mid": None, "last": None})
+        if s["first"] is None:
+            s["first"] = cand["path"]
+        if day_of_month >= 14 and s["mid"] is None:
+            s["mid"] = cand["path"]
+        s["last"] = cand["path"]
+
+    def measure_spans(self):
+        """Read the sampled files and record each population-month's file
+        length in whole minutes (ceiling), from actual header times."""
+        from qa_verify import read_source_file
+        import math
+        for key, s in sorted(self.span_samples.items()):
+            secs = []
+            for p in dict.fromkeys(v for v in s.values() if v):
+                try:
+                    trs = read_source_file(p, [], {})
+                except Exception:
+                    continue
+                if not trs:
+                    continue
+                t0 = min(float(t["start"].timestamp) for t in trs)
+                t1 = max(float(t["start"].timestamp)
+                         + len(t["data"]) / t["rate"] for t in trs
+                         if t["rate"] > 0)
+                if 0 < t1 - t0 <= 3700:
+                    secs.append(round(t1 - t0, 1))
+            self.span_evidence[key] = secs
+            if secs:
+                self.spans[key] = max(1, min(60, math.ceil(max(secs) / 60 - 0.05)))
+
+    def span_for(self, population, month_key):
+        return self.spans.get((population, month_key), 1)
 
     def observe(self, cand, month_key, day_of_month):
         """Pass 1: register an unsuffixed candidate as a probe sample."""
@@ -449,7 +501,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
         def coverage(files):
             slots = set()
             for f in files:
-                slots |= minute_slots(f)
+                slots |= minute_slots(f, know.span_for(f["population"], month_key))
             return slots
 
         ranked = sorted(
@@ -469,7 +521,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             e["rule"] = e["rule"] or f"winner:{orient}:{win_pk}"
             e.setdefault("by_orient", {})[orient] = f"winner:{orient}:{win_pk}"
             e.setdefault("o_slots", {}).setdefault(orient, set()).update(
-                minute_slots(f))
+                minute_slots(f, know.span_for(f["population"], month_key)))
             e["cand"] = f
         # Sub-minute gap-fill: a winner file well below its population's
         # median size is likely seconds short; also take the best other
@@ -490,7 +542,8 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                         short_minutes.discard(f["hhmm"])
         for pk, fs, _cov in ranked[1:]:
             for f in fs:
-                extra = minute_slots(f) - covered
+                extra = (minute_slots(f, know.span_for(f["population"], month_key))
+                         - covered)
                 if extra:
                     e = sel[f["path"]]
                     e["chans"].add(orient)
@@ -560,11 +613,14 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
     d = date_cls(year, 1, 1)
     while d.year == year:
         for c in load_day_candidates(src_db, d, minimus):
+            mk_ = f"{d.year}-{d.month:02d}"
+            know.observe_span(c, mk_, d.day)
             suf = c.get("chan_suffix")
             if not (suf and suf[-1].upper() in ORIENTATIONS):
-                know.observe(c, f"{d.year}-{d.month:02d}", d.day)
+                know.observe(c, mk_, d.day)
         d += timedelta(days=1)
     know.probe_all()
+    know.measure_spans()
 
     blocked_days = {}  # (population, basis) -> day count
     d = date_cls(year, 1, 1)
@@ -589,7 +645,8 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                 # Real covered minutes, not a one-hour guess: a 23-hour
                 # bundle must out-rank a 23:59 minute in the tail lookup
                 # when it truly carries the day's end (fix-review F3).
-                span = 60.0 * max(1, len(minute_slots(f)))
+                span = 60.0 * max(1, len(minute_slots(
+                    f, know.span_for(f["population"], mk))))
                 rows.append((iso, stream_base, f["population"], path,
                              f["hhmm"], span, "waveform", e["rule"],
                              "".join(sorted(e["chans"]))))
@@ -624,7 +681,8 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                     # gap-fill's window is the gap it supplies, never the
                     # whole file), one decision row per contiguous run.
                     slots = sorted((e.get("o_slots") or {}).get(orient)
-                                   or minute_slots(f))
+                                   or minute_slots(
+                                       f, know.span_for(f["population"], mk)))
                     runs = []
                     if slots:
                         mins = [int(s0[:2]) * 60 + int(s0[2:])
@@ -715,6 +773,10 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
     # 2026-10-27).
     n_days_tbl, n_rows_tbl = out.execute(
         "SELECT COUNT(DISTINCT date), COUNT(*) FROM selection").fetchone()
+    out.execute("INSERT OR REPLACE INTO meta VALUES ('file_spans', ?)",
+                (json.dumps({f"{pk}|{mo}": {"minutes": know.spans.get((pk, mo), 1),
+                                             "measured_s": know.span_evidence.get((pk, mo), [])}
+                             for (pk, mo) in sorted(know.span_samples)}),))
     out.execute("INSERT OR REPLACE INTO meta VALUES ('complete_marker','1')")
     out.execute("INSERT OR REPLACE INTO meta VALUES ('n_days', ?)",
                 (str(n_days_tbl),))
