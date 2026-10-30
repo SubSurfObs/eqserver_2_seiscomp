@@ -207,6 +207,29 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-30 (night) — DU WAVE 2 LAUNCHED (36 stations, full back catalogues)
+
+Operator approved (2026-10-30): (1) NSTM one-sample source ambiguity
+ACCEPTED — 2025-08-21 00:11:00.000 has two different values at the same
+timestamp inside one source ZIP; output deterministically keeps the
+earlier trace's value (Codex 7ae939e); documented, not reconverted.
+(2) pin `c69e08f` = conversion code 12b46bc (Codex PROCEED) + wave-2
+plans; (3) wave 2. Running from frozen checkout
+`~/projects/SubSurfObs/eqserver_2_seiscomp_w2` as 4 station-disjoint
+shards (~10,460 station-days each), queues
+`/mnt/seiscomp_staging/eqserver_sweep_w2_s{0..3}`, status VM
+`~/v3_prod/w2.status`. DAMM/NSTM 2025 kept from the Codex-audited
+rebuild (records seeded into s3/s0). Wave-1 LKHRT 2023 + CLV2 2021
+SUPERSEDED (held in eqserver_sweep_v3/held.jsonl; CLV2's old run stopped
+mid-way, never wrote convert_done) — both reconverted in wave 2.
+Held from wave 2: HMV1 (server has EH* at locations 60 AND B0 — operator
+ruling), TPSOP (mixed formats, no measured SUDS rate), DJO/DNL2/RNDA/WALR
+(operator naming ruling), ADE2/GLDS/GLN/MPTV/MYP (Claude checking).
+Indexing the 21 unindexed DU stations (15 + BRTS PLMR ROBE STR2 SUND
+WILM) into `~/station_dbs_idx2` (log `~/v3_prod/idx2.log`).
+**PROMOTION NOTE:** promote from eqserver_sweep_w2_s0..s3 only; v3 and
+v3_r2 queues are superseded for these station-years.
+
 ## 2026-10-30 (evening) — Codex live scrutiny caught the five-minute-file defect
 
 Codex's live sample checks found DAMM/NSTM 2025 kept 40% of the data:
