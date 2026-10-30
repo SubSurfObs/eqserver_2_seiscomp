@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: c69e08f      # operator-approved 2026-10-30 (wave 2: code 12b46bc + wave-2 plans)
+    pinned: d23ea86      # operator-approved 2026-10-30 (wave 2b: same conversion code + ruled plans)
     code_roots: [scan]
   sudspy:
     pinned: 0febe26      # operator-approved 2026-10-30
