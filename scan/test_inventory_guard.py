@@ -100,6 +100,12 @@ def main():
                 {"date": "2025-10-12", "status": "no_files"}]}}))
         check("clean unit (ok + no_files) is complete",
               manifest_day_failures(m)[1] == [])
+        for st in ("blocked_identity", "qc_flagged", "something_new"):
+            m.write_text(json.dumps({"eqserver": {"per_date_status": [
+                {"date": "2025-10-11", "status": "ok"},
+                {"date": "2025-10-12", "status": st}]}}))
+            check(f"allowlist: '{st}' day => not complete",
+                  manifest_day_failures(m)[1] == ["2025-10-12"])
         m.write_text("{broken")
         check("unreadable manifest is never complete",
               manifest_day_failures(m)[2] is False)

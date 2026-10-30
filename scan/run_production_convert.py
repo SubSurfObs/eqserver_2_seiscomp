@@ -108,9 +108,14 @@ def mirror_plans_to_shared(local_plans_dir: Path, shared_plans_dir: Path,
     return n_copied
 
 
+COMPLETE_DAY_STATUSES = ("ok", "no_files")
+
+
 def manifest_day_failures(run_manifest_path):
     """(items_succeeded, [failed day dates], manifest_readable) from a
-    phase3 run manifest. A unit with any failed day is never complete."""
+    phase3 run manifest. ALLOWLIST (Codex e0f38dc): a unit is complete
+    only if every day is 'ok' or 'no_files'; any other status (error,
+    timeout, blocked_identity, qc_flagged, unknown) is reported here."""
     import json
     try:
         with Path(run_manifest_path).open() as f:
@@ -120,7 +125,7 @@ def manifest_day_failures(run_manifest_path):
     items_ok = (m.get("aggregate") or {}).get("items_succeeded", 0)
     bad = [d.get("date") for d in
            (m.get("eqserver") or {}).get("per_date_status") or []
-           if d.get("status") in ("error", "timeout", "parse_error")]
+           if d.get("status") not in COMPLETE_DAY_STATUSES]
     return items_ok, bad, True
 
 
