@@ -207,6 +207,23 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-30 (later) — Codex launch review FIX-THEN-PROCEED: both blockers closed
+
+`reviews/2026-10-30_launch_readiness.md` (codex-break `2b01154`): two
+narrow blockers, both fixed in `9b4527c` with targeted regressions
+(stale staged files quarantined on every day outcome + zero-output
+decision days fail + promote holds any unit with files its manifest
+does not name; contained same-lineage overlaps payload-compared). Codex:
+no archive campaign or proving rerun required — rapid re-review, then
+first controlled production conversion.
+**Operator rulings 2026-10-30:** PiesMo stations ARE converted (drop
+`defer_conversion`). **CORRECTION:** the 15 DU stations I reported as
+"no data anywhere" (ADE ADE2 ARKL BLAT GLDS GLN LILH MPTV MTON MVM1Y MYP
+NBK THS TORR WAL1) all HAVE EqServer data — they merely lack a Level-1
+station DB on the VM and any server/LT presence. They are NOT excluded:
+they need Level-1 indexing, then follow the naming rule's SEED branch
+(header passthrough for mseed; SEED short-period default for SUDS).
+
 ## 2026-10-30 — DECISION-DRIVEN PIPELINE COMPLETE; all three proving days PASS
 
 Codex's launch list is fully built (commits through the grid-coalesce
