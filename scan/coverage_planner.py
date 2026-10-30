@@ -380,7 +380,14 @@ class ChannelKnowledge:
                                      f"{''.join(sorted(agreed))}"])
                         continue
                 self.cache[key] = (agreed, "header_probe_agreed", probed, notes)
-            elif probed and (errors or len(sets) > 1):
+            elif probed and (errors or len(sets) > 1
+                             or agreed == frozenset()):
+                # (2026-10-31, WKA 2024-25) every sampled probe read cleanly
+                # but found NO channels: tiny disk files beside complete
+                # telemetry. Population-level that used to be probe_failed,
+                # which blocked the WHOLE DAY. Per-file evidence instead: a
+                # truly empty file contributes nothing (recorded as
+                # rejected), an unrecognised label still blocks its day.
                 # ADAPTIVE PER-FILE EVIDENCE (Codex design B, 2026-10-27):
                 # a disagreeing or error-bearing month means a population-
                 # level channel fact is NOT a safe execution input (WPNH
@@ -423,6 +430,26 @@ class ChannelKnowledge:
     def channels(self, population, month_key):
         return self.cache.get((population, month_key),
                               (frozenset(), "unobserved", [], []))
+
+
+_FORMAT_BY_FORM = {}
+
+
+def _source_format(path):
+    """'suds' or 'mseed' for a selected file. Extension decides, except a
+    bare '.gz' (HKER 2017 gzipped SUDS) whose content is sniffed once per
+    station + filename form (e.g. 'HKER.gz') — cheap, not once per file."""
+    if path.endswith((".dmx", ".dmx.gz")):
+        return "suds"
+    if not path.endswith(".gz"):
+        return "mseed"
+    p = Path(path)
+    form = (p.parts[-6] if len(p.parts) >= 6 else "",  # station dir
+            re.sub(r"^.*[ _]", "", p.name))
+    if form not in _FORMAT_BY_FORM:
+        from qa_verify import is_suds_path
+        _FORMAT_BY_FORM[form] = "suds" if is_suds_path(path) else "mseed"
+    return _FORMAT_BY_FORM[form]
 
 
 def _start_minute(cand):
@@ -757,8 +784,7 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                     "(date, stream, path, population, source_format) "
                     "VALUES (?,?,?,?,?)",
                     (iso, stream_base, path, f["population"],
-                     "suds" if path.endswith((".dmx", ".dmx.gz"))
-                     else "mseed"))
+                     _source_format(path)))
                 fid = out.execute(
                     "SELECT file_id FROM selected_file WHERE date=? AND "
                     "stream=? AND path=?",

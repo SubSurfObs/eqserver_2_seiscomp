@@ -242,10 +242,42 @@ def split_populations(files: list[dict]) -> tuple[list, list, list]:
 SEED_SEISMO_RE = __import__("re").compile(r"^[FGCDHESB]H[ZNE123]$")
 
 
+# Echo spelling variants seen in EqServer (2026-10-31): "Up" (RNDA),
+# "Up T"/"East T"/"North T" (BRTS, PLMR) — Up is Z by SEED definition.
+# Keep identical to disk_to_sds suds_convert.echo_orient.
+_ECHO_BARE = {"up": "Z", "north": "N", "east": "E"}
+
+
+def _echo_orient(chan: str) -> str | None:
+    c = re.sub(r"[\s_]+", "-", (chan or "").strip()).lower()
+    if c.endswith("-t"):
+        c = c[:-2]
+    elif "-" in c:
+        return None
+    return _ECHO_BARE.get(c)
+
+
+def is_suds_path(path: str) -> bool:
+    """SUDS by extension, or a bare '.gz' whose content is SUDS (HKER 2017
+    '2017-03-15 0000 00 HKER.gz': gzipped SUDS the reader used to skip as
+    an unrecognised mseed member). Sniffs two decompressed bytes."""
+    if path.endswith((".dmx", ".dmx.gz")):
+        return True
+    if path.endswith(".gz") and not path.endswith((".ms.gz", ".mseed.gz")):
+        try:
+            with gzip.open(path, "rb") as fh:
+                return fh.read(2) == b"S6"
+        except Exception:
+            return False
+    return False
+
+
 def _suds_component(chan: str) -> str | None:
     c = (chan or "").strip().lower()
     if c in SUDS_COMPONENT:
         return SUDS_COMPONENT[c]
+    if _echo_orient(chan):
+        return _echo_orient(chan)
     if c.endswith(SUDS_DROP_SUFFIXES) or c.startswith(SUDS_DROP_PREFIXES):
         return None
     # Already-SEED-named seismometer channels inside SUDS (KORUM
@@ -272,7 +304,7 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
     {orient, src_chan, start (UTCDateTime), rate, data (np.int64)}."""
     traces = []
     try:
-        if path.endswith((".dmx", ".dmx.gz")):
+        if is_suds_path(path):
             st = read_suds_stream(path)
             for tr in st:
                 orient = _suds_component(tr.stats.channel)
