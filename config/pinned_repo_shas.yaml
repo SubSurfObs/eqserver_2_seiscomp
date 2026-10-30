@@ -20,13 +20,13 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: null
+    pinned: 5af8b45      # operator-approved 2026-10-30 (wave-1 launch)
     code_roots: [scan]
   sudspy:
-    pinned: null
+    pinned: 0febe26      # operator-approved 2026-10-30
     code_roots: [sudspy]
   disk_to_sds:
-    pinned: null          # <- set before the DU production sweep (see above)
+    pinned: ad8d9d3      # operator-approved 2026-10-30 (C-band passthrough)
     code_roots: [scripts]
   sds_staging_ledger:
     pinned: null
