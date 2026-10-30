@@ -122,9 +122,22 @@ def check_repo(name: str, pinned: str | None,
             f"SHA (operator decision; see the OWED DECISION note in that "
             f"file)")
     if pinned and not head.startswith(pinned):
-        raise PreflightError(
-            f"{name}: HEAD {head[:12]} != pinned {pinned} "
-            f"(config/pinned_repo_shas.yaml)")
+        # The main repo cannot contain its own SHA: recording the pin is
+        # itself a commit. Accept HEAD when it descends from the pin and
+        # the ONLY files changed since are the pin config itself.
+        ok_pin_only = False
+        if repo == REPO_ROOT:
+            try:
+                _git(repo, "merge-base", "--is-ancestor", pinned, "HEAD")
+                changed = [f for f in _git(repo, "diff", "--name-only",
+                                           pinned, "HEAD").splitlines() if f]
+                ok_pin_only = changed == ["config/pinned_repo_shas.yaml"]
+            except PreflightError:
+                ok_pin_only = False
+        if not ok_pin_only:
+            raise PreflightError(
+                f"{name}: HEAD {head[:12]} != pinned {pinned} "
+                f"(config/pinned_repo_shas.yaml)")
     return {"repo": name, "head": head, "pinned": pinned,
             "branch": _git(repo, "rev-parse", "--abbrev-ref", "HEAD"),
             "untracked_ignored": untracked_other[:20]}
