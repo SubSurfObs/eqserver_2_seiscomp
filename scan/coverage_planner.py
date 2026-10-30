@@ -239,11 +239,14 @@ class ChannelKnowledge:
                 t1 = max(float(t["start"].timestamp)
                          + len(t["data"]) / t["rate"] for t in trs
                          if t["rate"] > 0)
-                if 0 < t1 - t0 <= 3700:
+                if 0 < t1 - t0 <= 86400 * 1.1:
                     secs.append(round(t1 - t0, 1))
             self.span_evidence[key] = secs
             if secs:
-                self.spans[key] = max(1, min(60, math.ceil(max(secs) / 60 - 0.05)))
+                # Only ever WIDENS read windows (see file_reach_and_claims);
+                # a failed measurement falls back to filename cadence, never
+                # to a one-minute assumption.
+                self.spans[key] = max(1, min(1440, math.ceil(max(secs) / 60 - 0.05)))
 
     def span_for(self, population, month_key):
         return self.spans.get((population, month_key), 1)
@@ -422,6 +425,60 @@ class ChannelKnowledge:
                               (frozenset(), "unobserved", [], []))
 
 
+def _start_minute(cand):
+    """Nominal start minute from the filename (an hour bundle starts at
+    its hour); None if unparseable."""
+    m = HOURBUNDLE_RE.search(Path(cand["path"]).name)
+    if m:
+        return int(m.group(1)) * 60
+    hhmm = cand.get("hhmm")
+    if hhmm and len(hhmm) == 4 and hhmm.isdigit():
+        return int(hhmm[:2]) * 60 + int(hhmm[2:])
+    return None
+
+
+def _slots(m0, n):
+    return {f"{mm // 60:02d}{mm % 60:02d}" for mm in range(m0, min(1440, m0 + n))}
+
+
+def file_reach_and_claims(pops, know, month_key):
+    """Two DIFFERENT minute sets per file (Codex measured-span review,
+    2026-10-30 — the measured length was doing two jobs):
+
+    REACH — minutes the file may be READ for (generous; reading too much
+    is harmless because a file contributes only the samples it actually
+    holds): from its start to wherever the NEXT file of the same
+    population starts (filename evidence, cannot fail), or the measured
+    file length if longer (no upper cap — long files are honoured). Never
+    a silent one-minute fallback: cadence comes from the file sequence
+    itself, so PLY3's mid-month 5-min -> 1-min change is per file.
+
+    CLAIM — minutes the file PROVES are covered (strict): only its
+    nominal start minute. A short or gappy file can therefore never
+    suppress another source that holds the missing data; overlapping
+    copies are arbitrated by explicit priority in the resolver."""
+    reach, claim = {}, {}
+    for pk, files in pops.items():
+        starts = sorted({m for m in (_start_minute(f) for f in files)
+                         if m is not None})
+        span_meas = know.span_for(pk, month_key)
+        for f in files:
+            m0 = _start_minute(f)
+            if m0 is None:
+                reach[f["path"]] = set()
+                claim[f["path"]] = set()
+                continue
+            nxt = next((m for m in starts if m > m0), 1440)
+            if HOURBUNDLE_RE.search(Path(f["path"]).name):
+                n = max(60, span_meas)
+            else:
+                n = max(nxt - m0, span_meas, 1)
+            reach[f["path"]] = _slots(m0, n)
+            claim[f["path"]] = _slots(m0, 1)
+            f["_reach_n"] = len(reach[f["path"]])
+    return reach, claim
+
+
 def choose_day(cands, know: ChannelKnowledge, month_key):
     """Per-orientation population winner + minute-gap-fill.
 
@@ -440,6 +497,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
     pops = defaultdict(list)
     for c in cands:
         pops[c["population"]].append(c)
+    reach, claim = file_reach_and_claims(pops, know, month_key)
 
     f_orients = {}
     blocked = set()
@@ -501,7 +559,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
         def coverage(files):
             slots = set()
             for f in files:
-                slots |= minute_slots(f, know.span_for(f["population"], month_key))
+                slots |= claim[f["path"]]
             return slots
 
         ranked = sorted(
@@ -521,7 +579,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             e["rule"] = e["rule"] or f"winner:{orient}:{win_pk}"
             e.setdefault("by_orient", {})[orient] = f"winner:{orient}:{win_pk}"
             e.setdefault("o_slots", {}).setdefault(orient, set()).update(
-                minute_slots(f, know.span_for(f["population"], month_key)))
+                reach[f["path"]])
             e["cand"] = f
         # Sub-minute gap-fill: a winner file well below its population's
         # median size is likely seconds short; also take the best other
@@ -535,15 +593,13 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                         e["chans"].add(orient)
                         e["rule"] = e["rule"] or f"short_fill:{orient}:{pk}"
                         e.setdefault("by_orient", {})[orient] = f"short_fill:{orient}:{pk}"
-                        if f["hhmm"]:
-                            e.setdefault("o_slots", {}).setdefault(
-                                orient, set()).add(f["hhmm"])
+                        e.setdefault("o_slots", {}).setdefault(
+                            orient, set()).update(reach[f["path"]])
                         e["cand"] = f
                         short_minutes.discard(f["hhmm"])
         for pk, fs, _cov in ranked[1:]:
             for f in fs:
-                extra = (minute_slots(f, know.span_for(f["population"], month_key))
-                         - covered)
+                extra = reach[f["path"]] - covered
                 if extra:
                     e = sel[f["path"]]
                     e["chans"].add(orient)
@@ -552,7 +608,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                     e.setdefault("o_slots", {}).setdefault(
                         orient, set()).update(extra)
                     e["cand"] = f
-                    covered |= extra
+                    covered |= claim[f["path"]]
                     n_gap += 1
                 else:
                     rejected.append(dict(
@@ -645,8 +701,7 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                 # Real covered minutes, not a one-hour guess: a 23-hour
                 # bundle must out-rank a 23:59 minute in the tail lookup
                 # when it truly carries the day's end (fix-review F3).
-                span = 60.0 * max(1, len(minute_slots(
-                    f, know.span_for(f["population"], mk))))
+                span = 60.0 * max(1, f.get("_reach_n") or 1)
                 rows.append((iso, stream_base, f["population"], path,
                              f["hhmm"], span, "waveform", e["rule"],
                              "".join(sorted(e["chans"]))))
