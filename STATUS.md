@@ -207,6 +207,30 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-30 (evening) — Codex live scrutiny caught the five-minute-file defect
+
+Codex's live sample checks found DAMM/NSTM 2025 kept 40% of the data:
+both write FIVE-minute files and decision windows assumed one minute.
+Census (Codex): 23 approved DU stations, ~5,922 station-days use
+five-minute files; none in VW/VX. Fixed over three Codex rounds:
+`fbf34d5` measured spans → `8046437` read-REACH (to next same-population
+file, filename cadence; never a 1-min fallback; no hour cap) split from
+coverage-CLAIM (nominal start minute only) → `b41b70e` reach crosses
+midnight to the next day's first file (DNL3 23:59 file runs to 01:38;
+fixed 60-s boundary_tail removed) + alternative copies NEVER discarded
+(fill priority; resolver fills only empty samples) → `12b46bc` distinct
+fallback priorities by rank (3-copy case). Regressions:
+`scan/test_spans.py` (11). Proofs at 8046437: DAMM/NSTM/WLSH 0.0 s.
+**Superseded runs held** (`eqserver_sweep_v3/held.jsonl`, reason
+SUPERSEDED): DAMM/NSTM 2025 — NEVER promote. Rebuild at pin `b41b70e`
+(operator-approved) running from frozen checkout
+`~/projects/SubSurfObs/eqserver_2_seiscomp_v3_r2` into queue
+`/mnt/seiscomp_staging/eqserver_sweep_v3_r2`; Codex re-audits before
+promotion. Wave 1 LKHRT 2023 done clean; CLV2 2021 converting. Broader
+DU production waits for Codex's check of `12b46bc` (unit-test only).
+Registry now exactly the 251 EqServer folders (ALEX/LEU/LGMA/WAH and
+KORUM removed by operator ruling).
+
 ## 2026-10-30 — PRODUCTION WAVE 1 LAUNCHED (DU)
 
 Codex rapid re-check: PROCEED (`30ee612`). Operator approved the
