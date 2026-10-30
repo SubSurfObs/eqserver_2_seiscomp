@@ -2278,22 +2278,5 @@ RDK6:
   notes: "Confirmed U aftershock deployment 2021; already converted to VX SDS"
 
 
-# EXCEPTION (2026-10-30): KORUM is NOT an EqServer station — a colleague's
-# SD-card dataset converted through this pipeline on 2026-10-22. Kept so that
-# conversion stays reproducible; it is the only registry entry without an
-# EqServer folder.
-KORUM:
-  include: true
-  target_network: OZ
-  network_basis: registry          # colleague handoff 2026-10-22 + AusPass
-  target_location: "60"            # AusPass: OZ.KORUM loc 60
-  recorder_types: [echopro]        # Kelunji EchoPro; SUDS header net 'AB' placeholder
-  source_network_code: null
-  coverage_start: 2026
-  coverage_end: 2026
-  notes: "Korumburra campaign drop (2026-10-01..22, ~3 weeks, colleague-supplied
-    via Downloads). Channels rename mid-deployment c01/c02/c03 -> EHE/EHN/EHZ
-    (SEED-passthrough in engine, disk_to_sds dba4f10). Identity per AusPass:
-    HH{Z,N,E} @ 100 Hz, loc 60. Triggered files carry c04-c06 collocated
-    sensor, not archived. See handoffs/eqserver_2_seiscomp (disk_to_sds repo)
-    2026-10-22_oz-korum-suds-ingest."
+# 2026-10-30 (operator ruling): KORUM removed — a stand-alone colleague
+# SD-card project, already converted to SeisComP; never on EqServer.
