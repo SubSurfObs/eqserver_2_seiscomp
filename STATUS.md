@@ -207,6 +207,20 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-30 — PRODUCTION WAVE 1 LAUNCHED (DU)
+
+Codex rapid re-check: PROCEED (`30ee612`). Operator approved the
+wave-1 plans and pins (eqserver `5af8b45`+pin-only `0eff234`,
+disk_to_sds `ad8d9d3`, sudspy `0febe26`); strict preflight passes on
+the VM. Wave 1 running detached (`~/wave1_launch.sh`): DAMM 2025
+(HHZ@00), NSTM 2025 (PiesMo, HHZ@0), LKHRT 2023 (header passthrough)
+→ REAL shared staging `/mnt/seiscomp_staging/seiscomp_archive`, fresh
+queue `/mnt/seiscomp_staging/eqserver_sweep_v3` (v1 records untouched).
+Status: VM `~/v3_prod/wave1.status`; logs `~/v3_prod/logs/`. CLV2 2021
+(EchoPro EH*@60, mixed-format) joins after its re-check — that check
+already found and fixed the rare-3-channel-file loss (size-outlier
+probing, `3d5393c`). Promotion to LT stays operator-run on dev1.
+
 ## 2026-10-30 (later) — Codex launch review FIX-THEN-PROCEED: both blockers closed
 
 `reviews/2026-10-30_launch_readiness.md` (codex-break `2b01154`): two
