@@ -1381,11 +1381,14 @@ def _worker_convert_day(job):
                     r["mixed_formats"] = True
                 if read_errors:
                     r["error"] = str(read_errors[:3])
+                import calendar as _cal
+                _day0_ns = _cal.timegm(d.timetuple()) * 1_000_000_000
                 if len(resolved_stream) == 0 and all(
-                        d_[7] == "boundary_tail" for d_ in decisions):
-                    # Only the previous day's midnight spill-over was
-                    # authorized and it carried nothing into today: an
-                    # empty day, not a failure (live scrutiny 2026-10-30,
+                        int(d_[4]) < _day0_ns for d_ in decisions):
+                    # Every decision touching today began on an EARLIER
+                    # day (a previous day's file reach crossing midnight)
+                    # and none carried data into today: an empty day, not
+                    # a failure (Codex 24a8243, DJO 2025-10-12/13;
                     # NSTM 2025-10-19 false error).
                     r["status"] = "no_files"
                     if commit:

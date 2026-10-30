@@ -108,6 +108,22 @@ def mirror_plans_to_shared(local_plans_dir: Path, shared_plans_dir: Path,
     return n_copied
 
 
+def manifest_day_failures(run_manifest_path):
+    """(items_succeeded, [failed day dates], manifest_readable) from a
+    phase3 run manifest. A unit with any failed day is never complete."""
+    import json
+    try:
+        with Path(run_manifest_path).open() as f:
+            m = json.load(f)
+    except Exception:
+        return 0, [], False
+    items_ok = (m.get("aggregate") or {}).get("items_succeeded", 0)
+    bad = [d.get("date") for d in
+           (m.get("eqserver") or {}).get("per_date_status") or []
+           if d.get("status") in ("error", "timeout", "parse_error")]
+    return items_ok, bad, True
+
+
 def run_convert(args, station: str, year: int) -> dict:
     """Invoke phase3 for one (station, year) unit."""
     db_path = Path(args.station_dbs) / f"{args.network}.{station}.db"
@@ -158,15 +174,25 @@ def run_convert(args, station: str, year: int) -> dict:
     # If the run produced zero days (whole year was no_files), the run_manifest
     # is still written — but apply.py would have nothing to promote, so we skip
     # appending to the queue. Distinguish by checking aggregate.items_succeeded.
-    items_ok = 0
-    if proc.returncode == 0 and run_manifest_path.exists():
-        try:
-            import json
-            with run_manifest_path.open() as f:
-                m = json.load(f)
-            items_ok = m.get("aggregate", {}).get("items_succeeded", 0)
-        except Exception:
-            pass
+    items_ok, bad_days, manifest_ok = 0, [], False
+    if proc.returncode == 0:
+        items_ok, bad_days, manifest_ok = manifest_day_failures(
+            run_manifest_path)
+    # A unit is COMPLETE only if phase3 exited cleanly, its manifest is
+    # readable, and NO day failed (Codex 24a8243: DJO 2025 got convert_done
+    # despite two error days). Otherwise it is recorded as a failure that
+    # names the days, never as a silent success.
+    if proc.returncode == 0 and (not manifest_ok or bad_days):
+        return {
+            "status": "fail", "rc": proc.returncode,
+            "elapsed_s": round(elapsed, 1), "items_succeeded": items_ok,
+            "run_id": run_id, "run_manifest_path": str(run_manifest_path),
+            "log_path": str(log_path),
+            "reason": ("run manifest unreadable" if not manifest_ok else
+                       f"{len(bad_days)} failed day(s): "
+                       f"{', '.join(bad_days[:10])}"
+                       f"{' ...' if len(bad_days) > 10 else ''}"),
+        }
     return {
         "status": "ok" if proc.returncode == 0 else "fail",
         "rc": proc.returncode,

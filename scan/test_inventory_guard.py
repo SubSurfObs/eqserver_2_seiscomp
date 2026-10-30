@@ -82,6 +82,28 @@ def main():
         check("unreadable manifest fails closed",
               unnamed_staged_files(entry) is None)
 
+    # 4. Completion rule (Codex 24a8243): any failed day => not complete.
+    from run_production_convert import manifest_day_failures
+    with tempfile.TemporaryDirectory() as td2:
+        m = Path(td2) / "m.json"
+        m.write_text(json.dumps({"aggregate": {"items_succeeded": 2},
+            "eqserver": {"per_date_status": [
+                {"date": "2025-10-11", "status": "ok"},
+                {"date": "2025-10-12", "status": "error"},
+                {"date": "2025-10-13", "status": "no_files"}]}}))
+        ok, bad, readable = manifest_day_failures(m)
+        check("failed day detected, unit not complete",
+              readable and bad == ["2025-10-12"], f"{bad}")
+        m.write_text(json.dumps({"aggregate": {"items_succeeded": 2},
+            "eqserver": {"per_date_status": [
+                {"date": "2025-10-11", "status": "ok"},
+                {"date": "2025-10-12", "status": "no_files"}]}}))
+        check("clean unit (ok + no_files) is complete",
+              manifest_day_failures(m)[1] == [])
+        m.write_text("{broken")
+        check("unreadable manifest is never complete",
+              manifest_day_failures(m)[2] is False)
+
     if FAILURES:
         print(f"\n{len(FAILURES)} inventory-guard test(s) FAILED: {FAILURES}")
         return 1
