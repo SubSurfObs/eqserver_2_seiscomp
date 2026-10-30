@@ -207,6 +207,22 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-30 (night, later) — VM disk filled; wave 2 stopped, cleaned, relaunched
+
+~15 min after launch the VM's 197 GB local disk hit 100% (test-study
+file-list caches ~57 GB + indexer scratch ~10 GB). All file-list builds
+then failed; shards were stopped within minutes (nothing wrongly marked
+done — failures retry; DJO 2025 had converted fine). Freed to 78 GB by
+deleting obsolete cached file lists and indexer scratch (Codex evidence
+— failed_sds, audits, results — kept). Fix: each shard now ARCHIVES a
+station's file lists (gzip) to `/mnt/seiscomp_staging/
+eqserver_v3_selections/DU.<STA>/` after converting it and frees local
+disk. Shards 0-4 + indexing relaunched. Wave 2 = 41 stations (shard 4:
+DJO DNL2 RNDA WALR HMV1 per operator rulings,
+`metadata/derived/du_naming_rulings.yaml`). Pre-2012 years in wave 2 are
+1-36 stray days each (bogus-date signature) — dropped by the 2012 floor
+by design; S88M's only data is 5 days of 2011 (flagged to operator).
+
 ## 2026-10-30 (night) — DU WAVE 2 LAUNCHED (36 stations, full back catalogues)
 
 Operator approved (2026-10-30): (1) NSTM one-sample source ambiguity
