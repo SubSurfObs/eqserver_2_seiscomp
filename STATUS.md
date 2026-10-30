@@ -207,6 +207,24 @@ review still owed (Monday target).
   station-year bulk-staging prefetch, then `nconnect` mount test; 2nd-VM
   year split in reserve.
 
+## 2026-10-30 — DECISION-DRIVEN PIPELINE COMPLETE; all three proving days PASS
+
+Codex's launch list is fully built (commits through the grid-coalesce
+fix): v0.4 normalized decisions consumed end-to-end (per-file adapters,
+integer-ns window clipping with one-slot straddle grace, priority
+overlay, grid-consistent coalescing, clean-room reconciling writer,
+plan-driven SUDS naming per the operator's 2026-10-29 procedure —
+server-verbatim → header passthrough → SEED short-period default).
+PROOF on the final code: TYHS 2023-08-31 **0.0 s / 0 bad** (6 traces),
+WLSH 2019-06-15 **0.0 s / 0 bad** (first exact zero ever on this day),
+LKHRT 2023-07-28 **3.0 s / 0 bad** (86 healthy drift segments). DU
+naming resolved mechanically for 52 of 67 stations
+(metadata/derived/du_lt_codes.json); 15 stations have no data anywhere
+(operator to confirm include:false). NEXT: Codex rapid review (its
+launch-plan step 4) → wave-1 plans (BRTS or CLV2 EchoPro + LKHRT +
+DAMM/PLYP + one PiesMo pending ruling) for operator approval → engine
+pin (operator) → first production batch.
+
 ## 2026-10-28 (night) — Codex BLOCKs the resolver implementation; v0.4 build is THE work
 
 `reviews/2026-10-28_resolver_topology_gate.md` (codex-break `57066dc`):
