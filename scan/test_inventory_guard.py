@@ -106,9 +106,38 @@ def main():
                 {"date": "2025-10-12", "status": st}]}}))
             check(f"allowlist: '{st}' day => not complete",
                   manifest_day_failures(m)[1] == ["2025-10-12"])
+        # Codex 7bd2d31 (1): partial_completion or a short/garbled day list.
+        full = [{"date": f"2025-01-0{i}", "status": "ok"} for i in (1, 2, 3)]
+        m.write_text(json.dumps({"eqserver": {"per_date_status": full}}))
+        check("full window passes",
+              manifest_day_failures(m, "2025-01-01", "2025-01-03")[1] == [])
+        m.write_text(json.dumps({"eqserver": {"per_date_status": full,
+            "partial_completion": True,
+            "partial_completion_reason": "pool heartbeat"}}))
+        check("partial_completion => not complete",
+              manifest_day_failures(m, "2025-01-01", "2025-01-03")[1] != [])
+        m.write_text(json.dumps({"eqserver": {"per_date_status": full[:2]}}))
+        check("truncated day list => not complete",
+              manifest_day_failures(m, "2025-01-01", "2025-01-03")[1] != [])
+        m.write_text(json.dumps({"eqserver": {"per_date_status":
+            full[:2] + [full[1]]}}))
+        check("duplicate day replacing a missing one => not complete",
+              manifest_day_failures(m, "2025-01-01", "2025-01-03")[1] != [])
         m.write_text("{broken")
         check("unreadable manifest is never complete",
               manifest_day_failures(m)[2] is False)
+
+    # Codex 7bd2d31 (2): zero-output day downgrade never hides a read error.
+    from phase3_driver import _zero_output_day_status
+    day0 = 1_000_000_000_000
+    prior = [(None, None, None, None, day0 - 60_000_000_000)]
+    today = [(None, None, None, None, day0 + 60_000_000_000)]
+    check("prior-day spill only, no read error => no_files",
+          _zero_output_day_status(prior, day0, []) == "no_files")
+    check("prior-day spill WITH read error => error",
+          _zero_output_day_status(prior, day0, [{"err": "x"}]) == "error")
+    check("own decisions, zero output => error",
+          _zero_output_day_status(today, day0, []) == "error")
 
     if FAILURES:
         print(f"\n{len(FAILURES)} inventory-guard test(s) FAILED: {FAILURES}")

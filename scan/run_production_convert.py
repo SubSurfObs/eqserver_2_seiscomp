@@ -111,21 +111,40 @@ def mirror_plans_to_shared(local_plans_dir: Path, shared_plans_dir: Path,
 COMPLETE_DAY_STATUSES = ("ok", "no_files")
 
 
-def manifest_day_failures(run_manifest_path):
+def manifest_day_failures(run_manifest_path, start_date=None, end_date=None):
     """(items_succeeded, [failed day dates], manifest_readable) from a
     phase3 run manifest. ALLOWLIST (Codex e0f38dc): a unit is complete
     only if every day is 'ok' or 'no_files'; any other status (error,
-    timeout, blocked_identity, qc_flagged, unknown) is reported here."""
+    timeout, blocked_identity, qc_flagged, unknown) is reported here.
+    Codex 7bd2d31: a manifest flagged partial_completion, or whose day
+    list is not exactly every date start..end (missing, duplicate,
+    undated or out-of-window rows), is never complete either."""
     import json
+    from datetime import date, timedelta
     try:
         with Path(run_manifest_path).open() as f:
             m = json.load(f)
     except Exception:
         return 0, [], False
     items_ok = (m.get("aggregate") or {}).get("items_succeeded", 0)
-    bad = [d.get("date") for d in
-           (m.get("eqserver") or {}).get("per_date_status") or []
+    eq = m.get("eqserver") or {}
+    rows = eq.get("per_date_status") or []
+    bad = [d.get("date") for d in rows
            if d.get("status") not in COMPLETE_DAY_STATUSES]
+    if eq.get("partial_completion"):
+        bad.append("(partial_completion: "
+                   f"{eq.get('partial_completion_reason') or 'no reason'})")
+    if start_date and end_date:
+        d0 = date.fromisoformat(start_date)
+        d1 = date.fromisoformat(end_date)
+        want = [(d0 + timedelta(n)).isoformat()
+                for n in range((d1 - d0).days + 1)]
+        got = [d.get("date") for d in rows]
+        if sorted(map(str, got)) != want:
+            missing = sorted(set(want) - set(map(str, got)))
+            bad.append(f"(day list malformed: {len(got)} rows vs "
+                       f"{len(want)} expected; {len(missing)} missing"
+                       f"{', e.g. ' + missing[0] if missing else ''})")
     return items_ok, bad, True
 
 
@@ -182,7 +201,7 @@ def run_convert(args, station: str, year: int) -> dict:
     items_ok, bad_days, manifest_ok = 0, [], False
     if proc.returncode == 0:
         items_ok, bad_days, manifest_ok = manifest_day_failures(
-            run_manifest_path)
+            run_manifest_path, start_date, end_date)
     # A unit is COMPLETE only if phase3 exited cleanly, its manifest is
     # readable, and NO day failed (Codex 24a8243: DJO 2025 got convert_done
     # despite two error days). Otherwise it is recorded as a failure that

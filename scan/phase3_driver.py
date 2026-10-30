@@ -879,6 +879,20 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     return result
 
 
+def _zero_output_day_status(decisions, day0_ns, read_errors):
+    """Status for a day that produced no output traces. 'no_files' only
+    when EVERY decision began on an earlier day (a prior day's reach
+    crossing midnight, Codex 24a8243) AND no file failed to read (Codex
+    7bd2d31: an unreadable midnight-crossing file is a failure, not an
+    empty day). Otherwise 'error'. decisions rows carry window_start ns
+    at index 4."""
+    if read_errors:
+        return "error"
+    if decisions and all(int(d[4]) < day0_ns for d in decisions):
+        return "no_files"
+    return "error"
+
+
 def _quarantine_stale_day(sds_root, net, sta, day, keep=()):
     """Make the CURRENT run own this station-day's staged inventory (Codex
     launch review F1): every existing day-file for (net, sta, day) not in
@@ -1383,13 +1397,16 @@ def _worker_convert_day(job):
                     r["error"] = str(read_errors[:3])
                 import calendar as _cal
                 _day0_ns = _cal.timegm(d.timetuple()) * 1_000_000_000
-                if len(resolved_stream) == 0 and all(
-                        int(d_[4]) < _day0_ns for d_ in decisions):
+                if (len(resolved_stream) == 0
+                        and _zero_output_day_status(
+                            decisions, _day0_ns, read_errors) == "no_files"):
                     # Every decision touching today began on an EARLIER
                     # day (a previous day's file reach crossing midnight)
                     # and none carried data into today: an empty day, not
                     # a failure (Codex 24a8243, DJO 2025-10-12/13;
-                    # NSTM 2025-10-19 false error).
+                    # NSTM 2025-10-19 false error). Any read error keeps
+                    # the day FAILING (Codex 7bd2d31): an unreadable
+                    # midnight-crossing file is not an empty day.
                     r["status"] = "no_files"
                     if commit:
                         _quarantine_stale_day(staging, net, sta, d)
