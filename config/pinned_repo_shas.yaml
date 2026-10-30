@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: 5af8b45      # operator-approved 2026-10-30 (wave-1 launch)
+    pinned: b41b70e      # operator-approved 2026-10-30 (5-min-file fix; DAMM/NSTM rebuild)
     code_roots: [scan]
   sudspy:
     pinned: 0febe26      # operator-approved 2026-10-30
