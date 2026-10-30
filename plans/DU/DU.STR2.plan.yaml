@@ -1,0 +1,195 @@
+station: STR2
+network: DU
+location: '60'
+naming: server_verbatim
+status: ok
+epochs:
+- id: 1
+  start: '2008-01-01'
+  end: '2008-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 2
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 3
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 4
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 5
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 6
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 7
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 8
+  start: '2023-01-01'
+  end: '2023-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 9
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 10
+  start: '2025-01-01'
+  end: '2025-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+- id: 11
+  start: '2026-01-01'
+  end: '2026-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.STR2.60.EHE
+    basis: server_verbatim:2026
+  - component: N
+    target: DU.STR2.60.EHN
+    basis: server_verbatim:2026
+  - component: Z
+    target: DU.STR2.60.EHZ
+    basis: server_verbatim:2026
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes:
+- '2008: codes from nearest server year 2026'
+- '2017: codes from nearest server year 2026'
+- '2018: codes from nearest server year 2026'
+- '2019: codes from nearest server year 2026'
+- '2020: codes from nearest server year 2026'
+- '2021: codes from nearest server year 2026'
+- '2022: codes from nearest server year 2026'
+- '2023: codes from nearest server year 2026'
+- '2024: codes from nearest server year 2026'
+- '2025: codes from nearest server year 2026'

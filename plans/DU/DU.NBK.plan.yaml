@@ -1,0 +1,41 @@
+station: NBK
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2004-01-01'
+  end: '2004-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.NBK.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.NBK.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.NBK.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 2
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.NBK.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.NBK.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.NBK.00.EHZ
+    basis: seed_short_period_default:100sps
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes: []

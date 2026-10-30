@@ -1,0 +1,57 @@
+station: WAL1
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.WAL1.00.DHE
+    basis: seed_short_period_default:250sps
+  - component: N
+    target: DU.WAL1.00.DHN
+    basis: seed_short_period_default:250sps
+  - component: Z
+    target: DU.WAL1.00.DHZ
+    basis: seed_short_period_default:250sps
+- id: 2
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.WAL1.00.DHE
+    basis: seed_short_period_default:250sps
+  - component: N
+    target: DU.WAL1.00.DHN
+    basis: seed_short_period_default:250sps
+  - component: Z
+    target: DU.WAL1.00.DHZ
+    basis: seed_short_period_default:250sps
+- id: 3
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.WAL1.00.DHE
+    basis: seed_short_period_default:250sps
+  - component: N
+    target: DU.WAL1.00.DHN
+    basis: seed_short_period_default:250sps
+  - component: Z
+    target: DU.WAL1.00.DHZ
+    basis: seed_short_period_default:250sps
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes: []
