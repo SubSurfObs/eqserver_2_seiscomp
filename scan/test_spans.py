@@ -111,6 +111,22 @@ def main():
     check("last file with an empty next day reads to its end",
           w[-1:] == ["4759"], f"last={w[-1:]}")
 
+    # 8. Codex pin review (39132f7): with THREE competing copies, the
+    #    2nd-ranked copy must outrank the 3rd by the compiler's ranking,
+    #    not by pathname (the 3rd's path deliberately sorts first here).
+    know = ChannelKnowledge(probe_enabled=False)
+    A = [cand("mA", f"00{m:02d}") for m in range(0, 30)]        # best
+    B = [cand("zB", f"00{m:02d}") for m in range(0, 30, 5)]     # 2nd
+    C = [cand("aC", f"00{m:02d}") for m in range(0, 30, 10)]    # 3rd
+    sel, _r, _g, _b = choose_day(A + B + C, know, MK, next_first={
+        "mA": 0, "zB": 0, "aC": 0})
+    pa = sel[A[0]["path"]].get("by_orient", {}).get("Z", "")
+    pb = sel[B[0]["path"]].get("prio_by_orient", {}).get("Z")
+    pc = sel[C[0]["path"]].get("prio_by_orient", {}).get("Z")
+    check("winner is the most complete copy", pa.startswith("winner"), pa)
+    check("2nd-ranked copy outranks 3rd regardless of path order",
+          pb is not None and pc is not None and pb < pc, f"B={pb} C={pc}")
+
     if FAILURES:
         print(f"\n{len(FAILURES)} span test(s) FAILED: {FAILURES}")
         return 1

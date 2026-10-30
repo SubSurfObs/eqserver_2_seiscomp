@@ -615,12 +615,19 @@ def choose_day(cands, know: ChannelKnowledge, month_key, next_first=None):
         # can have internal gaps another copy fills. The resolver lets a
         # lower-priority copy contribute ONLY samples no higher-priority
         # copy supplies, so this can add data but never displace it.
-        for pk, fs, _cov in ranked[1:]:
+        for rank_i, (pk, fs, _cov) in enumerate(ranked[1:], start=1):
+            # Distinct fallback priority per ranked population (Codex pin
+            # review 39132f7): the 2nd-ranked copy outranks the 3rd, by the
+            # compiler's ranking — never by pathname order in the resolver.
+            fb_prio = PRIORITY_OF["gap_fill"] + rank_i - 1
             for f in fs:
                 if not reach[f["path"]]:
                     rejected.append(dict(f, reason=f"{orient}:no_start_time"))
                     continue
                 e = sel[f["path"]]
+                cur = e.setdefault("prio_by_orient", {}).get(orient)
+                if cur is None or fb_prio < cur:
+                    e["prio_by_orient"][orient] = fb_prio
                 e["chans"].add(orient)
                 e["rule"] = e["rule"] or f"gap_fill:{orient}:{pk}"
                 e.setdefault("by_orient", {})[orient] = (
@@ -780,6 +787,8 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                     else:
                         runs = [(0, 1439)]
                     prio = PRIORITY_OF.get(reason.split(":")[0], 0)
+                    if reason.startswith("gap_fill"):
+                        prio = (e.get("prio_by_orient") or {}).get(orient, prio)
                     for a, b in runs:
                         ws = day_ns + a * 60 * NS_
                         # One slot of grace at the window end: minute files
