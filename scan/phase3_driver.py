@@ -1070,8 +1070,18 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
         for tr in st:
             tr.stats.network = net
         st = _enforce_band_instrument(st)
-    for tr in st:
-        tr.stats.location = loc
+    # Location (operator naming procedure 2026-10-29): a fixed plan code is
+    # the server-verbatim / SEED-default case; "passthrough" keeps each
+    # miniSEED file's OWN location (stations not on the server — e.g.
+    # LKHRT carries 00 for HH[ENZ] and 01 for HHO in its headers). SUDS
+    # files carry no usable location, so they always take a fixed code:
+    # the chan_map target below, else the SEED default "00".
+    if loc != "passthrough":
+        for tr in st:
+            tr.stats.location = loc
+    elif source_format == "suds":
+        for tr in st:
+            tr.stats.location = "00"
     # IDENTITY-DRIVEN NAMING (operator procedure 2026-10-29): for SUDS
     # sources — whose files carry no usable channel names — the reviewed
     # plan's target codes override the engine's rate-derived fallback
