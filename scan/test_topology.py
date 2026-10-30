@@ -106,6 +106,18 @@ def main():
     check("on-grid overlap with equal values is clean",
           topology_breaks(srcA + srcB, [tr(0.0, 199, None, 7)], lin2), 0)
 
+    # Codex launch review F2: a same-lineage resend FULLY CONTAINED in
+    # existing coverage, with different values (200 zeros + contained
+    # 50-sample all-ones at samples 50-99), must fail loudly.
+    src = [tr(0.0, 200, "/a", 0), tr(0.50, 50, "/b", 1)]
+    check("contained same-lineage overlap with differing values fails",
+          topology_breaks(src, [tr(0.0, 200, None)], lin2), 1)
+
+    # ...and the same containment with IDENTICAL values stays clean.
+    src = [tr(0.0, 200, "/a", 3), tr(0.50, 50, "/b", 3)]
+    check("contained same-lineage overlap with equal values is clean",
+          topology_breaks(src, [tr(0.0, 200, None, 3)], lin2), 0)
+
     if FAILURES:
         print(f"\n{len(FAILURES)} topology test(s) FAILED: {FAILURES}")
         return 1

@@ -79,6 +79,28 @@ def parse_apply_summary(stdout: str) -> dict | None:
     return None
 
 
+def unnamed_staged_files(entry: dict):
+    """Staged SDS files for this unit's station-year that the run manifest
+    does NOT name. Returns a list (empty = inventory exact), or None when
+    the manifest cannot be read (fail-closed: the caller holds the unit)."""
+    import json
+    try:
+        m = json.load(open(entry["run_manifest_path"]))
+    except Exception:
+        return None
+    named = set()
+    for day in (m.get("eqserver") or {}).get("per_date_status") or []:
+        for item in day.get("sds_files_written") or []:
+            named.add(str(Path(item[0])))
+    root = (Path(entry["staging_root"]) / str(entry["year"])
+            / entry["net"] / entry["sta"])
+    if not root.is_dir():
+        return []
+    return sorted(str(p) for p in root.glob("*.D/*")
+                  if p.is_file() and not p.name.endswith(".partial")
+                  and str(p) not in named)
+
+
 def invoke_apply(args, entry: dict, commit: bool) -> dict:
     """Invoke apply.py for one entry. `commit=False` runs dry-run; `True` adds --commit.
     Returns parsed result dict including counts."""
@@ -193,6 +215,26 @@ def main():
                 append_event(promote_done, {
                     "run_id": rid, "net": entry["net"], "sta": sta, "year": year,
                     "action": "skip-empty", "ts": utc_now(),
+                })
+                handled.add(rid)
+                continue
+
+            # Step 0: inventory guard (Codex launch review F1). Stage 5 scans
+            # the staged directory, so every active staged file for this
+            # station-year must be NAMED by the current run manifest. Any
+            # unnamed file (a leftover from an earlier run) holds the unit
+            # for review — it is never promoted under this run's provenance.
+            unnamed = unnamed_staged_files(entry)
+            if unnamed is None or unnamed:
+                why = ("run manifest unreadable" if unnamed is None else
+                       f"{len(unnamed)} staged file(s) not named by the run "
+                       f"manifest (first: {unnamed[0]})")
+                print(f"[promote] {rid} HELD — {why}", flush=True)
+                append_event(held, {
+                    "run_id": rid, "net": entry["net"], "sta": sta,
+                    "year": year, "action": "held",
+                    "reason": "inventory mismatch: " + why,
+                    "unnamed_files": (unnamed or [])[:50], "ts": utc_now(),
                 })
                 handled.add(rid)
                 continue

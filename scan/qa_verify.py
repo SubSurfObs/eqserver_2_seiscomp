@@ -465,7 +465,26 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
         broke = False
         frontier = None
         cur_lin = cur_start = cur_len = None
-        placed = []  # (integer grid pos, data) of accepted on-grid tiles
+        placed = []  # (integer grid pos, data, lineage) of on-grid tiles
+
+        def _same_lineage_diff(pos, data, lin):
+            # Codex launch review F2: every same-lineage on-grid overlap is
+            # payload-compared over its ENTIRE extent, including copies
+            # fully contained in existing coverage. Returns the first
+            # differing overlap range, or None.
+            for q_pos, q_data, q_lin in placed:
+                if q_lin != lin:
+                    continue
+                o_lo = max(pos, q_pos)
+                o_hi = min(pos + len(data), q_pos + len(q_data))
+                if o_hi <= o_lo:
+                    continue
+                a = np.asarray(data[o_lo - pos:o_hi - pos])
+                b = np.asarray(q_data[o_lo - q_pos:o_hi - q_pos])
+                if not np.array_equal(a, b):
+                    return (o_lo, o_hi)
+            return None
+
         for p, L, lin, tdata in tiles:
             if frontier is None:
                 if p > 0.5:
@@ -474,17 +493,26 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                     break
                 frontier, cur_lin, cur_start, cur_len = p + L, lin, p, L
                 if abs(p - round(p)) <= 0.25:
-                    placed.append((int(round(p)), tdata))
+                    placed.append((int(round(p)), tdata, lin))
                 continue
+            if abs(p - round(p)) <= 0.25:
+                bad = _same_lineage_diff(int(round(p)), tdata, lin)
+                if bad:
+                    broke = True
+                    _note("ongrid-overlap-values-differ", ct,
+                          f"samples [{bad[0]},{bad[1]}) lin={lin}")
+                    break
             if p + L <= frontier - 0.5:
-                continue  # fully behind coverage, adds nothing
+                if abs(p - round(p)) <= 0.25:
+                    placed.append((int(round(p)), tdata, lin))
+                continue  # fully behind coverage (payload verified above)
             cont = p - (cur_start + cur_len)  # junction vs the chain
             if abs(cont) <= 0.5:
                 # Grid-consistent next file: the chain advances.
                 cur_lin, cur_start, cur_len = lin, p, L
                 frontier = max(frontier, p + L)
                 if abs(p - round(p)) <= 0.25:
-                    placed.append((int(round(p)), tdata))
+                    placed.append((int(round(p)), tdata, lin))
             elif cont < -0.5:
                 frac = abs(cont - round(cont))
                 if lin == cur_lin and frac <= 0.25:
@@ -495,24 +523,7 @@ def topology_breaks(src_traces, conv_traces, lineages=None):
                     # a copy provably loses nothing (Codex F6, accepted
                     # residual). Differing values fail LOUDLY here: no
                     # match-any-copy rule can mask them.
-                    pos = int(round(p))
-                    bad = None
-                    for q_pos, q_data in placed:
-                        o_lo = max(pos, q_pos)
-                        o_hi = min(pos + L, q_pos + len(q_data))
-                        if o_hi <= o_lo:
-                            continue
-                        a = np.asarray(tdata[o_lo - pos:o_hi - pos])
-                        b = np.asarray(q_data[o_lo - q_pos:o_hi - q_pos])
-                        if not np.array_equal(a, b):
-                            bad = (o_lo, o_hi)
-                            break
-                    if bad:
-                        broke = True
-                        _note("ongrid-overlap-values-differ", ct,
-                              f"samples [{bad[0]},{bad[1]}) lin={lin}")
-                        break
-                    placed.append((pos, tdata))
+                    placed.append((int(round(p)), tdata, lin))
                     cur_lin, cur_start, cur_len = lin, p, L
                     frontier = max(frontier, p + L)
                 elif lin == cur_lin and p - cur_start <= 0.5 * cur_len:

@@ -879,6 +879,32 @@ def convert_echopro_day(suds_convert, station, network, location, files, staging
     return result
 
 
+def _quarantine_stale_day(sds_root, net, sta, day, keep=()):
+    """Make the CURRENT run own this station-day's staged inventory (Codex
+    launch review F1): every existing day-file for (net, sta, day) not in
+    `keep` is moved to .stale_quarantine/ — never left active, where Stage
+    5's directory scan would promote it under the new run's provenance.
+    Called on EVERY committed day outcome: written, empty, no_files,
+    blocked. A move, not a delete: reversible and inspectable."""
+    import shutil as _sh
+    import time as _time
+    from pathlib import Path as _P
+    jday = int(day.strftime("%j"))
+    sta_root = _P(sds_root) / str(day.year) / net / sta
+    if not sta_root.is_dir():
+        return []
+    keep = {_P(k) for k in keep}
+    stale = [q for q in sta_root.glob(f"*/{net}.{sta}.*.{day.year}.{jday:03d}")
+             if q not in keep]
+    if stale:
+        qdir = (_P(sds_root) / ".stale_quarantine"
+                / f"{net}.{sta}.{day.year}.{jday:03d}.{int(_time.time())}")
+        qdir.mkdir(parents=True, exist_ok=True)
+        for q in stale:
+            _sh.move(str(q), str(qdir / q.name))
+    return [str(q) for q in stale]
+
+
 def _write_day_replace(suds_convert, stream, sds_root, net, sta, day,
                        retries=3):
     """Clean-room day writer (Codex resolver review F7): the full day is
@@ -936,22 +962,7 @@ def _write_day_replace(suds_convert, stream, sds_root, net, sta, day,
                     _time.sleep(2.0 * attempt)
             staged[path] = tmp
 
-        # Reconcile: anything on target for this station+day that the
-        # resolved output does not contain is STALE — quarantine it.
-        sta_root = _P(sds_root) / str(day.year) / net / sta
-        stale = []
-        if sta_root.is_dir():
-            pat = f"{net}.{sta}.*.{day.year}.{jday:03d}"
-            for q in sta_root.glob(f"*/{pat}"):
-                if q not in staged:
-                    stale.append(q)
-        if stale:
-            qdir = (_P(sds_root) / ".stale_quarantine"
-                    / f"{net}.{sta}.{day.year}.{jday:03d}."
-                    f"{int(_time.time())}")
-            qdir.mkdir(parents=True, exist_ok=True)
-            for q in stale:
-                _sh.move(str(q), str(qdir / q.name))
+        _quarantine_stale_day(sds_root, net, sta, day, keep=staged.keys())
 
         written = []
         for path, tmp in staged.items():
@@ -1139,6 +1150,8 @@ def _worker_convert_day(job):
                 # from population(s) whose channel content nobody could
                 # establish. Operator identity work, not a conversion.
                 sel.close()
+                if commit:
+                    _quarantine_stale_day(staging, net, sta, d)
                 return {"status": "blocked_identity", "date": d_iso,
                         "n_files": 0, "n_boundary_files": 0,
                         "blocked_populations": [
@@ -1169,6 +1182,8 @@ def _worker_convert_day(job):
                             "error": "selection has no component decisions "
                                      "(pre-v0.4 artifact) — recompile"}
                 sel.close()
+                if commit:
+                    _quarantine_stale_day(staging, net, sta, d)
                 return {"status": "no_files", "date": d_iso, "n_files": 0,
                         "n_boundary_files": 0, "sds_files_written": []}
             # Skip-unchanged fast path, fingerprinted over the DECISIONS
@@ -1351,7 +1366,16 @@ def _worker_convert_day(job):
                     r["mixed_formats"] = True
                 if read_errors:
                     r["error"] = str(read_errors[:3])
-                if commit and len(resolved_stream) > 0:
+                if len(resolved_stream) == 0:
+                    # Decisions existed but nothing usable came out:
+                    # a FAILED day, never a success (Codex launch F1).
+                    r["status"] = "error"
+                    r["error"] = ("decisions present but zero output traces"
+                                  + (f"; read errors: {read_errors[:3]}"
+                                     if read_errors else ""))
+                    if commit:
+                        _quarantine_stale_day(staging, net, sta, d)
+                elif commit:
                     written = _write_day_replace(
                         suds_convert, resolved_stream, staging,
                         net, sta, d)
