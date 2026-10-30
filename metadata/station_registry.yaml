@@ -1129,17 +1129,10 @@ WKA:
   notes: "Willalooka SA; 1989 year likely artefact"
 
 # Added from uom_seismic_metadata DU inventory (scml/du.xml + external/du) 2026-05-26.
-# Absent from the 2026-04-12 archive dir scan -> likely new-server-only (no EqServer
-# historical data); the Level-1 scan will confirm whether any data exists to convert.
-ALEX:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: null
-  coverage_end: null
-  notes: "Alexandria NSW (DU inventory)"
+# 2026-10-30 (operator ruling): the registry mirrors the EqServer archive tree only.
+# ALEX, LEU, LGMA, WAH were removed — no EqServer folder exists (data reaches the
+# SeisComP server by another route; out of scope for this conversion project).
+# HMV1 kept: it has an EqServer folder.
 HMV1:
   include: true
   target_network: DU
@@ -1149,33 +1142,6 @@ HMV1:
   coverage_start: null
   coverage_end: null
   notes: "Hindmarsh Valley SA, Peters Seismological Observatory (DU inventory)"
-LEU:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: null
-  coverage_end: null
-  notes: "Leumeah NSW (DU inventory)"
-LGMA:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: null
-  coverage_end: null
-  notes: "Tuggerah NSW (DU inventory)"
-WAH:
-  include: true
-  target_network: DU
-  network_basis: registry
-  source_network_code: DU
-  recorder_types: null
-  coverage_start: null
-  coverage_end: null
-  notes: "Wahroonga NSW (DU inventory)"
 
 # Likely DU variants (same base code as confirmed DU stations; not in du.xml)
 NNP3:
@@ -2312,6 +2278,10 @@ RDK6:
   notes: "Confirmed U aftershock deployment 2021; already converted to VX SDS"
 
 
+# EXCEPTION (2026-10-30): KORUM is NOT an EqServer station — a colleague's
+# SD-card dataset converted through this pipeline on 2026-10-22. Kept so that
+# conversion stays reproducible; it is the only registry entry without an
+# EqServer folder.
 KORUM:
   include: true
   target_network: OZ
