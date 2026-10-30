@@ -82,6 +82,35 @@ def main():
     check("long measured file not capped at an hour",
           w[:1] == ["0000"] and "0139" in w, f"last={w[-1:] if w else w}")
 
+    # 5. Re-review F2: a one-minute stream that LOOKS complete (all minutes
+    #    named) must not cause an equally complete five-minute copy to be
+    #    discarded — the latter may hold an internal gap's data.
+    know = ChannelKnowledge(probe_enabled=False)
+    P1 = [cand("p1", f"00{m:02d}", source="disk") for m in range(10)]
+    P5 = [cand("p5", hm) for hm in ("0000", "0005")]
+    sel, rej, _g, _b = choose_day(P1 + P5, know, MK)
+    lost = [r for r in rej if r["path"] in {c["path"] for c in P5}]
+    check("five-minute alternative copy is never discarded",
+          not lost and window(sel, P5[0])[:5] == mins(0, 4),
+          f"rejected={[r['reason'] for r in lost]} window={window(sel, P5[0])[:6]}")
+
+    # 6. Re-review F1 (DNL3 2024-01-05 2359): the day's last file runs to the
+    #    next day's first file of the same population (01:39 here).
+    know = ChannelKnowledge(probe_enabled=False)
+    last = cand("p", "2359")
+    sel, _r, _g, _b = choose_day([cand("p", "2358"), last], know, MK,
+                                 next_first={"p": 99})
+    w = window(sel, last)
+    check("23:59 file reads across midnight to 01:38 next day",
+          "2359" in w and "2538" in w and "2539" not in w,
+          f"first={w[:1]} last={w[-1:]}")
+
+    # 7. ...and with no files at all the next day, to the end of that day.
+    sel, _r, _g, _b = choose_day([last], know, MK, next_first={})
+    w = window(sel, last)
+    check("last file with an empty next day reads to its end",
+          w[-1:] == ["4759"], f"last={w[-1:]}")
+
     if FAILURES:
         print(f"\n{len(FAILURES)} span test(s) FAILED: {FAILURES}")
         return 1

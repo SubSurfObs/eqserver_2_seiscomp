@@ -438,10 +438,14 @@ def _start_minute(cand):
 
 
 def _slots(m0, n):
-    return {f"{mm // 60:02d}{mm % 60:02d}" for mm in range(m0, min(1440, m0 + n))}
+    """Minute keys m0..m0+n-1; may exceed 1440 (a file's data crossing into
+    the next day — Codex re-review F1, DNL3 2359 file running to 01:38).
+    Keys past midnight format as 2400+ (e.g. '2538'), capped at the end of
+    the next day."""
+    return {f"{mm // 60:02d}{mm % 60:02d}" for mm in range(m0, min(2880, m0 + n))}
 
 
-def file_reach_and_claims(pops, know, month_key):
+def file_reach_and_claims(pops, know, month_key, next_first=None):
     """Two DIFFERENT minute sets per file (Codex measured-span review,
     2026-10-30 — the measured length was doing two jobs):
 
@@ -468,7 +472,12 @@ def file_reach_and_claims(pops, know, month_key):
                 reach[f["path"]] = set()
                 claim[f["path"]] = set()
                 continue
-            nxt = next((m for m in starts if m > m0), 1440)
+            # The day's last file runs until the NEXT DAY's first file of
+            # the same population (or to the end of the next day when that
+            # day has none) — never stops at midnight (re-review F1).
+            nxt = next((m for m in starts if m > m0), None)
+            if nxt is None:
+                nxt = 1440 + (next_first or {}).get(pk, 1440)
             if HOURBUNDLE_RE.search(Path(f["path"]).name):
                 n = max(60, span_meas)
             else:
@@ -479,7 +488,7 @@ def file_reach_and_claims(pops, know, month_key):
     return reach, claim
 
 
-def choose_day(cands, know: ChannelKnowledge, month_key):
+def choose_day(cands, know: ChannelKnowledge, month_key, next_first=None):
     """Per-orientation population winner + minute-gap-fill.
 
     Channel knowledge is PER FILE: a filename that declares its channel is
@@ -497,7 +506,7 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
     pops = defaultdict(list)
     for c in cands:
         pops[c["population"]].append(c)
-    reach, claim = file_reach_and_claims(pops, know, month_key)
+    reach, claim = file_reach_and_claims(pops, know, month_key, next_first)
 
     f_orients = {}
     blocked = set()
@@ -557,9 +566,12 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
             continue
 
         def coverage(files):
+            # Ranking only decides PRIORITY now, so compare packaging fairly
+            # by reach (a five-minute stream is not 1/5 as complete as a
+            # one-minute one — re-review F2).
             slots = set()
             for f in files:
-                slots |= claim[f["path"]]
+                slots |= reach[f["path"]]
             return slots
 
         ranked = sorted(
@@ -597,22 +609,26 @@ def choose_day(cands, know: ChannelKnowledge, month_key):
                             orient, set()).update(reach[f["path"]])
                         e["cand"] = f
                         short_minutes.discard(f["hhmm"])
+        # EVERY alternative copy carrying this orientation is authorized
+        # for its full reach at fill priority (re-review F2): coverage
+        # cannot be proven from file names — a "complete" one-minute stream
+        # can have internal gaps another copy fills. The resolver lets a
+        # lower-priority copy contribute ONLY samples no higher-priority
+        # copy supplies, so this can add data but never displace it.
         for pk, fs, _cov in ranked[1:]:
             for f in fs:
-                extra = reach[f["path"]] - covered
-                if extra:
-                    e = sel[f["path"]]
-                    e["chans"].add(orient)
-                    e["rule"] = e["rule"] or f"gap_fill:{orient}:{pk}"
-                    e.setdefault("by_orient", {})[orient] = f"gap_fill:{orient}:{pk}"
-                    e.setdefault("o_slots", {}).setdefault(
-                        orient, set()).update(extra)
-                    e["cand"] = f
-                    covered |= claim[f["path"]]
-                    n_gap += 1
-                else:
-                    rejected.append(dict(
-                        f, reason=f"{orient}:population_lost_to:{win_pk}"))
+                if not reach[f["path"]]:
+                    rejected.append(dict(f, reason=f"{orient}:no_start_time"))
+                    continue
+                e = sel[f["path"]]
+                e["chans"].add(orient)
+                e["rule"] = e["rule"] or f"gap_fill:{orient}:{pk}"
+                e.setdefault("by_orient", {})[orient] = (
+                    e.get("by_orient", {}).get(orient) or f"gap_fill:{orient}:{pk}")
+                e.setdefault("o_slots", {}).setdefault(
+                    orient, set()).update(reach[f["path"]])
+                e["cand"] = f
+                n_gap += 1
     return sel, rejected, n_gap, sorted(blocked)
 
 
@@ -681,11 +697,23 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
     blocked_days = {}  # (population, basis) -> day count
     d = date_cls(year, 1, 1)
     n_days = n_sel = 0
+    nxt_cands = load_day_candidates(src_db, d, minimus)
     while d.year == year:
-        cands = load_day_candidates(src_db, d, minimus)
+        cands = nxt_cands
+        # Look ahead one day (rolling, each day loaded once): the day's last
+        # file per population reads until the next day's first file of that
+        # population — a file can run far past midnight (re-review F1).
+        nxt_cands = load_day_candidates(src_db, d + timedelta(days=1), minimus)
+        next_first = {}
+        for c in nxt_cands:
+            m = _start_minute(c)
+            if m is not None:
+                next_first[c["population"]] = min(
+                    next_first.get(c["population"], m), m)
         if cands:
             mk = f"{d.year}-{d.month:02d}"
-            sel, rejected, gaps, blocked = choose_day(cands, know, mk)
+            sel, rejected, gaps, blocked = choose_day(cands, know, mk,
+                                                      next_first)
             for b in blocked:
                 blocked_days[b] = blocked_days.get(b, 0) + 1
             # Per-DAY blocked record (Codex targeted review item 3: one bad
@@ -715,7 +743,6 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
             # the NEXT day explicitly (replacing the tail heuristics).
             import calendar as _cal
             day_ns = _cal.timegm(d.timetuple()) * NS_
-            tail_best = {}  # orientation -> (window_end_ns, window_start_ns, file_id)
             for path, e in sel.items():
                 f = e["cand"]
                 out.execute(
@@ -768,20 +795,10 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                             "VALUES (?,?,?,?,?,?,?)",
                             (f"{iso}:{orient}", fid, orient, ws, we,
                              prio, reason))
-                        if reason.startswith("winner") and \
-                                (we, ws) >= tail_best.get(orient, (0, 0))[:2]:
-                            # Midnight source = the winner decision ending
-                            # latest, tie-broken by LATEST start (the file
-                            # actually spanning 23:59), not path order.
-                            tail_best[orient] = (we, ws, fid)
-            next_iso = (d + timedelta(days=1)).isoformat()
-            for orient, (_we, _ws, fid) in sorted(tail_best.items()):
-                out.execute(
-                    "INSERT OR REPLACE INTO component_decision "
-                    "VALUES (?,?,?,?,?,?,?)",
-                    (f"{next_iso}:{orient}", fid, orient,
-                     day_ns + 86400 * NS_, day_ns + 86460 * NS_,
-                     0, "boundary_tail"))
+                        # Windows may extend past midnight (reach carries
+                        # into the next day); decisions_for_day(next day)
+                        # picks them up by window intersection — no fixed
+                        # 60-second boundary_tail decision any more.
             out.executemany(
                 "INSERT INTO rejected VALUES (?,?,?,?,?)",
                 [(iso, stream_base, f["population"], f["path"], f["reason"])
