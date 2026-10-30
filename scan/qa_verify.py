@@ -245,14 +245,23 @@ SEED_SEISMO_RE = __import__("re").compile(r"^[FGCDHESB]H[ZNE123]$")
 # Echo spelling variants seen in EqServer (2026-10-31): "Up" (RNDA),
 # "Up T"/"East T"/"North T" (BRTS, PLMR) — Up is Z by SEED definition.
 # Keep identical to disk_to_sds suds_convert.echo_orient.
-_ECHO_BARE = {"up": "Z", "north": "N", "east": "E"}
+_ECHO_BARE = {"up": "Z", "north": "N", "east": "E",
+              # PC-SUDS one-letter component codes (HKER 2017 "v",
+              # "v Trans"; HKER 2018 files pair short "v" with c03 = Z)
+              "v": "Z", "n": "N", "e": "E"}
 
 
 def _echo_orient(chan: str) -> str | None:
     c = re.sub(r"[\s_]+", "-", (chan or "").strip()).lower()
-    if c.endswith("-t"):
-        c = c[:-2]
-    elif "-" in c:
+    for suffix in ("-t", "-trans"):  # "-T"/"Trans" = translational (velocity)
+        if c.endswith(suffix):
+            c = c[: -len(suffix)]
+            break
+    else:
+        if "-" in c:
+            return None  # e.g. Up-A (accelerometer) or anything unrecognised
+        return _ECHO_BARE.get(c)
+    if "-" in c:
         return None
     return _ECHO_BARE.get(c)
 

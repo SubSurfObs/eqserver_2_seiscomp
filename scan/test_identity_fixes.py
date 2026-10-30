@@ -61,11 +61,12 @@ def run_day(fake_reader):
 def main():
     # 1. labels
     want = {"Up": "Z", "Up T": "Z", "Up-T": "Z", "East T": "E",
-            "North T": "N", "c03": "Z", "c01": "N"}
+            "North T": "N", "c03": "Z", "c01": "N",
+            "v": "Z", "v Trans": "Z"}
     for lab, o in want.items():
         check(f"label {lab!r} -> {o}", qa_verify._suds_component(lab) == o,
               str(qa_verify._suds_component(lab)))
-    for lab in ("Up-A", "Up A", "v Trans"):
+    for lab in ("Up-A", "Up A", "v Accel", "w"):
         got = qa_verify._suds_component(lab)
         check(f"label {lab!r} not a seismometer channel",
               got is None or got.startswith("?"), str(got))
@@ -88,7 +89,7 @@ def main():
     # 3. an unrecognised label in that population still blocks
     def reader_unknown(p, errors, counters):
         if Path(p).name.startswith("2025-03-15_2125"):
-            counters.setdefault("dropped_labels", []).append("v Trans")
+            counters.setdefault("dropped_labels", []).append("w")
             return []
         return reader_empty_disk(p, errors, counters)
     *_x, blocked = run_day(reader_unknown)
