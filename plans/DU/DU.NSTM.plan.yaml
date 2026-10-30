@@ -1,0 +1,19 @@
+station: NSTM
+network: DU
+location: '0'
+naming: server_verbatim
+status: ok
+epochs:
+- id: 1
+  start: '2025-01-01'
+  end: '2025-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.NSTM.0.HHZ
+    basis: server_verbatim:2025
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes: []

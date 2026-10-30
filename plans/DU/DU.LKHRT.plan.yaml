@@ -1,0 +1,45 @@
+station: LKHRT
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 2
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 3
+  start: '2023-01-01'
+  end: '2023-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 4
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 5
+  start: '2025-01-01'
+  end: '2025-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 6
+  start: '2026-01-01'
+  end: '2026-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes: []

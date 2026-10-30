@@ -1,0 +1,41 @@
+station: DAMM
+network: DU
+location: '00'
+naming: server_verbatim
+status: ok
+epochs:
+- id: 1
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.DAMM.00.HHZ
+    basis: server_verbatim:2026
+- id: 2
+  start: '2025-01-01'
+  end: '2025-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.DAMM.00.HHZ
+    basis: server_verbatim:2026
+- id: 3
+  start: '2026-01-01'
+  end: '2026-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.DAMM.00.HHZ
+    basis: server_verbatim:2026
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes:
+- '2024: codes from nearest server year 2026'
+- '2025: codes from nearest server year 2026'

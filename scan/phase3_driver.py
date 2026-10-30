@@ -1023,7 +1023,7 @@ def _clip_trace_ns(tr, ws_ns, we_ns):
 
 
 def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
-                      read_errors, chan_map=None):
+                      read_errors, chan_map=None, map_all=False):
     """Per-file adapter (Codex resolver review F1/F4): read ONE source
     file, relabel to target identity, return its traces. No cross-file
     and no cross-format merging — a file's internal drift is split (a
@@ -1088,7 +1088,11 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
     # (DU EchoPro archives as EH* @ loc 60 on the server, where band-by-
     # rate would say HH*). miniSEED stays passthrough: its headers ARE
     # the names.
-    if chan_map and source_format == "suds":
+    # map_all (plan naming: server_verbatim): the server's codes apply to
+    # EVERY format of the station, so a station's minority miniSEED files
+    # (CLV2 2021: 55 days among EchoPro) cannot surface as a stray extra
+    # channel under their own header names.
+    if chan_map and (source_format == "suds" or map_all):
         for tr in st:
             o = (tr.stats.channel or "?")[-1:].upper()
             if o in chan_map:
@@ -1321,7 +1325,8 @@ def _worker_convert_day(job):
                 for (path, fmt), drows in sorted(by_path.items()):
                     st = _read_file_traces(path, fmt, net, sta, loc,
                                            suds_convert, read_errors,
-                                           job.get("chan_map"))
+                                           job.get("chan_map"),
+                                           job.get("chan_map_all", False))
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1698,6 +1703,7 @@ def main():
                 "disk_size_floor_ratio": args.disk_size_floor_ratio,
                 "selection_path": args.selection,
                 "chan_map": ep_chan_map or None,
+                "chan_map_all": plan.get("naming") == "server_verbatim",
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "code_id": code_id,
