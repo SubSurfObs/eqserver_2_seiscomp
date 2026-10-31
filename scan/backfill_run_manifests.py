@@ -7,8 +7,11 @@ its run manifest carry ONE identity and the full release record:
   - release     := eqserver / disk_to_sds / sudspy HEADs from the event's
                    preflight record
   - selection   := archived selection file (path + sha256 of its content)
-  - python      := interpreter/numpy/obspy of the running environment,
-                   flagged as backfilled
+  - python      := historical environment marked unknown; the backfill-
+                   time stack is recorded separately as observed_at_backfill
+
+Validates EVERY record first: any missing manifest, release SHA or archived
+selection exits nonzero and writes nothing.
 
 Waveform files are never touched. Dry-run by default; --commit writes each
 manifest atomically and keeps the original as <name>.pre_backfill.
@@ -38,7 +41,8 @@ def selection_record(archive, net, sta, year):
     with gzip.open(gz, "rb") as f:
         for chunk in iter(lambda: f.read(1 << 20), b""):
             h.update(chunk)
-    return {"path": str(gz), "sha256": h.hexdigest(), "archived": True}
+    return {"path": str(gz), "sha256": h.hexdigest(),
+            "sha256_of": "decompressed selection database"}
 
 
 def main():
@@ -47,7 +51,9 @@ def main():
     ap.add_argument("--selection-archive", required=True)
     ap.add_argument("--commit", action="store_true")
     a = ap.parse_args()
-    n_ok = n_missing = 0
+    # Phase 1: build EVERY repaired manifest in memory; any gap aborts the
+    # whole run with nothing written (Codex 0ff001e).
+    plans, problems = [], []
     for q in a.queues:
         done = Path(q) / "convert_done.jsonl"
         if not done.exists():
@@ -56,38 +62,56 @@ def main():
             ev = json.loads(line)
             mp = Path(ev.get("run_manifest_path") or "")
             if not mp.is_file():
-                print(f"MISSING manifest: {ev.get('run_id')}")
-                n_missing += 1
+                problems.append(f"{ev.get('run_id')}: manifest missing ({mp})")
                 continue
             m = json.loads(mp.read_text())
             heads = {r["repo"]: r["head"]
                      for r in (ev.get("preflight") or {}).get("repos", [])}
+            release = {"eqserver": heads.get("eqserver_2_seiscomp"),
+                       "disk_to_sds": heads.get("disk_to_sds"),
+                       "sudspy": heads.get("sudspy")}
             sel = selection_record(a.selection_archive, ev["net"], ev["sta"],
                                    ev["year"])
+            gaps = [k for k, v in release.items() if not v]
+            if not sel:
+                gaps.append("archived selection")
+            if gaps:
+                problems.append(f"{ev['run_id']}: missing {gaps}")
+                continue
             if m.get("run_id") != ev["run_id"]:
                 m.setdefault("phase3_run_id", m.get("run_id"))
                 m["run_id"] = ev["run_id"]
-            m["release"] = {"eqserver": heads.get("eqserver_2_seiscomp"),
-                            "disk_to_sds": heads.get("disk_to_sds"),
-                            "sudspy": heads.get("sudspy")}
-            if sel:
-                m["selection"] = sel
-            m.setdefault("python", dict(_python_stack(), backfilled=True))
-            missing = [k for k, v in m["release"].items() if not v]
-            if not sel:
-                missing.append("selection")
-            status = "OK" if not missing else f"INCOMPLETE {missing}"
-            print(f"{status:30} {ev['run_id']}")
-            n_ok += not missing
-            if a.commit:
-                bak = mp.with_name(mp.name + ".pre_backfill")
-                if not bak.exists():
-                    shutil.copy2(mp, bak)
-                tmp = mp.with_name(mp.name + ".partial")
-                tmp.write_text(json.dumps(m, indent=2))
-                os.replace(tmp, mp)
-    print(f"\n{n_ok} complete, {n_missing} manifests missing"
-          f"{'' if a.commit else '  (dry run — nothing written)'}")
+            m["release"] = release
+            # Permanent location only; the conversion-time local path is kept
+            # for reference (it no longer exists).
+            old_sel = m.get("selection") or {}
+            sel["path_at_conversion"] = (old_sel.get("path")
+                                         or m.get("selection_path"))
+            m["selection"] = sel
+            # The conversion-time environment was not recorded for these runs.
+            if not (m.get("python") or {}).get("python"):
+                m["python"] = {"historical": "unknown — not recorded at "
+                                             "conversion",
+                               "observed_at_backfill": _python_stack()}
+            plans.append((ev["run_id"], mp, m))
+    for p in problems:
+        print(f"INCOMPLETE  {p}")
+    print(f"{len(plans)} complete, {len(problems)} incomplete")
+    if problems:
+        print("ABORT: nothing written — fix the gaps above and rerun.")
+        sys.exit(1)
+    if not a.commit:
+        print("(dry run — nothing written)")
+        return
+    # Phase 2: write, each atomically, original kept once.
+    for run_id, mp, m in plans:
+        bak = mp.with_name(mp.name + ".pre_backfill")
+        if not bak.exists():
+            shutil.copy2(mp, bak)
+        tmp = mp.with_name(mp.name + ".partial")
+        tmp.write_text(json.dumps(m, indent=2))
+        os.replace(tmp, mp)
+    print(f"wrote {len(plans)} manifests")
 
 
 if __name__ == "__main__":
