@@ -319,7 +319,12 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
     traces = []
     try:
         if is_suds_path(path):
-            st = read_suds_stream(path)
+            # Complete sample prefixes of cut-short waveform blocks are real
+            # source data (Codex 1b27f4f, WKA); flag the file as truncated.
+            _dg = {}
+            st = read_suds_stream(path, diag=_dg, recover_truncated=True)
+            if _dg.get("truncated_trace"):
+                counters["truncated"] = True
             for tr in st:
                 orient = _suds_component(tr.stats.channel)
                 if orient is None:

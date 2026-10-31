@@ -1045,7 +1045,8 @@ def _clip_trace_ns(tr, ws_ns, we_ns):
 
 
 def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
-                      read_errors, chan_map=None, map_all=False):
+                      read_errors, chan_map=None, map_all=False,
+                      truncated=None):
     """Per-file adapter (Codex resolver review F1/F4): read ONE source
     file, relabel to target identity, return its traces. No cross-file
     and no cross-format merging — a file's internal drift is split (a
@@ -1056,6 +1057,8 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
             [path], network=net, station=sta)
         for e in qc.get("read_errors", []):
             read_errors.append((path, str(e)))
+        if truncated is not None:
+            truncated.extend(p for p, _info in qc.get("truncated_recovered", []))
         st = stream
     else:
         import io
@@ -1336,6 +1339,7 @@ def _worker_convert_day(job):
                 # to the authorized window; the integer-ns resolver overlays
                 # by explicit priority; the day is written ONCE.
                 read_errors = []
+                truncated_files = []
                 n_bogus = 0
                 by_path = {}
                 for path, _pop, fmt, orient, ws, we, prio, _rsn in decisions:
@@ -1348,7 +1352,8 @@ def _worker_convert_day(job):
                     st = _read_file_traces(path, fmt, net, sta, loc,
                                            suds_convert, read_errors,
                                            job.get("chan_map"),
-                                           job.get("chan_map_all", False))
+                                           job.get("chan_map_all", False),
+                                           truncated_files)
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1401,6 +1406,11 @@ def _worker_convert_day(job):
                      "sds_files_written": []}
                 if mixed:
                     r["mixed_formats"] = True
+                if truncated_files:
+                    # Cut-short files whose complete prefix was used as gap
+                    # fill — recorded per day (Codex 1b27f4f).
+                    r["truncated_recovered"] = len(truncated_files)
+                    r["truncated_files"] = sorted(truncated_files)[:20]
                 if read_errors:
                     r["error"] = str(read_errors[:3])
                 import calendar as _cal

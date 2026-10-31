@@ -153,6 +153,27 @@ def main():
     check("mixed known+unknown in a SAMPLED file blocks (no agreed-Z)",
           any(b == "file_unresolved" for _p, b in blocked), str(blocked))
 
+    # 3d. cut-short disk files (Codex 1b27f4f): their recovered prefix is
+    #     ONLY lowest-priority gap fill, below every complete copy.
+    def reader_truncated(p, errors, counters):
+        if "_" in Path(p).name:
+            counters["truncated"] = True
+            return [{"orient": "Z", "src_chan": "c03"}]
+        return [{"orient": "Z", "src_chan": "c03"}]
+    tele, disk, sel, rej, blocked = run_day(reader_truncated)
+    check("truncated files do not block", not blocked, str(blocked))
+    dsel = [sel.get(c["path"]) for c in disk]
+    check("truncated files authorized as Z gap fill",
+          all(e and (e.get("by_orient") or {}).get("Z", "").endswith(":truncated")
+              for e in dsel), str(dsel[:1]))
+    tprio = {(sel.get(c["path"]) or {}).get("prio_by_orient", {}).get("Z")
+             for c in tele}
+    dprio = {e["prio_by_orient"]["Z"] for e in dsel if e}
+    check("telemetry is the winner (no fill priority)", tprio == {None},
+          str(tprio))
+    check("truncated priority is below every other copy",
+          dprio and min(dprio) > 2, str(dprio))
+
     # 4. bare .gz SUDS sniff
     with tempfile.TemporaryDirectory() as td:
         s = Path(td) / "2017-03-15 0000 00 HKER.gz"

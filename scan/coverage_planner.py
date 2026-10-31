@@ -295,6 +295,7 @@ class ChannelKnowledge:
                 else:
                     unknown.append(t.get("src_chan", "?"))
             rec["chans"] = frozenset(found)
+            rec["truncated"] = bool(ic.get("truncated"))
             dropped = ic.get("dropped_labels") or []      # recognised drops
             unknown += ic.get("unknown_labels") or []     # unrecognised
             rec["raw"] += [f"-{c}" for c in dropped] + [f"?{c}" for c in unknown]
@@ -339,6 +340,11 @@ class ChannelKnowledge:
                             else:
                                 unk.append(t.get("src_chan", "?"))
                         unk += ictrs.get("unknown_labels") or []
+                        # A cut-short file in the sample: per-file evidence
+                        # is needed so truncated files can be demoted to
+                        # lowest-priority gap fill (Codex 1b27f4f).
+                        if ictrs.get("truncated"):
+                            errors.append(f"{p}: truncated_waveform_block")
                         # Codex 0f68135: an unknown channel in a sampled
                         # file is verdict-affecting — it forces the
                         # per-file path, where that file blocks its day.
@@ -607,17 +613,32 @@ def choose_day(cands, know: ChannelKnowledge, month_key, next_first=None):
             if not f_orients.get(f["path"]):
                 rejected.append(dict(f, reason=f"no_channel_evidence:{pk}"))
 
+    # Files whose waveform block was cut short (complete prefix recovered):
+    # ONLY lowest-priority gap fill, never a winner or ranked copy (Codex
+    # 1b27f4f). Known from per-file probe evidence.
+    truncated = set()
+    for (pk_m, _mk), recs in know.per_file.items():
+        if _mk != month_key:
+            continue
+        truncated |= {p for p, r in recs.items()
+                      if isinstance(r, dict) and r.get("truncated")}
+
     all_orients = set().union(*f_orients.values()) if f_orients else set()
     sel = defaultdict(lambda: {"chans": set(), "rule": None, "cand": None})
 
     for orient in sorted(all_orients):
         # carriers: per population, only the FILES that carry this orientation
         carriers = {}
+        trunc_fs = []
         for pk, files in pops.items():
             fs = [f for f in files if orient in f_orients[f["path"]]]
+            trunc_fs += [f for f in fs if f["path"] in truncated]
+            fs = [f for f in fs if f["path"] not in truncated]
             if fs:
                 carriers[pk] = fs
         if not carriers:
+            _authorize_truncated(sel, trunc_fs, orient, reach, rejected, 0)
+            n_gap += len(trunc_fs)
             continue
 
         def coverage(files):
@@ -691,7 +712,28 @@ def choose_day(cands, know: ChannelKnowledge, month_key, next_first=None):
                     orient, set()).update(reach[f["path"]])
                 e["cand"] = f
                 n_gap += 1
+        _authorize_truncated(sel, trunc_fs, orient, reach, rejected,
+                             len(ranked))
+        n_gap += len(trunc_fs)
     return sel, rejected, n_gap, sorted(blocked)
+
+
+def _authorize_truncated(sel, files, orient, reach, rejected, n_ranked):
+    """Cut-short files fill ONLY samples no other copy supplies: one fill
+    priority below every ranked population (Codex 1b27f4f)."""
+    prio = PRIORITY_OF["gap_fill"] + n_ranked
+    for f in files:
+        if not reach[f["path"]]:
+            rejected.append(dict(f, reason=f"{orient}:no_start_time"))
+            continue
+        e = sel[f["path"]]
+        e.setdefault("prio_by_orient", {})[orient] = prio
+        e["chans"].add(orient)
+        e["rule"] = e["rule"] or f"truncated_fill:{orient}"
+        e.setdefault("by_orient", {})[orient] = f"gap_fill:{orient}:truncated"
+        e.setdefault("o_slots", {}).setdefault(orient, set()).update(
+            reach[f["path"]])
+        e["cand"] = f
 
 
 def compile_selection(net, sta, year, db_path: Path, out_path: Path,
