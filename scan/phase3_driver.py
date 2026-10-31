@@ -1471,6 +1471,17 @@ def _worker_convert_day(job):
         conn.close()
 
 
+def _python_stack():
+    """Interpreter + key library versions, for the run manifest (F7)."""
+    out = {"python": sys.version.split()[0], "executable": sys.executable}
+    for mod in ("numpy", "obspy"):
+        try:
+            out[mod] = __import__(mod).__version__
+        except Exception:
+            out[mod] = None
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("db", help="Level-1 manifest SQLite path")
@@ -1489,6 +1500,9 @@ def main():
                                          "(ignores --start-date/--end-date). Used for "
                                          "random stress sampling where the chosen dates "
                                          "are non-contiguous.")
+    ap.add_argument("--run-id", default=None,
+                    help="run identity from the production wrapper (one ID "
+                         "per conversion: queue event == manifest == ledger)")
     ap.add_argument("--disk-to-sds", default=SUDS_CONVERT_PATH_DEFAULT,
                     help="path containing suds_convert.py (disk_to_sds engine)")
     ap.add_argument("--workers", type=int, default=1,
@@ -1676,8 +1690,10 @@ def main():
         except Exception:
             project_git = None
         run_start_dt = datetime.now(timezone.utc)
-        run_id = (f"eqserver_{network}_{station}_"
-                  f"{run_start_dt.strftime('%Y%m%dT%H%M%SZ')}")
+        # ONE identity per conversion (Codex c835400 F1): the wrapper's
+        # queue run_id when given; a self-made one only for ad-hoc runs.
+        run_id = args.run_id or (f"eqserver_{network}_{station}_"
+                                 f"{run_start_dt.strftime('%Y%m%dT%H%M%SZ')}")
         run_manifest_state = {
             "started_at": run_start_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "run_id": run_id,
@@ -1961,6 +1977,19 @@ def main():
             "policy_sha": run_manifest_state["plan_sha"],
             "policy_yaml_path": run_manifest_state["plan_path_abs"],  # transit-only
             "classifier_version": args.classifier_version,
+            # The full release identity and inputs in the PERMANENT record
+            # (Codex c835400 F1/F7): the three code SHAs, the exact selection
+            # file, and the Python stack that produced the bytes.
+            "release": {
+                "eqserver": run_manifest_state["project_git"],
+                "disk_to_sds": run_manifest_state["engine_sha"],
+                "sudspy": run_manifest_state["sudspy_sha"],
+            },
+            "selection": {
+                "path": run_manifest_state["selection_path"],
+                "sha256": run_manifest_state["selection_sha"],
+            },
+            "python": _python_stack(),
             "aggregate": {
                 "items_attempted": days_processed,
                 "items_succeeded": items_succeeded,

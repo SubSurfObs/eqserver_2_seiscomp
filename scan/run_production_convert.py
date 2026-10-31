@@ -202,7 +202,8 @@ def run_convert(args, station: str, year: int) -> dict:
     link = shim / "sudspy"
     if not link.is_symlink():
         link.symlink_to(tree / "sudspy" / "sudspy")
-    cmd += ["--disk-to-sds", str(tree / "disk_to_sds" / "scripts")]
+    cmd += ["--disk-to-sds", str(tree / "disk_to_sds" / "scripts"),
+            "--run-id", run_id]
     env = dict(os.environ, PYTHONPATH=str(shim))
     t0 = time.time()
     with log_path.open("w") as logf:
