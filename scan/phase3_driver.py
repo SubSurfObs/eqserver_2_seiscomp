@@ -1869,6 +1869,10 @@ def main():
                 # Fix-review F3: promotion must be able to gate on a Jan 1
                 # converted without its prior-year boundary tail.
                 "jan1_tail_unavailable": r.get("jan1_tail_unavailable", False),
+                # Cut-short files whose complete prefix filled gaps (Codex
+                # 1b27f4f) — carried into the permanent record.
+                "truncated_recovered": r.get("truncated_recovered", 0),
+                "truncated_files": r.get("truncated_files", []),
                 "sds_files_written": [[p, s] for p, s in
                                       r.get("sds_files_written", [])],
             })
