@@ -191,9 +191,23 @@ def run_convert(args, station: str, year: int) -> dict:
            "--start-date", start_date,
            "--end-date", end_date,
            "--run-manifest", str(run_manifest_path)]
+    # Engines come from the SIBLINGS of this checkout (the repos the
+    # preflight pinned): disk_to_sds by path, sudspy via a one-package shim
+    # on PYTHONPATH (the sudspy repo root holds an io.py that would shadow
+    # the stdlib, so the root itself cannot go on the path). phase3 aborts
+    # if what it actually imports is not local.
+    tree = Path(__file__).resolve().parent.parent.parent
+    shim = tree / ".pyshim"
+    shim.mkdir(exist_ok=True)
+    link = shim / "sudspy"
+    if not link.is_symlink():
+        link.symlink_to(tree / "sudspy" / "sudspy")
+    cmd += ["--disk-to-sds", str(tree / "disk_to_sds" / "scripts")]
+    env = dict(os.environ, PYTHONPATH=str(shim))
     t0 = time.time()
     with log_path.open("w") as logf:
-        proc = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT, text=True)
+        proc = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT,
+                              text=True, env=env)
     elapsed = time.time() - t0
     # If the run produced zero days (whole year was no_files), the run_manifest
     # is still written — but apply.py would have nothing to promote, so we skip

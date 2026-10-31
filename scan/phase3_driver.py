@@ -1620,6 +1620,31 @@ def main():
             os.path.abspath(_sudspy_mod.__file__))))
     except Exception:
         sudspy_sha = "?"
+    # ENGINE LOCALITY (2026-10-31): a commit run must import sudspy and the
+    # disk_to_sds engine from the SIBLINGS of this checkout — the very repos
+    # the Stage-4 preflight pinned. Otherwise the preflight could verify one
+    # copy while another is imported (the side-load class). A release folder
+    # holding all three repos is then fully self-contained and re-runnable.
+    if args.commit:
+        _tree = os.path.realpath(os.path.dirname(os.path.dirname(_here_dir)))
+        _want = {"sudspy": os.path.join(_tree, "sudspy"),
+                 "disk_to_sds": os.path.join(_tree, "disk_to_sds")}
+        try:
+            import sudspy as _sp_chk
+            _got_sudspy = os.path.realpath(_sp_chk.__file__)
+        except Exception as _e:
+            _got_sudspy = f"(import failed: {_e})"
+        _got_engine = os.path.realpath(args.disk_to_sds)
+        _bad = [f"{n}: imported {g}, expected under {_want[n]}"
+                for n, g in (("sudspy", _got_sudspy),
+                             ("disk_to_sds", _got_engine))
+                if not g.startswith(_want[n] + os.sep)]
+        if _bad:
+            print("[phase3] ABORT engine locality: " + "; ".join(_bad),
+                  file=sys.stderr)
+            sys.exit(3)
+        print(f"[phase3] engines local to {_tree}: sudspy={_got_sudspy} "
+              f"disk_to_sds={_got_engine}")
     selection_sha = None
     if args.selection:
         selection_sha = hashlib.sha256(
