@@ -115,6 +115,44 @@ def main():
           not blocked and {r["path"] for r in rej} >= {c["path"] for c in disk},
           str(blocked))
 
+    # 3c. MIXED known + unknown channels in one file (Codex 0f68135):
+    #     c03 + 'w' (SUDS) and HHZ + HHX (mseed) must block, at the
+    #     per-file level AND when the file is one of the month's samples.
+    def reader_mixed_suds(p, errors, counters):
+        if Path(p).name.startswith("2025-03-15_2125"):
+            return [{"orient": "Z", "src_chan": "c03"},
+                    {"orient": "?w", "src_chan": "w"}]
+        return reader_empty_disk(p, errors, counters)
+    def reader_mixed_mseed(p, errors, counters):
+        if Path(p).name.startswith("2025-03-15_2125"):
+            counters.setdefault("unknown_labels", []).append("HHX")
+            return [{"orient": "Z", "src_chan": "HHZ"}]
+        return reader_empty_disk(p, errors, counters)
+    for nm, rdr in (("SUDS c03+w", reader_mixed_suds),
+                    ("mseed HHZ+HHX", reader_mixed_mseed)):
+        *_x, blocked = run_day(rdr)
+        check(f"mixed known+unknown ({nm}) blocks its day",
+              any(b == "file_unresolved" for _p, b in blocked), str(blocked))
+        real = qa_verify.read_source_file
+        qa_verify.read_source_file = rdr
+        try:
+            know = ChannelKnowledge(probe_enabled=True)
+            _p, rec = know._probe_file("/x/2025-03-15_2125_49_WKA.dmx")
+        finally:
+            qa_verify.read_source_file = real
+        check(f"_probe_file marks {nm} unresolved, not resolved",
+              rec["status"] == "unresolved", str(rec))
+    # Sampled-probe path: mixed file is one of the month's SAMPLES of the
+    # telemetry population -> must not be accepted as 'agreed Z'.
+    def reader_mixed_sampled(p, errors, counters):
+        if Path(p).name.startswith("2025-03-15 0000"):
+            return [{"orient": "Z", "src_chan": "c03"},
+                    {"orient": "?w", "src_chan": "w"}]
+        return reader_empty_disk(p, errors, counters)
+    *_x, blocked = run_day(reader_mixed_sampled)
+    check("mixed known+unknown in a SAMPLED file blocks (no agreed-Z)",
+          any(b == "file_unresolved" for _p, b in blocked), str(blocked))
+
     # 4. bare .gz SUDS sniff
     with tempfile.TemporaryDirectory() as td:
         s = Path(td) / "2017-03-15 0000 00 HKER.gz"

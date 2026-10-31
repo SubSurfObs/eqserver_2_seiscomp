@@ -286,24 +286,29 @@ class ChannelKnowledge:
         rec = {"chans": frozenset(), "raw": [], "traces": 0,
                "status": "unresolved", "err": ""}
         try:
-            found = set()
+            found, unknown = set(), []
             for t in read_source_file(p, ie, ic):
                 rec["traces"] += 1
                 rec["raw"].append(t.get("src_chan", "?"))
                 if t["orient"] in ORIENTATIONS:
                     found.add(t["orient"])
+                else:
+                    unknown.append(t.get("src_chan", "?"))
             rec["chans"] = frozenset(found)
             dropped = ic.get("dropped_labels") or []      # recognised drops
-            unknown = ic.get("unknown_labels") or []      # unrecognised
+            unknown += ic.get("unknown_labels") or []     # unrecognised
             rec["raw"] += [f"-{c}" for c in dropped] + [f"?{c}" for c in unknown]
             if ie:
                 rec["status"] = "unresolved"
                 rec["err"] = str([e.get("err", str(e))
                                   for e in ie][:2])
+            elif unknown:
+                # Codex 0f68135: ANY unknown channel blocks, even beside
+                # recognised ones (c03+w, HHZ+HHX) — checked BEFORE 'found'
+                # so the unknown channel is never silently dropped.
+                rec["status"] = "unresolved"
             elif found:
                 rec["status"] = "resolved"
-            elif rec["traces"] or unknown:
-                rec["status"] = "unresolved"  # labels unknown -> blocks
             elif dropped:
                 # Only RECOGNISED intentional drops (accelerometer, c04+
                 # aux): no seismometer channel to convert. Skipped and
@@ -327,10 +332,18 @@ class ChannelKnowledge:
                 for p in paths:
                     ierrs, ictrs = [], {}
                     try:
-                        found = set()
+                        found, unk = set(), []
                         for t in read_source_file(p, ierrs, ictrs):
                             if t["orient"] in ORIENTATIONS:
                                 found.add(t["orient"])
+                            else:
+                                unk.append(t.get("src_chan", "?"))
+                        unk += ictrs.get("unknown_labels") or []
+                        # Codex 0f68135: an unknown channel in a sampled
+                        # file is verdict-affecting — it forces the
+                        # per-file path, where that file blocks its day.
+                        if unk:
+                            errors.append(f"{p}: unknown_labels={unk[:5]}")
                         per_path[p] = frozenset(found)
                         probed.append(p)
                         # Verdict-affecting: internal read errors (the file
