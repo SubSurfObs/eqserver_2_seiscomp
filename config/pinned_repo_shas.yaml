@@ -20,13 +20,13 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: d23ea86      # operator-approved 2026-10-30 (wave 2b: same conversion code + ruled plans)
+    pinned: fa28e9b      # operator-approved 2026-10-31 (DU release v1: Codex PROCEED d77573d + engine-locality plumbing)
     code_roots: [scan]
   sudspy:
-    pinned: 0febe26      # operator-approved 2026-10-30
+    pinned: 5d359d8      # Codex PROCEED 2026-10-31 (gzip member handling)
     code_roots: [sudspy]
   disk_to_sds:
-    pinned: ad8d9d3      # operator-approved 2026-10-30 (C-band passthrough)
+    pinned: 735e51c      # Codex PROCEED 2026-10-31 (Echo/SUDS label variants)
     code_roots: [scripts]
   sds_staging_ledger:
     pinned: null
