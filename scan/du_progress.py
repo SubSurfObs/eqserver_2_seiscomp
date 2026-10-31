@@ -5,7 +5,7 @@ One line per station: its batch, a mark per year, and a done count.
   ✔ converted (every day ok or no files)   ✘ failed/held   ▶ converting now
   · waiting
 
-Read-only. Run on the staging VM:  python3 ~/du_progress.py
+Read-only. Run on the staging VM:  python3 ~/du_progress.py [du_v2|du_v1]
 """
 import glob
 import json
@@ -13,13 +13,17 @@ import os
 import re
 import subprocess
 
+import sys
+
 import yaml
 
 HOME = os.path.expanduser("~")
-REL = f"{HOME}/projects/SubSurfObs_releases/du_v1/eqserver_2_seiscomp"
-QUEUES = "/mnt/seiscomp_staging/eqserver_sweep_du_v1_s{}"
-STATUS = f"{HOME}/v3_prod/du_v1.status"
-LOGS = HOME + "/v3_prod/logs_du_v1/convert.b{}.log"
+RELEASE = sys.argv[1] if len(sys.argv) > 1 else "du_v2"   # e.g. du_v1
+TAG = RELEASE.split("_")[-1]                               # v1, v2
+REL = f"{HOME}/projects/SubSurfObs_releases/{RELEASE}/eqserver_2_seiscomp"
+QUEUES = "/mnt/seiscomp_staging/eqserver_sweep_" + RELEASE + "_s{}"
+STATUS = f"{HOME}/v3_prod/{RELEASE}.status"
+LOGS = HOME + f"/v3_prod/logs_{RELEASE}/convert.b" + "{}.log"
 
 G, R, Y, D, B, X = ("\033[32m", "\033[31m", "\033[33m", "\033[2m",
                     "\033[1m", "\033[0m")
@@ -29,7 +33,7 @@ def batches():
     """{batch: [stations]} from the launch lines in the status log."""
     out = {}
     for line in open(STATUS):
-        m = re.match(r"\[v1 b(\d+)\] \S+ start: (.*)", line.strip())
+        m = re.match(r"\[" + TAG + r" b(\d+)\] \S+ start: (.*)", line.strip())
         if m:
             out[int(m.group(1))] = m.group(2).split(",")
     return out
@@ -107,7 +111,7 @@ def main():
             rows.append((sta, k, span, marks, n, len(ys), flag))
     width = 40
     fill = int(width * tot_done / max(tot_all, 1))
-    print(f"\n{B}DU conversion — release v1{X}\n")
+    print(f"\n{B}DU conversion — release {TAG}{X}\n")
     wmax = max((len(r[3]) for r in rows), default=0)
     for sta, k, span, marks, n, ny, flag in rows:
         pad = "  " * (wmax - len(marks))
