@@ -80,13 +80,15 @@ def main():
     for k in sorted(bs):
         done = {(r["sta"], int(r["year"])) for r in records(k, "convert_done.jsonl")}
         bad = {(r["sta"], int(r["year"])) for r in records(k, "convert_failed.jsonl")}
-        bad |= {(r["sta"], int(r["year"])) for r in records(k, "held.jsonl")}
+        held = {(r["sta"], int(r["year"])) for r in records(k, "held.jsonl")}
         now = running(k)
         for sta in bs[k]:
             ys = years(sta)
             marks, n = [], 0
             for y in ys:
-                if (sta, y) in done:          # a successful retry wins
+                if (sta, y) in held:          # held: never counts as done
+                    marks.append(f"{R}✘{X}")
+                elif (sta, y) in done:        # a successful retry wins
                     marks.append(f"{G}✔{X}")
                     n += 1
                 elif (sta, y) in bad:
