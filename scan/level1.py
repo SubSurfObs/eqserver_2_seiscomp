@@ -38,8 +38,17 @@ EXT_TABLE = [
     (".ms", "gecko", "waveform"),
     (".mseed.zip", "mseed", "waveform"),
     (".mseed", "mseed", "waveform"),
+    # 2026-10-31 (Codex e41bebb): gzipped forms the index used to drop as
+    # unknown_extension — real waveform data. HKER 2017-18 and DNL 2018:
+    # 'YYYY-MM-DD HHMM SS STA.gz' / '.relay.gz' = gzipped SUDS (the chooser
+    # sniffs content to confirm); TPSOP 2017-18 '.relay.ms.gz' = gzipped
+    # miniSEED. Must stay AFTER every specific extension above.
+    (".ms.gz", "gecko", "waveform"),
+    (".gz", "echopro", "waveform"),
 ]
-FLAG_TOKENS = {"wrno", "trig", "ss"}
+# gzipped NON-waveform sidecars that the bare '.gz' rule must not revive.
+NON_WAVEFORM_GZ = (".soh.gz", ".ss.gz", ".csv.gz")
+FLAG_TOKENS = {"wrno", "trig", "ss", "relay"}
 
 DATE_DASH = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
 DATE_COMPACT = re.compile(r"^(\d{8})$")
@@ -109,6 +118,8 @@ def _toint(s):
 
 def classify_ext(name: str):
     low = name.lower()
+    if low.endswith(NON_WAVEFORM_GZ):
+        return None, "unknown", "unknown"
     for ext, recorder, role in EXT_TABLE:
         if low.endswith(ext):
             return ext, recorder, role

@@ -131,7 +131,16 @@ def population_key(source_type: str, path: str, hhmm, flags) -> str:
         return f"{source_type}:unparsed"
     sep = "space" if " " in name else "underscore"
     n_tok = len(name.split()) if " " in name else name.split(".")[0].count("_") + 1
-    return f"{source_type}:{sep}{n_tok}"
+    key = f"{source_type}:{sep}{n_tok}"
+    # Distinct file forms are distinct populations (2026-10-31): relayed
+    # copies and bare-gzip files sit beside .dmx files of the same name
+    # shape (HKER 2017) and must be ranked/filled as separate copies.
+    if flags and "relay" in flags.split(","):
+        key += ":relay"
+    low = name.lower()
+    if low.endswith(".gz") and not low.endswith((".dmx.gz", ".ms.gz")):
+        key += ":gz"
+    return key
 
 
 def minute_slots(cand, span_min=1) -> set:
@@ -292,8 +301,13 @@ class ChannelKnowledge:
                                   for e in ie][:2])
             elif found:
                 rec["status"] = "resolved"
-            elif dropped or rec["traces"]:
-                rec["status"] = "unresolved"  # labels unknown
+            elif rec["traces"]:
+                rec["status"] = "unresolved"  # labels unknown -> blocks
+            elif dropped:
+                # Only RECOGNISED intentional drops (accelerometer, c04+
+                # aux): no seismometer channel to convert. Skipped and
+                # recorded (raw labels kept), never blocking (Codex e41bebb).
+                rec["status"] = "empty"
             else:
                 rec["status"] = "empty"  # no waveform content
         except Exception as e:

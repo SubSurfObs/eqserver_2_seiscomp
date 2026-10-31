@@ -66,7 +66,11 @@ def main():
     for lab, o in want.items():
         check(f"label {lab!r} -> {o}", qa_verify._suds_component(lab) == o,
               str(qa_verify._suds_component(lab)))
-    for lab in ("Up-A", "Up A", "v Accel", "w"):
+    for lab in ("Up-A", "Up A", "v Acc", "v Accel"):
+        check(f"label {lab!r} is a RECOGNISED drop (None)",
+              qa_verify._suds_component(lab) is None,
+              str(qa_verify._suds_component(lab)))
+    for lab in ("w",):
         got = qa_verify._suds_component(lab)
         check(f"label {lab!r} not a seismometer channel",
               got is None or got.startswith("?"), str(got))

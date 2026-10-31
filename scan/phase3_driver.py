@@ -210,6 +210,14 @@ def _concat_zip_members(files, combined, read_errors, spans=None):
         try:
             with open(path, "rb") as fh:
                 raw = fh.read()                       # one sequential NFS read
+            if path.endswith(".gz"):
+                # gzipped miniSEED (TPSOP '.relay.ms.gz', 2026-10-31):
+                # one member, CRC-verified by gzip; failures are read errors.
+                import gzip as _gz
+                combined.write(_gz.decompress(raw))
+                if spans is not None:
+                    spans.append((path, start, combined.tell()))
+                continue
             with _zip.ZipFile(_io.BytesIO(raw)) as z:  # seeks now in memory
                 for name in z.namelist():
                     if name.endswith((".ms", ".mseed")):

@@ -289,6 +289,11 @@ def _suds_component(chan: str) -> str | None:
         return _echo_orient(chan)
     if c.endswith(SUDS_DROP_SUFFIXES) or c.startswith(SUDS_DROP_PREFIXES):
         return None
+    # Recognised accelerometer spellings ("Up-A", "Up A", "v Acc", "v Accel"):
+    # intentionally dropped (Codex e41bebb policy) — skipped and recorded,
+    # never an unknown label.
+    if re.sub(r"[\s_]+", "-", c).endswith(("-a", "-acc", "-accel")):
+        return None
     # Already-SEED-named seismometer channels inside SUDS (KORUM
     # EHE/EHN/EHZ mid-deployment rename) — mirrors the engine's
     # conservative passthrough (disk_to_sds dba4f10).
