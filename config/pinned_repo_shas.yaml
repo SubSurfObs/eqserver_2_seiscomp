@@ -20,13 +20,13 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: fa28e9b      # operator-approved 2026-10-31 (DU release v1: Codex PROCEED d77573d + engine-locality plumbing)
+    pinned: cbe5849      # DU release v2 (2026-11-01): Codex PROCEED d82144b (truncated-prefix repair)
     code_roots: [scan]
   sudspy:
-    pinned: 5d359d8      # Codex PROCEED 2026-10-31 (gzip member handling)
+    pinned: 753feaf      # DU release v2: recover_truncated
     code_roots: [sudspy]
   disk_to_sds:
-    pinned: 735e51c      # Codex PROCEED 2026-10-31 (Echo/SUDS label variants)
+    pinned: 5e41f17      # DU release v2: truncated_recovered qc
     code_roots: [scripts]
   sds_staging_ledger:
     pinned: null
