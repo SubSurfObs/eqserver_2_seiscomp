@@ -93,12 +93,27 @@ def main():
     # 3. an unrecognised label in that population still blocks
     def reader_unknown(p, errors, counters):
         if Path(p).name.startswith("2025-03-15_2125"):
-            counters.setdefault("dropped_labels", []).append("w")
+            # what read_source_file really returns for an unknown SUDS label
+            return [{"orient": "?w", "src_chan": "w"}]
+        if Path(p).name.startswith("2025-03-15_2246"):
+            # unknown mseed channel (no orientation letter)
+            counters.setdefault("unknown_labels", []).append("HHX")
             return []
         return reader_empty_disk(p, errors, counters)
     *_x, blocked = run_day(reader_unknown)
     check("unrecognised label still blocks its day",
           any(b == "file_unresolved" for _p, b in blocked), str(blocked))
+
+    # 3b. accelerometer-only files are skipped, not blocking (Codex e41bebb)
+    def reader_accel(p, errors, counters):
+        if "_" in Path(p).name:
+            counters.setdefault("dropped_labels", []).append("v Acc")
+            return []
+        return [{"orient": "Z", "src_chan": "v"}]
+    tele, disk, sel, rej, blocked = run_day(reader_accel)
+    check("accelerometer-only files skipped and recorded, day not blocked",
+          not blocked and {r["path"] for r in rej} >= {c["path"] for c in disk},
+          str(blocked))
 
     # 4. bare .gz SUDS sniff
     with tempfile.TemporaryDirectory() as td:

@@ -293,15 +293,16 @@ class ChannelKnowledge:
                 if t["orient"] in ORIENTATIONS:
                     found.add(t["orient"])
             rec["chans"] = frozenset(found)
-            dropped = ic.get("dropped_labels") or []
-            rec["raw"] += [f"?{c}" for c in dropped]
+            dropped = ic.get("dropped_labels") or []      # recognised drops
+            unknown = ic.get("unknown_labels") or []      # unrecognised
+            rec["raw"] += [f"-{c}" for c in dropped] + [f"?{c}" for c in unknown]
             if ie:
                 rec["status"] = "unresolved"
                 rec["err"] = str([e.get("err", str(e))
                                   for e in ie][:2])
             elif found:
                 rec["status"] = "resolved"
-            elif rec["traces"]:
+            elif rec["traces"] or unknown:
                 rec["status"] = "unresolved"  # labels unknown -> blocks
             elif dropped:
                 # Only RECOGNISED intentional drops (accelerometer, c04+

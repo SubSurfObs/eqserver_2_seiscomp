@@ -363,7 +363,9 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                 for tr in st:
                     orient = _mseed_orientation(tr.stats.channel)
                     if orient is None:
-                        labels = counters.setdefault("dropped_labels", [])
+                        # An mseed channel with no orientation letter is
+                        # UNKNOWN (blocks), never an intentional drop.
+                        labels = counters.setdefault("unknown_labels", [])
                         if tr.stats.channel not in labels and len(labels) < 20:
                             labels.append(tr.stats.channel)
                         continue
