@@ -3,8 +3,8 @@
 # station-year recorded FAILED (and not since done) in a du_v1 queue whose
 # station is not being converted right now: restore its file list (and the
 # previous year's, for the Jan-1 tail) from the share archive if the cleaner
-# moved it, then rerun that one year into the same queue. One retry per
-# failure record; a unit that fails again stays failed for a human to look at.
+# moved it, then rerun that one year into the same queue. ONE retry per
+# station-year (>= 2012); a unit that fails again stays failed for a human.
 set -u
 REL=$HOME/projects/SubSurfObs_releases/du_v1
 REPO=$REL/eqserver_2_seiscomp
@@ -37,8 +37,13 @@ for q in sorted(glob.glob("/mnt/seiscomp_staging/eqserver_sweep_du_v1_s*")):
             return []
     done = {(r["sta"], int(r["year"])) for r in recs("convert_done.jsonl")}
     for r in recs("convert_failed.jsonl"):
-        key = f'{r["sta"]}:{r["year"]}:{r["run_id"]}'
-        if (r["sta"], int(r["year"])) not in done and key not in tried:
+        # ONE retry per station-year (keyed without run_id: a failed retry
+        # writes a new failure record and must not trigger another), and
+        # only years in scope (>= 2012; earlier dirs are stray bogus dates).
+        key = f'{r["sta"]}:{r["year"]}'
+        if (int(r["year"]) >= 2012 and (r["sta"], int(r["year"])) not in done
+                and key not in tried):
+            tried.add(key)
             print(k, r["sta"], r["year"], key)
 PY
 )

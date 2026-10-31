@@ -7,8 +7,12 @@
 set -u
 pass() {
 python3 - <<'PY'
-import glob, gzip, json, os, shutil
+import glob, gzip, json, os, re, shutil, subprocess
 H = os.path.expanduser("~")
+# Stations with a live conversion (batch OR retry) keep their file lists:
+# a retry restores a failed year's list and needs it for the whole run.
+live = set(re.findall(r"--stations (\S+)", subprocess.run(
+    ["ps", "-eo", "args"], capture_output=True, text=True).stdout))
 sets = [  # (local selections dir, queue glob, archive root)
     (f"{H}/v3_prod/selections_w2", "/mnt/seiscomp_staging/eqserver_sweep_w2_s*",
      "/mnt/seiscomp_staging/eqserver_v3_selections"),
@@ -28,7 +32,7 @@ for seldir, qglob, arch in sets:
                 pass
     for f in glob.glob(f"{seldir}/DU.*.*.selection.sqlite"):
         _, sta, yr = os.path.basename(f).split(".")[:3]
-        if (sta, int(yr)) not in finished:
+        if (sta, int(yr)) not in finished or sta in live:
             continue
         dst_dir = os.path.join(arch, f"DU.{sta}")
         os.makedirs(dst_dir, exist_ok=True)

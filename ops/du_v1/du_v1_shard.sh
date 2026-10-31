@@ -70,7 +70,7 @@ for i in "${!LIST[@]}"; do
     bg=$!
   fi
   $PY scan/run_production_convert.py --network DU --stations "$S" \
-    --year-min 2000 --year-max 2026 \
+    --year-min 2012 --year-max 2026 \
     --registry metadata/station_registry.yaml \
     --staging-sds /mnt/seiscomp_staging/seiscomp_archive \
     --queue-dir "$Q" --selections-dir "$SEL" --log-dir "$LOG" --workers 4 \
