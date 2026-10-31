@@ -86,11 +86,11 @@ def main():
             ys = years(sta)
             marks, n = [], 0
             for y in ys:
-                if (sta, y) in bad:
-                    marks.append(f"{R}✘{X}")
-                elif (sta, y) in done:
+                if (sta, y) in done:          # a successful retry wins
                     marks.append(f"{G}✔{X}")
                     n += 1
+                elif (sta, y) in bad:
+                    marks.append(f"{R}✘{X}")
                 elif now == (sta, y):
                     marks.append(f"{Y}▶{X}")
                 else:
