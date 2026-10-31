@@ -124,6 +124,15 @@ flag replies that communicate well — treat those as the exemplars to
 match (recorded in agent memory under feedback-short-plain-english-
 default).
 
+Standing rules (Dan, 2026-10-31):
+1. **Scope:** this project only ever deals with converting EqServer
+   seismic waveform data. Nothing else.
+2. **Dictation:** Dan often dictates; read every message as possibly
+   garbled speech-to-text and infer the intended words.
+3. **Misplaced prompts:** a request that is out of context for this
+   project was probably pasted into the wrong window — ask one short
+   question and do nothing else until Dan answers.
+
 ## Working conventions
 
 - Run scripts from repo root with `python3 scan/<script>.py --help` first;
