@@ -23,18 +23,23 @@ sets = [  # (local selections dir, queue glob, archive root)
 ]
 freed = 0
 for seldir, qglob, arch in sets:
-    finished = set()
+    done, failed = set(), set()
     for q in glob.glob(qglob):
-        for name in ("convert_done.jsonl", "convert_failed.jsonl"):
+        for name, into in (("convert_done.jsonl", done),
+                           ("convert_failed.jsonl", failed)):
             try:
                 for l in open(os.path.join(q, name)):
                     r = json.loads(l)
-                    finished.add((r["sta"], int(r["year"])))
+                    into.add((r["sta"], int(r["year"])))
             except FileNotFoundError:
                 pass
     for f in glob.glob(f"{seldir}/DU.*.*.selection.sqlite"):
         _, sta, yr = os.path.basename(f).split(".")[:3]
-        if (sta, int(yr)) not in finished or sta in live:
+        # DONE years are never read again (years run newest-first), even
+        # while their station converts; a FAILED year keeps its list while
+        # its station is busy (a retry restores and reads it).
+        key = (sta, int(yr))
+        if not (key in done or (key in failed and sta not in live)):
             continue
         dst_dir = os.path.join(arch, f"DU.{sta}")
         os.makedirs(dst_dir, exist_ok=True)
