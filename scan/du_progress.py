@@ -2,8 +2,9 @@
 """du_progress — terminal progress report for the DU release-v1 conversion.
 
 One line per station: its batch, a mark per year, and a done count.
-  ✔ converted (every day ok or no files)   ✘ failed/held   ▶ converting now
-  · waiting
+  ✔ converted AND passed Codex's independent sample check
+  ✓ converted (every day ok or no files), not yet sampled by Codex
+  ! Codex alert (needs a look)   ✘ failed/held   ▶ converting now   · waiting
 
 Read-only. Run on the staging VM:  python3 ~/du_progress.py [du_v2|du_v1]
 """
@@ -67,6 +68,19 @@ def running(k):
     return None
 
 
+def codex_qc():
+    """{(sta, year): verdict} — latest verdict per station-year from Codex's
+    read-only live QC watcher (~/codex_sandbox/live_qc/results.jsonl)."""
+    out = {}
+    try:
+        for l in open(f"{HOME}/codex_sandbox/live_qc/results.jsonl"):
+            r = json.loads(l)
+            out[(r["sta"], int(r["year"]))] = r.get("verdict")
+    except (FileNotFoundError, ValueError):
+        pass
+    return out
+
+
 def paused():
     try:
         out = subprocess.run(["ps", "-eo", "stat,args"], capture_output=True,
@@ -79,7 +93,8 @@ def paused():
 
 def main():
     bs = batches()
-    tot_done = tot_all = st_done = 0
+    qc = codex_qc()
+    tot_done = tot_all = st_done = n_qc = n_alert = 0
     rows = []
     for k in sorted(bs):
         done = {(r["sta"], int(r["year"])) for r in records(k, "convert_done.jsonl")}
@@ -93,7 +108,15 @@ def main():
                 if (sta, y) in held:          # held: never counts as done
                     marks.append(f"{R}✘{X}")
                 elif (sta, y) in done:        # a successful retry wins
-                    marks.append(f"{G}✔{X}")
+                    v = qc.get((sta, y))
+                    if v == "PASS":
+                        marks.append(f"{B}{G}✔{X}")
+                        n_qc += 1
+                    elif v:
+                        marks.append(f"\033[35m!{X}")
+                        n_alert += 1
+                    else:
+                        marks.append(f"{G}✓{X}")
                     n += 1
                 elif (sta, y) in bad:
                     marks.append(f"{R}✘{X}")
@@ -119,7 +142,10 @@ def main():
               f"   {n:>2}/{ny:<2} {flag}")
     print(f"\n  {G}{'█' * fill}{X}{D}{'░' * (width - fill)}{X}  "
           f"{tot_done}/{tot_all} station-years  ·  {st_done}/{len(rows)} stations complete")
-    print(f"  {G}✔{X} converted  {R}✘{X} failed/held  {Y}▶{X} converting  {D}·{X} waiting"
+    print(f"  Codex independent sample check: {n_qc} station-years PASS"
+          + (f", \033[35m{n_alert} alert(s){X}" if n_alert else ", no alerts"))
+    print(f"  {B}{G}✔{X} converted + Codex-checked  {G}✓{X} converted  "
+          f"{R}✘{X} failed/held  {Y}▶{X} converting  {D}·{X} waiting"
           + (f"   {Y}(paused by disk guard){X}" if paused() else "") + "\n")
 
 
