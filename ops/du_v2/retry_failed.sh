@@ -1,35 +1,31 @@
 #!/bin/bash
-# DU release v2: retry failed station-years (2026-10-31). Every 10 min, for each
-# station-year recorded FAILED (and not since done) in a du_v2 queue whose
-# station is not being converted right now: restore its file list (and the
-# previous year's, for the Jan-1 tail) from the share archive if the cleaner
-# moved it, then rerun that one year into the same queue. ONE retry per
-# station-year (>= 2012); a unit that fails again stays failed for a human.
+# DU release v2: retry each failed station-year ONCE (>= 2012), when its
+# station is idle — the station lock (ops/du_v2/lib.sh) is taken non-blocking,
+# so a retry never overlaps a batch or another retry. convert_year restores or
+# rebuilds the year's and previous year's file lists (globally bounded) and
+# refuses to convert without the previous year (Jan-1 tail). Every 10 min.
 set -u
 REL=$HOME/projects/SubSurfObs_releases/du_v2
-REPO=$REL/eqserver_2_seiscomp
-PY=/home/unimelb.edu.au/dsand/projects/SubSurfObs/disk_to_sds/.venv/bin/python3
-SEL=$HOME/v3_prod/selections_du_v2
-ARCH=/mnt/seiscomp_staging/eqserver_v3_selections/du_v2
-LOG=$HOME/v3_prod/logs_du_v2
-STATUS=$HOME/v3_prod/du_v2.status
-TRIED=$HOME/v3_prod/du_v2_retried.txt
+export REPO=$REL/eqserver_2_seiscomp
+export PY=/home/unimelb.edu.au/dsand/projects/SubSurfObs/disk_to_sds/.venv/bin/python3
+export SHIM=$REL/.pyshim
+export SEL=${SEL:-$HOME/v3_prod/selections_du_v2}
+export LOG=${LOG:-$HOME/v3_prod/logs_du_v2}
+export STATUS=${STATUS:-$HOME/v3_prod/du_v2.status}
+export STAGING=${STAGING:-/mnt/seiscomp_staging/seiscomp_archive}
+QROOT=${QUEUE_ROOT:-/mnt/seiscomp_staging/eqserver_sweep_du_v2}
+TRIED=${TRIED:-$HOME/v3_prod/du_v2_retried.txt}
 touch "$TRIED"
+cd "$REPO"
 st() { echo "[retry] $(date -u +%FT%TZ) $*" >> "$STATUS"; }
+export -f st
+source "${LIB:-$HOME/du_v2_lib.sh}"
 
-restore() {  # STA YEAR -> local selection present?
-  local f="$SEL/DU.$1.$2.selection.sqlite" a="$ARCH/DU.$1/DU.$1.$2.selection.sqlite.gz"
-  [ -f "$f" ] && return 0
-  [ -f "$a" ] || return 1
-  gunzip -c "$a" > "$f.partial" && mv "$f.partial" "$f"
-}
-
-while true; do
-  todo=$(python3 - "$TRIED" <<'PY'
+pass() {
+  python3 - "$TRIED" "$QROOT" <<'PY' | while read -r K S Y; do
 import glob, json, sys
 tried = set(open(sys.argv[1]).read().split())
-for q in sorted(glob.glob("/mnt/seiscomp_staging/eqserver_sweep_du_v2_s*")):
-    k = q[-1]
+for q in sorted(glob.glob(sys.argv[2] + "_s*")):
     def recs(n):
         try:
             return [json.loads(l) for l in open(f"{q}/{n}")]
@@ -37,29 +33,25 @@ for q in sorted(glob.glob("/mnt/seiscomp_staging/eqserver_sweep_du_v2_s*")):
             return []
     done = {(r["sta"], int(r["year"])) for r in recs("convert_done.jsonl")}
     for r in recs("convert_failed.jsonl"):
-        # ONE retry per station-year (keyed without run_id: a failed retry
-        # writes a new failure record and must not trigger another), and
-        # only years in scope (>= 2012; earlier dirs are stray bogus dates).
         key = f'{r["sta"]}:{r["year"]}'
-        if (int(r["year"]) >= 2012 and (r["sta"], int(r["year"])) not in done
-                and key not in tried):
+        if int(r["year"]) >= 2012 and (r["sta"], int(r["year"])) not in done \
+                and key not in tried:
             tried.add(key)
-            print(k, r["sta"], r["year"], key)
+            print(q.rsplit("_s", 1)[1], r["sta"], r["year"])
 PY
-)
-  while read -r K S Y KEY; do
-    [ -z "${K:-}" ] && continue
-    pgrep -f "run_production_convert.py --network DU --stations $S " >/dev/null && continue
-    echo "$KEY" >> "$TRIED"
-    if ! restore "$S" "$Y"; then st "$S $Y: no file list to restore — skipped"; continue; fi
-    restore "$S" $((Y - 1)) || true
-    st "retrying $S $Y (queue s$K)"
-    (cd "$REPO" && $PY scan/run_production_convert.py --network DU --stations "$S" \
-      --year-min "$Y" --year-max "$Y" --registry metadata/station_registry.yaml \
-      --staging-sds /mnt/seiscomp_staging/seiscomp_archive \
-      --queue-dir "/mnt/seiscomp_staging/eqserver_sweep_du_v2_s$K" \
-      --selections-dir "$SEL" --log-dir "$LOG" --workers 4 >> "$LOG/retry.log" 2>&1)
-    st "retried $S $Y rc=$?"
-  done <<< "$todo"
-  sleep 600
-done
+    export Q="${QROOT}_s$K" K
+    exec {fd}>"$LOCKS/station.$S.lock"
+    if flock -n "$fd"; then
+      echo "$S:$Y" >> "$TRIED"
+      YS=" $(years_desc "$S") "; PREV=""
+      [[ "$YS" == *" $((Y - 1)) "* ]] && PREV=$((Y - 1))
+      st "retrying $S $Y (queue s$K)"
+      if convert_year "$S" "$Y" "$PREV"; then st "retried $S $Y: done"
+      else st "retried $S $Y: still failed — needs a human"; fi
+      flock -u "$fd"
+    fi
+    exec {fd}>&-
+  done
+}
+if [ "${1:-}" = "--once" ]; then pass; exit; fi
+while true; do pass; sleep 600; done

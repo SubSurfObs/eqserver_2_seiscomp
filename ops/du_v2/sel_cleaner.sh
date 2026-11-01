@@ -18,9 +18,36 @@ sets = [  # (local selections dir, queue glob, archive root)
      "/mnt/seiscomp_staging/eqserver_v3_selections"),
     (f"{H}/v3_prod/selections_du_v1", "/mnt/seiscomp_staging/eqserver_sweep_du_v1_s*",
      "/mnt/seiscomp_staging/eqserver_v3_selections/du_v1"),
-    (f"{H}/v3_prod/selections_du_v2", "/mnt/seiscomp_staging/eqserver_sweep_du_v2_s*",
-     "/mnt/seiscomp_staging/eqserver_v3_selections/du_v2"),
+    (os.environ.get("CLEAN_SEL", f"{H}/v3_prod/selections_du_v2"),
+     os.environ.get("CLEAN_QGLOB", "/mnt/seiscomp_staging/eqserver_sweep_du_v2_s*"),
+     os.environ.get("CLEAN_ARCH", "/mnt/seiscomp_staging/eqserver_v3_selections/du_v2")),
 ]
+if os.environ.get("CLEAN_ONLY_V2"):
+    sets = sets[-1:]
+import fcntl, yaml
+_py = {}
+def plan_years(sta):
+    if sta not in _py:
+        try:
+            pdir = os.environ.get("CLEAN_PLANS", f"{H}/projects/SubSurfObs_releases/"
+                                  "du_v2/eqserver_2_seiscomp/plans/DU")
+            p = yaml.safe_load(open(f"{pdir}/DU.{sta}.plan.yaml"))
+            _py[sta] = {int(e["start"][:4]) for e in p["epochs"]}
+        except Exception:
+            _py[sta] = set(range(2000, 2031))   # unknown plan: assume needed
+    return _py[sta]
+def station_locked(sta):
+    path = os.environ.get("LOCKS", f"{H}/v3_prod/locks") + f"/station.{sta}.lock"
+    if not os.path.exists(path):
+        return False
+    with open(path) as fh:
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return True
+        fcntl.flock(fh, fcntl.LOCK_UN)
+    return False
+
 freed = 0
 for seldir, qglob, arch in sets:
     done, failed = set(), set()
@@ -35,11 +62,20 @@ for seldir, qglob, arch in sets:
                 pass
     for f in glob.glob(f"{seldir}/DU.*.*.selection.sqlite"):
         _, sta, yr = os.path.basename(f).split(".")[:3]
-        # DONE years are never read again (years run newest-first), even
-        # while their station converts; a FAILED year keeps its list while
-        # its station is busy (a retry restores and reads it).
+        # A DONE year's list may go once no PENDING year still needs it as
+        # the previous year (Jan-1 tail): i.e. year+1 is done or not in the
+        # plan. A FAILED year's list goes only when its station lock is free.
+        # (Codex 034f35c; lists are restored from the share when needed.)
         key = (sta, int(yr))
-        if not (key in done or (key in failed and sta not in live)):
+        y = int(yr)
+        nxt_pending = (y + 1) in plan_years(sta) and (sta, y + 1) not in done
+        if key in done:
+            if nxt_pending:
+                continue
+        elif key in failed:
+            if station_locked(sta) or sta in live:
+                continue
+        else:
             continue
         dst_dir = os.path.join(arch, f"DU.{sta}")
         os.makedirs(dst_dir, exist_ok=True)
