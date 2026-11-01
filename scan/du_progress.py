@@ -81,6 +81,23 @@ def codex_qc():
     return out
 
 
+def guard_pause():
+    """Minutes the disk guard has been pausing file-list builds (None if
+    not paused) — from the last guard line in any release status log."""
+    import datetime
+    last = None
+    for f in glob.glob(f"{HOME}/v3_prod/du_v*.status"):
+        for line in open(f):
+            if line.startswith("[guard]"):
+                ts = line.split()[1]
+                if last is None or ts > last[0]:
+                    last = (ts, "PAUSED" in line)
+    if not last or not last[1]:
+        return None
+    t = datetime.datetime.strptime(last[0], "%Y-%m-%dT%H:%M:%SZ")
+    return (datetime.datetime.utcnow() - t).total_seconds() / 60
+
+
 def paused():
     try:
         out = subprocess.run(["ps", "-eo", "stat,args"], capture_output=True,
@@ -135,6 +152,10 @@ def main():
     width = 40
     fill = int(width * tot_done / max(tot_all, 1))
     print(f"\n{B}DU conversion — release {TAG}{X}\n")
+    gp = guard_pause()
+    if gp is not None:
+        print(f"  {R}{B}⚠ DISK GUARD: file-list builds PAUSED for {gp/60:.1f} h — "
+              f"batches waiting on a file list are stalled{X}\n")
     wmax = max((len(r[3]) for r in rows), default=0)
     for sta, k, span, marks, n, ny, flag in rows:
         pad = "  " * (wmax - len(marks))
