@@ -43,7 +43,7 @@ PY
     exec {fd}>"$LOCKS/station.$S.lock"
     if flock -n "$fd"; then
       echo "$S:$Y" >> "$TRIED"
-      YS=" $(years_desc "$S") "; PREV=""
+      YS=" $(plan_years_all "$S") "; PREV=""
       [[ "$YS" == *" $((Y - 1)) "* ]] && PREV=$((Y - 1))
       st "retrying $S $Y (queue s$K)"
       if convert_year "$S" "$Y" "$PREV"; then st "retried $S $Y: done"

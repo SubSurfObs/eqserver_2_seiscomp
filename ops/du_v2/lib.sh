@@ -20,7 +20,7 @@
 : "${MAX_BUILDS:=2}"
 : "${REQ_FREE_GB:=35}"
 : "${SPEC_FREE_GB:=45}"
-export LOCKS ARCH
+export LOCKS ARCH MAX_BUILDS REQ_FREE_GB SPEC_FREE_GB
 mkdir -p "$LOCKS"
 
 free_gb() { df --output=avail -BG / | tail -1 | tr -dc 0-9; }
@@ -51,44 +51,54 @@ restore_list() {  # STA YEAR -> 0 if the local list exists afterwards
   gunzip -c "$a" > "$f.partial" && mv "$f.partial" "$f"
 }
 
-# Wait for a global build slot; runs "$@" holding it.
-with_build_slot() {
+# Under a build slot AND the per-file lock: re-check space (Codex c353601:
+# the check must hold at the moment work starts, not before a wait), then
+# restore from the share or build. rc 99 = not enough space right now.
+_build_locked() {  # KIND STA YEAR
+  local kind=$1 S=$2 Y=$3 out="$SEL/DU.$2.$3.selection.sqlite" need
+  [ -f "$out" ] && return 0
+  if [ "$kind" = speculative ]; then need=$SPEC_FREE_GB; else need=$REQ_FREE_GB; fi
+  [ "$(free_gb)" -gt "$need" ] || return 99
+  restore_list "$S" "$Y" && return 0
+  planner "$S" "$Y" "$out" && [ -f "$out" ]
+}
+export -f _build_locked planner restore_list free_gb
+
+# One attempt on the global slots. Required: wait for a slot. Speculative:
+# take a free slot or give up at once (never queues behind real work).
+_with_slot() {  # KIND cmd...
+  local kind=$1; shift
   while true; do
     for i in $(seq 0 $((MAX_BUILDS - 1))); do
       flock -n -E 75 "$LOCKS/build_slot.$i" "$@"
       local rc=$?
-      [ $rc -eq 75 ] && continue   # slot busy: try the next one
-      return $rc                   # the command ran: its own result
+      [ $rc -eq 75 ] && continue
+      return $rc
     done
+    [ "$kind" = speculative ] && return 75
     sleep 5
   done
 }
 
-_build_locked() {  # STA YEAR — under the per-file build lock
-  local out="$SEL/DU.$1.$2.selection.sqlite"
-  [ -f "$out" ] && return 0
-  restore_list "$1" "$2" && return 0
-  planner "$1" "$2" "$out" && [ -f "$out" ]
-}
-export -f _build_locked planner restore_list
-
 # ensure_list STA YEAR required|speculative -> 0 when the list is present.
 ensure_list() {
-  local S=$1 Y=$2 kind=$3 out="$SEL/DU.$1.$2.selection.sqlite"
-  [ -f "$out" ] && return 0
-  restore_list "$S" "$Y" && return 0
-  if [ "$kind" = speculative ]; then
-    [ "$(free_gb)" -gt "$SPEC_FREE_GB" ] || return 1
-  else
-    local said=0
-    while [ "$(free_gb)" -le "$REQ_FREE_GB" ]; do
-      [ $said = 0 ] && st "waiting for disk (${REQ_FREE_GB} GB) to build $S $Y" && said=1
-      sleep 60
-    done
-  fi
-  # build slot first, then the per-file lock (a second builder of the same
-  # file waits on the file lock and then finds the list present)
-  with_build_slot flock "$LOCKS/build.$S.$Y.lock" bash -c "_build_locked $S $Y"
+  local S=$1 Y=$2 kind=$3 out="$SEL/DU.$1.$2.selection.sqlite" said=0 rc
+  while true; do
+    [ -f "$out" ] && return 0
+    if [ "$kind" = speculative ]; then
+      _with_slot speculative flock -n -E 76 "$LOCKS/build.$S.$Y.lock" \
+        bash -c "_build_locked speculative $S $Y"
+      rc=$?
+      [ $rc -eq 0 ] && return 0
+      return 1                       # busy, no space, or failed: skip
+    fi
+    _with_slot required flock "$LOCKS/build.$S.$Y.lock" \
+      bash -c "_build_locked required $S $Y"
+    rc=$?
+    [ $rc -ne 99 ] && return $rc
+    [ $said = 0 ] && st "waiting for disk (${REQ_FREE_GB} GB) to build $S $Y" && said=1
+    sleep 60
+  done
 }
 
 # convert_year STA YEAR PREVYEAR|"" -> runs one year; 0 = converted ok.
@@ -101,10 +111,38 @@ convert_year() {
     record_failure "$S" "$Y" "previous-year file list ($PREV) unavailable: Jan-1 tail would be lost"
     st "FAILED $S $Y: no $PREV list for the Jan-1 tail"; return 1
   fi
-  run_convert "$S" "$Y"
-  # Success = the unit is recorded DONE (the wrapper records a failure
-  # itself otherwise; its exit code alone is not the contract).
-  [[ " $(done_years "$S") " == *" $Y "* ]]
+  local nfail_before rc
+  nfail_before=$(failed_count "$S" "$Y")
+  run_convert "$S" "$Y"; rc=$?
+  # Success = the unit is recorded DONE; its exit code alone is not the
+  # contract. If it left NO record at all (preflight abort, crash before
+  # the queue write), record the failure so the retry worker sees it
+  # (Codex c353601).
+  [[ " $(done_years "$S") " == *" $Y "* ]] && return 0
+  if [ "$(failed_count "$S" "$Y")" -le "$nfail_before" ]; then
+    record_failure "$S" "$Y" "converter exited rc=$rc without a queue record"
+  fi
+  st "FAILED $S $Y: conversion (rc=$rc)"
+  return 1
+}
+
+failed_count() {  # STA YEAR -> number of failure records for that unit
+  python3 - "$Q" "$1" "$2" <<'PY'
+import json, sys
+q, sta, y = sys.argv[1], sys.argv[2], int(sys.argv[3])
+try:
+    print(sum(1 for l in open(q + "/convert_failed.jsonl")
+              if (lambda r: r["sta"] == sta and int(r["year"]) == y)(json.loads(l))))
+except FileNotFoundError:
+    print(0)
+PY
+}
+
+plan_years_all() {  # every plan year (incl. < 2012), for Jan-1 tail lookups
+  (cd "$REPO" && $PY -c "
+import yaml
+p = yaml.safe_load(open('plans/DU/DU.$1.plan.yaml'))
+print(' '.join(sorted({e['start'][:4] for e in p['epochs']})))")
 }
 
 run_convert() {  # real conversion; tests override
@@ -142,10 +180,14 @@ run_station() {  # STA NEXT_STA|""
   exec {SFD}>"$LOCKS/station.$S.lock"
   flock "$SFD"
   local YS=($(years_desc "$S")) DONE=" $(done_years "$S") "
+  local ALL=" $(plan_years_all "$S") "
   for j in "${!YS[@]}"; do
-    local Y=${YS[$j]} PREV=${YS[$((j + 1))]:-} AHEAD=${YS[$((j + 2))]:-} bg=""
+    local Y=${YS[$j]} PREV="" AHEAD=${YS[$((j + 2))]:-} bg=""
     [[ "$DONE" == *" $Y "* ]] && continue
-    [ -n "$PREV" ] && [ "$PREV" -ne $((Y - 1)) ] && PREV=""
+    # The previous calendar year is required whenever the plan has it at
+    # all — including 2011 for 2012 (Codex c353601), even though years
+    # before 2012 are not themselves converted.
+    [[ "$ALL" == *" $((Y - 1)) "* ]] && PREV=$((Y - 1))
     if [ -n "$AHEAD" ]; then
       ensure_list "$S" "$AHEAD" speculative & bg=$!
     elif [ -n "$NEXT" ]; then
