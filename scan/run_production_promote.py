@@ -185,9 +185,21 @@ def main():
     for e in read_all_events(promote_done):
         if "run_id" in e:
             handled.add(e["run_id"])
+    # A hold can be lifted by a later {"action": "released", "run_id",
+    # "releases": <reason prefix>} event (2026-11-02, e.g. Codex clearing a
+    # naming hold). It lifts ONLY holds whose reason starts with that prefix;
+    # a run with any other active hold stays held.
+    active: dict[str, list[str]] = {}
     for e in read_all_events(held):
-        if "run_id" in e:
-            handled.add(e["run_id"])
+        rid = e.get("run_id")
+        if not rid:
+            continue
+        if e.get("action") == "released":
+            pre = e.get("releases") or ""
+            active[rid] = [r for r in active.get(rid, []) if not (pre and r.startswith(pre))]
+        else:
+            active.setdefault(rid, []).append(e.get("reason") or "")
+    handled |= {rid for rid, reasons in active.items() if reasons}
 
     print(f"[promote] queue dir: {queue}", flush=True)
     print(f"[promote] already handled (promoted + held): {len(handled)}", flush=True)
