@@ -104,6 +104,16 @@ def _enforce_band_instrument(stream):
     return stream
 
 
+def _name_channels(stream, keep_header_names):
+    """Channel naming for miniSEED traces. Plans whose naming is header
+    PASSTHROUGH keep every header code exactly (EHZ stays EHZ, HHO and HQO stay
+    distinct, accelerometer HN* stays HN*, SUM stays SUM) — Codex 179cd8d: the
+    rate-based rewrite below overrode DU passthrough plans and merged LKHRT
+    2023's HHO/HQO. Every other plan keeps the VW-era normalisation (WPSH's
+    Kelunji-native DL? codes)."""
+    return stream if keep_header_names else _enforce_band_instrument(stream)
+
+
 def _filter_bogus_year_traces(stream, min_year, dropped_list):
     """Drop traces whose start-time year is below `min_year` (no-GPS-lock /
     bogus-SUDS-header guard).
@@ -600,7 +610,7 @@ def query_boundary_tail_files(conn, station, d, recorder, disk_size_floor_ratio)
 
 def convert_gecko_day(station, network, location, files, staging_sds_root, commit, suds_convert,
                       boundary_files=None, day=None, orient_filter=None,
-                      resolve_mode=False):
+                      resolve_mode=False, keep_header_names=False):
     """Gecko branch: read all .ms.zip in day, concat the inner mseed records into
     one buffer, parse with ObsPy, override network+location, merge, write SDS.
 
@@ -632,8 +642,9 @@ def convert_gecko_day(station, network, location, files, staging_sds_root, commi
         tr.stats.location = location
     # Normalise channel codes: band by sample rate, instrument = H. NOOP for
     # Gecko-conforming inputs; required for the mixed-separator cohort whose
-    # source mseed carries Kelunji-native 'DL?' codes.
-    st = _enforce_band_instrument(st)
+    # source mseed carries Kelunji-native 'DL?' codes. Passthrough plans keep
+    # header codes exactly.
+    st = _name_channels(st, keep_header_names)
     # Replaces obspy Stream.merge(method=1, fill_value=None) + split() with
     # sudspy.fast_merge_split — O(N log N) vs O(N^2). 492x speedup measured
     # on HOLS 2018-06-15 (1440-file SUDS day), byte-equal output. Preserves
@@ -769,7 +780,7 @@ def query_minimus_day_files(conn, station, d):
 
 def convert_minimus_day(station, network, location, files, staging_sds_root, commit, suds_convert,
                         boundary_files=None, day=None, orient_filter=None,
-                        resolve_mode=False):
+                        resolve_mode=False, keep_header_names=False):
     """Minimus branch: per-channel-per-minute mseed zips (~4320 files/day).
     Each zip holds one minute of one component. Same in-memory concat-then-parse
     pattern as Gecko; ObsPy groups by trace id automatically. Location override
@@ -795,8 +806,9 @@ def convert_minimus_day(station, network, location, files, staging_sds_root, com
         tr.stats.network = network
         tr.stats.location = location
     # Normalise channel codes: band by sample rate, instrument = H. NOOP for
-    # Minimus per-channel inputs already at HH? at 200 Hz.
-    st = _enforce_band_instrument(st)
+    # Minimus per-channel inputs already at HH? at 200 Hz. Passthrough plans
+    # keep header codes exactly.
+    st = _name_channels(st, keep_header_names)
     # sudspy.fast_merge_split replaces stream.merge + split (492x speedup, see
     # convert_gecko_day for full rationale).
     import sudspy as _sudspy
@@ -1046,7 +1058,7 @@ def _clip_trace_ns(tr, ws_ns, we_ns):
 
 def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
                       read_errors, chan_map=None, map_all=False,
-                      truncated=None):
+                      truncated=None, keep_header_names=False):
     """Per-file adapter (Codex resolver review F1/F4): read ONE source
     file, relabel to target identity, return its traces. No cross-file
     and no cross-format merging — a file's internal drift is split (a
@@ -1094,7 +1106,7 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
                     (path, "record-scan unparseable (single-file read)"))
         for tr in st:
             tr.stats.network = net
-        st = _enforce_band_instrument(st)
+        st = _name_channels(st, keep_header_names)
     # Location (operator naming procedure 2026-10-29): a fixed plan code is
     # the server-verbatim / SEED-default case; "passthrough" keeps each
     # miniSEED file's OWN location (stations not on the server — e.g.
@@ -1306,7 +1318,8 @@ def _worker_convert_day(job):
                     sta, net, loc, mseed, staging, commit,
                     suds_convert, boundary_files=b_mseed,
                     day=d, orient_filter=orient_filter,
-                    resolve_mode=resolve)))
+                    resolve_mode=resolve,
+                    keep_header_names=job.get("keep_header_names", False))))
             # Review F5: on a mixed-format group, the format of the FIRST
             # file (a winner — fills sort last) writes first. write_sds puts
             # existing-file data before new data, so the first write wins
@@ -1353,7 +1366,8 @@ def _worker_convert_day(job):
                                            suds_convert, read_errors,
                                            job.get("chan_map"),
                                            job.get("chan_map_all", False),
-                                           truncated_files)
+                                           truncated_files,
+                                           job.get("keep_header_names", False))
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1792,6 +1806,8 @@ def main():
                 "selection_path": args.selection,
                 "chan_map": ep_chan_map or None,
                 "chan_map_all": plan.get("naming") == "server_verbatim",
+                # Header passthrough: miniSEED channel codes kept exactly.
+                "keep_header_names": plan.get("naming") == "passthrough",
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "code_id": code_id,
