@@ -111,6 +111,15 @@ def paused():
 def main():
     bs = batches()
     qc = codex_qc()
+    # Targeted rebuilds (e.g. the relay-file fix) land in <release>_rebuild
+    # queues; a rebuilt year counts as done even though its original is held.
+    rebuilt = set()
+    for rq in glob.glob(QUEUES.format("*").replace("_s*", "_rebuild_s*")):
+        try:
+            rebuilt |= {(json.loads(l)["sta"], int(json.loads(l)["year"]))
+                        for l in open(rq + "/convert_done.jsonl")}
+        except FileNotFoundError:
+            pass
     tot_done = tot_all = st_done = n_qc = n_alert = 0
     rows = []
     for k in sorted(bs):
@@ -122,9 +131,9 @@ def main():
             ys = years(sta)
             marks, n = [], 0
             for y in ys:
-                if (sta, y) in held:          # held: never counts as done
+                if (sta, y) in held and (sta, y) not in rebuilt:   # held, not rebuilt
                     marks.append(f"{R}✘{X}")
-                elif (sta, y) in done:        # a successful retry wins
+                elif (sta, y) in done or (sta, y) in rebuilt:  # retry/rebuild wins
                     v = qc.get((sta, y))
                     if v == "PASS":
                         marks.append(f"{B}{G}✔{X}")
