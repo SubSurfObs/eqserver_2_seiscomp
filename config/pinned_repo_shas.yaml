@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: cbe5849      # DU release v2 (2026-11-01): Codex PROCEED d82144b (truncated-prefix repair)
+    pinned: be2abc2      # DU release v2.1 (2026-11-02): Codex PROCEED 182b49e (plain miniSEED + header passthrough); conversion code = 0152995
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
