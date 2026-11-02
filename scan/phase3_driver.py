@@ -1213,6 +1213,9 @@ def _apply_network_precedence(st, ids, rule, path, notes):
         if not nets <= {prefer, fill} or prefer not in nets:
             out += Stream(grp)          # not this rule's case: stays a collision
             continue
+        if fill not in nets:
+            out += Stream(grp)          # no fill-network trace: not this rule's case
+            continue
         keep = [tr for tr in grp if tr.stats.raw_network == prefer]
         t0 = min(tr.stats.starttime for tr in keep)
         displaced = kept_fill = 0
