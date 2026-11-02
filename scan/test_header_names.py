@@ -72,6 +72,44 @@ def main():
         got, errs = names(str(plain), True)
         check("plain uncompressed .mseed is read (LILH)", got == ["HHZ"] and not errs,
               f"got {got} {errs}")
+        # WEPH: an AU trace and a DU trace, same channel and time, different
+        # samples, in ONE file -> after relabelling they collide: fail loudly
+        st = Stream()
+        for netc, data in (("AU", np.zeros(6000, dtype=np.int32)),
+                           ("DU", np.arange(6000, dtype=np.int32))):
+            st += Trace(data, header={"network": netc, "station": "FAKE", "location": "0",
+                                      "channel": "HHZ", "sampling_rate": 100.0,
+                                      "starttime": UTCDateTime(2025, 3, 20, 8, 40)})
+        buf = io.BytesIO(); st.write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        wz = Path(td) / "2025-03-20 0840 00 FAKE_HHZ.mseed.zip"
+        with zipfile.ZipFile(wz, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        got, errs = names(str(wz), True)
+        check("WEPH: unequal AU/DU traces collapsing to one id fail loudly",
+              got == [] and any("identity collision" in str(e) for e in errs), f"{got} {errs}")
+        # identical duplicate traces are NOT a collision
+        st2 = Stream([st[1].copy(), st[1].copy()]); st2[0].stats.network = "AU"
+        buf = io.BytesIO(); st2.write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        dz = Path(td) / "2025-03-20 0845 00 FAKE_HHZ.mseed.zip"
+        with zipfile.ZipFile(dz, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        got, errs = names(str(dz), True)
+        check("identical duplicate traces are not a collision", got == ["HHZ"] and not errs,
+              f"{got} {errs}")
+        # LKHRT: SUM is dropped by EXACT name in the chooser's reader (recorded,
+        # not unknown) while its seismometer channel still reads
+        import qa_verify
+        sz = mseed_zip(td, "2023-07-28_0200_FAKE.ms.zip", [("HHZ", 100.0), ("SUM", 100.0)])
+        ie, ic = [], {}
+        orients = sorted(t["orient"] for t in qa_verify.read_source_file(sz, ie, ic))
+        check("SUM dropped by exact name, not an unknown label; HHZ still read",
+              orients == ["Z"] and ic.get("dropped_labels") == ["SUM"]
+              and not ic.get("unknown_labels") and not ie, f"{orients} {ic} {ie}")
+        uz = mseed_zip(td, "2023-07-28_0300_FAKE.ms.zip", [("HHZ", 100.0), ("SUX", 100.0)])
+        ie, ic = [], {}
+        qa_verify.read_source_file(uz, ie, ic)
+        check("a different unknown code (SUX) still counts as unknown",
+              ic.get("unknown_labels") == ["SUX"], str(ic))
         got, _ = names(mseed_zip(td, "2023-07-28_0100_FAKE.ms.zip", [("DLZ", 250.0)]), False)
         check("non-passthrough (VW legacy) still normalises DLZ@250 -> CHZ",
               got == ["CHZ"], f"got {got}")

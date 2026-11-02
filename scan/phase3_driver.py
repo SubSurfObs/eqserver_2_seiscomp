@@ -114,6 +114,38 @@ def _name_channels(stream, keep_header_names):
     return stream if keep_header_names else _enforce_band_instrument(stream)
 
 
+def _identity_collisions(stream):
+    """Output ids (net.sta.loc.cha) at which two traces of ONE file overlap in
+    time with any differing sample — after relabelling, before the resolver.
+    Equal overlapping samples (true duplicates) are not a collision."""
+    import numpy as np
+    by_id = {}
+    for tr in stream:
+        by_id.setdefault(tr.id, []).append(tr)
+    bad = []
+    for tid, trs in by_id.items():
+        if len(trs) < 2:
+            continue
+        trs = sorted(trs, key=lambda t: t.stats.starttime)
+        hit = False
+        for i in range(len(trs)):
+            for j in range(i + 1, len(trs)):
+                a, b = trs[i], trs[j]
+                if b.stats.starttime > a.stats.endtime or a.stats.sampling_rate != b.stats.sampling_rate:
+                    continue
+                off = int(round((b.stats.starttime - a.stats.starttime) * a.stats.sampling_rate))
+                n = min(len(a.data) - off, len(b.data))
+                if n > 0 and not np.array_equal(np.asarray(a.data[off:off + n]),
+                                                np.asarray(b.data[:n])):
+                    hit = True
+                    break
+            if hit:
+                break
+        if hit:
+            bad.append(tid)
+    return bad
+
+
 def _filter_bogus_year_traces(stream, min_year, dropped_list):
     """Drop traces whose start-time year is below `min_year` (no-GPS-lock /
     bogus-SUDS-header guard).
@@ -1114,6 +1146,15 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
         for tr in st:
             tr.stats.network = net
         st = _name_channels(st, keep_header_names)
+        clash = _identity_collisions(st)
+        if clash:
+            # Two UNEQUAL overlapping traces in ONE file that now share an
+            # output identity (WEPH 2025: an AU and a DU trace both relabelled
+            # DU.WEPH.0.HHZ; the resolver silently kept one and discarded
+            # 63,513 samples) — fail loudly, never choose (Codex 182b49e).
+            read_errors.append((path, "identity collision: unequal overlapping "
+                                      "traces map to " + ", ".join(clash)))
+            return Stream()
     # Location (operator naming procedure 2026-10-29): a fixed plan code is
     # the server-verbatim / SEED-default case; "passthrough" keeps each
     # miniSEED file's OWN location (stations not on the server — e.g.

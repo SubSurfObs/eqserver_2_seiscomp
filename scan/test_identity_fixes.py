@@ -174,6 +174,10 @@ def main():
     check("truncated priority is below every other copy",
           dprio and min(dprio) > 2, str(dprio))
 
+    # 3e. LKHRT 'SUM' housekeeping channel: a recognised exact drop (not an
+    #     unknown label), so it never blocks (Codex 182b49e)
+    check("SUM is a recognised miniSEED drop", "SUM" in qa_verify.MSEED_DROP_CHANNELS)
+
     # 4. bare .gz SUDS sniff
     with tempfile.TemporaryDirectory() as td:
         s = Path(td) / "2017-03-15 0000 00 HKER.gz"

@@ -62,6 +62,9 @@ SUDS_DROP_SUFFIXES = ("-a",)
 SUDS_DROP_PREFIXES = ("c04", "c05", "c06", "c07", "c08", "c09")
 
 ORIENTATIONS = set("ZNEO123")  # SEED orientations incl. borehole 1/2/3
+# Exact raw miniSEED channel codes that are housekeeping, not waveform
+# (LKHRT 'SUM', Codex 182b49e). Exact names only — never a letter pattern.
+MSEED_DROP_CHANNELS = {"SUM"}
 
 HHMM_RE = re.compile(r"[ _](\d{4})[ _]")
 
@@ -366,6 +369,13 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                     errors.append({"path": path, "err": f"member: {exc}"})
                     continue
                 for tr in st:
+                    if (tr.stats.channel or "").strip().upper() in MSEED_DROP_CHANNELS:
+                        # Recognised housekeeping channel: intentionally
+                        # dropped and recorded, never blocking (Codex 182b49e).
+                        labels = counters.setdefault("dropped_labels", [])
+                        if tr.stats.channel not in labels and len(labels) < 20:
+                            labels.append(tr.stats.channel)
+                        continue
                     orient = _mseed_orientation(tr.stats.channel)
                     if orient is None:
                         # An mseed channel with no orientation letter is
