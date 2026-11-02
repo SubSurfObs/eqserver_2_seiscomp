@@ -2,6 +2,14 @@ station: WEPH
 network: DU
 location: '0'
 naming: server_verbatim
+# Reviewed WEPH-only rule (Codex 8e7aa3d, 2026-11-03): some files carry a raw
+# AU trace and a raw DU trace over the same time, which both become
+# DU.WEPH.0.HHZ. Raw DU supplies the overlap; raw AU may fill only the earlier
+# portion DU does not cover. Recorded per file in the run manifest. Not a
+# general rule: every other collision fails loudly.
+collision_precedence:
+  prefer_network: DU
+  fill_before_network: AU
 status: ok
 epochs:
 - id: 1

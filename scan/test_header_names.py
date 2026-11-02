@@ -110,6 +110,64 @@ def main():
         qa_verify.read_source_file(uz, ie, ic)
         check("a different unknown code (SUX) still counts as unknown",
               ic.get("unknown_labels") == ["SUX"], str(ic))
+        # Codex 8e7aa3d (1): two UNEQUAL source LOCATIONS that a fixed plan
+        # location maps to ONE final id must fail (checked after mapping)
+        lz = Path(td) / "2023-07-28_0400_FAKE.ms.zip"
+        st3 = Stream()
+        for lc, data in (("00", np.arange(6000, dtype=np.int32)),
+                         ("01", np.arange(6000, dtype=np.int32) * 2)):
+            st3 += Trace(data, header={"network": "DU", "station": "FAKE", "location": lc,
+                                       "channel": "HHZ", "sampling_rate": 100.0,
+                                       "starttime": UTCDateTime(2023, 7, 28, 4)})
+        buf = io.BytesIO(); st3.write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(lz, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        errs = []
+        got = _read_file_traces(str(lz), "mseed", "DU", "FAKE", "00", None, errs,
+                                keep_header_names=True)
+        check("unequal locations merged by the plan's fixed location fail loudly",
+              len(got) == 0 and any("identity collision" in str(e) for e in errs), str(errs))
+        # Codex 8e7aa3d (2): identical values shifted 0.49 sample = collision
+        oz = Path(td) / "2023-07-28_0500_FAKE.ms.zip"
+        a = Trace(np.arange(6000, dtype=np.int32),
+                  header={"network": "DU", "station": "FAKE", "location": "00", "channel": "HHZ",
+                          "sampling_rate": 100.0, "starttime": UTCDateTime(2023, 7, 28, 5)})
+        b = a.copy(); b.stats.network = "AU"; b.stats.starttime += 0.0049
+        buf = io.BytesIO(); Stream([a, b]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(oz, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        got, errs = names(str(oz), True)
+        check("identical trace shifted 0.49 sample is a collision", got == []
+              and any("identity collision" in str(e) for e in errs), f"{got} {errs}")
+        # WEPH precedence: AU full minute, DU from +20 s with different data
+        pz = Path(td) / "2025-03-20 0900 00 FAKE_HHZ.mseed.zip"
+        au = Trace(np.zeros(6000, dtype=np.int32),
+                   header={"network": "AU", "station": "FAKE", "location": "0", "channel": "HHZ",
+                           "sampling_rate": 100.0, "starttime": UTCDateTime(2025, 3, 20, 9)})
+        du = Trace(np.arange(1, 4001, dtype=np.int32),
+                   header={"network": "DU", "station": "FAKE", "location": "0", "channel": "HHZ",
+                           "sampling_rate": 100.0, "starttime": UTCDateTime(2025, 3, 20, 9, 0, 20)})
+        buf = io.BytesIO(); Stream([au, du]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(pz, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        notes, errs = [], []
+        got = _read_file_traces(str(pz), "mseed", "DU", "FAKE", "passthrough", None, errs,
+                                keep_header_names=True,
+                                collision_precedence={"prefer_network": "DU",
+                                                      "fill_before_network": "AU"},
+                                notes=notes)
+        du_out = [t for t in got if t.stats.raw_network == "DU"]
+        au_out = [t for t in got if t.stats.raw_network == "AU"]
+        check("WEPH rule: all 4,000 DU samples kept", len(du_out) == 1
+              and np.array_equal(du_out[0].data, du.data) and not errs, str(errs))
+        check("WEPH rule: AU fills only the 2,000 earlier samples",
+              len(au_out) == 1 and len(au_out[0].data) == 2000
+              and au_out[0].stats.endtime < du.stats.starttime)
+        check("WEPH rule recorded (identities + displaced count)",
+              notes and "4000 displaced" in notes[0], str(notes))
+        got, errs = names(str(pz), True)
+        check("without the rule the same file fails loudly",
+              got == [] and any("identity collision" in str(e) for e in errs), str(errs))
         got, _ = names(mseed_zip(td, "2023-07-28_0100_FAKE.ms.zip", [("DLZ", 250.0)]), False)
         check("non-passthrough (VW legacy) still normalises DLZ@250 -> CHZ",
               got == ["CHZ"], f"got {got}")

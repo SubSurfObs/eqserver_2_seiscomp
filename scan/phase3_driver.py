@@ -115,9 +115,10 @@ def _name_channels(stream, keep_header_names):
 
 
 def _identity_collisions(stream):
-    """Output ids (net.sta.loc.cha) at which two traces of ONE file overlap in
-    time with any differing sample — after relabelling, before the resolver.
-    Equal overlapping samples (true duplicates) are not a collision."""
+    """FINAL output ids (net.sta.loc.cha) at which two traces of ONE file
+    overlap in time with any differing sample, or with start times off the
+    sample grid (Codex 8e7aa3d) — checked before the resolver. Equal,
+    grid-aligned overlapping samples (true duplicates) are not a collision."""
     import numpy as np
     by_id = {}
     for tr in stream:
@@ -133,10 +134,12 @@ def _identity_collisions(stream):
                 a, b = trs[i], trs[j]
                 if b.stats.starttime > a.stats.endtime or a.stats.sampling_rate != b.stats.sampling_rate:
                     continue
-                off = int(round((b.stats.starttime - a.stats.starttime) * a.stats.sampling_rate))
+                exact = (b.stats.starttime - a.stats.starttime) * a.stats.sampling_rate
+                off = int(round(exact))
                 n = min(len(a.data) - off, len(b.data))
-                if n > 0 and not np.array_equal(np.asarray(a.data[off:off + n]),
-                                                np.asarray(b.data[:n])):
+                if n > 0 and (abs(exact - off) > 1e-3        # off the sample grid
+                              or not np.array_equal(np.asarray(a.data[off:off + n]),
+                                                    np.asarray(b.data[:n]))):
                     hit = True
                     break
             if hit:
@@ -1097,7 +1100,8 @@ def _clip_trace_ns(tr, ws_ns, we_ns):
 
 def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
                       read_errors, chan_map=None, map_all=False,
-                      truncated=None, keep_header_names=False):
+                      truncated=None, keep_header_names=False,
+                      collision_precedence=None, notes=None):
     """Per-file adapter (Codex resolver review F1/F4): read ONE source
     file, relabel to target identity, return its traces. No cross-file
     and no cross-format merging — a file's internal drift is split (a
@@ -1144,17 +1148,9 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
                 read_errors.append(
                     (path, "record-scan unparseable (single-file read)"))
         for tr in st:
+            tr.stats.raw_network = tr.stats.network   # kept for precedence
             tr.stats.network = net
         st = _name_channels(st, keep_header_names)
-        clash = _identity_collisions(st)
-        if clash:
-            # Two UNEQUAL overlapping traces in ONE file that now share an
-            # output identity (WEPH 2025: an AU and a DU trace both relabelled
-            # DU.WEPH.0.HHZ; the resolver silently kept one and discarded
-            # 63,513 samples) — fail loudly, never choose (Codex 182b49e).
-            read_errors.append((path, "identity collision: unequal overlapping "
-                                      "traces map to " + ", ".join(clash)))
-            return Stream()
     # Location (operator naming procedure 2026-10-29): a fixed plan code is
     # the server-verbatim / SEED-default case; "passthrough" keeps each
     # miniSEED file's OWN location (stations not on the server — e.g.
@@ -1182,7 +1178,60 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
             o = (tr.stats.channel or "?")[-1:].upper()
             if o in chan_map:
                 tr.stats.location, tr.stats.channel = chan_map[o]
+    # IDENTITY COLLISIONS, checked on the FINAL output ids (after network,
+    # channel, location and plan mapping — Codex 8e7aa3d: a check before the
+    # mapping let two unequal source locations merge afterwards). Two traces
+    # of ONE file that overlap at one output id with any differing sample, or
+    # off the sample grid, would make the resolver silently choose (WEPH 2025
+    # lost 63,513 samples that way): fail loudly. Only a reviewed per-station
+    # plan rule (collision_precedence) may resolve it, and it is recorded.
+    clash = _identity_collisions(st)
+    if clash and collision_precedence:
+        st = _apply_network_precedence(st, clash, collision_precedence, path, notes)
+        clash = _identity_collisions(st)
+    if clash:
+        read_errors.append((path, "identity collision: unequal or off-grid "
+                                  "overlapping traces map to " + ", ".join(clash)))
+        return Stream()
     return st
+
+
+def _apply_network_precedence(st, ids, rule, path, notes):
+    """Reviewed per-station rule for traces that collide only through network
+    relabelling (WEPH 2025, Codex 8e7aa3d): the raw `prefer_network` trace
+    supplies everything it covers; a raw `fill_before_network` trace may fill
+    ONLY the earlier portion before the first preferred sample. Anything else
+    is left for the caller to fail loudly. Both identities and the displaced
+    sample counts are recorded in `notes`."""
+    from obspy import Stream
+    prefer = rule.get("prefer_network")
+    fill = rule.get("fill_before_network")
+    out = Stream([tr for tr in st if tr.id not in ids])
+    for tid in ids:
+        grp = [tr for tr in st if tr.id == tid]
+        nets = {getattr(tr.stats, "raw_network", None) for tr in grp}
+        if not nets <= {prefer, fill} or prefer not in nets:
+            out += Stream(grp)          # not this rule's case: stays a collision
+            continue
+        keep = [tr for tr in grp if tr.stats.raw_network == prefer]
+        t0 = min(tr.stats.starttime for tr in keep)
+        displaced = kept_fill = 0
+        for tr in grp:
+            if tr.stats.raw_network != fill:
+                continue
+            n_before = int(round((t0 - tr.stats.starttime) * tr.stats.sampling_rate))
+            n_before = max(0, min(n_before, len(tr.data)))
+            displaced += len(tr.data) - n_before
+            if n_before:
+                piece = tr.copy()
+                piece.data = tr.data[:n_before].copy()
+                keep.append(piece)
+                kept_fill += n_before
+        out += Stream(keep)
+        if notes is not None:
+            notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: raw {prefer} kept; raw {fill} "
+                         f"filled {kept_fill} earlier samples, {displaced} displaced")
+    return out
 
 
 def _worker_convert_day(job):
@@ -1401,6 +1450,7 @@ def _worker_convert_day(job):
                 # by explicit priority; the day is written ONCE.
                 read_errors = []
                 truncated_files = []
+                precedence_notes = []
                 n_bogus = 0
                 by_path = {}
                 for path, _pop, fmt, orient, ws, we, prio, _rsn in decisions:
@@ -1415,7 +1465,9 @@ def _worker_convert_day(job):
                                            job.get("chan_map"),
                                            job.get("chan_map_all", False),
                                            truncated_files,
-                                           job.get("keep_header_names", False))
+                                           job.get("keep_header_names", False),
+                                           job.get("collision_precedence"),
+                                           precedence_notes)
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1468,6 +1520,8 @@ def _worker_convert_day(job):
                      "sds_files_written": []}
                 if mixed:
                     r["mixed_formats"] = True
+                if precedence_notes:
+                    r["collision_precedence"] = precedence_notes[:20]
                 if truncated_files:
                     # Cut-short files whose complete prefix was used as gap
                     # fill — recorded per day (Codex 1b27f4f).
@@ -1856,6 +1910,8 @@ def main():
                 "chan_map_all": plan.get("naming") == "server_verbatim",
                 # Header passthrough: miniSEED channel codes kept exactly.
                 "keep_header_names": plan.get("naming") == "passthrough",
+                # Reviewed per-station collision rule (WEPH only, Codex 8e7aa3d).
+                "collision_precedence": plan.get("collision_precedence"),
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "code_id": code_id,
@@ -1935,6 +1991,7 @@ def main():
                 "jan1_tail_unavailable": r.get("jan1_tail_unavailable", False),
                 # Cut-short files whose complete prefix filled gaps (Codex
                 # 1b27f4f) — carried into the permanent record.
+                "collision_precedence": r.get("collision_precedence", []),
                 "truncated_recovered": r.get("truncated_recovered", 0),
                 "truncated_files": r.get("truncated_files", []),
                 "sds_files_written": [[p, s] for p, s in
