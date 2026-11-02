@@ -125,7 +125,15 @@ def main():
     for k in sorted(bs):
         done = {(r["sta"], int(r["year"])) for r in records(k, "convert_done.jsonl")}
         bad = {(r["sta"], int(r["year"])) for r in records(k, "convert_failed.jsonl")}
-        held = {(r["sta"], int(r["year"])) for r in records(k, "held.jsonl")}
+        hold = {}
+        for r in records(k, "held.jsonl"):   # a 'released' event lifts its prefix
+            key = (r["sta"], int(r["year"]))
+            if r.get("action") == "released":
+                hold[key] = [x for x in hold.get(key, [])
+                             if not x.startswith(r.get("releases") or "\0")]
+            else:
+                hold.setdefault(key, []).append(r.get("reason") or "")
+        held = {key for key, reasons in hold.items() if reasons}
         now = running(k)
         for sta in bs[k]:
             ys = years(sta)
