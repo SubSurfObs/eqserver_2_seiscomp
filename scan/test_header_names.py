@@ -64,6 +64,14 @@ def main():
         for i, (label, chans, want) in enumerate(cases):
             got, errs = names(mseed_zip(td, f"2023-07-28_00{i:02d}_FAKE.ms.zip", chans), True)
             check(f"passthrough: {label}", got == want and not errs, f"got {got} {errs}")
+        # plain, uncompressed miniSEED (LILH 2016-17) is read, not rejected
+        z = mseed_zip(td, "2016-03-10 0132 00 FAKE_HHZ.mseed.zip", [("HHZ", 100.0)])
+        plain = Path(td) / "2016-03-10 0132 00 FAKE_HHZ.mseed"
+        with zipfile.ZipFile(z) as zf:
+            plain.write_bytes(zf.read(zf.namelist()[0]))
+        got, errs = names(str(plain), True)
+        check("plain uncompressed .mseed is read (LILH)", got == ["HHZ"] and not errs,
+              f"got {got} {errs}")
         got, _ = names(mseed_zip(td, "2023-07-28_0100_FAKE.ms.zip", [("DLZ", 250.0)]), False)
         check("non-passthrough (VW legacy) still normalises DLZ@250 -> CHZ",
               got == ["CHZ"], f"got {got}")

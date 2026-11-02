@@ -228,6 +228,13 @@ def _concat_zip_members(files, combined, read_errors, spans=None):
                 if spans is not None:
                     spans.append((path, start, combined.tell()))
                 continue
+            if path.endswith((".mseed", ".ms")) and raw[6:7] in b"DRQM":
+                # plain, uncompressed miniSEED (LILH 2016-17
+                # '… LILH_HHZ.mseed', 2026-11-02): the bytes ARE the records.
+                combined.write(raw)
+                if spans is not None:
+                    spans.append((path, start, combined.tell()))
+                continue
             with _zip.ZipFile(_io.BytesIO(raw)) as z:  # seeks now in memory
                 for name in z.namelist():
                     if name.endswith((".ms", ".mseed")):
