@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: 993d66a      # DU release v2.2 (2026-11-03): Codex e722834 PiesMo rules (seam trim, WEPH keep_later) + final-id collision check + SUM drop
+    pinned: 94b5be1      # DU release v2.3 (2026-11-03): Codex b370d14 (WEPH keep_later date/shape-scoped, LKHRT first_record, SUDS sniff in .mseed)
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
