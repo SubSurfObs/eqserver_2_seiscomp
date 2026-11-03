@@ -475,6 +475,15 @@ def _source_format(path):
     station + filename form (e.g. 'HKER.gz') — cheap, not once per file."""
     if path.endswith((".dmx", ".dmx.gz")):
         return "suds"
+    if path.endswith((".mseed", ".ms")):
+        # plain file named as miniSEED: sniff its content (RNDA_none.mseed is
+        # PC-SUDS, Codex b370d14) — once per station + filename form
+        p = Path(path)
+        form = (p.parts[-6] if len(p.parts) >= 6 else "", re.sub(r"^.*[ _]", "", p.name))
+        if form not in _FORMAT_BY_FORM:
+            from qa_verify import is_suds_path
+            _FORMAT_BY_FORM[form] = "suds" if is_suds_path(path) else "mseed"
+        return _FORMAT_BY_FORM[form]
     if not path.endswith(".gz"):
         return "mseed"
     p = Path(path)

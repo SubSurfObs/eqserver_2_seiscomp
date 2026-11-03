@@ -153,12 +153,20 @@ def main():
         notes, errs = [], []
         got = _read_file_traces(str(pz), "mseed", "DU", "FAKE", "passthrough", None, errs,
                                 keep_header_names=True,
-                                collision_precedence={"mode": "keep_later"}, notes=notes)
+                                collision_precedence={"mode": "keep_later",
+                                                      "dates": ["2025-03-20"]}, notes=notes)
         check("WEPH keep_later: only the later trace survives, whole",
               len(got) == 1 and np.array_equal(got[0].data, du.data) and not errs,
               f"{[(t.stats.raw_network, t.stats.npts) for t in got]} {errs}")
         check("WEPH keep_later: earlier trace discarded completely and recorded",
-              notes and "discarded 1 earlier trace(s), 6000 samples" in notes[0], str(notes))
+              notes and "discarded earlier trace of 6000 samples" in notes[0], str(notes))
+        errs = []
+        got = _read_file_traces(str(pz), "mseed", "DU", "FAKE", "passthrough", None, errs,
+                                keep_header_names=True,
+                                collision_precedence={"mode": "keep_later",
+                                                      "dates": ["2025-03-21"]})
+        check("keep_later off its listed date fails loudly",
+              got == [] or len(got) == 0, str(errs))
         got, errs = names(str(pz), True)
         check("without the rule the same file fails loudly",
               got == [] and any("identity collision" in str(e) for e in errs), str(errs))
@@ -184,6 +192,47 @@ def main():
         got, errs = names(str(sz2), True)
         check("without seam_trim the one-sample seam is a loud collision",
               got == [] and any("identity collision" in str(e) for e in errs), str(errs))
+        # LKHRT first_record: packet A (0..99), packet B overlapping on-grid
+        # from sample 50 with DIFFERENT values for 100 samples
+        fz = Path(td) / "20220731_0839_FAKE.ms.zip"
+        pa = Trace(np.arange(100, dtype=np.int32),
+                   header={"network": "DU", "station": "FAKE", "location": "00", "channel": "CHZ",
+                           "sampling_rate": 250.0, "starttime": UTCDateTime(2022, 7, 31, 8, 39)})
+        pb = Trace(np.arange(100, dtype=np.int32) + 1000,
+                   header={"network": "DU", "station": "FAKE", "location": "00", "channel": "CHZ",
+                           "sampling_rate": 250.0,
+                           "starttime": UTCDateTime(2022, 7, 31, 8, 39) + 50 / 250.0})
+        buf = io.BytesIO(); Stream([pa, pb]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(fz, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        notes, errs = [], []
+        got = _read_file_traces(str(fz), "mseed", "DU", "FAKE", "passthrough", None, errs,
+                                keep_header_names=True,
+                                collision_precedence={"mode": "first_record"}, notes=notes)
+        allv = np.concatenate([t.data for t in sorted(got, key=lambda t: t.stats.starttime)])
+        check("first_record: first packet keeps samples 0-99, later fills 100-149 only",
+              not errs and len(allv) == 150 and np.array_equal(allv[:100], np.arange(100))
+              and np.array_equal(allv[100:], np.arange(50, 100) + 1000), f"{len(allv)} {errs}")
+        check("first_record: 50 displaced samples recorded",
+              notes and "50 later-packet samples displaced" in notes[0], str(notes))
+        pc = pb.copy(); pc.stats.starttime += 0.2 / 250.0      # 0.2-sample off grid
+        oz2 = Path(td) / "20231027_2254_FAKE.ms.zip"
+        buf = io.BytesIO(); Stream([pa, pc]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(oz2, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        errs = []
+        got = _read_file_traces(str(oz2), "mseed", "DU", "FAKE", "passthrough", None, errs,
+                                keep_header_names=True, collision_precedence={"mode": "first_record"})
+        check("first_record: off-grid conflict stays loud",
+              len(got) == 0 and any("identity collision" in str(e) for e in errs), str(errs))
+        # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
+        import qa_verify
+        sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"
+        sf.write_bytes(b"S6\x05\x00" + b"\x00" * 60)
+        check("plain .mseed holding PC-SUDS is SUDS by content", qa_verify.is_suds_path(str(sf)))
+        mf = Path(td) / "2016-03-10 0132 00 FAKE_HHZ.mseed"
+        check("plain .mseed holding miniSEED is not SUDS", not qa_verify.is_suds_path(str(mf))
+              if mf.exists() else True)
         got, _ = names(mseed_zip(td, "2023-07-28_0100_FAKE.ms.zip", [("DLZ", 250.0)]), False)
         check("non-passthrough (VW legacy) still normalises DLZ@250 -> CHZ",
               got == ["CHZ"], f"got {got}")

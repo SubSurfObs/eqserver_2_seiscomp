@@ -275,6 +275,14 @@ def is_suds_path(path: str) -> bool:
     an unrecognised mseed member). Sniffs two decompressed bytes."""
     if path.endswith((".dmx", ".dmx.gz")):
         return True
+    if path.endswith((".mseed", ".ms")):
+        # a plain file named as miniSEED may hold PC-SUDS (RNDA 2017
+        # '…RNDA_none.mseed', Codex b370d14): trust the content
+        try:
+            with open(path, "rb") as fh:
+                return fh.read(2) == b"S6"
+        except Exception:
+            return False
     if path.endswith(".gz") and not path.endswith((".ms.gz", ".mseed.gz")):
         try:
             with gzip.open(path, "rb") as fh:

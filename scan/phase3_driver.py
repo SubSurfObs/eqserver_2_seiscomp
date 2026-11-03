@@ -1199,27 +1199,69 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
 
 
 def _apply_network_precedence(st, ids, rule, path, notes):
-    """Reviewed per-station collision rule (plan `collision_precedence`).
-    mode keep_later (WEPH 2025-03-20, Codex e722834): where two traces of one
-    file collide at an output id, the LATER-starting trace is the valid feed
-    and is kept whole; the earlier trace (a near-flat commissioning feed) is
-    discarded COMPLETELY — no prefix kept, no second identity. Recorded in
-    `notes`. Any other case is left for the caller to fail loudly."""
+    """Reviewed per-station collision rules (plan `collision_precedence`).
+    Anything a rule does not cover is returned unchanged, so the caller
+    fails loudly. Every application is recorded in `notes`.
+
+    keep_later (WEPH, Codex e722834/b370d14): ONLY on the plan's listed
+      dates and ONLY for the evidenced shape — exactly two traces at the id,
+      the later starting inside the earlier's span. The later trace is kept
+      whole; the earlier (a near-flat commissioning feed) is discarded.
+    first_record (LKHRT, Codex b370d14): unequal ON-GRID overlaps between
+      packets of one file — the first packet in file order keeps every sample
+      it occupies; later packets fill only unoccupied samples; displaced
+      samples are counted. Off-grid packets are left untouched (still loud).
+    """
+    import numpy as np
     from obspy import Stream
-    if rule.get("mode") != "keep_later":
-        return st
+    mode = rule.get("mode")
     out = Stream([tr for tr in st if tr.id not in ids])
     for tid in ids:
-        grp = sorted([tr for tr in st if tr.id == tid], key=lambda t: t.stats.starttime)
-        latest = grp[-1]
-        dropped = grp[:-1]
-        out += latest
-        if notes is not None:
-            notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: kept later trace "
-                         f"({latest.stats.npts} samples from {latest.stats.starttime}); "
-                         f"discarded {len(dropped)} earlier trace(s), "
-                         f"{sum(t.stats.npts for t in dropped)} samples "
-                         f"(raw {','.join(sorted({getattr(t.stats, 'raw_network', '?') for t in dropped}))})")
+        grp = [tr for tr in st if tr.id == tid]       # file order
+        if mode == "keep_later":
+            dates = set(rule.get("dates") or [])
+            g = sorted(grp, key=lambda t: t.stats.starttime)
+            ok = (len(g) == 2
+                  and str(g[0].stats.starttime.date) in dates
+                  and g[0].stats.starttime < g[1].stats.starttime <= g[0].stats.endtime)
+            if not ok:
+                out += Stream(grp)                    # not the evidenced case
+                continue
+            out += g[1]
+            if notes is not None:
+                notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: keep_later — kept "
+                             f"{g[1].stats.npts} samples from {g[1].stats.starttime}; "
+                             f"discarded earlier trace of {g[0].stats.npts} samples "
+                             f"(raw {getattr(g[0].stats, 'raw_network', '?')})")
+        elif mode == "first_record":
+            rate = grp[0].stats.sampling_rate
+            t_ref = min(t.stats.starttime for t in grp)
+            occupied = set()
+            displaced = 0
+            kept = Stream()
+            for tr in grp:
+                exact = (tr.stats.starttime - t_ref) * rate
+                i0 = int(round(exact))
+                if tr.stats.sampling_rate != rate or abs(exact - i0) > 1e-3:
+                    kept += tr                         # off-grid: stays loud
+                    continue
+                idx = np.arange(i0, i0 + tr.stats.npts)
+                free = np.array([i not in occupied for i in idx], dtype=bool)
+                displaced += int((~free).sum())
+                # contiguous runs of free samples become their own traces
+                runs = np.flatnonzero(np.diff(np.concatenate(([0], free.view(np.int8), [0]))))
+                for r0, r1 in zip(runs[::2], runs[1::2]):
+                    piece = tr.copy()
+                    piece.data = tr.data[r0:r1].copy()
+                    piece.stats.starttime = tr.stats.starttime + r0 / rate
+                    kept += piece
+                occupied.update(int(i) for i in idx[free])
+            out += kept
+            if notes is not None:
+                notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: first_record — "
+                             f"{displaced} later-packet samples displaced")
+        else:
+            out += Stream(grp)
     return out
 
 

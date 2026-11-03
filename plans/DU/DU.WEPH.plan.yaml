@@ -12,6 +12,7 @@ naming: server_verbatim
 # every other collision fails loudly.
 collision_precedence:
   mode: keep_later
+  dates: ['2025-03-20']   # Codex b370d14: only the evidenced day and two-trace shape
 status: ok
 epochs:
 - id: 1
