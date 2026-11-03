@@ -1101,7 +1101,7 @@ def _clip_trace_ns(tr, ws_ns, we_ns):
 def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
                       read_errors, chan_map=None, map_all=False,
                       truncated=None, keep_header_names=False,
-                      collision_precedence=None, notes=None):
+                      collision_precedence=None, notes=None, seam_trim=False):
     """Per-file adapter (Codex resolver review F1/F4): read ONE source
     file, relabel to target identity, return its traces. No cross-file
     and no cross-format merging — a file's internal drift is split (a
@@ -1185,6 +1185,8 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
     # off the sample grid, would make the resolver silently choose (WEPH 2025
     # lost 63,513 samples that way): fail loudly. Only a reviewed per-station
     # plan rule (collision_precedence) may resolve it, and it is recorded.
+    if seam_trim:
+        st = _trim_one_sample_seams(st, notes, path)
     clash = _identity_collisions(st)
     if clash and collision_precedence:
         st = _apply_network_precedence(st, clash, collision_precedence, path, notes)
@@ -1197,45 +1199,52 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
 
 
 def _apply_network_precedence(st, ids, rule, path, notes):
-    """Reviewed per-station rule for traces that collide only through network
-    relabelling (WEPH 2025, Codex 8e7aa3d): the raw `prefer_network` trace
-    supplies everything it covers; a raw `fill_before_network` trace may fill
-    ONLY the earlier portion before the first preferred sample. Anything else
-    is left for the caller to fail loudly. Both identities and the displaced
-    sample counts are recorded in `notes`."""
+    """Reviewed per-station collision rule (plan `collision_precedence`).
+    mode keep_later (WEPH 2025-03-20, Codex e722834): where two traces of one
+    file collide at an output id, the LATER-starting trace is the valid feed
+    and is kept whole; the earlier trace (a near-flat commissioning feed) is
+    discarded COMPLETELY — no prefix kept, no second identity. Recorded in
+    `notes`. Any other case is left for the caller to fail loudly."""
     from obspy import Stream
-    prefer = rule.get("prefer_network")
-    fill = rule.get("fill_before_network")
+    if rule.get("mode") != "keep_later":
+        return st
     out = Stream([tr for tr in st if tr.id not in ids])
     for tid in ids:
-        grp = [tr for tr in st if tr.id == tid]
-        nets = {getattr(tr.stats, "raw_network", None) for tr in grp}
-        if not nets <= {prefer, fill} or prefer not in nets:
-            out += Stream(grp)          # not this rule's case: stays a collision
-            continue
-        if fill not in nets:
-            out += Stream(grp)          # no fill-network trace: not this rule's case
-            continue
-        keep = [tr for tr in grp if tr.stats.raw_network == prefer]
-        t0 = min(tr.stats.starttime for tr in keep)
-        displaced = kept_fill = 0
-        for tr in grp:
-            if tr.stats.raw_network != fill:
-                continue
-            n_before = int(round((t0 - tr.stats.starttime) * tr.stats.sampling_rate))
-            n_before = max(0, min(n_before, len(tr.data)))
-            displaced += len(tr.data) - n_before
-            if n_before:
-                piece = tr.copy()
-                piece.data = tr.data[:n_before].copy()
-                keep.append(piece)
-                kept_fill += n_before
-        out += Stream(keep)
+        grp = sorted([tr for tr in st if tr.id == tid], key=lambda t: t.stats.starttime)
+        latest = grp[-1]
+        dropped = grp[:-1]
+        out += latest
         if notes is not None:
-            notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: raw {prefer} kept; raw {fill} "
-                         f"filled {kept_fill} earlier samples, {displaced} displaced")
+            notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: kept later trace "
+                         f"({latest.stats.npts} samples from {latest.stats.starttime}); "
+                         f"discarded {len(dropped)} earlier trace(s), "
+                         f"{sum(t.stats.npts for t in dropped)} samples "
+                         f"(raw {','.join(sorted({getattr(t.stats, 'raw_network', '?') for t in dropped}))})")
     return out
 
+
+def _trim_one_sample_seams(st, notes=None, path=""):
+    """PiesMo recorder seam (all 11 PiesMo stations, Codex e722834): two
+    traces of one file at one id where the later starts EXACTLY on the
+    earlier's last sample (a one-sample, on-grid overlap). Keep the later
+    trace's first sample; trim the earlier trace's final sample. Nothing
+    else is touched."""
+    by_id = {}
+    for tr in st:
+        by_id.setdefault(tr.id, []).append(tr)
+    n = 0
+    for trs in by_id.values():
+        trs.sort(key=lambda t: t.stats.starttime)
+        for a, b in zip(trs, trs[1:]):
+            if a.stats.sampling_rate != b.stats.sampling_rate or a.stats.npts < 2:
+                continue
+            exact = (b.stats.starttime - a.stats.starttime) * a.stats.sampling_rate
+            if abs(exact - round(exact)) <= 1e-3 and int(round(exact)) == a.stats.npts - 1:
+                a.data = a.data[:-1].copy()
+                n += 1
+    if n and notes is not None:
+        notes.append(f"{path.rsplit('/', 1)[-1]}: trimmed {n} one-sample PiesMo seam(s)")
+    return st
 
 def _worker_convert_day(job):
     """Pickle-safe worker. Opens its own DB connection, imports suds_convert
@@ -1470,7 +1479,8 @@ def _worker_convert_day(job):
                                            truncated_files,
                                            job.get("keep_header_names", False),
                                            job.get("collision_precedence"),
-                                           precedence_notes)
+                                           precedence_notes,
+                                           job.get("seam_trim", False))
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1915,6 +1925,8 @@ def main():
                 "keep_header_names": plan.get("naming") == "passthrough",
                 # Reviewed per-station collision rule (WEPH only, Codex 8e7aa3d).
                 "collision_precedence": plan.get("collision_precedence"),
+                # PiesMo one-sample recorder seams (Codex e722834).
+                "seam_trim": bool(plan.get("seam_trim")),
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "code_id": code_id,

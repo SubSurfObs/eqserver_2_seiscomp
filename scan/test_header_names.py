@@ -153,20 +153,36 @@ def main():
         notes, errs = [], []
         got = _read_file_traces(str(pz), "mseed", "DU", "FAKE", "passthrough", None, errs,
                                 keep_header_names=True,
-                                collision_precedence={"prefer_network": "DU",
-                                                      "fill_before_network": "AU"},
-                                notes=notes)
-        du_out = [t for t in got if t.stats.raw_network == "DU"]
-        au_out = [t for t in got if t.stats.raw_network == "AU"]
-        check("WEPH rule: all 4,000 DU samples kept", len(du_out) == 1
-              and np.array_equal(du_out[0].data, du.data) and not errs, str(errs))
-        check("WEPH rule: AU fills only the 2,000 earlier samples",
-              len(au_out) == 1 and len(au_out[0].data) == 2000
-              and au_out[0].stats.endtime < du.stats.starttime)
-        check("WEPH rule recorded (identities + displaced count)",
-              notes and "4000 displaced" in notes[0], str(notes))
+                                collision_precedence={"mode": "keep_later"}, notes=notes)
+        check("WEPH keep_later: only the later trace survives, whole",
+              len(got) == 1 and np.array_equal(got[0].data, du.data) and not errs,
+              f"{[(t.stats.raw_network, t.stats.npts) for t in got]} {errs}")
+        check("WEPH keep_later: earlier trace discarded completely and recorded",
+              notes and "discarded 1 earlier trace(s), 6000 samples" in notes[0], str(notes))
         got, errs = names(str(pz), True)
         check("without the rule the same file fails loudly",
+              got == [] and any("identity collision" in str(e) for e in errs), str(errs))
+        # PiesMo one-sample seam: 55 s trace ends exactly where the 240 s one
+        # starts (one overlapping sample, different values)
+        sz2 = Path(td) / "2025-03-20 0225 05 FAKE_HHZ.mseed.zip"
+        t1 = Trace(np.arange(11001, dtype=np.int32),
+                   header={"network": "DU", "station": "FAKE", "location": "0", "channel": "HHZ",
+                           "sampling_rate": 200.0, "starttime": UTCDateTime(2025, 3, 20, 2, 25, 5)})
+        t2 = Trace(np.arange(48000, dtype=np.int32) + 50000,
+                   header={"network": "DU", "station": "FAKE", "location": "0", "channel": "HHZ",
+                           "sampling_rate": 200.0, "starttime": UTCDateTime(2025, 3, 20, 2, 26)})
+        buf = io.BytesIO(); Stream([t1, t2]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(sz2, "w") as z:
+            z.writestr("x.mseed", buf.getvalue())
+        errs = []
+        got = _read_file_traces(str(sz2), "mseed", "DU", "FAKE", "passthrough", None, errs,
+                                keep_header_names=True, seam_trim=True)
+        lens = sorted(t.stats.npts for t in got)
+        check("PiesMo seam: earlier trace loses its last sample, later keeps its first",
+              lens == [11000, 48000] and not errs
+              and any(t.data[0] == 50000 for t in got), f"{lens} {errs}")
+        got, errs = names(str(sz2), True)
+        check("without seam_trim the one-sample seam is a loud collision",
               got == [] and any("identity collision" in str(e) for e in errs), str(errs))
         got, _ = names(mseed_zip(td, "2023-07-28_0100_FAKE.ms.zip", [("DLZ", 250.0)]), False)
         check("non-passthrough (VW legacy) still normalises DLZ@250 -> CHZ",

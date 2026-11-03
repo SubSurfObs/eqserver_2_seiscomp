@@ -1,15 +1,17 @@
 station: WEPH
 network: DU
 location: '0'
+# PiesMo recorder one-sample seam (Codex e722834): keep the later trace's
+# first sample, trim the earlier trace's last.
+seam_trim: true
 naming: server_verbatim
-# Reviewed WEPH-only rule (Codex 8e7aa3d, 2026-11-03): some files carry a raw
-# AU trace and a raw DU trace over the same time, which both become
-# DU.WEPH.0.HHZ. Raw DU supplies the overlap; raw AU may fill only the earlier
-# portion DU does not cover. Recorded per file in the run manifest. Not a
-# general rule: every other collision fails loudly.
+# Reviewed WEPH-only rule (Codex e722834, 2026-11-03): on 2025-03-20, 11 files
+# hold an earlier near-flat invalid commissioning feed and a later valid
+# seismic feed at the same id. Keep the LATER trace whole; discard the earlier
+# completely (no prefix, no second identity). Recorded per file. Not general:
+# every other collision fails loudly.
 collision_precedence:
-  prefer_network: DU
-  fill_before_network: AU
+  mode: keep_later
 status: ok
 epochs:
 - id: 1

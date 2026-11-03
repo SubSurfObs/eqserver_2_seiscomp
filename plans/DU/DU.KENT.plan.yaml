@@ -1,6 +1,9 @@
 station: KENT
 network: DU
 location: '0'
+# PiesMo recorder one-sample seam (Codex e722834): keep the later trace's
+# first sample, trim the earlier trace's last.
+seam_trim: true
 naming: server_verbatim
 status: ok
 epochs:
