@@ -48,7 +48,8 @@ def selection_record(archive, net, sta, year):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--queues", nargs="+", required=True)
-    ap.add_argument("--selection-archive", required=True)
+    ap.add_argument("--selection-archive", required=True, nargs="+",
+                    help="one or more archive roots, searched in order")
     ap.add_argument("--commit", action="store_true")
     a = ap.parse_args()
     # Phase 1: build EVERY repaired manifest in memory; any gap aborts the
@@ -58,9 +59,22 @@ def main():
         done = Path(q) / "convert_done.jsonl"
         if not done.exists():
             continue
+        # Accepted-by-ruling done records carry only the run_id: take the
+        # preflight from the matching failure record of the same run.
+        failed_by_run = {}
+        fpath = Path(q) / "convert_failed.jsonl"
+        if fpath.exists():
+            for fl in fpath.open():
+                fr = json.loads(fl)
+                failed_by_run[fr.get("run_id")] = fr
         for line in done.open():
             ev = json.loads(line)
-            mp = Path(ev.get("run_manifest_path") or "")
+            if not ev.get("preflight") and ev.get("run_id") in failed_by_run:
+                ev["preflight"] = failed_by_run[ev["run_id"]].get("preflight")
+            mp = Path(ev.get("run_manifest_path") or
+                      Path(q) / "run_manifests" / f"{ev['run_id']}.json")
+            if not mp.is_file():
+                mp = Path(q) / "run_manifests" / f"{ev['run_id']}.json"
             if not mp.is_file():
                 problems.append(f"{ev.get('run_id')}: manifest missing ({mp})")
                 continue
@@ -70,8 +84,11 @@ def main():
             release = {"eqserver": heads.get("eqserver_2_seiscomp"),
                        "disk_to_sds": heads.get("disk_to_sds"),
                        "sudspy": heads.get("sudspy")}
-            sel = selection_record(a.selection_archive, ev["net"], ev["sta"],
-                                   ev["year"])
+            sel = None
+            for root in a.selection_archive:
+                sel = selection_record(root, ev["net"], ev["sta"], ev["year"])
+                if sel:
+                    break
             gaps = [k for k, v in release.items() if not v]
             if not sel:
                 gaps.append("archived selection")
