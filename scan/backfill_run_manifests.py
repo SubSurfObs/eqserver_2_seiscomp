@@ -45,6 +45,28 @@ def selection_record(archive, net, sta, year):
             "sha256_of": "decompressed selection database"}
 
 
+def _release_folders():
+    """{eqserver full SHA: {eqserver, disk_to_sds, sudspy}} from every
+    release folder on this host."""
+    import subprocess
+    out = {}
+    for d in glob.glob(os.path.expanduser("~/projects/SubSurfObs_releases/*/")):
+        try:
+            h = {r: subprocess.run(["git", "-C", d + r, "rev-parse", "HEAD"],
+                                   capture_output=True, text=True).stdout.strip()
+                 for r in ("eqserver_2_seiscomp", "disk_to_sds", "sudspy")}
+        except Exception:
+            continue
+        if all(h.values()):
+            out[h["eqserver_2_seiscomp"]] = {"eqserver": h["eqserver_2_seiscomp"],
+                                             "disk_to_sds": h["disk_to_sds"],
+                                             "sudspy": h["sudspy"]}
+    return out
+
+
+RELEASE_BY_EQSERVER = _release_folders()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--queues", nargs="+", required=True)
@@ -84,6 +106,16 @@ def main():
             release = {"eqserver": heads.get("eqserver_2_seiscomp"),
                        "disk_to_sds": heads.get("disk_to_sds"),
                        "sudspy": heads.get("sudspy")}
+            if not all(release.values()):
+                # Runs whose queue record lacks the preflight: the manifest's
+                # own release block (newer runs), else the release FOLDER whose
+                # eqserver HEAD equals the manifest's project_git — each folder
+                # holds exactly one pinned tuple.
+                rel = m.get("release") or {}
+                if all(rel.get(k) for k in ("eqserver", "disk_to_sds", "sudspy")):
+                    release = dict(rel)
+                else:
+                    release = RELEASE_BY_EQSERVER.get(m.get("project_git") or "", release)
             sel = None
             for root in a.selection_archive:
                 sel = selection_record(root, ev["net"], ev["sta"], ev["year"])
