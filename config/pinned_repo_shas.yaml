@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: 94b5be1      # DU release v2.3 (2026-11-03): Codex b370d14 (WEPH keep_later date/shape-scoped, LKHRT first_record, SUDS sniff in .mseed)
+    pinned: ae94a19      # DU promotion (2026-11-05, Dan-approved): only docs + run-record backfill since 94b5be1 (v2.3); promotion code identical
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
@@ -29,7 +29,7 @@ repos:
     pinned: 5e41f17      # DU release v2: truncated_recovered qc
     code_roots: [scripts]
   sds_staging_ledger:
-    pinned: null
+    pinned: 5995b2b      # DU promotion (2026-11-05, Dan-approved): dev1 HEAD, checkout verified clean; data-only commits since last code review
 
 stages:
   registry: [eqserver_2_seiscomp]
