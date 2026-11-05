@@ -29,7 +29,7 @@ repos:
     pinned: 5e41f17      # DU release v2: truncated_recovered qc
     code_roots: [scripts]
   sds_staging_ledger:
-    pinned: 5995b2b      # DU promotion (2026-11-05, Dan-approved): dev1 HEAD, checkout verified clean; data-only commits since last code review
+    pinned: 7541444      # DU promotion queue runs (Dan-approved bump protocol 2026-11-05): dev1 HEAD after KBRI test unit; diff since prior pin = seiscomp_archive/+policies/+runs/ only
 
 stages:
   registry: [eqserver_2_seiscomp]
