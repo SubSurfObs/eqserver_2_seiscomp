@@ -7,6 +7,55 @@
 SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 **Branch:** `rewrite-suds2sds` is the working branch (main has not been merged).
 
+## ▶ CURRENT STATE — 2026-11-06 (Dan restarting for VPN; read this first)
+
+**DU conversion (release v2 + rebuilds) is done for 264 of 268 planned
+station-years; promotion to LT has started (test unit verified).**
+
+- Code: branch `workflow-v3`. Release folders on the VM:
+  `~/projects/SubSurfObs_releases/du_v2` (main run, eqserver 2cb091c),
+  `du_v2_1` / `du_v2_2` / `du_v2_3` (targeted rebuilds). Control scripts
+  `ops/du_v2/` (lib.sh, peryear launcher, retry, cleaner, rebuild_units.sh).
+- Queues to PROMOTE (only these): `/mnt/seiscomp_staging/eqserver_sweep_du_v2_s0..s5`
+  and `eqserver_sweep_du_v2_rebuild_s0..s3`. Superseded originals are HELD in
+  the v2 queues; holds lifted only by prefix-matched `released` events.
+- Run records repaired (281 manifests, `scan/backfill_run_manifests.py`).
+- Progress view: `ssh dsand@172.26.144.41 '~/projects/SubSurfObs/disk_to_sds/.venv/bin/python3 ~/du_progress.py'`.
+
+**Promotion (separate Claude session `seiscomp_server_uom`, on dev1 via VPN):**
+handoff `docs/handoff_du_promotion.md`. Pins approved: eqserver ae94a19
+(promotion code identical to 94b5be1), ledger at dev1 HEAD if clean; routine
+ledger-pin bumps between queues approved when the diff is ledger data only.
+Test unit KBRI 2025 PROMOTED and verified (183 files = 183 ok days, ledger
+commit 7541444, ~17 GB/h end-to-end → ~3.5–4 days for ~1.5 TB). Approved
+next: release its 41 test holds in s5 ONLY (PiesMo hold stays), then one
+queue at a time, no parallel, no skipping the dry run; collect 2025–26
+LT-overlap holds into one summary table for Dan. **Stalled: Dan restarting
+to reach the VPN; neither the Mac nor the staging VM can reach dev1 without it.**
+
+**Codex (independent QC, staging VM, read-only):** live watcher over all
+v2 + rebuild queues; closing recovery audit for the >99% target running
+(526 random days; 150 comparisons, 0 discrepancies at last report;
+`~/codex_sandbox/du_closing_recovery/`). Await its final % + CI.
+
+**Rulings this round (Dan):** target = >99% recovery of available data;
+don't chase one-off edge cases (CRC-corrupt UTT/S88U minutes excluded and
+noted); header names kept exactly; unconverted stations WILL be converted
+(best-guess names acceptable, renamed later if needed).
+
+**Open, in order:**
+1. Promotion: resume after VPN (see above).
+2. Not yet converted (~2.3% of DU station-days): TPSOP (218 d, measure SUDS
+   rate), ADE2/GLN/MPTV/MYP (230 d, plans), GLDS+THS (1,229 d, need a reader
+   for `….pn.01` files; THS naming), BLAT (4 d, HNZ kept), MVM1Y (31 d,
+   rate-based naming). Include-unknown, Dan to decide: DNL3, DNL4, NNP3,
+   PLY3, RNDA2 (589 d; likely test/variant stations).
+3. Codex pending: LKHRT 2022–24 first_record proof (bad samples on
+   2023-10-27, still blocked 2023-06-28, 78 s on 2022-07-31) and LILH 2019's
+   one in-file collision day.
+4. Hardening (non-blocking): isolated truncated file escaping lowest-priority
+   demotion when no sampled probe is truncated.
+
 ## Scope (from `metadata/station_registry.yaml`, 255 entries)
 
 | Category | Count | Notes |
