@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: "f2c32fa"    # DU promotion (2026-11-09, Dan-approved): scan/ byte-identical since ae94a19; adds STATUS.md + ops hold-glob fix (Codex QC PASS) + pin commits
+    pinned: "b04926a"    # DU promotion: f2c32fa + promoter fix for accepted-by-ruling records (2026-11-10, awaiting Dan approval); scan/ diff since f2c32fa = this fix + sp_band_by_rate (conversion-only, unused by promotion)
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
