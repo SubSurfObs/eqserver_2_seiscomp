@@ -218,11 +218,16 @@ def main():
 
         for entry in new:
             rid = entry["run_id"]
+            # Done records written when Dan accepted a failed run by ruling
+            # (S88U 2016, UTT 2024/25, NSTM 2025, LILH 2016, WEPH 2025) carry
+            # only run_id/net/sta/year/manifest: their staging tree is this
+            # promoter's own --staging-root (2026-11-10 KeyError fix).
+            entry.setdefault("staging_root", args.staging_root)
             sta = entry["sta"]
             year = entry["year"]
 
             # Skip-empty short-circuit
-            if args.skip_empty and entry.get("items_succeeded", 0) == 0:
+            if args.skip_empty and entry.get("items_succeeded", 1) == 0:
                 print(f"[promote] {rid} SKIP-EMPTY (items_succeeded=0)", flush=True)
                 append_event(promote_done, {
                     "run_id": rid, "net": entry["net"], "sta": sta, "year": year,
