@@ -29,7 +29,7 @@ repos:
     pinned: 5e41f17      # DU release v2: truncated_recovered qc
     code_roots: [scripts]
   sds_staging_ledger:
-    pinned: "7541444"    # DU promotion queue runs (Dan-approved bump protocol 2026-11-05): dev1 HEAD after KBRI test unit; diff since prior pin = seiscomp_archive/+policies/+runs/ only
+    pinned: "828d2f9"    # DU promotion bump after s5 (2026-11-09): diff since prior pin = seiscomp_archive/+policies/+runs/ only (Dan-approved protocol)
     # NB: always QUOTE pins — an all-numeric short SHA (like this one) parses as
     # a YAML int and crashes preflight's head.startswith(pinned) with TypeError.
 
