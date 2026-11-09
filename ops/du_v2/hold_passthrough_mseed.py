@@ -50,7 +50,7 @@ def passthrough_stations():
 def one_pass():
     pt = passthrough_stations()
     n = 0
-    for q in sorted(glob.glob("/mnt/seiscomp_staging/eqserver_sweep_du_v2*_s*")):
+    for q in sorted(glob.glob("/mnt/seiscomp_staging/eqserver_sweep_du_v2_s?")):
         try:
             done = [json.loads(l) for l in open(f"{q}/convert_done.jsonl")]
         except FileNotFoundError:
