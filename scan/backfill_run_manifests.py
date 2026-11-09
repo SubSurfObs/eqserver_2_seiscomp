@@ -142,7 +142,9 @@ def main():
             # Permanent location only; the conversion-time local path is kept
             # for reference (it no longer exists).
             old_sel = m.get("selection") or {}
-            sel["path_at_conversion"] = (old_sel.get("path")
+            # A repeat repair must not overwrite the true conversion-time path.
+            sel["path_at_conversion"] = (old_sel.get("path_at_conversion")
+                                         or old_sel.get("path")
                                          or m.get("selection_path"))
             m["selection"] = sel
             # The conversion-time environment was not recorded for these runs.
