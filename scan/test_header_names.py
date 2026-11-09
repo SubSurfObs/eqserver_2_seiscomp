@@ -233,6 +233,14 @@ def main():
         mf = Path(td) / "2016-03-10 0132 00 FAKE_HHZ.mseed"
         check("plain .mseed holding miniSEED is not SUDS", not qa_verify.is_suds_path(str(mf))
               if mf.exists() else True)
+        # sp_band_by_rate: band letter follows each trace's rate (MVM1Y)
+        for ch, rate, want_ch in (("DHZ", 100.0, "EHZ"), ("DHZ", 250.0, "DHZ")):
+            bz = mseed_zip(td, f"2021-10-09_09{int(rate) % 60:02d}_FAKE.ms.zip", [(ch, rate)])
+            errs = []
+            got = _read_file_traces(bz, "mseed", "DU", "FAKE", "00", None, errs,
+                                    keep_header_names=True, sp_band_by_rate=True)
+            check(f"sp_band_by_rate: {rate:g} Hz becomes {want_ch}",
+                  [t.stats.channel for t in got] == [want_ch] and not errs, str(errs))
         got, _ = names(mseed_zip(td, "2023-07-28_0100_FAKE.ms.zip", [("DLZ", 250.0)]), False)
         check("non-passthrough (VW legacy) still normalises DLZ@250 -> CHZ",
               got == ["CHZ"], f"got {got}")

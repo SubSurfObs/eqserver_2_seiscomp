@@ -1,0 +1,27 @@
+station: ADE2
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2023-01-01'
+  end: '2023-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.ADE2.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.ADE2.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.ADE2.00.EHZ
+    basis: seed_short_period_default:100sps
+flagged_days: []
+generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
+notes:
+- 'Sample rate 100 Hz measured from each year''s files 2026-11-09; no server codes:
+  SEED short-period default.'

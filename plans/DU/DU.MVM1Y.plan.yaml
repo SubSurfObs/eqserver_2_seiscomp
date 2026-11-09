@@ -2,7 +2,7 @@ station: MVM1Y
 network: DU
 location: passthrough
 naming: passthrough
-status: BLOCKED
+status: ok
 epochs:
 - id: 1
   start: '2021-01-01'
@@ -23,4 +23,7 @@ epochs:
 flagged_days: []
 generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
 notes:
-- 'HELD 2026-10-31 (Codex e41bebb): the first ten files are 100 Hz but every channel maps to DH* (the 250 sps code). Needs rate-dependent naming (EH* at 100 Hz) before conversion.'
+- '2021-10-09 holds 100 Hz then 250 Hz files; 250 Hz after. Band letter set per trace
+  from its rate (SEED short-period: EH* at 100 Hz, DH* at 250 Hz). Replaces the 2026-10-31
+  hold.'
+sp_band_by_rate: true

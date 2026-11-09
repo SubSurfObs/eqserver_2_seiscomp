@@ -1101,7 +1101,8 @@ def _clip_trace_ns(tr, ws_ns, we_ns):
 def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
                       read_errors, chan_map=None, map_all=False,
                       truncated=None, keep_header_names=False,
-                      collision_precedence=None, notes=None, seam_trim=False):
+                      collision_precedence=None, notes=None, seam_trim=False,
+                      sp_band_by_rate=False):
     """Per-file adapter (Codex resolver review F1/F4): read ONE source
     file, relabel to target identity, return its traces. No cross-file
     and no cross-format merging — a file's internal drift is split (a
@@ -1178,6 +1179,13 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
             o = (tr.stats.channel or "?")[-1:].upper()
             if o in chan_map:
                 tr.stats.location, tr.stats.channel = chan_map[o]
+    # Plan sp_band_by_rate (MVM1Y: 100 Hz then 250 Hz within its first day):
+    # the band letter follows each trace's own rate, SEED short-period table.
+    if sp_band_by_rate:
+        for tr in st:
+            r = tr.stats.sampling_rate
+            band = "G" if r >= 1000 else "D" if r >= 250 else "E" if r >= 80 else "S"
+            tr.stats.channel = band + tr.stats.channel[1:]
     # IDENTITY COLLISIONS, checked on the FINAL output ids (after network,
     # channel, location and plan mapping — Codex 8e7aa3d: a check before the
     # mapping let two unequal source locations merge afterwards). Two traces
@@ -1522,7 +1530,8 @@ def _worker_convert_day(job):
                                            job.get("keep_header_names", False),
                                            job.get("collision_precedence"),
                                            precedence_notes,
-                                           job.get("seam_trim", False))
+                                           job.get("seam_trim", False),
+                                           job.get("sp_band_by_rate", False))
                     bog = []
                     st = _filter_bogus_year_traces(
                         st, DEFAULT_MIN_DATA_YEAR, bog)
@@ -1969,6 +1978,7 @@ def main():
                 "collision_precedence": plan.get("collision_precedence"),
                 # PiesMo one-sample recorder seams (Codex e722834).
                 "seam_trim": bool(plan.get("seam_trim")),
+                "sp_band_by_rate": bool(plan.get("sp_band_by_rate")),
                 "prev_selection_path": args.prev_selection,
                 "skip_unchanged": args.skip_unchanged,
                 "code_id": code_id,

@@ -1,0 +1,26 @@
+station: TPSOP
+network: DU
+location: '00'
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 2
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: 'hand, per Dan''s rule 2026-11-05: convert; best-guess names, rename
+  later'
+notes:
+- Headers carry n1.l1 (Sep-Oct 2017), OZ.01 (Oct-Dec 2017) and blank network/location
+  (Dec 2017-Apr 2018). Network from the registry (DU); location fixed at 00 so one
+  recorder gives one stream set; channel names kept from headers. SUDS telemetry stubs
+  take the same HH* names by rate. Header network OZ flagged for Dan.
