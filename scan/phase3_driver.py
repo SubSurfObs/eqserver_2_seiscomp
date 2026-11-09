@@ -1058,33 +1058,40 @@ def _write_day_replace(suds_convert, stream, sds_root, net, sta, day,
         _sh.rmtree(build, ignore_errors=True)
 
 
-def _coalesce_pieces(pieces, dt_ns):
-    """Join resolver output pieces into grid-consistent traces: a piece
-    joins the current run while its STATED start sits within half a
-    sample of the run grid's continuation; otherwise a new trace anchors
-    at the piece's stated time (the sudspy grid rule, in exact integer
-    ns). Without this, a drifting day writes thousands of micro-segments
-    whose record times sit within readers' half-sample join tolerance —
-    and every standard reader welds them back onto one grid (LKHRT
-    2026-10-30: 2 read-back traces, 7M value mismatches). Joining within
-    half a sample is representability, not re-timing; the split point is
-    where fidelity demands a new anchor."""
+def _coalesce_pieces(pieces, dt_ns, guard=None):
+    """Join resolver output pieces into traces. A piece joins the current
+    run ONLY when it continues the run's grid exactly (Codex 2026-11-10 F1:
+    joining within half a sample put LKHRT samples 4 ms off their stated
+    times). A piece on a different grid starts its own trace at its stated
+    time. Readers weld two traces whose junction is within half a sample of
+    continuous, so when a new grid starts that close to the run's end, its
+    first sample(s) are dropped until the junction is more than half a sample
+    clear; dropped samples are counted in `guard["weld_guard_dropped"]`.
+    Pieces arrive sorted and non-overlapping (the resolver guarantees it)."""
     runs = []
     cur_t0 = None
     cur_parts = []
     cur_n = 0
+    half = dt_ns // 2
     for pc in pieces:
-        t0 = pc["t0_ns"]
-        if cur_t0 is None:
-            cur_t0, cur_parts, cur_n = t0, [pc["data"]], len(pc["data"])
-            continue
-        d = t0 - (cur_t0 + cur_n * dt_ns)
-        if -(dt_ns // 2) <= d <= dt_ns // 2:
-            cur_parts.append(pc["data"])
-            cur_n += len(pc["data"])
-        else:
+        t0, data = pc["t0_ns"], pc["data"]
+        if cur_t0 is not None:
+            d = t0 - (cur_t0 + cur_n * dt_ns)
+            if d == 0:
+                cur_parts.append(data)
+                cur_n += len(data)
+                continue
+            k = 0
+            while d + k * dt_ns <= half and k < len(data):
+                k += 1
+            if k:
+                if guard is not None:
+                    guard["weld_guard_dropped"] = guard.get("weld_guard_dropped", 0) + k
+                t0, data = t0 + k * dt_ns, data[k:]
+                if len(data) == 0:
+                    continue
             runs.append((cur_t0, cur_parts))
-            cur_t0, cur_parts, cur_n = t0, [pc["data"]], len(pc["data"])
+        cur_t0, cur_parts, cur_n = t0, [data], len(data)
     if cur_t0 is not None:
         runs.append((cur_t0, cur_parts))
     return runs
@@ -1285,7 +1292,9 @@ def _write_precedence_evidence(manifest_path, records):
     with gzip.open(tmp, "wt") as f:
         f.write(body)
     os.replace(tmp, out)
-    return {"path": out, "n_records": len(records),
+    # "file" is relative to the manifest's own directory: durable when the
+    # manifest and sidecar are copied together (Codex 2026-11-10 F3).
+    return {"file": os.path.basename(out), "path": out, "n_records": len(records),
             "sha256_of_content": hashlib.sha256(body.encode()).hexdigest()}
 
 
@@ -1605,6 +1614,7 @@ def _worker_convert_day(job):
                                    UTCDateTime as _U)
                 import numpy as _np
                 resolved_stream = _S()
+                weld_guard = {}
                 for key in sorted(by_key):
                     pieces = resolve_segments(by_key[key])
                     prev_end = None
@@ -1614,7 +1624,7 @@ def _worker_convert_day(job):
                             raise RuntimeError(
                                 f"resolver overlap for {key}")
                         prev_end = sgm["t0_ns"] + len(sgm["data"]) * dtn
-                    for run_t0, parts in _coalesce_pieces(pieces, dtn):
+                    for run_t0, parts in _coalesce_pieces(pieces, dtn, weld_guard):
                         stats = templates[key].copy()
                         stats.starttime = _U(ns=run_t0)
                         data = _np.ascontiguousarray(
@@ -1633,6 +1643,8 @@ def _worker_convert_day(job):
                      "sds_files_written": []}
                 if mixed:
                     r["mixed_formats"] = True
+                if weld_guard:
+                    r["weld_guard_dropped"] = weld_guard["weld_guard_dropped"]
                 if precedence_notes:
                     r["collision_precedence"] = precedence_notes
                 if truncated_files:
@@ -1877,6 +1889,7 @@ def main():
         sudspy_sha = "?"
     if args.commit:
         _bad = release_identity_gaps({"eqserver": project_sha,
+                                      "disk_to_sds": engine_sha,
                                       "sudspy": sudspy_sha})
         if _bad:
             sys.exit(f"ABORT: unknown code identity for {_bad}: a committed run "
@@ -2126,6 +2139,7 @@ def main():
                 "collision_precedence": [n for n in r.get("collision_precedence", [])
                                          if not isinstance(n, dict)],
                 "earliest_start": _earliest_start_totals(r.get("collision_precedence", [])),
+                "weld_guard_dropped": r.get("weld_guard_dropped", 0),
                 "truncated_recovered": r.get("truncated_recovered", 0),
                 "truncated_files": r.get("truncated_files", []),
                 "sds_files_written": [[p, s] for p, s in

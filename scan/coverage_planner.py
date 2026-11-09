@@ -911,7 +911,13 @@ def compile_selection(net, sta, year, db_path: Path, out_path: Path,
                     if reason.startswith("gap_fill"):
                         prio = (e.get("prio_by_orient") or {}).get(orient, prio)
                     for a, b in runs:
-                        ws = day_ns + a * 60 * NS_
+                        # One slot of grace at the window START too: a file
+                        # can begin seconds before its filename minute (BLAT
+                        # 2023-10-30: 02:31:57 in the 0232 file; Codex
+                        # 2026-11-10 F2). Safe: a file contributes only
+                        # samples it holds, and the resolver never overwrites
+                        # occupied time.
+                        ws = day_ns + (a - 1) * 60 * NS_
                         # One slot of grace at the window end: minute files
                         # STRADDLE their nominal slot (session offset SS —
                         # a file labelled 0001 holds 00:01:SS..00:02:SS).

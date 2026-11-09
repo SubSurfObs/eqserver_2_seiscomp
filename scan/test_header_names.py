@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path
 
 import numpy as np
-from obspy import Stream, Trace, UTCDateTime
+from obspy import Stream, Trace, UTCDateTime, read
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from phase3_driver import _read_file_traces  # noqa: E402
@@ -280,6 +280,37 @@ def main():
         _p, prec = ChannelKnowledge()._probe_file(str(broken))
         check("damaged file probes as unreadable, not unresolved",
               prec["status"] == "unreadable" and prec["err"], str(prec))
+        # coalescing never moves a sample (Codex 2026-11-10 F1): the .121/.125
+        # case, written to miniSEED and read back with a standard reader
+        from phase3_driver import _coalesce_pieces
+        dtn = 10_000_000
+        base = UTCDateTime(2023, 10, 27, 5, 6, 15, 5000).ns          # grid .005
+        p1 = {"t0_ns": base, "data": np.arange(611, dtype=np.int32)}   # ends .105
+        p2 = {"t0_ns": base + 611 * dtn + 6_000_000,                   # .121
+              "data": np.arange(100, dtype=np.int32) + 5000}
+        p3 = {"t0_ns": p2["t0_ns"] + 100 * dtn + 4_000_000,            # .125 grid
+              "data": np.arange(100, dtype=np.int32) + 9000}
+        p4 = {"t0_ns": p3["t0_ns"] + 100 * dtn,                        # same grid: joins
+              "data": np.arange(50, dtype=np.int32) + 20000}
+        g = {}
+        runs = _coalesce_pieces([p1, p2, p3, p4], dtn, g)
+        st_ = Stream([Trace(np.concatenate(parts), header={"sampling_rate": 100.0,
+                      "starttime": UTCDateTime(ns=t0), "network": "DU", "station": "FAKE",
+                      "location": "00", "channel": "HHZ"}) for t0, parts in runs])
+        b_ = io.BytesIO(); st_.write(b_, format="MSEED", encoding="STEIM2", reclen=512); b_.seek(0)
+        back = read(b_, format="MSEED")
+        want = {}
+        for pc in (p1, p2, p3, p4):
+            for i, v in enumerate(pc["data"]):
+                want[pc["t0_ns"] + i * dtn] = int(v)
+        got_ = {}
+        for t in back:
+            for i, v in enumerate(t.data):
+                got_[t.stats.starttime.ns + i * dtn] = int(v)
+        check("coalesce + write + read: every sample at its exact stated time",
+              all(want.get(t) == v for t, v in got_.items()), str(back))
+        check("coalesce: only the weld-guard samples are missing, and counted",
+              len(want) - len(got_) == g.get("weld_guard_dropped") == 1, f"{len(want)} {len(got_)} {g}")
         # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
         import qa_verify
         sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"
