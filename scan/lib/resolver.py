@@ -24,8 +24,8 @@ Overlay rule (order-free):
   1. Segments resolve in ascending priority; ties process in
      deterministic (t0_ns, path) order.
   2. A segment occupies the half-open span [t0_ns, t0_ns + n*dt_ns).
-  3. A lower-priority segment contributes ONLY samples whose stated
-     times fall outside every occupied span; retained pieces keep their
+  3. A lower-priority segment contributes ONLY samples whose half-open
+     spans fall outside every occupied span; retained pieces keep their
      own stated grid (a new output segment anchors at the stated time of
      its first retained sample — never shifted onto another grid).
   4. Nothing is averaged, trimmed by duration heuristics, or decided by
@@ -136,8 +136,11 @@ def resolve_segments(segments):
             # First retained sample at or after lo, on THIS segment's
             # grid: exact integer ceiling division, no floats.
             i0 = max(0, -((t0 - lo) // dt))
-            # Last retained sample strictly before hi.
-            i1 = min(n, -((t0 - hi) // dt))
+            # Last sample whose WHOLE span [t, t+dt) ends by hi. Only differs
+            # from "stated time before hi" for an off-grid neighbour, where the
+            # sample would otherwise overlap the next occupied span (output
+            # must never overlap; Codex 2026-11-09 F1).
+            i1 = min(n, (hi - t0) // dt)
             if i1 <= i0:
                 continue
             piece_t0 = t0 + i0 * dt

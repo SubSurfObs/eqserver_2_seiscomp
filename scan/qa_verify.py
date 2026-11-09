@@ -324,9 +324,38 @@ def _looks_like_mseed(blob: bytes) -> bool:
     return len(blob) >= 64 and blob[6:7] in b"DRQM"
 
 
-def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
+def earliest_start_view(traces, merge_locations, counters):
+    """What a file's plan-ruled earliest-start overlay must have kept (plan
+    `collision_precedence: earliest_start`, Codex 2026-11-09 F1). Written here
+    independently of the converter so the audit checks the chosen packet: per
+    final channel and rate, stated-start order, a later packet survives only at
+    or after the end of what is already occupied, on its own grid."""
+    groups, out = {}, []
+    for i, t in enumerate(traces):
+        loc = "" if merge_locations else t.get("src_loc", "")
+        groups.setdefault((t["src_chan"], loc, t["rate"]), []).append((i, t))
+    for (_c, _l, rate), grp in groups.items():
+        dt = round(1_000_000_000 / rate)
+        grp.sort(key=lambda it: (it[1]["start"].ns, it[0]))
+        end = None
+        for _i, t in grp:
+            t0, n = t["start"].ns, len(t["data"])
+            skip = 0 if end is None or end <= t0 else min(n, -((t0 - end) // dt))
+            if skip:
+                counters["n_precedence_displaced"] = counters.get(
+                    "n_precedence_displaced", 0) + skip
+            if skip < n:
+                out.append({**t, "start": UTCDateTime(ns=t0 + skip * dt),
+                            "data": t["data"][skip:]})
+            end = t0 + n * dt if end is None else max(end, t0 + n * dt)
+    return out
+
+
+def read_source_file(path: str, errors: list, counters: dict,
+                     precedence=None) -> list[dict]:
     """Read one source file into trace dicts:
-    {orient, src_chan, start (UTCDateTime), rate, data (np.int64)}."""
+    {orient, src_chan, start (UTCDateTime), rate, data (np.int64)}.
+    `precedence` is the plan's rule ({"merge_locations": bool}) or None."""
     traces = []
     try:
         if is_suds_path(path):
@@ -394,20 +423,24 @@ def read_source_file(path: str, errors: list, counters: dict) -> list[dict]:
                         continue
                     traces.append({
                         "orient": orient, "src_chan": tr.stats.channel,
-                        "src_path": path,
+                        "src_loc": tr.stats.location, "src_path": path,
                         "start": tr.stats.starttime,
                         "rate": float(tr.stats.sampling_rate),
                         "data": np.asarray(tr.data, dtype=np.int64),
                     })
+                if precedence is not None:
+                    traces = earliest_start_view(
+                        traces, precedence["merge_locations"], counters)
     except Exception as exc:
         errors.append({"path": path, "err": str(exc)})
     return traces
 
 
-def read_population(files: list[dict], errors: list, counters: dict) -> list[dict]:
+def read_population(files: list[dict], errors: list, counters: dict,
+                    precedence=None) -> list[dict]:
     out = []
     for f in files:
-        out.extend(read_source_file(f["path"], errors, counters))
+        out.extend(read_source_file(f["path"], errors, counters, precedence))
     return out
 
 
@@ -740,7 +773,7 @@ def load_selection_lineages(selection_path, day: date_cls):
 
 def verify_day(net: str, sta: str, day: date_cls, db_dirs, sds_root: Path,
                registry: dict, stratum: str = "uniform",
-               selection_path=None) -> dict:
+               selection_path=None, precedence=None) -> dict:
     rec = {"t": "day", "net": net, "sta": sta, "date": day.isoformat(),
            "stratum": stratum, "findings": [], "metrics": {}}
     if isinstance(db_dirs, (str, Path)):
@@ -749,7 +782,7 @@ def verify_day(net: str, sta: str, day: date_cls, db_dirs, sds_root: Path,
         lineages = (load_selection_lineages(selection_path, day)
                     if selection_path else None)
         return _verify_day(rec, net, sta, day, [Path(d) for d in db_dirs],
-                           Path(sds_root), registry, lineages)
+                           Path(sds_root), registry, lineages, precedence)
     except Exception as exc:
         rec["findings"].append({"category": "comparator_error",
                                 "detail": f"{type(exc).__name__}: {exc}"})
@@ -757,7 +790,7 @@ def verify_day(net: str, sta: str, day: date_cls, db_dirs, sds_root: Path,
 
 
 def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry,
-                lineages=None):
+                lineages=None, precedence=None):
     counts: dict = {}
     entry = registry.get(sta) or {}
     rts = entry.get("recorder_types") or []
@@ -794,7 +827,7 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry,
     disk_f, fill_f, extra_f = split_populations(files)
     tail_disk, tail_fill, tail_extra = split_populations(tail)
     expected_tr = read_population(disk_f + fill_f + tail_disk + tail_fill,
-                                  errors, counters)
+                                  errors, counters, precedence)
     extra_f_all = extra_f + tail_extra
     if len(extra_f_all) > EXTRA_READ_CAP:
         # Even subsample; selection_loss becomes a lower bound.
@@ -802,7 +835,7 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry,
         sampled = extra_f_all[::step][:EXTRA_READ_CAP]
         counters["n_extra_unread"] = len(extra_f_all) - len(sampled)
         extra_f_all = sampled
-    extra_tr = read_population(extra_f_all, errors, counters)
+    extra_tr = read_population(extra_f_all, errors, counters, precedence)
 
     if not files and not expected_tr and not extra_tr:
         if conv_traces:
@@ -958,6 +991,17 @@ def _verify_day(rec, net, sta, day, db_dirs, sds_root, registry,
 
 # --- CLI -------------------------------------------------------------------------
 
+def precedence_from_plan(plan_path):
+    """The audit's view of a plan's in-file overlap rule, or None."""
+    if not plan_path:
+        return None
+    import yaml
+    plan = yaml.safe_load(Path(plan_path).read_text())
+    if (plan.get("collision_precedence") or {}).get("mode") != "earliest_start":
+        return None
+    return {"merge_locations": plan.get("location") != "passthrough"}
+
+
 DEFAULT_DB_DIRS = [
     "/mnt/seiscomp_staging/eqserver_provenance/VW/2026-06-10/station_dbs",
     "~/station_dbs",
@@ -971,6 +1015,8 @@ def main():
     ap.add_argument("--date", required=True, help="YYYY-MM-DD")
     ap.add_argument("--db-dirs", nargs="*", default=DEFAULT_DB_DIRS)
     ap.add_argument("--sds-root", default="/mnt/seiscomp_archive")
+    ap.add_argument("--plan", default=None,
+                    help="station plan; its earliest_start rule is honoured")
     ap.add_argument("--selection", default=None,
                     help="selection sqlite for this station-year: restricts "
                          "the timing-topology check to SELECTED source "
@@ -983,7 +1029,8 @@ def main():
     db_dirs = [Path(d).expanduser() for d in args.db_dirs]
     rec = verify_day(args.net, args.sta, date_cls.fromisoformat(args.date),
                      db_dirs, Path(args.sds_root), registry,
-                     selection_path=args.selection)
+                     selection_path=args.selection,
+                     precedence=precedence_from_plan(args.plan))
     json.dump(rec, sys.stdout, indent=2)
     print()
 

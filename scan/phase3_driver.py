@@ -114,6 +114,11 @@ def _name_channels(stream, keep_header_names):
     return stream if keep_header_names else _enforce_band_instrument(stream)
 
 
+def release_identity_gaps(release):
+    """Names in a run manifest's release block with no real SHA."""
+    return sorted(k for k, v in release.items() if not v or v == "?")
+
+
 def _identity_collisions(stream):
     """FINAL output ids (net.sta.loc.cha) at which two traces of ONE file
     overlap in time with any differing sample, or with start times off the
@@ -132,8 +137,11 @@ def _identity_collisions(stream):
         for i in range(len(trs)):
             for j in range(i + 1, len(trs)):
                 a, b = trs[i], trs[j]
-                if b.stats.starttime > a.stats.endtime or a.stats.sampling_rate != b.stats.sampling_rate:
+                if b.stats.starttime > a.stats.endtime:
                     continue
+                if a.stats.sampling_rate != b.stats.sampling_rate:
+                    hit = True      # same id, two rates, overlapping: no rule covers it
+                    break
                 exact = (b.stats.starttime - a.stats.starttime) * a.stats.sampling_rate
                 off = int(round(exact))
                 n = min(len(a.data) - off, len(b.data))
@@ -1215,12 +1223,9 @@ def _apply_network_precedence(st, ids, rule, path, notes):
       dates and ONLY for the evidenced shape — exactly two traces at the id,
       the later starting inside the earlier's span. The later trace is kept
       whole; the earlier (a near-flat commissioning feed) is discarded.
-    first_record (LKHRT, Codex b370d14): unequal ON-GRID overlaps between
-      packets of one file — the first packet in file order keeps every sample
-      it occupies; later packets fill only unoccupied samples; displaced
-      samples are counted. Off-grid packets are left untouched (still loud).
+    earliest_start (TPSOP, BLAT, LKHRT, LILH; Codex 2026-11-09 F1): see
+      _earliest_start_overlay. Different rates at one id stay loud.
     """
-    import numpy as np
     from obspy import Stream
     mode = rule.get("mode")
     out = Stream([tr for tr in st if tr.id not in ids])
@@ -1241,36 +1246,53 @@ def _apply_network_precedence(st, ids, rule, path, notes):
                              f"{g[1].stats.npts} samples from {g[1].stats.starttime}; "
                              f"discarded earlier trace of {g[0].stats.npts} samples "
                              f"(raw {getattr(g[0].stats, 'raw_network', '?')})")
-        elif mode == "first_record":
-            rate = grp[0].stats.sampling_rate
-            t_ref = min(t.stats.starttime for t in grp)
-            occupied = set()
-            displaced = 0
-            kept = Stream()
-            for tr in grp:
-                exact = (tr.stats.starttime - t_ref) * rate
-                i0 = int(round(exact))
-                if tr.stats.sampling_rate != rate or abs(exact - i0) > 1e-3:
-                    kept += tr                         # off-grid: stays loud
-                    continue
-                idx = np.arange(i0, i0 + tr.stats.npts)
-                free = np.array([i not in occupied for i in idx], dtype=bool)
-                displaced += int((~free).sum())
-                # contiguous runs of free samples become their own traces
-                runs = np.flatnonzero(np.diff(np.concatenate(([0], free.view(np.int8), [0]))))
-                for r0, r1 in zip(runs[::2], runs[1::2]):
-                    piece = tr.copy()
-                    piece.data = tr.data[r0:r1].copy()
-                    piece.stats.starttime = tr.stats.starttime + r0 / rate
-                    kept += piece
-                occupied.update(int(i) for i in idx[free])
-            out += kept
-            if notes is not None:
-                notes.append(f"{path.rsplit('/', 1)[-1]} {tid}: first_record — "
-                             f"{displaced} later-packet samples displaced")
+        elif mode == "earliest_start":
+            if len({tr.stats.sampling_rate for tr in grp}) > 1:
+                out += Stream(grp)                    # not covered: stays loud
+                continue
+            kept, displaced = _earliest_start_overlay(grp)
+            out += Stream(kept)
+            if notes is not None and displaced:
+                notes.append({"rule": "earliest_start",
+                              "file": path.rsplit("/", 1)[-1], "id": tid,
+                              "rate": grp[0].stats.sampling_rate,
+                              "displaced": displaced})
         else:
             out += Stream(grp)
     return out
+
+
+def _earliest_start_overlay(traces):
+    """One file, one final id, one rate (Codex 2026-11-09 F1). Sorted by stated
+    start (file order breaks an equal-start tie), the earliest packet owns its
+    half-open span and a later packet keeps only samples at or after the end of
+    what is already occupied. Integer nanoseconds; each retained sample keeps
+    its own stated time, so an off-grid packet stays on its own grid and a
+    sub-sample gap stays a gap. Nothing is averaged, shifted or joined.
+    Returns (kept traces, one record per displaced interval)."""
+    rate = traces[0].stats.sampling_rate
+    dt = round(1_000_000_000 / rate)
+    ordered = sorted(enumerate(traces), key=lambda it: (it[1].stats.starttime.ns, it[0]))
+    anchor = ordered[0][1].stats.starttime.ns
+    occupied_end, kept, displaced = None, [], []
+    for _i, tr in ordered:
+        t0, n = tr.stats.starttime.ns, tr.stats.npts
+        first = 0
+        if occupied_end is not None and occupied_end > t0:
+            first = min(n, -((t0 - occupied_end) // dt))    # integer ceiling
+            displaced.append({"start_ns": t0, "n_samples": first,
+                              "grid_offset": ((t0 - anchor) % dt) / dt})
+        if first < n:
+            if first == 0:
+                kept.append(tr)
+            else:
+                piece = tr.copy()
+                piece.data = tr.data[first:].copy()
+                piece.stats.starttime = type(tr.stats.starttime)(ns=t0 + first * dt)
+                kept.append(piece)
+        end = t0 + n * dt
+        occupied_end = end if occupied_end is None else max(occupied_end, end)
+    return kept, displaced
 
 
 def _trim_one_sample_seams(st, notes=None, path=""):
@@ -1585,7 +1607,7 @@ def _worker_convert_day(job):
                 if mixed:
                     r["mixed_formats"] = True
                 if precedence_notes:
-                    r["collision_precedence"] = precedence_notes[:20]
+                    r["collision_precedence"] = precedence_notes
                 if truncated_files:
                     # Cut-short files whose complete prefix was used as gap
                     # fill — recorded per day (Codex 1b27f4f).
@@ -1820,10 +1842,18 @@ def main():
     project_sha = _sha_of_repo(_here_dir)
     try:
         import sudspy as _sudspy_mod
+        # realpath: the release folder imports sudspy through a symlink shim,
+        # which is not a git repo (Codex 2026-11-09 F2).
         sudspy_sha = _sha_of_repo(os.path.dirname(os.path.dirname(
-            os.path.abspath(_sudspy_mod.__file__))))
+            os.path.realpath(_sudspy_mod.__file__))))
     except Exception:
         sudspy_sha = "?"
+    if args.commit:
+        _bad = release_identity_gaps({"eqserver": project_sha,
+                                      "sudspy": sudspy_sha})
+        if _bad:
+            sys.exit(f"ABORT: unknown code identity for {_bad}: a committed run "
+                     "must record every release SHA (Codex 2026-11-09 F2)")
     # ENGINE LOCALITY (2026-10-31): a commit run must import sudspy and the
     # disk_to_sds engine from the SIBLINGS of this checkout — the very repos
     # the Stage-4 preflight pinned. Otherwise the preflight could verify one

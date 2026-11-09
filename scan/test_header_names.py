@@ -192,39 +192,74 @@ def main():
         got, errs = names(str(sz2), True)
         check("without seam_trim the one-sample seam is a loud collision",
               got == [] and any("identity collision" in str(e) for e in errs), str(errs))
-        # LKHRT first_record: packet A (0..99), packet B overlapping on-grid
-        # from sample 50 with DIFFERENT values for 100 samples
-        fz = Path(td) / "20220731_0839_FAKE.ms.zip"
-        pa = Trace(np.arange(100, dtype=np.int32),
-                   header={"network": "DU", "station": "FAKE", "location": "00", "channel": "CHZ",
-                           "sampling_rate": 250.0, "starttime": UTCDateTime(2022, 7, 31, 8, 39)})
+        # earliest_start (Codex 2026-11-09 F1). Packets written in REVERSE time
+        # order prove the rule follows stated start, not file order.
+        t00 = UTCDateTime(2022, 7, 31, 8, 39)
+        hdr = {"network": "DU", "station": "FAKE", "location": "00", "channel": "CHZ",
+               "sampling_rate": 250.0}
+        pa = Trace(np.arange(100, dtype=np.int32), header={**hdr, "starttime": t00})
         pb = Trace(np.arange(100, dtype=np.int32) + 1000,
-                   header={"network": "DU", "station": "FAKE", "location": "00", "channel": "CHZ",
-                           "sampling_rate": 250.0,
-                           "starttime": UTCDateTime(2022, 7, 31, 8, 39) + 50 / 250.0})
-        buf = io.BytesIO(); Stream([pa, pb]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
-        with zipfile.ZipFile(fz, "w") as z:
-            z.writestr("x.mseed", buf.getvalue())
-        notes, errs = [], []
-        got = _read_file_traces(str(fz), "mseed", "DU", "FAKE", "passthrough", None, errs,
-                                keep_header_names=True,
-                                collision_precedence={"mode": "first_record"}, notes=notes)
-        allv = np.concatenate([t.data for t in sorted(got, key=lambda t: t.stats.starttime)])
-        check("first_record: first packet keeps samples 0-99, later fills 100-149 only",
+                   header={**hdr, "starttime": t00 + 50 / 250.0})
+        def overlay(fname, traces, rule={"mode": "earliest_start"}):
+            fz = Path(td) / fname
+            b_ = io.BytesIO()
+            for t_ in traces:
+                t_.write(b_, format="MSEED", encoding="STEIM2", reclen=512)
+            with zipfile.ZipFile(fz, "w") as z:
+                z.writestr("x.mseed", b_.getvalue())
+            nts, ers = [], []
+            g = _read_file_traces(str(fz), "mseed", "DU", "FAKE", "passthrough", None, ers,
+                                  keep_header_names=True, collision_precedence=rule, notes=nts)
+            return sorted(g, key=lambda t: t.stats.starttime), nts, ers
+        got, notes, errs = overlay("20220731_0839_FAKE.ms.zip", [pb, pa])
+        allv = np.concatenate([t.data for t in got])
+        check("earliest_start: earliest packet keeps 0-99, later fills 100-149 only, by start not file order",
               not errs and len(allv) == 150 and np.array_equal(allv[:100], np.arange(100))
               and np.array_equal(allv[100:], np.arange(50, 100) + 1000), f"{len(allv)} {errs}")
-        check("first_record: 50 displaced samples recorded",
-              notes and "50 later-packet samples displaced" in notes[0], str(notes))
-        pc = pb.copy(); pc.stats.starttime += 0.2 / 250.0      # 0.2-sample off grid
-        oz2 = Path(td) / "20231027_2254_FAKE.ms.zip"
-        buf = io.BytesIO(); Stream([pa, pc]).write(buf, format="MSEED", encoding="STEIM2", reclen=512)
-        with zipfile.ZipFile(oz2, "w") as z:
-            z.writestr("x.mseed", buf.getvalue())
-        errs = []
-        got = _read_file_traces(str(oz2), "mseed", "DU", "FAKE", "passthrough", None, errs,
-                                keep_header_names=True, collision_precedence={"mode": "first_record"})
-        check("first_record: off-grid conflict stays loud",
-              len(got) == 0 and any("identity collision" in str(e) for e in errs), str(errs))
+        check("earliest_start: file, id and 50 displaced samples recorded",
+              notes and notes[0]["file"] == "20220731_0839_FAKE.ms.zip"
+              and notes[0]["id"] == "DU.FAKE.00.CHZ"
+              and notes[0]["displaced"][0]["n_samples"] == 50
+              and notes[0]["displaced"][0]["grid_offset"] == 0.0, str(notes))
+        # off grid by 0.2 sample: later packet keeps its OWN grid, no overlap
+        pc = pb.copy(); pc.stats.starttime += 0.2 / 250.0
+        got, notes, errs = overlay("20231027_2254_FAKE.ms.zip", [pa, pc])
+        dt = 4_000_000
+        check("earliest_start off-grid: both kept, later on its own grid, no overlap, exact values",
+              not errs and len(got) == 2
+              and (got[1].stats.starttime.ns - pc.stats.starttime.ns) % dt == 0
+              and got[1].stats.starttime.ns >= got[0].stats.starttime.ns + 100 * dt
+              and np.array_equal(got[1].data, np.arange(50, 100) + 1000), f"{got} {errs}")
+        check("earliest_start off-grid: 0.2-sample offset recorded",
+              notes and abs(notes[0]["displaced"][0]["grid_offset"] - 0.2) < 1e-3, str(notes))
+        # contained packet is displaced whole; nothing of it survives
+        pd_ = Trace(np.arange(10, dtype=np.int32) + 5000, header={**hdr, "starttime": t00 + 20 / 250.0})
+        got, notes, errs = overlay("20220731_0840_FAKE.ms.zip", [pa, pd_])
+        check("earliest_start: contained packet displaced whole",
+              not errs and len(got) == 1 and np.array_equal(got[0].data, np.arange(100)), str(got))
+        # different rates overlapping at one id: no rule covers it, stays loud
+        pe = Trace(np.arange(100, dtype=np.int32) + 9000,
+                   header={**hdr, "sampling_rate": 100.0, "starttime": t00 + 0.1})
+        got, notes, errs = overlay("20220731_0841_FAKE.ms.zip", [pa, pe])
+        check("earliest_start: different rates at one id stay loud",
+              got == [] and any("identity collision" in str(e) for e in errs), str(errs))
+        # the auditor's own implementation agrees with the converter
+        import qa_verify as qv
+        tdicts = [{"orient": "Z", "src_chan": "CHZ", "src_loc": "00", "src_path": "x",
+                   "start": t.stats.starttime, "rate": 250.0,
+                   "data": np.asarray(t.data, dtype=np.int64)} for t in (pc, pa)]
+        view = sorted(qv.earliest_start_view(tdicts, False, {}), key=lambda t: t["start"].ns)
+        conv, _, _ = overlay("20231027_2255_FAKE.ms.zip", [pa, pc])
+        check("auditor's earliest-start view equals the converter's output",
+              len(view) == len(conv) and all(
+                  v["start"].ns == c.stats.starttime.ns and np.array_equal(v["data"], c.data)
+                  for v, c in zip(view, conv)), str(view))
+        # a run manifest may not record an unknown release identity
+        from phase3_driver import release_identity_gaps
+        check("release block with '?' or empty is rejected",
+              release_identity_gaps({"eqserver": "abc", "sudspy": "?", "disk_to_sds": ""})
+              == ["disk_to_sds", "sudspy"]
+              and release_identity_gaps({"eqserver": "abc"}) == [])
         # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
         import qa_verify
         sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"

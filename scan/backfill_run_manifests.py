@@ -30,7 +30,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from phase3_driver import _python_stack  # noqa: E402
+from phase3_driver import _python_stack, release_identity_gaps  # noqa: E402
 
 
 def selection_record(archive, net, sta, year):
@@ -72,6 +72,9 @@ def main():
     ap.add_argument("--queues", nargs="+", required=True)
     ap.add_argument("--selection-archive", required=True, nargs="+",
                     help="one or more archive roots, searched in order")
+    ap.add_argument("--only-unknown", action="store_true",
+                    help="touch only manifests whose release block has a gap "
+                         "(Codex 2026-11-09 F2); others are left byte-identical")
     ap.add_argument("--commit", action="store_true")
     a = ap.parse_args()
     # Phase 1: build EVERY repaired manifest in memory; any gap aborts the
@@ -101,6 +104,10 @@ def main():
                 problems.append(f"{ev.get('run_id')}: manifest missing ({mp})")
                 continue
             m = json.loads(mp.read_text())
+            if a.only_unknown and not release_identity_gaps(
+                    {k: (m.get("release") or {}).get(k)
+                     for k in ("eqserver", "disk_to_sds", "sudspy")}):
+                continue
             heads = {r["repo"]: r["head"]
                      for r in (ev.get("preflight") or {}).get("repos", [])}
             release = {"eqserver": heads.get("eqserver_2_seiscomp"),
@@ -112,7 +119,8 @@ def main():
                 # eqserver HEAD equals the manifest's project_git — each folder
                 # holds exactly one pinned tuple.
                 rel = m.get("release") or {}
-                if all(rel.get(k) for k in ("eqserver", "disk_to_sds", "sudspy")):
+                if not release_identity_gaps(
+                        {k: rel.get(k) for k in ("eqserver", "disk_to_sds", "sudspy")}):
                     release = dict(rel)
                 else:
                     release = RELEASE_BY_EQSERVER.get(m.get("project_git") or "", release)
@@ -121,7 +129,7 @@ def main():
                 sel = selection_record(root, ev["net"], ev["sta"], ev["year"])
                 if sel:
                     break
-            gaps = [k for k, v in release.items() if not v]
+            gaps = release_identity_gaps(release)
             if not sel:
                 gaps.append("archived selection")
             if gaps:

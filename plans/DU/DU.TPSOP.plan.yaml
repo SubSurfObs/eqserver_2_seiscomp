@@ -1,6 +1,11 @@
 station: TPSOP
 network: DU
 location: '00'
+# Codex 2026-11-09 F1: unequal overlapping packets inside one file, same final
+# id and rate: the earliest-starting packet owns its span; later packets only
+# fill uncovered time, on their own grid. Displaced intervals recorded.
+collision_precedence:
+  mode: earliest_start
 naming: passthrough
 status: ok
 epochs:

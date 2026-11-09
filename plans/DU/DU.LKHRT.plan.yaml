@@ -1,13 +1,11 @@
 station: LKHRT
 network: DU
 location: passthrough
-# Reviewed LKHRT-only rule (Codex b370d14): its miniSEED files contain
-# unequal on-grid overlapping packets (packet/timing ambiguity). The first
-# packet in file order keeps its samples; later packets fill only unoccupied
-# samples; displaced counts recorded. Exact duplicates collapse; off-grid
-# conflicts stay loud.
+# Codex 2026-11-09 F1: unequal overlapping packets inside one file, same final
+# id and rate: the earliest-starting packet owns its span; later packets only
+# fill uncovered time, on their own grid. Displaced intervals recorded.
 collision_precedence:
-  mode: first_record
+  mode: earliest_start
 naming: passthrough
 status: ok
 epochs:

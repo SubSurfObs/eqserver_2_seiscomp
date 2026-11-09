@@ -10,7 +10,17 @@ epochs:
   recorder: echopro
   days: 0
   classifications: {}
+  # sp_band_by_rate sets the band per trace: EH* at 100 Hz (2021-10-09 only), DH* at 250 Hz.
   channels:
+  - component: E
+    target: DU.MVM1Y.00.EHE
+    basis: sp_band_by_rate:100sps
+  - component: N
+    target: DU.MVM1Y.00.EHN
+    basis: sp_band_by_rate:100sps
+  - component: Z
+    target: DU.MVM1Y.00.EHZ
+    basis: sp_band_by_rate:100sps
   - component: E
     target: DU.MVM1Y.00.DHE
     basis: seed_short_period_default:250sps
