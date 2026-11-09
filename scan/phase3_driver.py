@@ -1262,6 +1262,33 @@ def _apply_network_precedence(st, ids, rule, path, notes):
     return out
 
 
+def _earliest_start_totals(notes):
+    """Day totals of the earliest-start records."""
+    recs = [n for n in notes if isinstance(n, dict)]
+    ivs = [iv for n in recs for iv in n["displaced"]]
+    return {"files": len({n["file"] for n in recs}), "intervals": len(ivs),
+            "displaced_samples": sum(iv["n_samples"] for iv in ivs),
+            "off_grid_intervals": sum(1 for iv in ivs if iv["grid_offset"] > 1e-3)}
+
+
+def _write_precedence_evidence(manifest_path, records):
+    """Every displaced interval, beside the run manifest, gzip JSON lines.
+    Returns {path, sha256, n_records} for the manifest, or None."""
+    if not records:
+        return None
+    import gzip
+    import hashlib
+    out = os.path.abspath(manifest_path) + ".precedence.jsonl.gz"
+    body = "".join(json.dumps(r, sort_keys=True) + "\n"
+                   for r in sorted(records, key=lambda r: (r["date"], r["file"], r["id"])))
+    tmp = out + ".partial"
+    with gzip.open(tmp, "wt") as f:
+        f.write(body)
+    os.replace(tmp, out)
+    return {"path": out, "n_records": len(records),
+            "sha256_of_content": hashlib.sha256(body.encode()).hexdigest()}
+
+
 def _earliest_start_overlay(traces):
     """One file, one final id, one rate (Codex 2026-11-09 F1). Sorted by stated
     start (file order breaks an equal-start tie), the earliest packet owns its
@@ -2063,9 +2090,14 @@ def main():
     per_date_status: list = []
     t0 = time.time()
 
+    precedence_evidence = []
+
     def _emit(r):
         nonlocal written_bytes, days_processed
         days_processed += 1
+        precedence_evidence.extend(
+            {"date": r.get("date"), **n}
+            for n in r.get("collision_precedence", []) if isinstance(n, dict))
         results[r["status"]] += 1
         day_bytes = sum(sz for _, sz in r.get("sds_files_written", []))
         written_bytes += day_bytes
@@ -2088,7 +2120,12 @@ def main():
                 "jan1_tail_unavailable": r.get("jan1_tail_unavailable", False),
                 # Cut-short files whose complete prefix filled gaps (Codex
                 # 1b27f4f) — carried into the permanent record.
-                "collision_precedence": r.get("collision_precedence", []),
+                # Per-interval earliest-start evidence goes to the sidecar (it
+                # can be thousands of records a day and the manifest is copied
+                # into the ledger); the day record keeps totals.
+                "collision_precedence": [n for n in r.get("collision_precedence", [])
+                                         if not isinstance(n, dict)],
+                "earliest_start": _earliest_start_totals(r.get("collision_precedence", [])),
                 "truncated_recovered": r.get("truncated_recovered", 0),
                 "truncated_files": r.get("truncated_files", []),
                 "sds_files_written": [[p, s] for p, s in
@@ -2242,6 +2279,8 @@ def main():
             },
             "eqserver": {
                 "per_date_status": per_date_status,
+                "precedence_evidence": _write_precedence_evidence(
+                    args.run_manifest, precedence_evidence),
                 "days_no_files": n_no_files,
                 "flagged_days_skipped": n_flagged_skipped,
                 "read_errors": sum(d.get("read_errors", 0) for d in per_date_status),

@@ -188,6 +188,9 @@ def load_day_candidates(db, day: date_cls, minimus: bool):
     return out
 
 
+PROBE_ALL_FILES_CAP = 2000  # a proven-mixed population-month up to this size is read whole
+
+
 class ChannelKnowledge:
     """Which orientations a population carries, per month.
 
@@ -299,15 +302,18 @@ class ChannelKnowledge:
             dropped = ic.get("dropped_labels") or []      # recognised drops
             unknown += ic.get("unknown_labels") or []     # unrecognised
             rec["raw"] += [f"-{c}" for c in dropped] + [f"?{c}" for c in unknown]
-            if ie:
-                rec["status"] = "unresolved"
-                rec["err"] = str([e.get("err", str(e))
-                                  for e in ie][:2])
-            elif unknown:
+            if unknown:
                 # Codex 0f68135: ANY unknown channel blocks, even beside
                 # recognised ones (c03+w, HHZ+HHX) — checked BEFORE 'found'
                 # so the unknown channel is never silently dropped.
                 rec["status"] = "unresolved"
+            elif ie:
+                # Damaged file with no unknown label: it cannot be converted,
+                # so it is recorded as rejected and the rest of its day
+                # converts (LKHRT 2023-06-28: one bad minute blocked a day).
+                rec["status"] = "unreadable"
+                rec["err"] = str([e.get("err", str(e))
+                                  for e in ie][:2])
             elif found:
                 rec["status"] = "resolved"
             elif dropped:
@@ -404,6 +410,16 @@ class ChannelKnowledge:
                                 for q in self.all_paths.get(key, [])}
                         for q, rec in recs:
                             full[q] = rec
+                        # The month is proven mixed, and a mixed file need not
+                        # be large (BLAT 2023-10-30: 20 minutes of normal-sized
+                        # four-channel files assumed Z-only). Where reading
+                        # them all is cheap, read them all.
+                        rest = [q for q in self.all_paths.get(key, [])
+                                if full[q]["traces"] == -1]
+                        if len(rest) <= PROBE_ALL_FILES_CAP:
+                            with ThreadPoolExecutor(max_workers=8) as ex:
+                                for q, rec in ex.map(self._probe_file, rest):
+                                    full[q] = rec
                         self.per_file[key] = full
                         union = frozenset().union(
                             *(v["chans"] for v in full.values()))

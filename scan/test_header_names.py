@@ -260,6 +260,26 @@ def main():
               release_identity_gaps({"eqserver": "abc", "sudspy": "?", "disk_to_sds": ""})
               == ["disk_to_sds", "sudspy"]
               and release_identity_gaps({"eqserver": "abc"}) == [])
+        # evidence: totals in the manifest, every interval in the sidecar
+        from phase3_driver import _earliest_start_totals, _write_precedence_evidence
+        import gzip as _gz, json as _js
+        rec = {"date": "2022-07-31", "rule": "earliest_start", "file": "f", "id": "x", "rate": 250.0,
+               "displaced": [{"start_ns": 1, "n_samples": 50, "grid_offset": 0.0},
+                             {"start_ns": 2, "n_samples": 5, "grid_offset": 0.2}]}
+        check("day totals of displaced intervals",
+              _earliest_start_totals([rec, "keep_later text"]) ==
+              {"files": 1, "intervals": 2, "displaced_samples": 55, "off_grid_intervals": 1})
+        ev = _write_precedence_evidence(str(Path(td) / "m.json"), [rec])
+        back = [_js.loads(l) for l in _gz.open(ev["path"], "rt")]
+        check("sidecar holds every interval", back == [rec] and ev["n_records"] == 1, str(back))
+        check("no evidence, no sidecar", _write_precedence_evidence(str(Path(td) / "n.json"), []) is None)
+        # a damaged file is rejected and recorded, it does not block its day
+        from coverage_planner import ChannelKnowledge
+        broken = Path(td) / "20230628_0623_FAKE.ms.zip"
+        broken.write_bytes(b"not a zip")
+        _p, prec = ChannelKnowledge()._probe_file(str(broken))
+        check("damaged file probes as unreadable, not unresolved",
+              prec["status"] == "unreadable" and prec["err"], str(prec))
         # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
         import qa_verify
         sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"
