@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: "1f9ae04"    # DU release v2.5 (own branch): earliest-start overlay, mixed-month probing, damaged-file rejection
+    pinned: "0210d41"    # DU release v2.6 (own branch): v2.5 + exact-grid joining, start-of-window grace
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
