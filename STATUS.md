@@ -7,53 +7,64 @@
 SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 **Branch:** `rewrite-suds2sds` is the working branch (main has not been merged).
 
-## ▶ CURRENT STATE — 2026-11-06 (Dan restarting for VPN; read this first)
+## ▶ CURRENT STATE — 2026-11-09 (read this first)
 
-**DU conversion (release v2 + rebuilds) is done for 264 of 268 planned
-station-years; promotion to LT has started (test unit verified).**
+**DU conversion: 264 of 268 planned station-years done, plus five more
+stations converted today. Copy to long-term (LT) is running unattended on dev1.**
 
-- Code: branch `workflow-v3`. Release folders on the VM:
-  `~/projects/SubSurfObs_releases/du_v2` (main run, eqserver 2cb091c),
-  `du_v2_1` / `du_v2_2` / `du_v2_3` (targeted rebuilds). Control scripts
-  `ops/du_v2/` (lib.sh, peryear launcher, retry, cleaner, rebuild_units.sh).
-- Queues to PROMOTE (only these): `/mnt/seiscomp_staging/eqserver_sweep_du_v2_s0..s5`
-  and `eqserver_sweep_du_v2_rebuild_s0..s3`. Superseded originals are HELD in
-  the v2 queues; holds lifted only by prefix-matched `released` events.
-- Run records repaired (281 manifests, `scan/backfill_run_manifests.py`).
-- Progress view: `ssh dsand@172.26.144.41 '~/projects/SubSurfObs/disk_to_sds/.venv/bin/python3 ~/du_progress.py'`.
+- Code: branch `workflow-v3`. Release folders on the VM
+  `~/projects/SubSurfObs_releases/`: `du_v2` (main, eqserver 2cb091c), `du_v2_1`,
+  `du_v2_2`, `du_v2_3`, `du_v2_4` (pin on branch `du-release-v2.4`, deliberately
+  NOT on workflow-v3: that branch's pin file belongs to the dev1 promotion).
+  Controls: `ops/du_v2/` (lib.sh, peryear launcher, retry, cleaner,
+  rebuild_units.sh). Progress: `ssh dsand@172.26.144.41
+  '~/projects/SubSurfObs/disk_to_sds/.venv/bin/python3 ~/du_progress.py'`.
+- Rebuild queues: `eqserver_sweep_du_v2_rebuild_s0` relay fix (MRAT 2017/19),
+  `_s1` v2.1 (LILH 2016-17, ARKL 2018, PLYP 2025, S88U 2018), `_s2` v2.2 PiesMo
+  2025, `_s3` v2.3 (WEPH 2025, RNDA 2017, LILH 2018), `_s4` v2.4 (GLN, MYP, ADE2,
+  MVM1Y, MPTV; done 2026-11-09, **not in the promotion list until Codex clears
+  it**). Superseded originals stay HELD in the main queues.
 
-**Promotion (separate Claude session `seiscomp_server_uom`, on dev1 via VPN):**
-handoff `docs/handoff_du_promotion.md`. Pins approved: eqserver ae94a19
-(promotion code identical to 94b5be1), ledger at dev1 HEAD if clean; routine
-ledger-pin bumps between queues approved when the diff is ledger data only.
-Test unit KBRI 2025 PROMOTED and verified (183 files = 183 ok days, ledger
-commit 7541444, ~17 GB/h end-to-end → ~3.5–4 days for ~1.5 TB). Approved
-next: release its 41 test holds in s5 ONLY (PiesMo hold stays), then one
-queue at a time, no parallel, no skipping the dry run; collect 2025–26
-LT-overlap holds into one summary table for Dan. **Stalled: Dan restarting
-to reach the VPN; neither the Mac nor the staging VM can reach dev1 without it.**
+**Promotion (separate Claude session `seiscomp_server_uom`; needs Dan's VPN to
+talk to it, but runs detached on dev1):** `~/bin/du_promote_orchestrator.sh`,
+one promoter at a time, dry run always, ledger-pin bump between queues only when
+the diff is ledger data. Queue s5 finished (40 units, 0.29 TB, KBRI verified);
+started on s4, then s0-s3, then rebuild_s0-s3. About 1.2 TB left, ~2.5 days from
+2026-11-09. Its end-of-run duties: confirm each PiesMo-held original's rebuild
+landed in LT; one decision table of genuine overlaps only (so far BEGA 2026).
 
-**Codex (independent QC, staging VM, read-only):** live watcher over all
-v2 + rebuild queues; closing recovery audit for the >99% target running
-(526 random days; 150 comparisons, 0 discrepancies at last report;
-`~/codex_sandbox/du_closing_recovery/`). Await its final % + CI.
+**Codex (read-only):** session in this folder, resume with
+`codex resume 01a14756-53eb-75a0-a8c3-a9bae0e54962` from a normal terminal.
+Closing recovery audit finished: 100% of authorised source samples, conservative
+lower bound 99.75%, none of the sampled station-years below 99% (1,514 of 1,578
+minutes auditable; 64 + 16 logged alerts not yet classified). It compares with
+AUTHORISED files, so it cannot see files wrongly left out of the index, and
+excludes unconverted stations. **Prompt sent to Codex 2026-11-09, reply awaited:**
+(1) one rule for in-file unequal packet overlaps at TPSOP, BLAT, LKHRT 2022-24,
+LILH 2019, and whether main-run stations silently chose between such traces;
+(2) agree no re-index for the `.N` files; (3) review `_s4`.
 
-**Rulings this round (Dan):** target = >99% recovery of available data;
-don't chase one-off edge cases (CRC-corrupt UTT/S88U minutes excluded and
-noted); header names kept exactly; unconverted stations WILL be converted
-(best-guess names acceptable, renamed later if needed).
+**Rulings (Dan):** target >99% recovery of available data; don't chase one-off
+edge cases (CRC-corrupt UTT/S88U minutes excluded and noted); header names kept
+exactly; all remaining stations WILL be converted, best-guess names acceptable
+and renamed later.
+
+**Found 2026-11-09:** 181,740 `<STA>.N.dmx` files (2016-19) excluded as
+wrong_station. Sample of ~500 (`~/v3_test/ndotcheck.py`): identical to staged
+output except HKER (1.4% differ) and CLV2 (6.1% absent). At most ~0.18% of DU
+station-minutes even if all unique: recommended no re-index, Codex asked.
+Also: my naming-hold loop wrongly held 6 rebuilt units; released, loop stopped.
 
 **Open, in order:**
-1. Promotion: resume after VPN (see above).
-2. Not yet converted (~2.3% of DU station-days): TPSOP (218 d, measure SUDS
-   rate), ADE2/GLN/MPTV/MYP (230 d, plans), GLDS+THS (1,229 d, need a reader
-   for `….pn.01` files; THS naming), BLAT (4 d, HNZ kept), MVM1Y (31 d,
-   rate-based naming). Include-unknown, Dan to decide: DNL3, DNL4, NNP3,
-   PLY3, RNDA2 (589 d; likely test/variant stations).
-3. Codex pending: LKHRT 2022–24 first_record proof (bad samples on
-   2023-10-27, still blocked 2023-06-28, 78 s on 2022-07-31) and LILH 2019's
-   one in-file collision day.
-4. Hardening (non-blocking): isolated truncated file escaping lowest-priority
+1. Act on Codex's reply: overlap rule, then convert TPSOP (218 d, plan done,
+   location 00, some headers say network OZ: flag to Dan), BLAT (4 d), and rebuild
+   LKHRT 2022-24, LILH 2019. Test days in `~/v3_test/g1/`, `~/v3_test/lkhrt/`.
+2. After Codex clears `_s4`, promote it.
+3. GLDS + THS (1,229 d): write a reader for `….pn.01` files. THS names as in its
+   files (SHZ/BHZ), per Dan's best-guess ruling.
+4. Include-unknown DNL3, DNL4, NNP3, PLY3, RNDA2 (589 d): Dan says convert
+   regardless, likely test stations; triage after promotion.
+5. Hardening (non-blocking): isolated truncated file escaping lowest-priority
    demotion when no sampled probe is truncated.
 
 ## Scope (from `metadata/station_registry.yaml`, 255 entries)
