@@ -45,8 +45,9 @@ for q in QUEUES:
                        != d.get("read_errors")
                        for d in bad)):
             continue
-        files = sorted({e.split("', ")[0].strip("[('")
-                        for d in bad for e in [str(d.get("error", ""))]})
+        import re
+        files = sorted({f for d in bad
+                        for f in re.findall(r"\('(/[^']+)'", str(d.get("error", "")))})
         note = (f"accepted per Dan 2026-11-02: {len(bad)} day(s) with a damaged "
                 f"source file (gzip CRC or miniSEED record); those files' samples excluded: "
                 + "; ".join(f.rsplit("/", 1)[-1] for f in files))
