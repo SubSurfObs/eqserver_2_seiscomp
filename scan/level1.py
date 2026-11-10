@@ -126,6 +126,15 @@ def classify_ext(name: str):
     return None, "unknown", "unknown"
 
 
+# Per-channel event miniSEED, network+location in the name (GLDS 2017-18,
+# THS 2017-20, 2026-11-10): '170512.020837.glds.shz.pn.01' =
+# YYMMDD.HHMMSS.station.channel.network.location, plain uncompressed records.
+NAMED_EVENT_MSEED = re.compile(
+    r"^(?P<yy>\d{2})(?P<mo>\d{2})(?P<d>\d{2})\.(?P<hh>\d{2})(?P<mi>\d{2})(?P<ss>\d{2})"
+    r"\.(?P<sta>[A-Za-z0-9]+)\.(?P<cha>[A-Za-z]{2}[A-Za-z0-9])"
+    r"\.(?P<net>[A-Za-z0-9]{1,2})\.(?P<loc>[A-Za-z0-9]{1,2})$")
+
+
 def parse_filename(name: str, dir_station: str) -> dict:
     rec = {
         "recorder_type": "unknown", "source_type": "unknown", "role": "unknown",
@@ -134,6 +143,18 @@ def parse_filename(name: str, dir_station: str) -> dict:
         "filename_station": None, "station_mismatch": None,
         "flags": None, "exclude_reason": None,
     }
+    m = NAMED_EVENT_MSEED.match(name)
+    if m:
+        rec.update(recorder_type="mseed", source_type="disk", role="waveform",
+                   file_year=2000 + int(m["yy"]), file_month=int(m["mo"]),
+                   file_day=int(m["d"]), hhmm=m["hh"] + m["mi"], ss=m["ss"],
+                   channel_suffix=m["cha"].upper(),
+                   filename_station=m["sta"].upper(), flags="named_event_mseed")
+        if dir_station:
+            rec["station_mismatch"] = int(rec["filename_station"] != dir_station)
+            if rec["station_mismatch"]:
+                rec["exclude_reason"] = "wrong_station"
+        return rec
     try:
         ext, recorder, role = classify_ext(name)
         rec["recorder_type"] = recorder

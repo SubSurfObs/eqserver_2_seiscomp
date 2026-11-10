@@ -405,7 +405,17 @@ def read_source_file(path: str, errors: list, counters: dict,
                 except Exception as exc:
                     errors.append({"path": path, "err": f"member: {exc}"})
                     continue
+                own = Path(path).parts[-6].upper() if len(Path(path).parts) >= 6 else ""
+                if own and not any((t.stats.station or "").strip().upper() in ("", own)
+                                   for t in st):
+                    own = ""   # no trace names this station: audit them all (loud)
                 for tr in st:
+                    if own and (tr.stats.station or "").strip().upper() not in ("", own):
+                        # another station's trace inside this station's file:
+                        # not this station's source data (converter drops it too)
+                        counters["n_foreign_station_traces"] = counters.get(
+                            "n_foreign_station_traces", 0) + 1
+                        continue
                     if (tr.stats.channel or "").strip().upper() in MSEED_DROP_CHANNELS:
                         # Recognised housekeeping channel: intentionally
                         # dropped and recorded, never blocking (Codex 182b49e).

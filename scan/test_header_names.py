@@ -311,6 +311,44 @@ def main():
               all(want.get(t) == v for t, v in got_.items()), str(back))
         check("coalesce: only the weld-guard samples are missing, and counted",
               len(want) - len(got_) == g.get("weld_guard_dropped") == 1, f"{len(want)} {len(got_)} {g}")
+        # foreign-station trace inside a file is dropped and recorded
+        fz = Path(td) / "2019-04-06 1924 00 FAKE_HHZ.mseed.zip"
+        own = Trace(np.arange(100, dtype=np.int32), header={**hdr, "starttime": t00})
+        alien = Trace(np.arange(50, dtype=np.int32), header={**hdr, "station": "AUKSC",
+                      "network": "S", "location": "", "starttime": t00})
+        b_ = io.BytesIO(); Stream([own, alien]).write(b_, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(fz, "w") as z:
+            z.writestr("x.mseed", b_.getvalue())
+        nts, ers = [], []
+        g = _read_file_traces(str(fz), "mseed", "DU", "FAKE", "passthrough", None, ers,
+                              keep_header_names=True, notes=nts)
+        check("foreign-station trace dropped and recorded",
+              [t.stats.station for t in g] == ["FAKE"] and not ers
+              and any("AUKSC" in n for n in nts), f"{g} {nts}")
+        fz2 = Path(td) / "2019-04-06 1925 00 FAKE_HHZ.mseed.zip"
+        b_ = io.BytesIO(); alien.write(b_, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(fz2, "w") as z:
+            z.writestr("x.mseed", b_.getvalue())
+        ers = []
+        g = _read_file_traces(str(fz2), "mseed", "DU", "FAKE", "passthrough", None, ers,
+                              keep_header_names=True, notes=[])
+        check("file with only another station's traces fails loudly",
+              len(g) == 0 and any("another station" in str(e) for e in ers), str(ers))
+        # named event miniSEED: plain records, odd extension, indexed with its channel
+        import level1
+        r1 = level1.parse_filename("170512.020837.glds.shz.pn.01", "GLDS")
+        check("named event miniSEED indexed",
+              r1["role"] == "waveform" and r1["exclude_reason"] is None
+              and r1["hhmm"] == "0208" and r1["channel_suffix"] == "SHZ"
+              and (r1["file_year"], r1["file_month"], r1["file_day"]) == (2017, 5, 12), str(r1))
+        pe = Path(td) / "170512.020837.fake.shz.pn.01"
+        b_ = io.BytesIO(); own.write(b_, format="MSEED", encoding="STEIM2", reclen=512)
+        pe.write_bytes(b_.getvalue())
+        ers = []
+        g = _read_file_traces(str(pe), "mseed", "DU", "FAKE", "passthrough", None, ers,
+                              keep_header_names=True)
+        check("plain miniSEED with an odd extension is read",
+              len(g) == 1 and g[0].stats.npts == 100 and not ers, f"{g} {ers}")
         # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
         import qa_verify
         sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"

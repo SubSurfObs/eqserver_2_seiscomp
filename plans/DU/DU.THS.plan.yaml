@@ -1,0 +1,64 @@
+station: THS
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+# Per-channel event miniSEED 'YYMMDD.HHMMSS.ths.{shz,bhz}.pn.01' (header
+# PN.THS.01.SHZ until 2019-01-28, PN.THS.01.BHZ from 2019-01-29, 100 Hz), plus
+# PC-SUDS copies of the same events ('… THS.dmx', identical samples, checked
+# 2019-01-29 08:01:53). The SUDS copies are mapped to the SAME name as the
+# miniSEED of their era so a duplicate event is stored once. Header names kept
+# (Dan 2026-11-05); network DU from the registry.
+epochs:
+- id: 1
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.THS.01.SHZ
+    basis: header_name_of_era
+- id: 2
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.THS.01.SHZ
+    basis: header_name_of_era
+- id: 3
+  start: '2019-01-01'
+  end: '2019-01-28'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.THS.01.SHZ
+    basis: header_name_of_era
+- id: 4
+  start: '2019-01-29'
+  end: '2019-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.THS.01.BHZ
+    basis: header_name_of_era
+- id: 5
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: Z
+    target: DU.THS.01.BHZ
+    basis: header_name_of_era
+flagged_days: []
+generated_by: 'hand, 2026-11-10 (named event miniSEED reader)'

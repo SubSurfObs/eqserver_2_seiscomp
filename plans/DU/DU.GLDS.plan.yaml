@@ -1,0 +1,24 @@
+station: GLDS
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+# Per-channel event miniSEED files 'YYMMDD.HHMMSS.glds.shz.pn.01' (header
+# PN.GLDS.01.SHZ, 200 Hz, ~7-minute triggered records, 2017-05..2018-05).
+# Header names kept exactly (Dan 2026-11-05: best-guess names, rename later);
+# network set to DU from the registry.
+epochs:
+- id: 1
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 2
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: 'hand, 2026-11-10 (named event miniSEED reader)'

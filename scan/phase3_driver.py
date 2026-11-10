@@ -271,7 +271,8 @@ def _concat_zip_members(files, combined, read_errors, spans=None):
                 if spans is not None:
                     spans.append((path, start, combined.tell()))
                 continue
-            if path.endswith((".mseed", ".ms")) and raw[6:7] in b"DRQM":
+            if (path.endswith((".mseed", ".ms")) or raw[:2] != b"PK") \
+                    and raw[6:7] in b"DRQM":
                 # plain, uncompressed miniSEED (LILH 2016-17
                 # '… LILH_HHZ.mseed', 2026-11-02): the bytes ARE the records.
                 combined.write(raw)
@@ -1163,6 +1164,22 @@ def _read_file_traces(path, source_format, net, sta, loc, suds_convert,
             if scan_status == "scan_failed":
                 read_errors.append(
                     (path, "record-scan unparseable (single-file read)"))
+        # A trace from ANOTHER station inside this station's file (LILH 2019:
+        # S.AUKSC, AB.BRIG; Codex 2026-11-10 F3) is dropped and recorded,
+        # never relabelled into this network.
+        foreign = [tr for tr in st if (tr.stats.station or "").strip().upper()
+                   not in ("", sta.upper())]
+        if foreign and len(foreign) == len(st):
+            # nothing in the file carries this station's name: never silently
+            # discard a whole file on a header name — fail loudly instead
+            read_errors.append((path, "every trace names another station: "
+                                + ", ".join(sorted({tr.id for tr in foreign}))))
+            return Stream()
+        if foreign:
+            if notes is not None:
+                notes.extend(f"{path.rsplit('/', 1)[-1]}: dropped foreign-station "
+                             f"trace {tr.id} ({tr.stats.npts} samples)" for tr in foreign)
+            st = Stream([tr for tr in st if tr not in foreign])
         for tr in st:
             tr.stats.raw_network = tr.stats.network   # kept for precedence
             tr.stats.network = net
