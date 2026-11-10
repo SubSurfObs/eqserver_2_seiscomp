@@ -29,7 +29,14 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 - Promotion (dev1): crashed on accepted-by-ruling done records (no
   staging_root); fixed on workflow-v3 b04926a, pin 1e68a42; resumed. `_rebuild_s4`
   added to its list. Promotion pin commits now happen on dev1 only.
-- Open: Codex verdict on v2.6 + the auditor read artefact; whether the old
+- **Codex 2026-11-10 (reviews/2026-11-10_du_release_v26.md): PROCEED, promote
+  `_rebuild_s6`.** LKHRT mismatch = auditor artefact (confirmed). No census or
+  rebuild for old half-sample joining (bounded ~15 channel-minutes). Foreign-
+  station traces inside DU source files: 110 stray station-year folders (1,359
+  tiny files, 1.5 MB, written by every release) moved to
+  `/mnt/seiscomp_staging/quarantine/foreign_station_traces_2026-11-10/`. Next
+  release: drop and record such traces at read time.
+- Open: sidecar copy into the ledger; promoter regression test (Codex F4); whether the old
   half-sample joining (all pre-v2.6 DU output) shifted drifting stations'
   samples; GLDS/THS reader; include-unknown stations.
 
