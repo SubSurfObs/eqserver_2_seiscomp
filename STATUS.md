@@ -36,7 +36,13 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
   tiny files, 1.5 MB, written by every release) moved to
   `/mnt/seiscomp_staging/quarantine/foreign_station_traces_2026-11-10/`. Next
   release: drop and record such traces at read time.
-- Open: sidecar copy into the ledger; promoter regression test (Codex F4); whether the old
+- **Release v2.7** (pin f57161f = eqserver 31d7fb9, VM `du_v2_7`): GLDS + THS
+  `.pn.01` files are plain miniSEED with an odd name — now indexed and read.
+  Queue `_rebuild_s7`: GLDS 2017-18, THS 2017-20, 1,229 days ok, 0 failed,
+  ~2.2 GB. Index swapped in (old DBs in VM `~/station_dbs_pre_pn/`). THS SUDS
+  copies of the same events share the miniSEED name per era (SHZ to
+  2019-01-28, BHZ after). **Awaiting Codex before promotion.**
+- Open: include-unknown DNL3/DNL4/NNP3/PLY3/RNDA2; sidecar copy into the ledger; promoter regression test (Codex F4); whether the old
   half-sample joining (all pre-v2.6 DU output) shifted drifting stations'
   samples; GLDS/THS reader; include-unknown stations.
 
