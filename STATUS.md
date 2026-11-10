@@ -7,6 +7,32 @@
 SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 **Branch:** `rewrite-suds2sds` is the working branch (main has not been merged).
 
+## ▶ UPDATE 2026-11-10 (newest; the 2026-11-09 section below still holds otherwise)
+
+- **Release v2.6** (branch `du-release-v2.5`, pin commit 2415a04 = eqserver
+  0210d41; VM folder `du_v2_6`): earliest-start overlay for in-file
+  overlaps (Codex F1 2026-11-09), exact-grid trace joining, one-slot grace at
+  window start, mixed small months read whole, damaged file rejected not
+  day-blocking, precedence evidence in `<manifest>.precedence.jsonl.gz`.
+- Queue `eqserver_sweep_du_v2_rebuild_s6` (v2.6): all 7 units done — TPSOP
+  2017-18, BLAT 2023, LILH 2019, LKHRT 2022-24. LKHRT 2022/2023 and TPSOP 2017
+  accepted under the corrupt-source ruling (damaged miniSEED records, files
+  named in the done records). **Not promotable until Codex clears it.**
+  Queue `_rebuild_s5` (v2.5) is abandoned: NEVER promote.
+- LKHRT 2023-10-27 "6,895 wrong samples": source record at byte 8192 of
+  `20231027_0506_LKHRT.ms.zip` states 05:06:21.121 with values 4,3,-4; output
+  is identical. The auditor's whole-file read welds it 4 ms later. Auditor
+  artefact — awaiting Codex.
+- Records: 13 manifests with `sudspy: "?"` filled; 20 rebuild manifests repointed
+  from the main run's file lists to their own (my earlier backfill error).
+  287 completed runs verified (VM `/tmp/verifyall.py`).
+- Promotion (dev1): crashed on accepted-by-ruling done records (no
+  staging_root); fixed on workflow-v3 b04926a, pin 1e68a42; resumed. `_rebuild_s4`
+  added to its list. Promotion pin commits now happen on dev1 only.
+- Open: Codex verdict on v2.6 + the auditor read artefact; whether the old
+  half-sample joining (all pre-v2.6 DU output) shifted drifting stations'
+  samples; GLDS/THS reader; include-unknown stations.
+
 ## ▶ CURRENT STATE — 2026-11-09 (read this first)
 
 **DU conversion: 264 of 268 planned station-years done, plus five more
