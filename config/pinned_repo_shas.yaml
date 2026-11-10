@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: "0210d41"    # DU release v2.6 (own branch): v2.5 + exact-grid joining, start-of-window grace
+    pinned: "31d7fb9"    # DU release v2.7 (own branch): v2.6 + named event miniSEED (GLDS, THS), foreign-trace drop
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
