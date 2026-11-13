@@ -41,7 +41,7 @@ SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
   Queue `_rebuild_s7`: GLDS 2017-18, THS 2017-20, 1,229 days ok, 0 failed,
   ~2.2 GB. Index swapped in (old DBs in VM `~/station_dbs_pre_pn/`). THS SUDS
   copies of the same events share the miniSEED name per era (SHZ to
-  2019-01-28, BHZ after). **Awaiting Codex before promotion.**
+  2019-01-28, BHZ after). **Codex PROCEED 2026-11-10 (reviews/2026-11-10_du_release_v27.md): promote.**
 - Open: include-unknown DNL3/DNL4/NNP3/PLY3/RNDA2; sidecar copy into the ledger; promoter regression test (Codex F4); whether the old
   half-sample joining (all pre-v2.6 DU output) shifted drifting stations'
   samples; GLDS/THS reader; include-unknown stations.

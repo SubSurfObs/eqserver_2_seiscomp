@@ -4,7 +4,8 @@ location: passthrough
 naming: passthrough
 status: ok
 # Per-channel event miniSEED 'YYMMDD.HHMMSS.ths.{shz,bhz}.pn.01' (header
-# PN.THS.01.SHZ until 2019-01-28, PN.THS.01.BHZ from 2019-01-29, 100 Hz), plus
+# PN.THS.01.SHZ at 200 Hz until 2019-01-28, PN.THS.01.BHZ at 100 Hz from
+# 2019-01-29), plus
 # PC-SUDS copies of the same events ('… THS.dmx', identical samples, checked
 # 2019-01-29 08:01:53). The SUDS copies are mapped to the SAME name as the
 # miniSEED of their era so a duplicate event is stored once. Header names kept
