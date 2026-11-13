@@ -223,6 +223,11 @@ def main():
             # only run_id/net/sta/year/manifest: their staging tree is this
             # promoter's own --staging-root (2026-11-10 KeyError fix).
             entry.setdefault("staging_root", args.staging_root)
+            # Some of those records also carry an EMPTY run_manifest_path
+            # (UTT 2024/25): the manifest is at its standard queue location.
+            if not entry.get("run_manifest_path"):
+                entry["run_manifest_path"] = str(
+                    queue / "run_manifests" / f"{rid}.json")
             sta = entry["sta"]
             year = entry["year"]
 
