@@ -850,7 +850,8 @@ LKHRT:
   coverage_end: 2026
   notes: ""
 S88M:
-  include: true
+  include: false
+  reason: "Dan 2026-11-17: dropped — its only EqServer data is 5 days dated 2011, before the 2012 floor"
   target_network: DU
   network_basis: registry
   source_network_code: DU
