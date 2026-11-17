@@ -624,7 +624,8 @@ RDK01:
   coverage_end: 2023
   notes: "Network unknown; year range does not confirm any specific deployment"
 RDK04:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: forget (2023 XO deployment, not ours)"
   target_network: null
   network_basis: unknown
   source_network_code: null
@@ -633,7 +634,8 @@ RDK04:
   coverage_end: 2023
   notes: "Network unknown; year range does not confirm any specific deployment"
 RDK06:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: forget (2023 XO deployment, not ours)"
   target_network: null
   network_basis: unknown
   source_network_code: null
@@ -1146,7 +1148,8 @@ HMV1:
 
 # Likely DU variants (same base code as confirmed DU stations; not in du.xml)
 NNP3:
-  include: unknown
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1165,7 +1168,8 @@ PLYP2:
   coverage_end: 2025
 
 RNDA2:
-  include: unknown
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1274,7 +1278,8 @@ SYD08:
   coverage_end: 2025
 
 PLY3:
-  include: unknown
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
   target_network: DU
   network_basis: heuristic
   source_network_code: null
@@ -1308,7 +1313,8 @@ PLYPT:
 # =============================================================================
 
 3KENT:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   notes: "Unusual station code prefix; possible DU (KENT is DU); confirm"
@@ -1350,28 +1356,32 @@ ARKL:
   coverage_end: 2024
 
 BD70:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2015
   coverage_end: 2017
 
 BD91:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2016
   coverage_end: 2017
 
 BD92:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2016
   coverage_end: 2019
 
 BDBO:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2020
@@ -1393,15 +1403,17 @@ BLAT:
   coverage_end: 2023
 
 BNDL:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
+  target_network: DU
   network_basis: unknown
   coverage_start: 2025
   coverage_end: 2026
 
 BRAD:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17: convert under VW (Gary's AGOS home network, Bendigo-Castlemaine area)"
+  target_network: VW
   network_basis: unknown
   coverage_start: 2013
   coverage_end: 2021
@@ -1414,7 +1426,8 @@ BRSA:
   coverage_end: 2019
 
 BRT2:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2022
@@ -1440,14 +1453,16 @@ CLV2:
 
 
 DD02:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
   coverage_end: 2017
 
 DD03:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
@@ -1477,7 +1492,8 @@ DNL2:
 
 
 DNL3:
-  include: unknown
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
   target_network: DU
   network_basis: notes
   source_network_code: null
@@ -1488,7 +1504,8 @@ DNL3:
 
 
 DNL4:
-  include: unknown
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
   target_network: DU
   network_basis: notes
   source_network_code: null
@@ -1511,7 +1528,8 @@ DNL44:
 
 
 DPSH:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2022
@@ -1547,7 +1565,8 @@ DR04:
 
 
 FORH:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2022
@@ -1562,21 +1581,24 @@ FRTM:
   coverage_end: 2024
 
 FSHM:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2012
   coverage_end: 2012
 
 FTZM:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2012
   coverage_end: 2012
 
 G1053:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2023
@@ -1599,14 +1621,16 @@ GLN:
   coverage_end: 2017
 
 GLNLG:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17: convert as DU (DL/KM home and test stations; metadata up to the operator)"
+  target_network: DU
   network_basis: unknown
   coverage_start: 2026
   coverage_end: 2026
 
 HELIX:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
@@ -1614,7 +1638,8 @@ HELIX:
 
 
 HOGM:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2019
@@ -1631,7 +1656,8 @@ LILH:
   notes: "Long-running (8yr); 1970 artefact"
 
 LMT:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
@@ -1655,7 +1681,8 @@ MELU2:
   coverage_end: 2024
 
 MHIL:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2018
@@ -1699,7 +1726,8 @@ MYP:
   coverage_end: 2014
 
 NAME:
-  include: unknown
+  include: false
+  reason: "header network AU (another operator)"
   target_network: null
   network_basis: unknown
   coverage_start: 2024
@@ -1714,35 +1742,40 @@ NBK:
   coverage_end: 2017
 
 NHILO:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2021
   coverage_end: 2021
 
 PEGM:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17: convert under VW (Gary's AGOS home network, Bendigo-Castlemaine area)"
+  target_network: VW
   network_basis: unknown
   coverage_start: 2013
   coverage_end: 2014
 
 PEGU:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17: convert under VW (Gary's AGOS home network, Bendigo-Castlemaine area)"
+  target_network: VW
   network_basis: unknown
   coverage_start: 2014
   coverage_end: 2022
 
 PI17:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2025
   coverage_end: 2025
 
 PI6:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2025
@@ -1767,14 +1800,16 @@ R2737:
   coverage_end: 2021
 
 RGWU:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2021
   coverage_end: 2021
 
 RND2:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2025
@@ -1791,21 +1826,24 @@ ROBE:
   coverage_end: 2026
 
 SCH2:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2023
   coverage_end: 2023
 
 SCH8:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2023
   coverage_end: 2023
 
 SG_U:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2021
@@ -1839,7 +1877,8 @@ THS:
   coverage_end: 2020
 
 TOOL:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 33 days of 2017 holding only auxiliary channels c04-c06, no seismometer channels"
   target_network: null
   network_basis: unknown
   coverage_start: 2017
@@ -1870,8 +1909,9 @@ WAL1:
   coverage_end: 2022
 
 WALM:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17: convert under VW (Gary's AGOS home network, Bendigo-Castlemaine area)"
+  target_network: VW
   network_basis: unknown
   coverage_start: 2013
   coverage_end: 2021
@@ -1885,14 +1925,16 @@ WALR:
   notes: "Long-running (12yr)"
 
 WECKO:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2019
   coverage_end: 2019
 
 WGWU:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2021
@@ -1909,21 +1951,24 @@ WILM:
   coverage_end: 2026
 
 WOOD:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2018
   coverage_end: 2018
 
 WPC:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2012
   coverage_end: 2012
 
 WPSG:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2018
@@ -1931,7 +1976,8 @@ WPSG:
   notes: "WP prefix similar to WPNH/WPSH (VW) — confirm"
 
 XXX1:
-  include: unknown
+  include: false
+  reason: "Dan 2026-11-17: dropped — 16 days or fewer on disk, stray or test directory, or recorder serial (BD70/91/92)"
   target_network: null
   network_basis: unknown
   coverage_start: 2019
