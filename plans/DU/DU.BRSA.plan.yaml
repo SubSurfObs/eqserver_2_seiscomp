@@ -1,0 +1,43 @@
+station: BRSA
+network: DU
+location: passthrough
+naming: passthrough
+status: ok
+epochs:
+- id: 1
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.BRSA.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.BRSA.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.BRSA.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 2
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.BRSA.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.BRSA.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.BRSA.00.EHZ
+    basis: seed_short_period_default:100sps
+flagged_days: []
+generated_by: hand, 2026-11-17 (Dan's rulings on the include-unknown stations)
+notes:
+- Brisbane, Echo recorder 100 Hz (labels Up-T etc), header network QL; SEED short-period
+  default names. Claude's call, delegated by Dan 2026-11-17.

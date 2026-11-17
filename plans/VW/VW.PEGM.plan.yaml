@@ -1,0 +1,22 @@
+station: PEGM
+network: VW
+location: '00'
+status: ok
+epochs:
+- id: 1
+  start: '2013-01-01'
+  end: '2013-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 2
+  start: '2014-01-01'
+  end: '2014-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: hand, 2026-11-17 (Dan's rulings on the include-unknown stations)
+notes:
+- 'Gary''s AGOS home network (Dan 2026-11-17: home is VW). VW naming convention: band
+  from rate, location 00.'

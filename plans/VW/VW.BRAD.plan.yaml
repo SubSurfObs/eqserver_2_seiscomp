@@ -1,0 +1,64 @@
+station: BRAD
+network: VW
+location: '00'
+status: ok
+epochs:
+- id: 1
+  start: '2013-01-01'
+  end: '2013-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 2
+  start: '2014-01-01'
+  end: '2014-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 3
+  start: '2015-01-01'
+  end: '2015-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 4
+  start: '2016-01-01'
+  end: '2016-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 5
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 6
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 7
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 8
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+- id: 9
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: hand, 2026-11-17 (Dan's rulings on the include-unknown stations)
+notes:
+- 'Gary''s AGOS home network (Dan 2026-11-17: home is VW). VW naming convention: band
+  from rate, location 00.'

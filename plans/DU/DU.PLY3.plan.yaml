@@ -1,0 +1,20 @@
+station: PLY3
+network: DU
+location: passthrough
+naming: passthrough
+seam_trim: true
+collision_precedence:
+  mode: earliest_start
+status: ok
+epochs:
+- id: 1
+  start: '2026-01-01'
+  end: '2026-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: hand, 2026-11-17 (Dan's rulings on the include-unknown stations)
+notes:
+- PiesMo-style vertical-only telemetry snippets; header channel names kept unless
+  the live server already names the stream.

@@ -1,0 +1,48 @@
+station: DNL3
+network: DU
+location: passthrough
+naming: passthrough
+seam_trim: true
+collision_precedence:
+  mode: earliest_start
+status: ok
+epochs:
+- id: 1
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  channels:
+  - component: E
+    target: DU.DNL3.00.EHE
+    basis: seed_short_period_default:100sps
+  - component: N
+    target: DU.DNL3.00.EHN
+    basis: seed_short_period_default:100sps
+  - component: Z
+    target: DU.DNL3.00.EHZ
+    basis: seed_short_period_default:100sps
+- id: 2
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 3
+  start: '2025-01-01'
+  end: '2025-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+- id: 4
+  start: '2026-01-01'
+  end: '2026-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+flagged_days: []
+generated_by: hand, 2026-11-17 (Dan's rulings on the include-unknown stations)
+notes:
+- PiesMo-style vertical-only telemetry snippets; header channel names kept unless
+  the live server already names the stream.
