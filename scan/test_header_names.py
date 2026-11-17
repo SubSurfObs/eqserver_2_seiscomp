@@ -349,6 +349,13 @@ def main():
                               keep_header_names=True)
         check("plain miniSEED with an odd extension is read",
               len(g) == 1 and g[0].stats.npts == 100 and not ers, f"{g} {ers}")
+        # one-letter component labels map to standard channels (PEGM e/n/v)
+        from phase3_driver import _enforce_band_instrument
+        st1 = Stream([Trace(np.zeros(10, dtype=np.int32), header={"channel": c, "sampling_rate": 100.0})
+                      for c in ("e", "n", "v")])
+        check("one-letter e/n/v become HHE/HHN/HHZ at 100 Hz",
+              [t.stats.channel for t in _enforce_band_instrument(st1)] == ["HHE", "HHN", "HHZ"])
+        check("auditor reads v as vertical", qa_verify._mseed_orientation("v") == "Z")
         # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
         import qa_verify
         sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"

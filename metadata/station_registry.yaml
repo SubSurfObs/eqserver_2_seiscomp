@@ -1419,8 +1419,9 @@ BRAD:
   coverage_end: 2021
 
 BRSA:
-  include: unknown
-  target_network: null
+  include: true
+  reason: "Dan 2026-11-17 (Claude's call, delegated): convert as DU — Brisbane, Echo 100 Hz 2018-19, header network QL"
+  target_network: DU
   network_basis: unknown
   coverage_start: 1999
   coverage_end: 2019

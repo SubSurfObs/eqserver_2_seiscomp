@@ -315,6 +315,8 @@ def _suds_component(chan: str) -> str | None:
 
 def _mseed_orientation(chan: str) -> str | None:
     c = (chan or "").strip().upper()
+    if c == "V":
+        return "Z"   # one-letter vertical label (PEGM 2013-14: e / n / v)
     if c and c[-1] in ORIENTATIONS:
         return c[-1]
     return None

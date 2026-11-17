@@ -95,6 +95,11 @@ def _enforce_band_instrument(stream):
     """
     for tr in stream:
         ch = getattr(tr.stats, "channel", "") or ""
+        if len(ch) == 1 and ch.upper() in ONE_LETTER_ORIENT:
+            # one-letter component labels (PEGM 2013-14: e / n / v)
+            tr.stats.channel = (_seed_band(tr.stats.sampling_rate) + "H"
+                                + ONE_LETTER_ORIENT[ch.upper()])
+            continue
         if len(ch) != 3:
             continue
         orient = ch[-1]
@@ -102,6 +107,9 @@ def _enforce_band_instrument(stream):
         if new_ch != ch:
             tr.stats.channel = new_ch
     return stream
+
+
+ONE_LETTER_ORIENT = {"E": "E", "N": "N", "Z": "Z", "V": "Z"}
 
 
 def _name_channels(stream, keep_header_names):
