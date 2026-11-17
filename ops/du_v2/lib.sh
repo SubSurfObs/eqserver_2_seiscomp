@@ -1,5 +1,6 @@
 #!/bin/bash
-# Shared control logic for the DU release-v2 launcher and retry worker
+# Shared control logic for the DU release-v2 launcher and retry worker.
+# NET (env, default DU) selects the network: plans/<NET>/, station_dbs/<NET>.<STA>.db.
 # (Codex 034f35c). Sourced, not run. Every function is overridable for the
 # synthetic control tests in ops/du_v2/test_control.sh.
 #
@@ -27,8 +28,8 @@ free_gb() { df --output=avail -BG / | tail -1 | tr -dc 0-9; }
 
 # Real builder; tests override.
 planner() {  # STA YEAR OUT
-  (cd "$REPO" && PYTHONPATH="$SHIM" $PY scan/coverage_planner.py --net DU --sta "$1" \
-     --year "$2" --db ~/station_dbs/DU.$1.db --out "$3" > "$LOG/compile.$1.$2.log" 2>&1)
+  (cd "$REPO" && PYTHONPATH="$SHIM" $PY scan/coverage_planner.py --net "${NET:-DU}" --sta "$1" \
+     --year "$2" --db ~/station_dbs/${NET:-DU}.$1.db --out "$3" > "$LOG/compile.$1.$2.log" 2>&1)
 }
 
 record_failure() {  # STA YEAR REASON  -> queue convert_failed.jsonl
@@ -37,7 +38,7 @@ import datetime, json, os, sys
 q, sta, year, reason = sys.argv[1:5]
 os.makedirs(q, exist_ok=True)
 with open(os.path.join(q, "convert_failed.jsonl"), "a") as f:
-    f.write(json.dumps({"action": "failed", "net": "DU", "sta": sta, "year": int(year),
+    f.write(json.dumps({"action": "failed", "net": os.environ.get("NET", "DU"), "sta": sta, "year": int(year),
         "run_id": f"launcher_{sta}_{year}_{datetime.datetime.utcnow():%Y%m%dT%H%M%SZ}",
         "rc": None, "reason": reason,
         "ts": datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"}) + "\n")
@@ -45,7 +46,7 @@ PY
 }
 
 restore_list() {  # STA YEAR -> 0 if the local list exists afterwards
-  local f="$SEL/DU.$1.$2.selection.sqlite" a="$ARCH/DU.$1/DU.$1.$2.selection.sqlite.gz"
+  local f="$SEL/${NET:-DU}.$1.$2.selection.sqlite" a="$ARCH/${NET:-DU}.$1/${NET:-DU}.$1.$2.selection.sqlite.gz"
   [ -f "$f" ] && return 0
   [ -f "$a" ] || return 1
   gunzip -c "$a" > "$f.partial" && mv "$f.partial" "$f"
@@ -55,7 +56,7 @@ restore_list() {  # STA YEAR -> 0 if the local list exists afterwards
 # the check must hold at the moment work starts, not before a wait), then
 # restore from the share or build. rc 99 = not enough space right now.
 _build_locked() {  # KIND STA YEAR
-  local kind=$1 S=$2 Y=$3 out="$SEL/DU.$2.$3.selection.sqlite" need
+  local kind=$1 S=$2 Y=$3 out="$SEL/${NET:-DU}.$2.$3.selection.sqlite" need
   [ -f "$out" ] && return 0
   if [ "$kind" = speculative ]; then need=$SPEC_FREE_GB; else need=$REQ_FREE_GB; fi
   [ "$(free_gb)" -gt "$need" ] || return 99
@@ -82,7 +83,7 @@ _with_slot() {  # KIND cmd...
 
 # ensure_list STA YEAR required|speculative -> 0 when the list is present.
 ensure_list() {
-  local S=$1 Y=$2 kind=$3 out="$SEL/DU.$1.$2.selection.sqlite" said=0 rc
+  local S=$1 Y=$2 kind=$3 out="$SEL/${NET:-DU}.$1.$2.selection.sqlite" said=0 rc
   while true; do
     [ -f "$out" ] && return 0
     if [ "$kind" = speculative ]; then
@@ -141,12 +142,12 @@ PY
 plan_years_all() {  # every plan year (incl. < 2012), for Jan-1 tail lookups
   (cd "$REPO" && $PY -c "
 import yaml
-p = yaml.safe_load(open('plans/DU/DU.$1.plan.yaml'))
+p = yaml.safe_load(open('plans/${NET:-DU}/${NET:-DU}.$1.plan.yaml'))
 print(' '.join(sorted({e['start'][:4] for e in p['epochs']})))")
 }
 
 run_convert() {  # real conversion; tests override
-  $PY scan/run_production_convert.py --network DU --stations "$1" \
+  $PY scan/run_production_convert.py --network "${NET:-DU}" --stations "$1" \
     --year-min "$2" --year-max "$2" \
     --registry metadata/station_registry.yaml \
     --staging-sds "$STAGING" \
@@ -157,7 +158,7 @@ run_convert() {  # real conversion; tests override
 years_desc() {  # plan years >= 2012, newest first
   (cd "$REPO" && $PY -c "
 import yaml
-p = yaml.safe_load(open('plans/DU/DU.$1.plan.yaml'))
+p = yaml.safe_load(open('plans/${NET:-DU}/${NET:-DU}.$1.plan.yaml'))
 print(' '.join(str(y) for y in sorted({int(e['start'][:4]) for e in p['epochs']}, reverse=True) if y >= 2012))")
 }
 
