@@ -356,6 +356,7 @@ def main():
         check("one-letter e/n/v become HHE/HHN/HHZ at 100 Hz",
               [t.stats.channel for t in _enforce_band_instrument(st1)] == ["HHE", "HHN", "HHZ"])
         check("auditor reads v as vertical", qa_verify._mseed_orientation("v") == "Z")
+        check("auditor reads SUDS z/e/n", [qa_verify._suds_component(c) for c in ("z", "e", "n")] == ["Z", "E", "N"])
         # RNDA_none.mseed: a plain .mseed file holding PC-SUDS is recognised
         import qa_verify
         sf = Path(td) / "2017-10-11 0830 51 RNDA_none.mseed"
