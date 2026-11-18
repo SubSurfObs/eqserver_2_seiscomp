@@ -328,7 +328,7 @@ def _looks_like_mseed(blob: bytes) -> bool:
     return len(blob) >= 64 and blob[6:7] in b"DRQM"
 
 
-def earliest_start_view(traces, merge_locations, counters):
+def earliest_start_view(traces, merge_locations, counters, seam_trim=False):
     """What a file's plan-ruled earliest-start overlay must have kept (plan
     `collision_precedence: earliest_start`, Codex 2026-11-09 F1). Written here
     independently of the converter so the audit checks the chosen packet: per
@@ -341,6 +341,15 @@ def earliest_start_view(traces, merge_locations, counters):
     for (_c, _l, rate), grp in groups.items():
         dt = round(1_000_000_000 / rate)
         grp.sort(key=lambda it: (it[1]["start"].ns, it[0]))
+        if seam_trim:
+            # PiesMo one-sample seam first, as the converter does: where a
+            # packet starts exactly on the previous packet's last sample, the
+            # later packet keeps that sample (plan seam_trim).
+            for k in range(len(grp) - 1):
+                a, b = grp[k][1], grp[k + 1][1]
+                if (len(a["data"]) > 1 and
+                        b["start"].ns == a["start"].ns + (len(a["data"]) - 1) * dt):
+                    grp[k] = (grp[k][0], {**a, "data": a["data"][:-1]})
         end = None
         for _i, t in grp:
             t0, n = t["start"].ns, len(t["data"])
@@ -444,7 +453,8 @@ def read_source_file(path: str, errors: list, counters: dict,
                     })
                 if precedence is not None:
                     traces = earliest_start_view(
-                        traces, precedence["merge_locations"], counters)
+                        traces, precedence["merge_locations"], counters,
+                        precedence.get("seam_trim", False))
     except Exception as exc:
         errors.append({"path": path, "err": str(exc)})
     return traces
@@ -1013,7 +1023,8 @@ def precedence_from_plan(plan_path):
     plan = yaml.safe_load(Path(plan_path).read_text())
     if (plan.get("collision_precedence") or {}).get("mode") != "earliest_start":
         return None
-    return {"merge_locations": plan.get("location") != "passthrough"}
+    return {"merge_locations": plan.get("location") != "passthrough",
+            "seam_trim": bool(plan.get("seam_trim"))}
 
 
 DEFAULT_DB_DIRS = [

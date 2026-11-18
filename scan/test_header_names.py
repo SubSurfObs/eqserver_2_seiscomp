@@ -254,6 +254,29 @@ def main():
               len(view) == len(conv) and all(
                   v["start"].ns == c.stats.starttime.ns and np.array_equal(v["data"], c.data)
                   for v, c in zip(view, conv)), str(view))
+        # seam rule then earliest-start, in the converter's order: the auditor agrees
+        ps1 = Trace(np.arange(100, dtype=np.int32), header={**hdr, "starttime": t00})
+        ps2 = Trace(np.arange(50, dtype=np.int32) + 7000,
+                    header={**hdr, "starttime": t00 + 99 / 250.0})     # starts on ps1's last sample
+        fzs = Path(td) / "2026-01-28 0000 00 FAKE_HHZ.mseed.zip"
+        b_ = io.BytesIO()
+        for t_ in (ps1, ps2):
+            t_.write(b_, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(fzs, "w") as z:
+            z.writestr("x.mseed", b_.getvalue())
+        ers = []
+        conv = sorted(_read_file_traces(str(fzs), "mseed", "DU", "FAKE", "passthrough", None, ers,
+                                        keep_header_names=True, seam_trim=True,
+                                        collision_precedence={"mode": "earliest_start"}, notes=[]),
+                      key=lambda t: t.stats.starttime.ns)
+        td2 = [{"orient": "Z", "src_chan": "CHZ", "src_loc": "00", "src_path": "x",
+                "start": t.stats.starttime, "rate": 250.0,
+                "data": np.asarray(t.data, dtype=np.int64)} for t in (ps1, ps2)]
+        view = sorted(qv.earliest_start_view(td2, False, {}, seam_trim=True), key=lambda t: t["start"].ns)
+        check("auditor applies the seam rule before earliest-start, matching the converter",
+              not ers and len(view) == len(conv) and all(
+                  v["start"].ns == c.stats.starttime.ns and np.array_equal(v["data"], c.data)
+                  for v, c in zip(view, conv)), f"{view} {conv} {ers}")
         # a run manifest may not record an unknown release identity
         from phase3_driver import release_identity_gaps
         check("release block with '?' or empty is rejected",
