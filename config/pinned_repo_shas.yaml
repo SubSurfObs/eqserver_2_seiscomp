@@ -20,13 +20,13 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: "186541b"    # release v2.8 (own branch): v2.7 + one-letter e/n/v labels; plans for the stations ruled in 2026-11-17
+    pinned: "f973164"    # release v2.8 (own branch): v2.7 + one-letter labels (e/n/v, SUDS z), auditor seam rule, plans for stations ruled in 2026-11-17
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
     code_roots: [sudspy]
   disk_to_sds:
-    pinned: 5e41f17      # DU release v2: truncated_recovered qc
+    pinned: "84aee00"    # v2.8: SUDS one-letter vertical 'z'
     code_roots: [scripts]
   sds_staging_ledger:
     pinned: "828d2f9"    # DU promotion bump after s5 (2026-11-09): diff since prior pin = seiscomp_archive/+policies/+runs/ only (Dan-approved protocol)
