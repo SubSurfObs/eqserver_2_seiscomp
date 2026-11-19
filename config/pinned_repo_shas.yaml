@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: "f973164"    # release v2.8 (own branch): v2.7 + one-letter labels (e/n/v, SUDS z), auditor seam rule, plans for stations ruled in 2026-11-17
+    pinned: "c5a6185"    # release v2.9 (own branch): v2.8 + location 00 for PiesMo-type and new DU plans
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
