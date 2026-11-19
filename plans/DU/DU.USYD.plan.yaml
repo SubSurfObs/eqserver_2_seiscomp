@@ -1,6 +1,7 @@
 station: USYD
 network: DU
-location: '0'
+location: '00'
+# Location standardised to '00' (Dan 2026-11-19): the live server switched from '0' to '00' in April 2026.
 # PiesMo recorder one-sample seam (Codex e722834): keep the later trace's
 # first sample, trim the earlier trace's last.
 seam_trim: true
@@ -15,8 +16,8 @@ epochs:
   classifications: {}
   channels:
   - component: Z
-    target: DU.USYD.0.HHZ
-    basis: server_verbatim:2025
+    target: DU.USYD.00.HHZ
+    basis: server_verbatim:2026 (location 00)
 flagged_days: []
 generated_by: scan/make_du_plans.py (operator naming rule 2026-10-29)
 notes: []
