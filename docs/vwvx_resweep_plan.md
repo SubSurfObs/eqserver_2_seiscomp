@@ -61,3 +61,17 @@ vs HQ*. RT130 borehole stations keep HH1/HH2/HHZ (operator decision
 - Anything in the VW/VX recorder mix (RT130 per-channel files, Minimus,
   `.wrno` files, mixed-separator telemetry, 2012 Echo) that the DU proofs did
   not exercise and that needs a proof day before bulk conversion.
+
+## Rulings and results so far
+
+- **2026-11-23, fresh indexes (Codex F4): done** for all 59 VW/VX stations at
+  release v2.8's parser; DBs on the share at
+  `/mnt/seiscomp_staging/eqserver_station_dbs/vwvx_2026-11-19/`.
+- **2026-11-23, `.wrno` census (Codex F5): done.** 10,647 files named before
+  2012; every header carries the same bogus 1989/1999 date. Shifted +1024
+  weeks, the 1999 files start 2019-04-07 (the GPS rollover): MARD, HDDL, NARR
+  and nearly all WPSH duplicate correctly dated files; ~90 BEST/CLIF minutes
+  have no normal copy. The 1989 files (6,172 at BRIG) map to no real date.
+  **Dan's ruling: exclude ALL pre-2012-dated `.wrno` files.** Lost: ~90
+  BEST/CLIF minutes of April 2019 and ~4 days of undatable BRIG files.
+  Census: VM `~/v3_test/wrno_census.jsonl`, `wrno_shift.py`.
