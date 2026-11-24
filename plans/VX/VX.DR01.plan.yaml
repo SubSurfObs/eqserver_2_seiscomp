@@ -1,0 +1,105 @@
+station: DR01
+network: VX
+location: '00'
+status: ok
+epochs:
+- id: 1
+  start: '2015-01-01'
+  end: '2015-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@200
+    - suds:c02@200
+    - suds:c03@200
+    predicted:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+    lt:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+- id: 2
+  start: '2016-01-01'
+  end: '2016-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@200
+    - suds:c02@200
+    - suds:c03@200
+    predicted:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+    lt:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+- id: 3
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@200
+    - suds:c02@200
+    - suds:c03@200
+    predicted:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+    lt:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+- id: 4
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@200
+    - suds:c02@200
+    - suds:c03@200
+    predicted:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+    lt:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+- id: 5
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@200
+    - suds:c02@200
+    - suds:c03@200
+    predicted:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+    lt:
+    - 00.HHE
+    - 00.HHN
+    - 00.HHZ
+flagged_days: []
+generated_by: 'scan/make_vwvx_plans (2026-11-24): fresh v2.8 indexes + epoch inventory; VW/VX convention'
+notes:
+- 'VW/VX convention: location 00; band from each trace''s sample rate; instrument H; orientation from
+  the source label (RT130 1/2/Z kept, operator 2026-06-21).'

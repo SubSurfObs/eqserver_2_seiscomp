@@ -2,46 +2,167 @@ station: DDNE
 network: VW
 location: '00'
 status: ok
-summary:
-  days_total: 2243
-  days_clean: 2238
-  days_flagged: 5
-  pct_clean: 99.8
-registry_recorder_types:
-- gecko
 epochs:
 - id: 1
-  start: '1900-01-01'
-  end: '2024-06-14'
+  start: '2017-01-01'
+  end: '2017-12-31'
   recorder: gecko
-  days: 2243
-  classifications:
-    partial_telemetry_only: 19
-    partial_gecko_disk: 15
-    near_clean_gecko_threshold: 122
-    clean_gecko_disk: 302
-    near_clean_gecko_disk: 477
-    skip_empty: 5
-    clean_cross_source_recovery: 40
-    clean_telemetry_primary: 1263
-flagged_days:
-- date: '2018-02-01'
-  classification: skip_empty
-  n_disk_ok: 0
-  n_tele_ok: 0
-- date: '2018-02-02'
-  classification: skip_empty
-  n_disk_ok: 0
-  n_tele_ok: 0
-- date: '2018-02-03'
-  classification: skip_empty
-  n_disk_ok: 0
-  n_tele_ok: 0
-- date: '2018-02-04'
-  classification: skip_empty
-  n_disk_ok: 0
-  n_tele_ok: 0
-- date: '2018-02-05'
-  classification: skip_empty
-  n_disk_ok: 0
-  n_tele_ok: 0
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 2
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 3
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    - 00.CQE
+    - 00.CQN
+    - 00.CQZ
+    - 00.HQE
+    - 00.HQN
+    - 00.HQZ
+- id: 4
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 5
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 6
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 7
+  start: '2023-01-01'
+  end: '2023-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 8
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+flagged_days: []
+generated_by: 'scan/make_vwvx_plans (2026-11-24): fresh v2.8 indexes + epoch inventory; VW/VX convention'
+notes:
+- 'VW/VX convention: location 00; band from each trace''s sample rate; instrument H; orientation from
+  the source label (RT130 1/2/Z kept, operator 2026-06-21).'

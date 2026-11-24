@@ -2,23 +2,64 @@ station: LRWS
 network: VW
 location: '00'
 status: ok
-summary:
-  days_total: 529
-  days_clean: 529
-  days_flagged: 0
-  pct_clean: 100.0
-registry_recorder_types: null
 epochs:
 - id: 1
-  start: '2020-01-01'
-  end: '2021-06-12'
+  start: '2019-01-01'
+  end: '2019-12-31'
   recorder: gecko
-  days: 529
-  classifications:
-    near_clean_gecko_disk: 314
-    clean_gecko_disk: 53
-    near_clean_gecko_threshold: 120
-    partial_gecko_disk: 28
-    clean_cross_source_recovery: 12
-    partial_telemetry_only: 2
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt: []
+- id: 2
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 3
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    - 00.SUM
 flagged_days: []
+generated_by: 'scan/make_vwvx_plans (2026-11-24): fresh v2.8 indexes + epoch inventory; VW/VX convention'
+notes:
+- 'VW/VX convention: location 00; band from each trace''s sample rate; instrument H; orientation from
+  the source label (RT130 1/2/Z kept, operator 2026-06-21).'

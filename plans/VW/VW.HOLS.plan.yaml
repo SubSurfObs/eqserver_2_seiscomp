@@ -2,33 +2,262 @@ station: HOLS
 network: VW
 location: '00'
 status: ok
-summary:
-  days_total: 3932
-  days_clean: 3930
-  days_flagged: 2
-  pct_clean: 99.9
-registry_recorder_types: null
 epochs:
 - id: 1
-  start: '2012-06-22'
-  end: '2024-04-16'
+  start: '2012-01-01'
+  end: '2012-12-31'
   recorder: echopro
-  days: 3932
-  classifications:
-    partial_disk: 51
-    clean_disk_multi_ss: 1376
-    clean_disk_1ss: 2346
-    near_clean_disk_threshold: 5
-    near_clean_disk_1ss: 45
-    partial_telemetry_only: 1
-    clean_telemetry_primary: 106
-    failing_recorder_disk: 2
-flagged_days:
-- date: '2021-07-15'
-  classification: failing_recorder_disk
-  n_disk_ok: 1395
-  n_tele_ok: 198
-- date: '2021-10-21'
-  classification: failing_recorder_disk
-  n_disk_ok: 1173
-  n_tele_ok: 0
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 2
+  start: '2013-01-01'
+  end: '2013-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 3
+  start: '2014-01-01'
+  end: '2014-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 4
+  start: '2015-01-01'
+  end: '2015-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 5
+  start: '2016-01-01'
+  end: '2016-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 6
+  start: '2017-01-01'
+  end: '2017-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 7
+  start: '2018-01-01'
+  end: '2018-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 8
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 9
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 10
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 11
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    - suds:c04(dropped/unknown)
+    - suds:c05(dropped/unknown)
+    - suds:c06(dropped/unknown)
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 12
+  start: '2023-01-01'
+  end: '2023-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    - suds:c04(dropped/unknown)
+    - suds:c05(dropped/unknown)
+    - suds:c06(dropped/unknown)
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 13
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+flagged_days: []
+generated_by: 'scan/make_vwvx_plans (2026-11-24): fresh v2.8 indexes + epoch inventory; VW/VX convention'
+notes:
+- 'VW/VX convention: location 00; band from each trace''s sample rate; instrument H; orientation from
+  the source label (RT130 1/2/Z kept, operator 2026-06-21).'

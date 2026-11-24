@@ -1,0 +1,29 @@
+station: THOR4
+network: VX
+location: '00'
+status: ok
+epochs:
+- id: 1
+  start: '2012-01-01'
+  end: '2012-12-31'
+  recorder: echopro
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - suds:c01@250
+    - suds:c02@250
+    - suds:c03@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+flagged_days: []
+generated_by: 'scan/make_vwvx_plans (2026-11-24): fresh v2.8 indexes + epoch inventory; VW/VX convention'
+notes:
+- 'VW/VX convention: location 00; band from each trace''s sample rate; instrument H; orientation from
+  the source label (RT130 1/2/Z kept, operator 2026-06-21).'

@@ -2,24 +2,170 @@ station: WDSD
 network: VW
 location: '00'
 status: ok
-summary:
-  days_total: 2427
-  days_clean: 2427
-  days_flagged: 0
-  pct_clean: 100.0
-registry_recorder_types: null
+drop_channels:
+- orientation: O
+  from: '2018-01-01'
+  to: '2018-12-31'
 epochs:
 - id: 1
-  start: '1900-01-01'
-  end: '2025-07-04'
+  start: '2018-01-01'
+  end: '2018-12-31'
   recorder: gecko
-  days: 2427
-  classifications:
-    partial_telemetry_only: 21
-    partial_gecko_disk: 104
-    near_clean_gecko_disk: 965
-    clean_cross_source_recovery: 47
-    clean_telemetry_primary: 521
-    clean_gecko_disk: 655
-    near_clean_gecko_threshold: 114
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CDO@250
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHO
+    - 00.CHZ
+    lt:
+    - 00.CDO
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 2
+  start: '2019-01-01'
+  end: '2019-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 3
+  start: '2020-01-01'
+  end: '2020-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 4
+  start: '2021-01-01'
+  end: '2021-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 5
+  start: '2022-01-01'
+  end: '2022-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 6
+  start: '2023-01-01'
+  end: '2023-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 7
+  start: '2024-01-01'
+  end: '2024-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+- id: 8
+  start: '2025-01-01'
+  end: '2025-12-31'
+  recorder: gecko
+  days: 0
+  classifications: {}
+  inventory:
+    labels:
+    - mseed:CHE@250
+    - mseed:CHN@250
+    - mseed:CHZ@250
+    predicted:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
+    lt:
+    - 00.CHE
+    - 00.CHN
+    - 00.CHZ
 flagged_days: []
+generated_by: 'scan/make_vwvx_plans (2026-11-24): fresh v2.8 indexes + epoch inventory; VW/VX convention'
+notes:
+- 'VW/VX convention: location 00; band from each trace''s sample rate; instrument H; orientation from
+  the source label (RT130 1/2/Z kept, operator 2026-06-21).'
+- Fourth Gecko channel is an unconnected input (digitiser noise only; checked 2026-11-24) - dropped per
+  Dan.
