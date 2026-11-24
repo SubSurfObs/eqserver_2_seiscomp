@@ -328,6 +328,17 @@ def _looks_like_mseed(blob: bytes) -> bool:
     return len(blob) >= 64 and blob[6:7] in b"DRQM"
 
 
+def _plan_drops(t, path, rules, counters):
+    """Plan `drop_channels` (an unconnected recorder input, e.g. the fourth
+    Gecko channel at WLSH/WDSD 2018): orientation letter + date range."""
+    day = t["start"].strftime("%Y-%m-%d")
+    for r in rules:
+        if t["orient"] == r["orientation"] and r["from"] <= day <= r["to"]:
+            counters["n_plan_dropped"] = counters.get("n_plan_dropped", 0) + 1
+            return True
+    return False
+
+
 def earliest_start_view(traces, merge_locations, counters, seam_trim=False):
     """What a file's plan-ruled earliest-start overlay must have kept (plan
     `collision_precedence: earliest_start`, Codex 2026-11-09 F1). Written here
@@ -451,7 +462,10 @@ def read_source_file(path: str, errors: list, counters: dict,
                         "rate": float(tr.stats.sampling_rate),
                         "data": np.asarray(tr.data, dtype=np.int64),
                     })
-                if precedence is not None:
+                if precedence is not None and precedence.get("drop_channels"):
+                    traces = [t for t in traces
+                              if not _plan_drops(t, path, precedence["drop_channels"], counters)]
+                if precedence is not None and precedence.get("earliest", True):
                     traces = earliest_start_view(
                         traces, precedence["merge_locations"], counters,
                         precedence.get("seam_trim", False))
@@ -1021,10 +1035,14 @@ def precedence_from_plan(plan_path):
         return None
     import yaml
     plan = yaml.safe_load(Path(plan_path).read_text())
-    if (plan.get("collision_precedence") or {}).get("mode") != "earliest_start":
+    earliest = (plan.get("collision_precedence") or {}).get("mode") == "earliest_start"
+    drop = [d for d in (plan.get("drop_channels") or [])]
+    if not earliest and not drop:
         return None
-    return {"merge_locations": plan.get("location") != "passthrough",
-            "seam_trim": bool(plan.get("seam_trim"))}
+    return {"earliest": earliest,
+            "merge_locations": plan.get("location") != "passthrough",
+            "seam_trim": bool(plan.get("seam_trim")),
+            "drop_channels": drop}
 
 
 DEFAULT_DB_DIRS = [

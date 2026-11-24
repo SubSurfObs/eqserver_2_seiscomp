@@ -277,6 +277,26 @@ def main():
               not ers and len(view) == len(conv) and all(
                   v["start"].ns == c.stats.starttime.ns and np.array_equal(v["data"], c.data)
                   for v, c in zip(view, conv)), f"{view} {conv} {ers}")
+        # plan drop_channels: the declared-unconnected fourth channel is dropped
+        # (dates inclusive), the seismometer channels kept; the auditor agrees
+        four = [Trace(np.arange(50, dtype=np.int32), header={**hdr, "channel": c, "starttime": t00})
+                for c in ("CHZ", "CHN", "CHE", "CHO")]
+        fz4 = Path(td) / "20220731_0839_FOUR.ms.zip"
+        b_ = io.BytesIO(); Stream(four).write(b_, format="MSEED", encoding="STEIM2", reclen=512)
+        with zipfile.ZipFile(fz4, "w") as z:
+            z.writestr("x.mseed", b_.getvalue())
+        rule = [{"orientation": "O", "from": "2022-07-01", "to": "2022-07-31"}]
+        nts, ers = [], []
+        g4 = _read_file_traces(str(fz4), "mseed", "DU", "FAKE", "passthrough", None, ers,
+                               keep_header_names=True, notes=nts, drop_channels=rule)
+        check("drop_channels removes the declared fourth channel only",
+              sorted(t.stats.channel for t in g4) == ["CHE", "CHN", "CHZ"] and not ers
+              and any("CHO" in n for n in nts), f"{g4} {nts}")
+        g5 = _read_file_traces(str(fz4), "mseed", "DU", "FAKE", "passthrough", None, [],
+                               keep_header_names=True, drop_channels=[{**rule[0], "to": "2022-07-30"}])
+        check("drop_channels respects its date range", len(g5) == 4)
+        tv = [{"orient": "O", "start": t00}, {"orient": "Z", "start": t00}]
+        check("auditor applies the same drop", [qv._plan_drops(t, "x", rule, {}) for t in tv] == [True, False])
         # a run manifest may not record an unknown release identity
         from phase3_driver import release_identity_gaps
         check("release block with '?' or empty is rejected",
