@@ -7,6 +7,28 @@
 SHAs, sweep state and the WLSH outcome below are live-checked, read-only).
 **Branch:** `rewrite-suds2sds` is the working branch (main has not been merged).
 
+## ▶ UPDATE 2026-11-24 (newest)
+
+- **DU: conversion complete.** All queues converted and Codex-cleared; the last
+  two (`_rebuild_s8` 12 stations Dan ruled in 2026-11-17, `_rebuild_s9` location
+  "00" re-issue incl. 2025 PiesMo) are being promoted by `seiscomp_server_uom`.
+  s8's DNL3/DNL4/NNP3/BNDL held as superseded. Never promote `_rebuild_s5`.
+  Rulings: location "00" everywhere (2026-11-19); unreadable files skipped and
+  named; S88M, RDK04/06, NAME and 32 negligible directories dropped.
+- **VW/VX re-sweep** (plan `docs/vwvx_resweep_plan.md`, Codex
+  `reviews/2026-11-18_vwvx_resweep_plan.md` FIX-THEN-PROCEED). Done: fresh
+  indexes (share `eqserver_station_dbs/vwvx_2026-11-19/`), `.wrno` census (all
+  pre-2012-dated excluded, Dan), naming inventory (273/307 exact; LT lacks
+  LOCU 2014-20, LRSE 2019-20, LRSH 2019, LRWS 2019 entirely), 58 plans
+  (location 00, earliest_start, drop_channels for the noise-only 4th channel at
+  WLSH/WDSD 2018, HOGN 2019), 7 proof days all exact
+  (`~/v3_test/vwvxp/`), decode lock (planner threads segfaulted on WLSH).
+  **Release v3.0** pinned (17f4fab = eqserver 0506181; VM `vwvx_v3_0`).
+  Open: Codex review of v3.0; promotion comparison by timeline/coverage (Codex
+  F1/F2) with `seiscomp_server_uom`; then VX, then VW.
+- Rulings for LT clean-up after the re-sweep: retire DL*/SUM/CDO/HQ*/CQ* and
+  CLIF 2025 blank-location files (renamed, never deleted).
+
 ## ▶ UPDATE 2026-11-10 (newest; the 2026-11-09 section below still holds otherwise)
 
 - **Release v2.6** (branch `du-release-v2.5`, pin commit 2415a04 = eqserver
