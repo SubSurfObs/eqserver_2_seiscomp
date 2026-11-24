@@ -324,6 +324,15 @@ def _mseed_orientation(chan: str) -> str | None:
     return None
 
 
+# The miniSEED/SUDS decoders report through a C message callback that is not
+# safe to enter from several threads at once: WLSH 2018's damaged Steim1
+# records made the planner's 8 probe threads warn simultaneously and the
+# process died with signal 11 (2026-11-24). File I/O stays parallel; decoding
+# is serialized.
+import threading as _threading
+_DECODE_LOCK = _threading.Lock()
+
+
 def _looks_like_mseed(blob: bytes) -> bool:
     return len(blob) >= 64 and blob[6:7] in b"DRQM"
 
@@ -386,7 +395,8 @@ def read_source_file(path: str, errors: list, counters: dict,
             # Complete sample prefixes of cut-short waveform blocks are real
             # source data (Codex 1b27f4f, WKA); flag the file as truncated.
             _dg = {}
-            st = read_suds_stream(path, diag=_dg, recover_truncated=True)
+            with _DECODE_LOCK:
+                st = read_suds_stream(path, diag=_dg, recover_truncated=True)
             if _dg.get("truncated_trace"):
                 counters["truncated"] = True
             for tr in st:
@@ -425,7 +435,8 @@ def read_source_file(path: str, errors: list, counters: dict,
                         "n_members_skipped", 0) + 1
                     continue
                 try:
-                    st = obspy_read(io.BytesIO(blob), format="MSEED")
+                    with _DECODE_LOCK:
+                        st = obspy_read(io.BytesIO(blob), format="MSEED")
                 except Exception as exc:
                     errors.append({"path": path, "err": f"member: {exc}"})
                     continue
