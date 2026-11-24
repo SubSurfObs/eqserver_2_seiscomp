@@ -58,19 +58,19 @@ def _segments(path):
 
 
 def _samples(segs):
-    """Every sample as one sorted (time_ns, value) structured array; duplicate
-    times inside one file are kept (they are a finding, not merged away)."""
+    """Every sample as sorted (times_ns, values) int64 arrays; duplicate times
+    inside one file are kept (they are a finding, not merged away). Day-files
+    are normally already in time order, so sorting happens only when needed."""
     if not segs:
-        return np.zeros(0, dtype=[("t", np.int64), ("v", np.int64)])
-    ts, vs = [], []
-    for t0, dt, d in segs:
-        ts.append(t0 + dt * np.arange(len(d), dtype=np.int64))
-        vs.append(d)
-    a = np.empty(sum(len(x) for x in ts), dtype=[("t", np.int64), ("v", np.int64)])
-    a["t"] = np.concatenate(ts)
-    a["v"] = np.concatenate(vs)
-    a.sort(order=("t", "v"))
-    return a
+        z = np.zeros(0, dtype=np.int64)
+        return z, z
+    segs = sorted(segs, key=lambda x: x[0])
+    t = np.concatenate([t0 + dt * np.arange(len(d), dtype=np.int64) for t0, dt, d in segs])
+    v = np.concatenate([d for _t0, _dt, d in segs])
+    if len(t) > 1 and not bool(np.all(t[1:] >= t[:-1])):
+        o = np.lexsort((v, t))
+        t, v = t[o], v[o]
+    return t, v
 
 
 def compare_pair(staged, lt):
@@ -81,37 +81,36 @@ def compare_pair(staged, lt):
         return rec
     rec["lt_sha256"] = _sha256(lt)
     try:
-        s = _samples(_segments(staged))
-        lsa = _samples(_segments(lt))
+        st_t, st_v = _samples(_segments(staged))
+        lt_t, lt_v = _samples(_segments(lt))
     except Exception as e:
         rec.update(verdict="unreadable", error=f"{type(e).__name__}: {e}"[:300])
         return rec
-    rec["n_staged"], rec["n_lt"] = int(len(s)), int(len(lsa))
+    rec["n_staged"], rec["n_lt"] = int(len(st_t)), int(len(lt_t))
     # Both arrays are sorted by (time, value). For each LT sample, locate the
     # staged samples at the same exact nanosecond (a sorted-merge lookup) and
     # ask whether any of them carries the same value.
-    st_t, st_v = s["t"], s["v"]
-    lo = np.searchsorted(st_t, lsa["t"], side="left")
-    hi = np.searchsorted(st_t, lsa["t"], side="right")
+    lo = np.searchsorted(st_t, lt_t, side="left")
+    hi = np.searchsorted(st_t, lt_t, side="right")
     has_time = hi > lo
-    found = np.zeros(len(lsa), dtype=bool)
-    idx = np.minimum(lo, max(len(st_t) - 1, 0))
+    found = np.zeros(len(lt_t), dtype=bool)
     if len(st_t):
-        found = has_time & (st_v[idx] == lsa["v"])
+        idx = np.minimum(lo, len(st_t) - 1)
+        found = has_time & (st_v[idx] == lt_v)
         # duplicate staged times (rare): look past the first match
         dup = has_time & ~found & (hi - lo > 1)
         for k in np.flatnonzero(dup):
-            found[k] = bool(np.any(st_v[lo[k]:hi[k]] == lsa["v"][k]))
-    rec["staged_duplicate_times"] = int(len(st_t) - len(np.unique(st_t))) if len(st_t) else 0
+            found[k] = bool(np.any(st_v[lo[k]:hi[k]] == lt_v[k]))
+    rec["staged_duplicate_times"] = int(np.count_nonzero(st_t[1:] == st_t[:-1])) if len(st_t) > 1 else 0
     if not found.all():
         miss = ~found
         rec.update(verdict="conflict",
                    lt_samples_not_in_staging=int((miss & ~has_time).sum()),
                    lt_samples_value_differs=int((miss & has_time).sum()),
-                   first_conflict_ns=int(lsa["t"][np.flatnonzero(miss)[0]]))
+                   first_conflict_ns=int(lt_t[np.flatnonzero(miss)[0]]))
         return rec
-    rec["verdict"] = "identical" if len(s) == len(lsa) else "superset"
-    rec["staged_extra_samples"] = int(len(s) - len(lsa))
+    rec["verdict"] = "identical" if len(st_t) == len(lt_t) else "superset"
+    rec["staged_extra_samples"] = int(len(st_t) - len(lt_t))
     return rec
 
 
