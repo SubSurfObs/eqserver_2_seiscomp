@@ -20,7 +20,7 @@
 # code_roots = the whole repo aborts (strictest).
 repos:
   eqserver_2_seiscomp:
-    pinned: "c5a6185"    # release v2.9 (own branch): v2.8 + location 00 for PiesMo-type and new DU plans
+    pinned: "0506181"    # release v3.0 (VW/VX re-sweep): v2.9 + VW/VX plans, drop_channels, decode lock, earliest_start in VW/VX plans
     code_roots: [scan]
   sudspy:
     pinned: 753feaf      # DU release v2: recover_truncated
