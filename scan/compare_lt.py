@@ -1,116 +1,159 @@
 #!/usr/bin/env python3
-"""compare_lt — staged SDS vs long-term SDS, per day-channel, by exact sample
-time and value (Codex reviews 2026-11-18 F1/F2 and 2026-11-24).
+"""compare_lt — staged SDS vs long-term SDS, per day-file, by exact sample time
+and value (Codex 2026-11-18 F1/F2, 2026-11-24 compare review F1-F3, F5).
 
 For every staged day-file of one station-year, the long-term (LT) file at the
-same SDS path is compared sample by sample on exact integer-nanosecond times:
+same SDS path is compared. Each file is read ONCE; the verdict's sha256 is of
+exactly the bytes that were decoded.
+
+Per file, every trace must carry the stream identity its SDS path names
+(NET.STA.LOC.CHA) and every sample must fall inside that SDS day; otherwise
+the file is a `conflict` (reason given). Samples are grouped by exact sample
+rate; rates overlapping in time are a `conflict`. Within a file, one
+timestamp carrying two DIFFERENT values is a `conflict` (ambiguous source);
+exact repeated (time, value) pairs collapse. Timestamps are
+t0 + round(i * 1e9 / rate) in exact rational arithmetic.
 
   write      LT has no file at this path
-  identical  same set of (time, value) samples
-  superset   every LT sample exists in staging at the same time with the same
-             value, and staging holds more            -> safe to replace
-  conflict   some LT sample is absent from staging or has a different value
-                                                      -> hold for review
-  unreadable either file could not be decoded         -> hold for review
+  identical  same rates, same unique (time, value) samples
+  superset   for every LT rate group, every LT sample exists in staging at the
+             same rate, time and value, and staging holds strictly more
+  conflict   anything else (missing or differing LT sample, wrong identity,
+             out-of-day samples, rates overlapping in time, ambiguous duplicates)
+  unreadable a file could not be decoded
 
-A staged sample is only "the same time" as an LT sample when it lies on the
-same grid at the same nanosecond; nothing is re-timed or interpolated.
-
-Every verdict carries the sha256 of the staged and LT files it was computed
-from, so the decision can be re-checked against the bytes that get promoted.
-Read-only: it never writes to staging or LT. Output: JSON lines.
+Traces are never merged; a different trace split of the same samples is still
+`identical`. Read-only. Output: JSON lines, each with the comparator's own
+sha256 (`comparator_sha256`).
 
 Usage: compare_lt.py --staging-root S --lt-root L --net VW --sta LOCU \
            --year 2016 [--workers 8] --out results.jsonl
 """
 import argparse
 import hashlib
+import io
 import json
 import os
+import re
 import sys
 from concurrent.futures import ProcessPoolExecutor
+from fractions import Fraction
 from pathlib import Path
 
 import numpy as np
 
 NS = 1_000_000_000
+SDS_NAME = re.compile(r"^(?P<id>[^.]+\.[^.]*\.[^.]*\.[^.]+)\.D\.(?P<y>\d{4})\.(?P<j>\d{3})$")
+COMPARATOR_SHA = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
-def _sha256(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
+def _snapshot(path):
+    """(bytes, sha256) from one read."""
+    b = Path(path).read_bytes()
+    return b, hashlib.sha256(b).hexdigest()
 
 
-def _segments(path):
-    """[(t0_ns, dt_ns, data int64)] per trace, as recorded (no merging)."""
+def _times(t0_ns, n, rate):
+    """Exact sample times t0 + round(i * 1e9 / rate), rational arithmetic."""
+    fr = Fraction(rate).limit_denominator(10_000)
+    num, den = fr.numerator, fr.denominator           # rate = num/den samples/s
+    if n * NS * den < 2 ** 62:
+        i = np.arange(n, dtype=np.int64)
+        return t0_ns + (i * (NS * den) + num // 2) // num
+    return np.array([t0_ns + (k * NS * den + num // 2) // num for k in range(n)], dtype=np.int64)
+
+
+def _canon(blob, path):
+    """{rate: (times, values)} canonical per rate, or raise ValueError(reason)."""
     from obspy import read
-    out = []
-    for tr in read(path, format="MSEED"):
+    from obspy import UTCDateTime
+    m = SDS_NAME.match(Path(path).name)
+    if not m:
+        raise ValueError(f"name: not an SDS day-file name: {Path(path).name}")
+    want_id = m["id"]
+    day0 = UTCDateTime(year=int(m["y"]), julday=int(m["j"])).ns
+    day1 = day0 + 86400 * NS
+    groups, spans = {}, {}
+    for tr in read(io.BytesIO(blob), format="MSEED"):
+        if tr.id != want_id:
+            raise ValueError(f"identity: trace {tr.id} in file of {want_id}")
         rate = float(tr.stats.sampling_rate)
         if rate <= 0 or len(tr.data) == 0:
             continue
-        dt = round(NS / rate)
-        out.append((int(tr.stats.starttime.ns), dt, np.asarray(tr.data, dtype=np.int64)))
+        t = _times(int(tr.stats.starttime.ns), len(tr.data), rate)
+        if t[0] < day0 or t[-1] >= day1:
+            raise ValueError(f"out_of_day: samples outside {m['y']}.{m['j']}")
+        groups.setdefault(rate, []).append((t, np.asarray(tr.data, dtype=np.int64)))
+        spans.setdefault(rate, []).append((int(t[0]), int(t[-1])))
+    rates = sorted(spans)
+    for a in range(len(rates)):
+        for b in range(a + 1, len(rates)):
+            for s0, s1 in spans[rates[a]]:
+                for u0, u1 in spans[rates[b]]:
+                    if s0 <= u1 and u0 <= s1:
+                        raise ValueError(f"rate_overlap: {rates[a]} and {rates[b]} Hz overlap in time")
+    out = {}
+    for rate, parts in groups.items():
+        t = np.concatenate([p[0] for p in parts])
+        v = np.concatenate([p[1] for p in parts])
+        if len(t) > 1 and not bool(np.all(t[1:] > t[:-1])):
+            o = np.lexsort((v, t))
+            t, v = t[o], v[o]
+            keep = np.ones(len(t), dtype=bool)
+            keep[1:] = (t[1:] != t[:-1]) | (v[1:] != v[:-1])   # collapse exact repeats
+            t, v = t[keep], v[keep]
+            if np.any(t[1:] == t[:-1]):
+                k = int(np.flatnonzero(t[1:] == t[:-1])[0])
+                raise ValueError(f"ambiguous_duplicate: two values at {int(t[k])} ns ({rate} Hz)")
+        out[rate] = (t, v)
     return out
 
 
-def _samples(segs):
-    """Every sample as sorted (times_ns, values) int64 arrays; duplicate times
-    inside one file are kept (they are a finding, not merged away). Day-files
-    are normally already in time order, so sorting happens only when needed."""
-    if not segs:
-        z = np.zeros(0, dtype=np.int64)
-        return z, z
-    segs = sorted(segs, key=lambda x: x[0])
-    t = np.concatenate([t0 + dt * np.arange(len(d), dtype=np.int64) for t0, dt, d in segs])
-    v = np.concatenate([d for _t0, _dt, d in segs])
-    if len(t) > 1 and not bool(np.all(t[1:] >= t[:-1])):
-        o = np.lexsort((v, t))
-        t, v = t[o], v[o]
-    return t, v
-
-
 def compare_pair(staged, lt):
-    """Verdict dict for one staged file against its LT counterpart."""
-    rec = {"staged": str(staged), "lt": str(lt), "staged_sha256": _sha256(staged)}
+    """Verdict dict for one staged day-file against its LT counterpart."""
+    rec = {"staged": str(staged), "lt": str(lt), "comparator_sha256": COMPARATOR_SHA}
+    sb, rec["staged_sha256"] = _snapshot(staged)
     if not os.path.exists(lt):
         rec["verdict"] = "write"
         return rec
-    rec["lt_sha256"] = _sha256(lt)
-    try:
-        st_t, st_v = _samples(_segments(staged))
-        lt_t, lt_v = _samples(_segments(lt))
-    except Exception as e:
-        rec.update(verdict="unreadable", error=f"{type(e).__name__}: {e}"[:300])
+    lb, rec["lt_sha256"] = _snapshot(lt)
+    canon = {}
+    for side, blob, path in (("staged", sb, staged), ("lt", lb, lt)):
+        try:
+            canon[side] = _canon(blob, path)
+        except ValueError as e:
+            rec.update(verdict="conflict", reason=f"{side} {e}")
+            return rec
+        except Exception as e:
+            rec.update(verdict="unreadable", error=f"{side} {type(e).__name__}: {e}"[:300])
+            return rec
+    S, L = canon["staged"], canon["lt"]
+    rec["n_staged"] = int(sum(len(t) for t, _ in S.values()))
+    rec["n_lt"] = int(sum(len(t) for t, _ in L.values()))
+    rec["rates_staged"], rec["rates_lt"] = sorted(S), sorted(L)
+    missing = differ = 0
+    first = None
+    empty = np.zeros(0, dtype=np.int64)
+    for rate, (lt_t, lt_v) in L.items():
+        st_t, st_v = S.get(rate, (empty, empty))
+        pos = np.searchsorted(st_t, lt_t)
+        has = pos < len(st_t)
+        has[has] = st_t[pos[has]] == lt_t[has]
+        same = np.zeros(len(lt_t), dtype=bool)
+        same[has] = st_v[pos[has]] == lt_v[has]
+        missing += int((~has).sum())
+        differ += int((has & ~same).sum())
+        bad = np.flatnonzero(~same)
+        if len(bad) and first is None:
+            first = int(lt_t[bad[0]])
+    if missing or differ:
+        rec.update(verdict="conflict", reason="lt samples absent or different in staging",
+                   lt_samples_not_in_staging=missing, lt_samples_value_differs=differ,
+                   first_conflict_ns=first)
         return rec
-    rec["n_staged"], rec["n_lt"] = int(len(st_t)), int(len(lt_t))
-    # Both arrays are sorted by (time, value). For each LT sample, locate the
-    # staged samples at the same exact nanosecond (a sorted-merge lookup) and
-    # ask whether any of them carries the same value.
-    lo = np.searchsorted(st_t, lt_t, side="left")
-    hi = np.searchsorted(st_t, lt_t, side="right")
-    has_time = hi > lo
-    found = np.zeros(len(lt_t), dtype=bool)
-    if len(st_t):
-        idx = np.minimum(lo, len(st_t) - 1)
-        found = has_time & (st_v[idx] == lt_v)
-        # duplicate staged times (rare): look past the first match
-        dup = has_time & ~found & (hi - lo > 1)
-        for k in np.flatnonzero(dup):
-            found[k] = bool(np.any(st_v[lo[k]:hi[k]] == lt_v[k]))
-    rec["staged_duplicate_times"] = int(np.count_nonzero(st_t[1:] == st_t[:-1])) if len(st_t) > 1 else 0
-    if not found.all():
-        miss = ~found
-        rec.update(verdict="conflict",
-                   lt_samples_not_in_staging=int((miss & ~has_time).sum()),
-                   lt_samples_value_differs=int((miss & has_time).sum()),
-                   first_conflict_ns=int(lt_t[np.flatnonzero(miss)[0]]))
-        return rec
-    rec["verdict"] = "identical" if len(st_t) == len(lt_t) else "superset"
-    rec["staged_extra_samples"] = int(len(st_t) - len(lt_t))
+    same_shape = rec["n_staged"] == rec["n_lt"] and sorted(S) == sorted(L)
+    rec["verdict"] = "identical" if same_shape else "superset"
+    rec["staged_extra_samples"] = rec["n_staged"] - rec["n_lt"]
     return rec
 
 
@@ -135,12 +178,12 @@ def main():
     counts = {}
     tmp = a.out + ".partial"
     with open(tmp, "w") as out, ProcessPoolExecutor(max_workers=a.workers) as ex:
-        for rec in ex.map(compare_pair, *zip(*pairs)) if pairs else []:
+        for rec in (ex.map(compare_pair, *zip(*pairs)) if pairs else []):
             counts[rec["verdict"]] = counts.get(rec["verdict"], 0) + 1
             out.write(json.dumps(rec) + "\n")
     os.replace(tmp, a.out)
-    print(json.dumps({"net": a.net, "sta": a.sta, "year": a.year,
-                      "files": len(pairs), "verdicts": counts}))
+    print(json.dumps({"net": a.net, "sta": a.sta, "year": a.year, "files": len(pairs),
+                      "verdicts": counts, "comparator_sha256": COMPARATOR_SHA}))
 
 
 if __name__ == "__main__":
