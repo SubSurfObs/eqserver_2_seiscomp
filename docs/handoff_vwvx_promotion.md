@@ -33,9 +33,20 @@ the sha256 of the staged and the LT file it was computed from:
 | `conflict` (an LT sample missing from staging, or a differing value) | **hold** for review |
 | `unreadable` | **hold** |
 
-Before writing or replacing, re-hash the staged file and the LT file and
-require both to equal the hashes in the verdict. If either changed, rerun the
-comparison. Never act on a verdict for different bytes.
+**Implemented, not yet reviewed (Codex F4):**
+- `sds_staging_ledger` branch `verdict-mode` (db14dd8): `apply.py --verdicts
+  <compare_lt.jsonl>` acts only on verdicts. Fail-closed holds: no verdict,
+  staged or LT bytes changed since the verdict, LT appearing after `write`,
+  backup name already taken, `conflict`, `unreadable`. `superset` renames the
+  old LT file to `<name>.pre-eqserver-v3.<run_id>` (never overwritten), copies
+  atomically, verifies the installed hash, and only then appends the ledger
+  event (verdict, both hashes, comparator hash, backup name). Restart-safe.
+  Tests: `tests/test_apply_verdicts.py` (10, pass).
+- `eqserver_2_seiscomp` branch `promote-verdicts` (adb9064, on top of
+  49509ad): `run_production_promote.py --verdicts-dir D` waits for
+  `D/<NET>.<STA>.<YEAR>.jsonl`, passes it to apply.py, and commits a unit only
+  when its dry run holds nothing; approved superset replacements are allowed.
+  The existing inventory and done-record checks still run first.
 
 **2025–26 (live SeedLink years, Codex F2):** existing live LT files are
 authoritative by default. Only `superset` may replace them; `conflict` is held
