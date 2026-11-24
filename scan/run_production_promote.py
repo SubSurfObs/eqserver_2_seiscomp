@@ -118,6 +118,8 @@ def invoke_apply(args, entry: dict, commit: bool) -> dict:
            "--source-kind", "eqserver",
            "--run-manifest", entry["run_manifest_path"],
            "--mode", "decide"]
+    if entry.get("verdicts"):
+        cmd += ["--verdicts", entry["verdicts"]]
     if commit:
         cmd.append("--commit")
     if args.no_autocommit:
@@ -127,6 +129,9 @@ def invoke_apply(args, entry: dict, commit: bool) -> dict:
     elapsed = time.time() - t0
     log_path.write_text(proc.stdout + ("\n=== STDERR ===\n" + proc.stderr if proc.stderr else ""))
     summary = parse_apply_summary(proc.stdout)
+    if summary is not None:
+        mh = re.search(r"^held=(\d+)", proc.stdout, re.M)
+        summary["held"] = int(mh.group(1)) if mh else 0
     return {
         "rc": proc.returncode,
         "elapsed_s": round(elapsed, 1),
@@ -155,6 +160,11 @@ def main():
                     help="process current entries then exit (default: poll forever)")
     ap.add_argument("--no-autocommit", action="store_true",
                     help="pass --no-autocommit to apply.py (skip ledger git push)")
+    ap.add_argument("--verdicts-dir", default=None,
+                    help="VW/VX re-sweep (Codex 2026-11-24 F4): directory of compare_lt "
+                         "results <NET>.<STA>.<YEAR>.jsonl. apply.py then acts only on those "
+                         "verdicts; a unit commits only when its dry run holds nothing "
+                         "(approved superset replacements are allowed).")
     ap.add_argument("--skip-empty", action="store_true",
                     help="skip convert_done entries with items_succeeded == 0 "
                          "(nothing to promote — record them as handled to avoid "
@@ -261,6 +271,14 @@ def main():
                 handled.add(rid)
                 continue
 
+            # Verdict mode: the unit needs its comparison file.
+            if args.verdicts_dir:
+                vf = Path(args.verdicts_dir) / f"{entry['net']}.{sta}.{year}.jsonl"
+                if not vf.is_file():
+                    print(f"[promote] {rid} waiting — no comparison verdicts yet ({vf})", flush=True)
+                    continue          # not handled: retried on the next poll
+                entry["verdicts"] = str(vf)
+
             # Step 1: dry-run
             print(f"[promote] {rid} dry-run ...", flush=True)
             dry = invoke_apply(args, entry, commit=False)
@@ -275,8 +293,22 @@ def main():
                   f"override={s['override']} skip={s['skip']} fail={s['fail']} "
                   f"({dry['elapsed_s']:.0f}s)", flush=True)
 
-            # Step 2: gate on override count
-            if s["override"] > 0:
+            # Step 2: gate. Verdict mode: hold on any held/failed file; a
+            # superset replacement is an approved override. Otherwise: hold
+            # on any override.
+            if args.verdicts_dir:
+                if s.get("held", 0) > 0 or s["fail"] > 0:
+                    print(f"[promote] {rid} HELD (held={s.get('held')}, fail={s['fail']}) — "
+                          "comparison found files needing review", flush=True)
+                    append_event(held, {
+                        "run_id": rid, "net": entry["net"], "sta": sta, "year": year,
+                        "action": "held", "reason": "compare_lt: files held",
+                        "dry_run_summary": s, "log_path": dry["log_path"],
+                        "verdicts": entry["verdicts"], "ts": utc_now(),
+                    })
+                    handled.add(rid)
+                    continue
+            elif s["override"] > 0:
                 print(f"[promote] {rid} HELD (overrides={s['override']}) — "
                       "needs human review", flush=True)
                 append_event(held, {
