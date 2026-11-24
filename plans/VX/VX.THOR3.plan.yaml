@@ -1,6 +1,8 @@
 station: THOR3
 network: VX
 location: '00'
+collision_precedence:
+  mode: earliest_start
 status: ok
 epochs:
 - id: 1
