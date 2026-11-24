@@ -87,16 +87,28 @@ def compare_pair(staged, lt):
         rec.update(verdict="unreadable", error=f"{type(e).__name__}: {e}"[:300])
         return rec
     rec["n_staged"], rec["n_lt"] = int(len(s)), int(len(lsa))
-    # LT samples whose exact (time, value) pair is present in staging
-    found = np.isin(lsa.view(np.void(16)), s.view(np.void(16)))
-    n_match = int(found.sum())
-    if n_match < len(lsa):
-        missing = lsa[~found]
-        same_time = np.isin(missing["t"], s["t"])
+    # Both arrays are sorted by (time, value). For each LT sample, locate the
+    # staged samples at the same exact nanosecond (a sorted-merge lookup) and
+    # ask whether any of them carries the same value.
+    st_t, st_v = s["t"], s["v"]
+    lo = np.searchsorted(st_t, lsa["t"], side="left")
+    hi = np.searchsorted(st_t, lsa["t"], side="right")
+    has_time = hi > lo
+    found = np.zeros(len(lsa), dtype=bool)
+    idx = np.minimum(lo, max(len(st_t) - 1, 0))
+    if len(st_t):
+        found = has_time & (st_v[idx] == lsa["v"])
+        # duplicate staged times (rare): look past the first match
+        dup = has_time & ~found & (hi - lo > 1)
+        for k in np.flatnonzero(dup):
+            found[k] = bool(np.any(st_v[lo[k]:hi[k]] == lsa["v"][k]))
+    rec["staged_duplicate_times"] = int(len(st_t) - len(np.unique(st_t))) if len(st_t) else 0
+    if not found.all():
+        miss = ~found
         rec.update(verdict="conflict",
-                   lt_samples_not_in_staging=int((~same_time).sum()),
-                   lt_samples_value_differs=int(same_time.sum()),
-                   first_conflict_ns=int(missing["t"][0]))
+                   lt_samples_not_in_staging=int((miss & ~has_time).sum()),
+                   lt_samples_value_differs=int((miss & has_time).sum()),
+                   first_conflict_ns=int(lsa["t"][np.flatnonzero(miss)[0]]))
         return rec
     rec["verdict"] = "identical" if len(s) == len(lsa) else "superset"
     rec["staged_extra_samples"] = int(len(s) - len(lsa))
