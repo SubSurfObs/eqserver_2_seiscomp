@@ -113,12 +113,23 @@ def compare_pair(staged, lt):
     """Verdict dict for one staged day-file against its LT counterpart."""
     rec = {"staged": str(staged), "lt": str(lt), "comparator_sha256": COMPARATOR_SHA}
     sb, rec["staged_sha256"] = _snapshot(staged)
+    canon = {}
+    # The staged file is validated first, whether or not LT has a file: only a
+    # valid staged file may ever be written (Codex 2026-11-26 F1).
+    try:
+        canon["staged"] = _canon(sb, staged)
+    except ValueError as e:
+        rec.update(verdict="conflict", reason=f"staged {e}")
+        return rec
+    except Exception as e:
+        rec.update(verdict="unreadable", error=f"staged {type(e).__name__}: {e}"[:300])
+        return rec
     if not os.path.exists(lt):
         rec["verdict"] = "write"
+        rec["n_staged"] = int(sum(len(t) for t, _ in canon["staged"].values()))
         return rec
     lb, rec["lt_sha256"] = _snapshot(lt)
-    canon = {}
-    for side, blob, path in (("staged", sb, staged), ("lt", lb, lt)):
+    for side, blob, path in (("lt", lb, lt),):
         try:
             canon[side] = _canon(blob, path)
         except ValueError as e:

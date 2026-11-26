@@ -111,6 +111,18 @@ def main():
         check("non-divisor rate, different split: identical", v(r) == "identical", str(r))
         t = compare_lt._times(0, 4, rate)
         check("rational sample times", list(t) == [0, 75000000, 150000000, 225000000], str(t))
+        # --- Codex 2026-11-26 F1: a staged file is validated even when LT is absent
+        nowhere = td / "nowhere" / NAME
+        junk = td / "junk" / NAME
+        junk.parent.mkdir(parents=True)
+        junk.write_bytes(b"not miniSEED at all")
+        check("absent LT, unreadable staged: unreadable", v(compare_pair(junk, nowhere)) == "unreadable")
+        check("absent LT, wrong identity: conflict",
+              v(compare_pair(write(td / "w1", [(0, full)], cid=("VW", "X", "01", "HHZ")), nowhere)) == "conflict")
+        check("absent LT, out-of-day samples: conflict",
+              v(compare_pair(write(td / "w2", [(-1.0, np.arange(50))]), nowhere)) == "conflict")
+        check("absent LT, differing duplicates: conflict", v(compare_pair(S3, nowhere)) == "conflict")
+        check("absent LT, overlapping rates: conflict", v(compare_pair(L, nowhere)) == "conflict")
     print("all compare_lt tests passed" if not FAIL else f"{len(FAIL)} FAILED")
     return 1 if FAIL else 0
 
