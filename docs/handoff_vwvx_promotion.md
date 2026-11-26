@@ -33,20 +33,22 @@ the sha256 of the staged and the LT file it was computed from:
 | `conflict` (an LT sample missing from staging, or a differing value) | **hold** for review |
 | `unreadable` | **hold** |
 
-**Implemented, not yet reviewed (Codex F4):**
-- `sds_staging_ledger` branch `verdict-mode` (db14dd8): `apply.py --verdicts
-  <compare_lt.jsonl>` acts only on verdicts. Fail-closed holds: no verdict,
-  staged or LT bytes changed since the verdict, LT appearing after `write`,
-  backup name already taken, `conflict`, `unreadable`. `superset` renames the
-  old LT file to `<name>.pre-eqserver-v3.<run_id>` (never overwritten), copies
-  atomically, verifies the installed hash, and only then appends the ledger
-  event (verdict, both hashes, comparator hash, backup name). Restart-safe.
-  Tests: `tests/test_apply_verdicts.py` (10, pass).
-- `eqserver_2_seiscomp` branch `promote-verdicts` (adb9064, on top of
-  49509ad): `run_production_promote.py --verdicts-dir D` waits for
-  `D/<NET>.<STA>.<YEAR>.jsonl`, passes it to apply.py, and commits a unit only
-  when its dry run holds nothing; approved superset replacements are allowed.
-  The existing inventory and done-record checks still run first.
+**Implemented (Codex 2026-11-24 F4 and 2026-11-26 F1–F5), awaiting Codex re-review:**
+- Comparator: eqserver `scan/compare_lt.py` at 6bc289a. **Pinned sha256:
+  `c18f0a3bbc5b3f9daa2e4db811f146a7059ce911f40b6db20004848a1b483ddf`.** Staged files are validated before any verdict, including `write`.
+- `sds_staging_ledger` branch `verdict-mode` (latest commit on that branch):
+  `apply.py --verdicts F --comparator-sha <pin>`. Refuses a verdict file with
+  duplicate paths or any other comparator. `identical` requires LT present and
+  unchanged. Every file action is idempotent: a file this run already
+  installed is recognised from its bytes and backup, and only its missing
+  ledger event is written. Any held or failed file makes a commit exit
+  non-zero. Tests: `tests/test_apply_verdicts.py` (17).
+- eqserver branch `promote-verdicts` (d4a0520): `run_production_promote.py
+  --verdicts-dir D --comparator-sha <pin>`. Two-way inventory with recorded
+  sizes; the comparison file must cover exactly the manifest's files, once
+  each, from the pinned comparator; a unit is recorded promoted only when its
+  commit exits 0 with held = 0 and fail = 0. Tests:
+  `scan/test_promote_verdicts.py` (10).
 
 **2025–26 (live SeedLink years, Codex F2):** existing live LT files are
 authoritative by default. Only `superset` may replace them; `conflict` is held
