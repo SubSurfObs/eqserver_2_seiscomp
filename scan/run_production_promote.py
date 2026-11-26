@@ -101,6 +101,52 @@ def unnamed_staged_files(entry: dict):
                   and str(p) not in named)
 
 
+def inventory_problems(entry: dict):
+    """Both directions (Codex 2026-11-26 F4): every active staged file of the
+    station-year must be named by the run manifest, and every named file must
+    exist at its recorded size. Returns a list of problems ([] = exact), or
+    None when the manifest cannot be read."""
+    import json
+    try:
+        m = json.load(open(entry["run_manifest_path"]))
+    except Exception:
+        return None
+    named = {}
+    for day in (m.get("eqserver") or {}).get("per_date_status") or []:
+        for item in day.get("sds_files_written") or []:
+            named[str(Path(item[0]))] = int(item[1]) if len(item) > 1 else None
+    root = (Path(entry["staging_root"]) / str(entry["year"]) / entry["net"] / entry["sta"])
+    staged = {str(p): p.stat().st_size for p in root.glob("*.D/*")
+              if p.is_file() and not p.name.endswith(".partial")} if root.is_dir() else {}
+    out = [f"not named by the manifest: {p}" for p in sorted(set(staged) - set(named))]
+    out += [f"named but missing from staging: {p}" for p in sorted(set(named) - set(staged))]
+    out += [f"size {staged[p]} != recorded {named[p]}: {p}" for p in sorted(set(named) & set(staged))
+            if named[p] is not None and staged[p] != named[p]]
+    if not named:
+        out.append("run manifest names no files")
+    return out
+
+
+def verdict_file_problems(vf: Path, entry: dict, comparator_sha: str):
+    """The comparison file must cover exactly the manifest's files, once each,
+    all made by the pinned comparator (Codex 2026-11-26 F4/F5)."""
+    import json
+    m = json.load(open(entry["run_manifest_path"]))
+    named = {str(Path(i[0])) for d in (m.get("eqserver") or {}).get("per_date_status") or []
+             for i in d.get("sds_files_written") or []}
+    seen, out = set(), []
+    for line in open(vf):
+        r = json.loads(line)
+        if r["staged"] in seen:
+            out.append(f"duplicate verdict: {r['staged']}")
+        seen.add(r["staged"])
+        if r.get("comparator_sha256") != comparator_sha:
+            out.append(f"comparator {r.get('comparator_sha256')!r} != pinned: {r['staged']}")
+    out += [f"no verdict for {p}" for p in sorted(named - seen)]
+    out += [f"verdict for a file the manifest does not name: {p}" for p in sorted(seen - named)]
+    return out
+
+
 def invoke_apply(args, entry: dict, commit: bool) -> dict:
     """Invoke apply.py for one entry. `commit=False` runs dry-run; `True` adds --commit.
     Returns parsed result dict including counts."""
@@ -119,7 +165,7 @@ def invoke_apply(args, entry: dict, commit: bool) -> dict:
            "--run-manifest", entry["run_manifest_path"],
            "--mode", "decide"]
     if entry.get("verdicts"):
-        cmd += ["--verdicts", entry["verdicts"]]
+        cmd += ["--verdicts", entry["verdicts"], "--comparator-sha", args.comparator_sha]
     if commit:
         cmd.append("--commit")
     if args.no_autocommit:
@@ -165,6 +211,8 @@ def main():
                          "results <NET>.<STA>.<YEAR>.jsonl. apply.py then acts only on those "
                          "verdicts; a unit commits only when its dry run holds nothing "
                          "(approved superset replacements are allowed).")
+    ap.add_argument("--comparator-sha", default=None,
+                    help="with --verdicts-dir (required): sha256 of the approved scan/compare_lt.py")
     ap.add_argument("--skip-empty", action="store_true",
                     help="skip convert_done entries with items_succeeded == 0 "
                          "(nothing to promote — record them as handled to avoid "
@@ -185,6 +233,8 @@ def main():
     queue = Path(args.queue_dir) if args.queue_dir else \
             queue_dir(Path(args.staging_root).parent)
     queue.mkdir(parents=True, exist_ok=True)
+    if args.verdicts_dir and not args.comparator_sha:
+        ap.error("--verdicts-dir requires --comparator-sha")
     convert_done = queue / "convert_done.jsonl"
     promote_done = queue / "promote_done.jsonl"
     held = queue / "held.jsonl"
@@ -271,12 +321,30 @@ def main():
                 handled.add(rid)
                 continue
 
-            # Verdict mode: the unit needs its comparison file.
+            # Verdict mode: exact two-way inventory, then a comparison file that
+            # covers exactly that inventory, made by the pinned comparator.
             if args.verdicts_dir:
+                probs = inventory_problems(entry)
+                if probs is None or probs:
+                    why = "run manifest unreadable" if probs is None else f"{len(probs)} problem(s): {probs[0]}"
+                    print(f"[promote] {rid} HELD — inventory {why}", flush=True)
+                    append_event(held, {"run_id": rid, "net": entry["net"], "sta": sta, "year": year,
+                                        "action": "held", "reason": "inventory mismatch: " + why,
+                                        "problems": (probs or [])[:50], "ts": utc_now()})
+                    handled.add(rid)
+                    continue
                 vf = Path(args.verdicts_dir) / f"{entry['net']}.{sta}.{year}.jsonl"
                 if not vf.is_file():
                     print(f"[promote] {rid} waiting — no comparison verdicts yet ({vf})", flush=True)
                     continue          # not handled: retried on the next poll
+                vprobs = verdict_file_problems(vf, entry, args.comparator_sha)
+                if vprobs:
+                    print(f"[promote] {rid} HELD — comparison file: {vprobs[0]}", flush=True)
+                    append_event(held, {"run_id": rid, "net": entry["net"], "sta": sta, "year": year,
+                                        "action": "held", "reason": "compare_lt file invalid: " + vprobs[0],
+                                        "problems": vprobs[:50], "ts": utc_now()})
+                    handled.add(rid)
+                    continue
                 entry["verdicts"] = str(vf)
 
             # Step 1: dry-run
@@ -323,6 +391,19 @@ def main():
             # Step 3: zero overrides — auto-commit
             print(f"[promote] {rid} committing (zero overrides) ...", flush=True)
             commit_r = invoke_apply(args, entry, commit=True)
+            if args.verdicts_dir:
+                cs = commit_r["summary"]
+                if commit_r["rc"] != 0 or cs is None or cs.get("held", 0) or cs["fail"]:
+                    # Never record a partly applied unit as promoted (Codex
+                    # 2026-11-26 F3). File actions are idempotent, so a later
+                    # rerun completes it safely after review.
+                    print(f"[promote] {rid} HELD after commit rc={commit_r['rc']} summary={cs}", flush=True)
+                    append_event(held, {"run_id": rid, "net": entry["net"], "sta": sta, "year": year,
+                                        "action": "held", "reason": "compare_lt: commit held or failed files",
+                                        "commit_summary": cs, "log_path": commit_r["log_path"],
+                                        "ts": utc_now()})
+                    handled.add(rid)
+                    continue
             if commit_r["rc"] != 0:
                 print(f"[promote] {rid} COMMIT FAILED rc={commit_r['rc']} "
                       f"log={commit_r['log_path']}", flush=True)
